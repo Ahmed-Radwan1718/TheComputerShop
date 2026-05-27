@@ -2105,10 +2105,11 @@ body.nav-menu-open {
   transition: opacity 0.2s ease;
 }
 
-.cart-icon-shape {
-  color: white;
-  font-size: 24px;
-  line-height: 1;
+.nav-cart-link img {
+  width: 26px;
+  height: 26px;
+  display: block;
+  object-fit: contain;
 }
 
 .nav-cart-link:hover {
