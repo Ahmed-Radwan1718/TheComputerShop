@@ -320,3 +320,190 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+.hamburger-toggle {
+  position: fixed;
+  left: 60px;
+  top: 30px;
+  z-index: 1002;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.hamburger-toggle span {
+  position: absolute;
+  left: 5px;
+  width: 34px;
+  height: 3px;
+  border-radius: 3px;
+  background: white;
+  transition:
+    top 0.28s ease,
+    transform 0.28s ease,
+    opacity 0.22s ease;
+}
+
+.hamburger-toggle span:nth-child(1) {
+  top: 9px;
+}
+
+.hamburger-toggle span:nth-child(2) {
+  top: 21px;
+}
+
+.hamburger-toggle span:nth-child(3) {
+  top: 33px;
+}
+
+body.nav-menu-open .hamburger-toggle span:nth-child(1) {
+  top: 21px;
+  transform: rotate(45deg);
+}
+
+body.nav-menu-open .hamburger-toggle span:nth-child(2) {
+  opacity: 0;
+}
+
+body.nav-menu-open .hamburger-toggle span:nth-child(3) {
+  top: 21px;
+  transform: rotate(-45deg);
+}
+
+.nav-menu-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.34);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.28s ease,
+    visibility 0.28s ease;
+}
+
+body.nav-menu-open .nav-menu-overlay {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.nav-menu-panel {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition:
+    opacity 0.28s ease,
+    visibility 0.28s ease,
+    transform 0.28s ease;
+}
+
+.nav-menu-panel.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.nav-menu-links {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 34px;
+  text-align: center;
+}
+
+.nav-menu-link,
+.nav-menu-link:visited,
+.nav-menu-button {
+  border: none;
+  background: transparent;
+  color: white;
+  font-family: inherit;
+  font-size: 25px;
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    color 0.22s ease,
+    opacity 0.22s ease;
+}
+
+.nav-menu-link:hover,
+.nav-menu-button:hover {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.nav-menu-back {
+  margin-bottom: 12px;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.52);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.22s ease;
+}
+
+.nav-menu-back:hover {
+  color: white;
+}
+
+.nav-menu-components .nav-menu-links {
+  gap: 24px;
+}
+
+.nav-menu-components .nav-menu-link {
+  font-size: 22px;
+  letter-spacing: 0.12em;
+}
+
+body.nav-menu-open {
+  overflow: hidden;
+}
+
+@media (max-width: 700px) {
+  .hamburger-toggle {
+    left: 25px;
+    top: 20px;
+    width: 42px;
+    height: 42px;
+  }
+
+  .hamburger-toggle span {
+    left: 6px;
+    width: 30px;
+    height: 2px;
+  }
+
+  .nav-menu-link,
+  .nav-menu-button {
+    font-size: 20px;
+    letter-spacing: 0.11em;
+  }
+
+  .nav-menu-components .nav-menu-link {
+    font-size: 17px;
+  }
+}
