@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Computer Shop</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<button class="hamburger-toggle" type="button" aria-label="Open menu">
+  <span></span>
+  <span></span>
+  <span></span>
+</button>
+
+<a href="cart.html" class="nav-cart-link" aria-label="Cart">
+  <img src="cart-icon.png" alt="Cart">
+  <span class="nav-cart-count">0</span>
+</a>
+
+  <div class="nav-menu-overlay">
+    <div class="nav-menu-panel nav-menu-main active">
+      <div class="nav-menu-links">
+        <a href="index.html" class="nav-menu-link">Home</a>
+<a href="signature-builds.html" class="nav-menu-link">Signature Builds</a>
+<button class="nav-menu-button" type="button" id="open-components-menu">Components</button>
+<a href="consultation.html" class="nav-menu-link">Need a Custom PC?</a>
+      </div>
+    </div>
+
+    <div class="nav-menu-panel nav-menu-components">
+      <div class="nav-menu-links">
+        <button class="nav-menu-back" type="button" id="back-to-main-menu">Back</button>
+<a href="cpus.html" class="nav-menu-link">CPU</a>
+<a href="cpu-coolers.html" class="nav-menu-link">CPU Cooler</a>
+<a href="motherboards.html" class="nav-menu-link">Motherboard</a>
+<a href="memory.html" class="nav-menu-link">Memory</a>
+<a href="storage.html" class="nav-menu-link">Storage</a>
+<a href="graphics-cards.html" class="nav-menu-link">Graphics Card</a>
+<a href="cases.html" class="nav-menu-link">Case</a>
+<a href="power-supplies.html" class="nav-menu-link">Power Supply</a>
+<a href="monitors.html" class="nav-menu-link">Monitor</a>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <section class="hero">
+      <div class="hero-overlay"></div>
+
+      <div class="hero-content">
+        <div class="hero-text">
+          <p class="hero-eyebrow">Welcome to The Computer Shop</p>
+          <h1>Performance Built Systems</h1>
+
+          <div class="hero-actions">
+            <a href="signature-builds.html" class="hero-button hero-button-primary">Signature Builds</a>
+            <a href="consultation.html" class="hero-button hero-button-secondary">Need a Custom PC?</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="featured-builds featured-builds-split">
+      <div class="featured-builds-split-layout">
+        <div class="featured-builds-main">
+          <div class="featured-builds-header">
+            <p class="featured-builds-eyebrow">Pre-built Systems</p>
+            <h2>Featured Builds</h2>
+          </div>
+
+          <div class="featured-carousel">
+            <div class="featured-carousel-window">
+              <div class="featured-carousel-track">
+                <article class="featured-slide active">
+                  <a href="signature-builds.html" class="featured-image-link">
+                    <div class="featured-image-frame featured-image-empty">
+                      <div class="featured-image-placeholder">Build Image</div>
+                    </div>
+                  </a>
+
+                  <div class="featured-slide-info">
+                    <h3>Signature Build</h3>
+                    <p class="featured-slide-specs">CPU | GPU | RAM</p>
+                  </div>
+                </article>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="featured-builds-side">
+          <div class="featured-builds-prompt">
+            <h3>Need a system built around you?</h3>
+
+            <p>
+              If our Signature Builds are not exactly what you are looking for, request a custom PC and we will help you choose a system around your budget, performance goals, preferred look, and setup.
+            </p>
+
+            <a href="consultation.html" class="featured-consultation-button">Request a Custom PC</a>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="featured-components-wall-section">
+      <div class="featured-components-wall-inner">
+        <div class="featured-components-copy">
+          <p class="featured-components-eyebrow">Featured Components</p>
+          <h2>High-performance components for ultimate productivity.</h2>
+
+          <a href="graphics-cards.html" class="featured-consultation-button">Explore All Components</a>
+        </div>
+
+        <div class="component-wall-grid">
+          <a href="motherboards.html" class="component-wall-card component-wall-card-large">
+            <div class="component-wall-placeholder"></div>
+            <div class="component-wall-card-info">
+              <h3>Motherboards</h3>
+              <p>Selected for clean, balanced, high-performance builds.</p>
+            </div>
+          </a>
+
+          <a href="graphics-cards.html" class="component-wall-card">
+            <div class="component-wall-placeholder"></div>
+            <div class="component-wall-card-info">
+              <h3>Graphics Cards</h3>
+            </div>
+          </a>
+
+          <a href="motherboards.html" class="component-wall-card">
+            <div class="component-wall-placeholder"></div>
+            <div class="component-wall-card-info">
+              <h3>Motherboards</h3>
+            </div>
+          </a>
+
+          <a href="power-supplies.html" class="component-wall-card">
+            <div class="component-wall-placeholder"></div>
+            <div class="component-wall-card-info">
+              <h3>Power Supplies</h3>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="about-section">
+      <div class="about-section-inner">
+        <div class="about-section-header">
+          <p class="about-section-eyebrow">Why Buy From Us?</p>
+          <h2>Built for performance, reliability, and long-term support.</h2>
+        </div>
+
+        <div class="about-reasons-list">
+          <article class="about-reason">
+            <span class="about-reason-number">01</span>
+            <div>
+              <h3>Carefully Selected Parts</h3>
+              <p>
+                We choose parts that work well together for performance, cooling, reliability, and value.
+              </p>
+            </div>
+          </article>
+
+          <article class="about-reason">
+            <span class="about-reason-number">02</span>
+            <div>
+              <h3>Signature or Custom</h3>
+              <p>
+                Choose a ready Signature Build or request a custom PC tailored to your budget and needs.
+              </p>
+            </div>
+          </article>
+
+          <article class="about-reason">
+            <span class="about-reason-number">03</span>
+            <div>
+              <h3>Guided Consultations</h3>
+              <p>
+                We help you choose parts based on your goals, budget, games, software, and setup.
+              </p>
+            </div>
+          </article>
+
+          <article class="about-reason">
+            <span class="about-reason-number">04</span>
+            <div>
+              <h3>Lifetime Troubleshooting</h3>
+              <p>
+                We offer free lifetime troubleshooting and diagnosis for products bought from our store.
+              </p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const menuButton = document.querySelector(".hamburger-toggle");
+    const mainMenu = document.querySelector(".nav-menu-main");
+    const componentsMenu = document.querySelector(".nav-menu-components");
+    const openComponentsButton = document.getElementById("open-components-menu");
+    const backButton = document.getElementById("back-to-main-menu");
+
+    menuButton.addEventListener("click", () => {
+      document.body.classList.toggle("nav-menu-open");
+      mainMenu.classList.add("active");
+      componentsMenu.classList.remove("active");
+    });
+
+    openComponentsButton.addEventListener("click", () => {
+      mainMenu.classList.remove("active");
+      componentsMenu.classList.add("active");
+    });
+
+    backButton.addEventListener("click", () => {
+      componentsMenu.classList.remove("active");
+      mainMenu.classList.add("active");
+    });
+  </script>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div class="site-footer-grid">
+      <div class="site-footer-column site-footer-brand">
+        <h2>The Computer Shop</h2>
+        <p>Custom PC Builds and Consultation in Egypt</p>
+      </div>
+
+      <div class="site-footer-column">
+        <h3>Contact</h3>
+        <ul class="site-footer-links">
+          <li><a href="mailto:ahmedradwan21@gmail.com">ahmedradwan21@gmail.com</a></li>
+          <li><a href="https://api.whatsapp.com/send/?phone=201010206091&text&type=phone_number&app_absent=0" target="_blank" rel="noopener noreferrer">WhatsApp</a></li>
+          <li><a href="https://www.facebook.com/share/1Gma229b3L/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer">Facebook</a></li>
+        </ul>
+      </div>
+
+      <div class="site-footer-column">
+        <h3>Support</h3>
+        <ul class="site-footer-links">
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="policies.html">Policies</a></li>
+        </ul>
+      </div>
+
+      <div class="site-footer-column">
+        <h3>About</h3>
+        <ul class="site-footer-links">
+          <li><a href="about.html">About Us</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="site-footer-bottom">
+      <p>© 2026 The Computer Shop. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cases - The Computer Shop</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<button class="hamburger-toggle" type="button" aria-label="Open menu">
+  <span></span>
+  <span></span>
+  <span></span>
+</button>
+
+<a href="cart.html" class="nav-cart-link" aria-label="Cart">
+  <img src="cart-icon.png" alt="Cart">
+  <span class="nav-cart-count">0</span>
+</a>
+
+  <div class="nav-menu-overlay">
+    <div class="nav-menu-panel nav-menu-main active">
+      <div class="nav-menu-links">
+        <a href="index.html" class="nav-menu-link">Home</a>
+        <a href="signature-builds.html" class="nav-menu-link">Signature Builds</a>
+        <button class="nav-menu-button" type="button" id="open-components-menu">Components</button>
+      </div>
+    </div>
+
+    <div class="nav-menu-panel nav-menu-components">
+      <div class="nav-menu-links">
+        <button class="nav-menu-back" type="button" id="back-to-main-menu">Back</button>
+        <a href="cpus.html" class="nav-menu-link">CPU</a>
+        <a href="cpu-coolers.html" class="nav-menu-link">CPU Cooler</a>
+        <a href="motherboards.html" class="nav-menu-link">Motherboard</a>
+        <a href="memory.html" class="nav-menu-link">Memory</a>
+        <a href="storage.html" class="nav-menu-link">Storage</a>
+        <a href="graphics-cards.html" class="nav-menu-link">Graphics Card</a>
+        <a href="cases.html" class="nav-menu-link">Case</a>
+        <a href="power-supplies.html" class="nav-menu-link">Power Supply</a>
+        <a href="monitors.html" class="nav-menu-link">Monitor</a>
+      </div>
+    </div>
+  </div>
+
+<main class="component-page">
+  <section class="component-hero">
+    <div class="component-hero-bg"></div>
+    <div class="component-hero-overlay"></div>
+
+    <div class="component-hero-content">
+      <p class="component-hero-eyebrow">Components</p>
+      <h1>Cases</h1>
+      <p>Browse cases selected for airflow, build quality, hardware clearance, and clean visual direction.</p>
+    </div>
+  </section>
+
+  <section class="signature-layout">
+    <aside class="filters-panel">
+      <div class="filters-heading">Filter Cases</div>
+
+      <div class="filter-item">
+        <button class="filter-toggle" type="button"><span>Brand</span><span class="chevron">⌄</span></button>
+        <div class="filter-content">
+          <label><input type="checkbox"> Lian Li</label>
+          <label><input type="checkbox"> ASUS</label>
+          <label><input type="checkbox"> Corsair</label>
+          <label><input type="checkbox"> Gigabyte</label>
+          <label><input type="checkbox"> Fractal</label>
+        </div>
+      </div>
+
+      <div class="filter-item">
+        <button class="filter-toggle" type="button"><span>Case Size</span><span class="chevron">⌄</span></button>
+        <div class="filter-content">
+          <label><input type="checkbox"> Mid Tower</label>
+          <label><input type="checkbox"> Full Tower</label>
+        </div>
+      </div>
+
+      <div class="filter-item">
+        <button class="filter-toggle" type="button"><span>Color</span><span class="chevron">⌄</span></button>
+        <div class="filter-content">
+          <label><input type="checkbox"> Black</label>
+          <label><input type="checkbox"> White</label>
+          <label><input type="checkbox"> Grey</label>
+        </div>
+      </div>
+
+      <div class="filter-item">
+        <button class="filter-toggle" type="button"><span>Style</span><span class="chevron">⌄</span></button>
+        <div class="filter-content">
+          <label><input type="checkbox"> Airflow</label>
+          <label><input type="checkbox"> Panoramic Glass</label>
+          <label><input type="checkbox"> Minimal</label>
+        </div>
+      </div>
+    </aside>
+
+    <section class="signature-products">
+      <div class="signature-builds-header">
+        <p class="signature-builds-eyebrow">Available Components</p>
+        <h2>Cases</h2>
+      </div>
+
+      <div class="signature-builds-grid"></div>
+    </section>
+  </section>
+</main>
+
+<script>
+  document.querySelectorAll(".filter-toggle").forEach((button) => {
+    button.addEventListener("click", () => {
+      button.closest(".filter-item").classList.toggle("open");
+    });
+  });
+</script>
+
+<script>
+  const menuButton = document.querySelector(".hamburger-toggle");
+  const mainMenu = document.querySelector(".nav-menu-main");
+  const componentsMenu = document.querySelector(".nav-menu-components");
+  const openComponentsButton = document.getElementById("open-components-menu");
+  const backButton = document.getElementById("back-to-main-menu");
+
+  if (menuButton && mainMenu && componentsMenu && openComponentsButton && backButton) {
+    menuButton.addEventListener("click", () => {
+      document.body.classList.toggle("nav-menu-open");
+      mainMenu.classList.add("active");
+      componentsMenu.classList.remove("active");
+    });
+
+    openComponentsButton.addEventListener("click", () => {
+      mainMenu.classList.remove("active");
+      componentsMenu.classList.add("active");
+    });
+
+    backButton.addEventListener("click", () => {
+      componentsMenu.classList.remove("active");
+      mainMenu.classList.add("active");
+    });
+  }
+</script>
+
+</body>
+</html>
