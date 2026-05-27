@@ -22,36 +22,127 @@
       </div>
     </section>
 
-    <section class="signature-builds-section">
-      <div class="signature-builds-header">
-        <p class="signature-builds-eyebrow">Available Systems</p>
-        <h2>Signature Builds</h2>
+<section class="signature-layout">
+  <aside class="filters-panel">
+    <div class="filters-heading">Filter Builds</div>
+
+    <div class="filter-item">
+      <button class="filter-toggle" type="button">
+        <span>Price Range</span>
+        <span class="chevron">⌄</span>
+      </button>
+
+      <div class="filter-content">
+        <label><input type="checkbox"> Under 100,000 EGP</label>
+        <label><input type="checkbox"> 100,000 – 200,000 EGP</label>
+        <label><input type="checkbox"> 200,000 – 400,000 EGP</label>
+        <label><input type="checkbox"> 400,000+ EGP</label>
       </div>
+    </div>
 
-      <div class="signature-builds-grid">
-        <article class="signature-build-card">
-          <div class="signature-build-image-placeholder">Build Image</div>
-          <h3>Build Name</h3>
-          <p>CPU | GPU | RAM</p>
-          <div class="signature-build-price">Price</div>
-        </article>
+    <div class="filter-item">
+      <button class="filter-toggle" type="button">
+        <span>Build Type</span>
+        <span class="chevron">⌄</span>
+      </button>
 
-        <article class="signature-build-card">
-          <div class="signature-build-image-placeholder">Build Image</div>
-          <h3>Build Name</h3>
-          <p>CPU | GPU | RAM</p>
-          <div class="signature-build-price">Price</div>
-        </article>
-
-        <article class="signature-build-card">
-          <div class="signature-build-image-placeholder">Build Image</div>
-          <h3>Build Name</h3>
-          <p>CPU | GPU | RAM</p>
-          <div class="signature-build-price">Price</div>
-        </article>
+      <div class="filter-content">
+        <label><input type="checkbox"> Entry Level</label>
+        <label><input type="checkbox"> Mid Range</label>
+        <label><input type="checkbox"> Premium Gaming</label>
+        <label><input type="checkbox"> Creator / Workstation</label>
+        <label><input type="checkbox"> Flagship</label>
       </div>
-    </section>
+    </div>
+
+    <div class="filter-item">
+      <button class="filter-toggle" type="button">
+        <span>Memory</span>
+        <span class="chevron">⌄</span>
+      </button>
+
+      <div class="filter-content">
+        <label><input type="checkbox"> 16GB</label>
+        <label><input type="checkbox"> 32GB</label>
+        <label><input type="checkbox"> 48GB</label>
+        <label><input type="checkbox"> 64GB</label>
+        <label><input type="checkbox"> 96GB</label>
+        <label><input type="checkbox"> 128GB</label>
+        <label><input type="checkbox"> 192GB</label>
+        <label><input type="checkbox"> 256GB</label>
+      </div>
+    </div>
+
+    <div class="filter-item">
+      <button class="filter-toggle" type="button">
+        <span>Processor</span>
+        <span class="chevron">⌄</span>
+      </button>
+
+      <div class="filter-content">
+        <label><input type="checkbox"> Intel Core Ultra 5</label>
+        <label><input type="checkbox"> Intel Core Ultra 7</label>
+        <label><input type="checkbox"> Intel Core Ultra 9</label>
+      </div>
+    </div>
+
+    <div class="filter-item">
+      <button class="filter-toggle" type="button">
+        <span>Graphics Card</span>
+        <span class="chevron">⌄</span>
+      </button>
+
+      <div class="filter-content">
+        <label><input type="checkbox"> RTX 5050</label>
+        <label><input type="checkbox"> RTX 5060</label>
+        <label><input type="checkbox"> RTX 5060 Ti</label>
+        <label><input type="checkbox"> RTX 5070</label>
+        <label><input type="checkbox"> RTX 5070 Ti</label>
+        <label><input type="checkbox"> RTX 5080</label>
+        <label><input type="checkbox"> RTX 5090</label>
+      </div>
+    </div>
+  </aside>
+
+  <section class="signature-products">
+    <div class="signature-builds-header">
+      <p class="signature-builds-eyebrow">Available Systems</p>
+      <h2>Signature Builds</h2>
+    </div>
+
+    <div class="signature-builds-grid">
+      <article class="signature-build-card">
+        <div class="signature-build-image-placeholder">Build Image</div>
+        <h3>Build Name</h3>
+        <p>CPU | GPU | RAM</p>
+        <div class="signature-build-price">Price</div>
+      </article>
+
+      <article class="signature-build-card">
+        <div class="signature-build-image-placeholder">Build Image</div>
+        <h3>Build Name</h3>
+        <p>CPU | GPU | RAM</p>
+        <div class="signature-build-price">Price</div>
+      </article>
+
+      <article class="signature-build-card">
+        <div class="signature-build-image-placeholder">Build Image</div>
+        <h3>Build Name</h3>
+        <p>CPU | GPU | RAM</p>
+        <div class="signature-build-price">Price</div>
+      </article>
+    </div>
+  </section>
+</section>
   </main>
+
+<script>
+  document.querySelectorAll(".filter-toggle").forEach((button) => {
+    button.addEventListener("click", () => {
+      button.closest(".filter-item").classList.toggle("open");
+    });
+  });
+</script>
 
 </body>
 </html>
