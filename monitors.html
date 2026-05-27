@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Monitors - The Computer Shop</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<main class="component-page">
+  <section class="component-hero">
+    <div class="component-hero-bg"></div>
+    <div class="component-hero-overlay"></div>
+
+    <div class="component-hero-content">
+      <p class="component-hero-eyebrow">Components</p>
+      <h1>Monitors</h1>
+      <p>Browse monitors selected for gaming, productivity, resolution, refresh rate, and panel quality.</p>
+    </div>
+  </section>
+
+  <section class="signature-layout">
+    <aside class="filters-panel">
+      <div class="filters-heading">Filter Monitors</div>
+
+      <div class="filter-item">
+        <button class="filter-toggle" type="button"><span>Resolution</span><span class="chevron">⌄</span></button>
+        <div class="filter-content">
+          <label><input type="checkbox"> 1080p</label>
+          <label><input type="checkbox"> 1440p</label>
+          <label><input type="checkbox"> 4K</label>
+        </div>
+      </div>
+
+      <div class="filter-item">
+        <button class="filter-toggle" type="button"><span>Refresh Rate</span><span class="chevron">⌄</span></button>
+        <div class="filter-content">
+          <label><input type="checkbox"> 144Hz</label>
+          <label><input type="checkbox"> 165Hz</label>
+          <label><input type="checkbox"> 240Hz</label>
+          <label><input type="checkbox"> 360Hz</label>
+        </div>
+      </div>
+
+      <div class="filter-item">
+        <button class="filter-toggle" type="button"><span>Panel Type</span><span class="chevron">⌄</span></button>
+        <div class="filter-content">
+          <label><input type="checkbox"> IPS</label>
+          <label><input type="checkbox"> OLED</label>
+          <label><input type="checkbox"> VA</label>
+        </div>
+      </div>
+    </aside>
+
+    <section class="signature-products">
+      <div class="signature-builds-header">
+        <p class="signature-builds-eyebrow">Available Components</p>
+        <h2>Monitors</h2>
+      </div>
+
+      <div class="signature-builds-grid"></div>
+    </section>
+  </section>
+</main>
+
+<script>
+  document.querySelectorAll(".filter-toggle").forEach((button) => {
+    button.addEventListener("click", () => {
+      button.closest(".filter-item").classList.toggle("open");
+    });
+  });
+</script>
+
+</body>
+</html>
