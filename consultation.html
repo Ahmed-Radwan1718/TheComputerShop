@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Need a Custom PC? - The Computer Shop</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<button class="hamburger-toggle" type="button" aria-label="Open menu">
+  <span></span>
+  <span></span>
+  <span></span>
+</button>
+
+<a href="cart.html" class="nav-cart-link" aria-label="Cart">
+  <img src="cart-icon.png" alt="Cart">
+  <span class="nav-cart-count">0</span>
+</a>
+
+  <div class="nav-menu-overlay">
+    <div class="nav-menu-panel nav-menu-main active">
+      <div class="nav-menu-links">
+        <a href="index.html" class="nav-menu-link">Home</a>
+        <a href="signature-builds.html" class="nav-menu-link">Signature Builds</a>
+        <button class="nav-menu-button" type="button" id="open-components-menu">Components</button>
+      </div>
+    </div>
+
+    <div class="nav-menu-panel nav-menu-components">
+      <div class="nav-menu-links">
+        <button class="nav-menu-back" type="button" id="back-to-main-menu">Back</button>
+        <a href="cpus.html" class="nav-menu-link">CPU</a>
+        <a href="cpu-coolers.html" class="nav-menu-link">CPU Cooler</a>
+        <a href="motherboards.html" class="nav-menu-link">Motherboard</a>
+        <a href="memory.html" class="nav-menu-link">Memory</a>
+        <a href="storage.html" class="nav-menu-link">Storage</a>
+        <a href="graphics-cards.html" class="nav-menu-link">Graphics Card</a>
+        <a href="cases.html" class="nav-menu-link">Case</a>
+        <a href="power-supplies.html" class="nav-menu-link">Power Supply</a>
+        <a href="monitors.html" class="nav-menu-link">Monitor</a>
+      </div>
+    </div>
+  </div>
+
+  <main class="consultation-page">
+    <section class="consultation-hero">
+      <div class="consultation-hero-inner">
+        <p class="consultation-eyebrow">Custom Build Consultation</p>
+        <h1>Need a PC tailored to your exact needs?</h1>
+        <p class="consultation-intro">
+          Tell us your budget, use case, preferred look, and performance goals.
+          We will help you put together a system that makes sense for you.
+        </p>
+      </div>
+    </section>
+
+    <section class="consultation-form-section">
+      <div class="consultation-form-wrapper">
+        <div class="consultation-success" id="consultation-success" hidden>
+          Thank you. A representative will be in touch within 12 hours.
+        </div>
+
+        <form
+          class="consultation-form"
+          action="https://formsubmit.co/ahmedradwan21@gmail.com"
+          method="POST"
+        >
+          <input type="hidden" name="_subject" value="New Custom PC Consultation Request">
+          <input type="hidden" name="_template" value="table">
+          <input type="hidden" name="_autoresponse" value="Thank you for reaching out to The Computer Shop. We received your consultation request successfully, and a representative will be in touch within 12 hours.">
+          <input type="text" name="_honey" style="display:none">
+
+          <div class="consultation-grid">
+            <div class="consultation-form-group-title">
+              <h2>Contact Information</h2>
+            </div>
+
+            <div class="consultation-field">
+              <label for="full-name">Full Name</label>
+              <input type="text" id="full-name" name="Full Name" required>
+            </div>
+
+            <div class="consultation-field">
+              <label for="phone-number">Phone Number</label>
+              <input type="tel" id="phone-number" name="Phone Number" required>
+            </div>
+
+            <div class="consultation-field consultation-field-full">
+              <label for="email">Email Address</label>
+              <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="consultation-form-group-title">
+              <h2>Build Requirements</h2>
+            </div>
+
+            <div class="consultation-field">
+              <label for="budget">Budget</label>
+              <input
+                type="text"
+                id="budget"
+                name="Budget"
+                placeholder="Example: 80,000 EGP"
+                required
+              >
+            </div>
+
+            <div class="consultation-field">
+              <label for="timeline">When do you want to build it?</label>
+              <div class="custom-select-dropdown" data-custom-select>
+                <input type="hidden" id="timeline" name="Timeline" data-required-select="true" value="">
+
+                <button class="custom-select-trigger" type="button" aria-expanded="false">
+                  <span class="custom-select-value">Select one</span>
+                  <span class="chevron"></span>
+                </button>
+
+                <div class="custom-select-menu">
+                  <button class="custom-select-option" type="button" data-value="As soon as possible">As soon as possible</button>
+                  <button class="custom-select-option" type="button" data-value="Within 1 month">Within 1 month</button>
+                  <button class="custom-select-option" type="button" data-value="Within 2-3 months">Within 2-3 months</button>
+                  <button class="custom-select-option" type="button" data-value="Just exploring for now">Just exploring for now</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="consultation-field consultation-field-full">
+              <label for="use-case">Main Use Case</label>
+              <div class="custom-select-dropdown" data-custom-select>
+                <input type="hidden" id="use-case" name="Main Use Case" data-required-select="true" value="">
+
+                <button class="custom-select-trigger" type="button" aria-expanded="false">
+                  <span class="custom-select-value">Select one</span>
+                  <span class="chevron"></span>
+                </button>
+
+                <div class="custom-select-menu">
+                  <button class="custom-select-option" type="button" data-value="Gaming">Gaming</button>
+                  <button class="custom-select-option" type="button" data-value="Gaming + Streaming">Gaming + Streaming</button>
+                  <button class="custom-select-option" type="button" data-value="Video Editing">Video Editing</button>
+                  <button class="custom-select-option" type="button" data-value="3D Work / Rendering">3D Work / Rendering</button>
+                  <button class="custom-select-option" type="button" data-value="Programming / Workstation">Programming / Workstation</button>
+                  <button class="custom-select-option" type="button" data-value="Office / Daily Use">Office / Daily Use</button>
+                  <button class="custom-select-option" type="button" data-value="Mixed Use">Mixed Use</button>
+                  <button class="custom-select-option" type="button" data-value="Not sure yet">Not sure yet</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="consultation-field">
+              <label for="games-software">Games / Software</label>
+              <input
+                type="text"
+                id="games-software"
+                name="Games or Software Used"
+                placeholder="Example: Warzone, Valorant, Premiere Pro, Blender"
+              >
+            </div>
+
+            <div class="consultation-field">
+              <label for="resolution">Target Resolution</label>
+              <div class="custom-select-dropdown" data-custom-select>
+                <input type="hidden" id="resolution" name="Target Resolution" value="">
+
+                <button class="custom-select-trigger" type="button" aria-expanded="false">
+                  <span class="custom-select-value">Select one</span>
+                  <span class="chevron"></span>
+                </button>
+
+                <div class="custom-select-menu">
+                  <button class="custom-select-option" type="button" data-value="1080p">1080p</button>
+                  <button class="custom-select-option" type="button" data-value="1440p">1440p</button>
+                  <button class="custom-select-option" type="button" data-value="4K">4K</button>
+                  <button class="custom-select-option" type="button" data-value="Not sure">Not sure</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="consultation-field">
+              <label for="fps-target">Performance Target</label>
+              <input
+                type="text"
+                id="fps-target"
+                name="Performance Target"
+                placeholder="Example: 240 FPS in esports titles"
+              >
+            </div>
+
+            <div class="consultation-form-group-title">
+              <h2>Style & Preferences</h2>
+            </div>
+
+            <div class="consultation-field">
+              <label for="aesthetic">Preferred Look</label>
+              <div class="custom-select-dropdown" data-custom-select>
+                <input type="hidden" id="aesthetic" name="Preferred Look" value="">
+
+                <button class="custom-select-trigger" type="button" aria-expanded="false">
+                  <span class="custom-select-value">Select one</span>
+                  <span class="chevron"></span>
+                </button>
+
+                <div class="custom-select-menu">
+                  <button class="custom-select-option" type="button" data-value="Black">Black</button>
+                  <button class="custom-select-option" type="button" data-value="White">White</button>
+                  <button class="custom-select-option" type="button" data-value="RGB">RGB</button>
+                  <button class="custom-select-option" type="button" data-value="Minimal / No RGB">Minimal / No RGB</button>
+                  <button class="custom-select-option" type="button" data-value="No preference">No preference</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="consultation-field">
+              <label for="brands">Preferred Brands</label>
+              <input
+                type="text"
+                id="brands"
+                name="Preferred Brands"
+                placeholder="Example: ASUS, Gigabyte, Corsair"
+              >
+            </div>
+
+            <div class="consultation-field">
+              <label for="parts-needed">What do you need included?</label>
+              <div class="custom-select-dropdown" data-custom-select>
+                <input type="hidden" id="parts-needed" name="What do you need included?" value="">
+
+                <button class="custom-select-trigger" type="button" aria-expanded="false">
+                  <span class="custom-select-value">Select one</span>
+                  <span class="chevron"></span>
+                </button>
+
+                <div class="custom-select-menu">
+                  <button class="custom-select-option" type="button" data-value="PC only">PC only</button>
+                  <button class="custom-select-option" type="button" data-value="PC + Monitor">PC + Monitor</button>
+                  <button class="custom-select-option" type="button" data-value="Full setup">Full setup</button>
+                  <button class="custom-select-option" type="button" data-value="Not sure yet">Not sure yet</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="consultation-form-group-title">
+              <h2>Extra Details</h2>
+            </div>
+
+            <div class="consultation-field consultation-field-full">
+              <label for="notes">Extra Details</label>
+              <textarea
+                id="notes"
+                name="Extra Details"
+                rows="7"
+                placeholder="Tell us anything important: exact needs, games, software, preferred case style, upgrade plans, storage needs, cooling preferences, or anything else."
+              ></textarea>
+            </div>
+          </div>
+
+          <button class="consultation-submit-button" type="submit">
+            Submit Consultation Request
+          </button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="site-footer-inner">
+      <div class="site-footer-grid">
+        <div class="site-footer-column site-footer-brand">
+          <h2>The Computer Shop</h2>
+          <p>Custom PC Builds and Consultation in Egypt</p>
+        </div>
+
+        <div class="site-footer-column">
+          <h3>Contact</h3>
+          <ul class="site-footer-links">
+            <li><a href="mailto:ahmedradwan21@gmail.com">ahmedradwan21@gmail.com</a></li>
+            <li><a href="https://api.whatsapp.com/send/?phone=201010206091&text&type=phone_number&app_absent=0" target="_blank" rel="noopener noreferrer">WhatsApp</a></li>
+            <li><a href="https://www.facebook.com/share/1Gma229b3L/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer">Facebook</a></li>
+          </ul>
+        </div>
+
+        <div class="site-footer-column">
+          <h3>Support</h3>
+          <ul class="site-footer-links">
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="policies.html">Policies</a></li>
+          </ul>
+        </div>
+
+        <div class="site-footer-column">
+          <h3>About</h3>
+          <ul class="site-footer-links">
+            <li><a href="about.html">About Us</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="site-footer-bottom">
+        <p>© 2026 The Computer Shop. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const menuButton = document.querySelector(".hamburger-toggle");
+    const mainMenu = document.querySelector(".nav-menu-main");
+    const componentsMenu = document.querySelector(".nav-menu-components");
+    const openComponentsButton = document.getElementById("open-components-menu");
+    const backButton = document.getElementById("back-to-main-menu");
+
+    if (menuButton && mainMenu && componentsMenu && openComponentsButton && backButton) {
+      menuButton.addEventListener("click", () => {
+        document.body.classList.toggle("nav-menu-open");
+        mainMenu.classList.add("active");
+        componentsMenu.classList.remove("active");
+      });
+
+      openComponentsButton.addEventListener("click", () => {
+        mainMenu.classList.remove("active");
+        componentsMenu.classList.add("active");
+      });
+
+      backButton.addEventListener("click", () => {
+        componentsMenu.classList.remove("active");
+        mainMenu.classList.add("active");
+      });
+    }
+
+    document.querySelectorAll("[data-custom-select]").forEach((dropdown) => {
+      const trigger = dropdown.querySelector(".custom-select-trigger");
+      const valueText = dropdown.querySelector(".custom-select-value");
+      const hiddenInput = dropdown.querySelector("input[type='hidden']");
+      const options = dropdown.querySelectorAll(".custom-select-option");
+
+      trigger.addEventListener("click", () => {
+        document.querySelectorAll("[data-custom-select]").forEach((otherDropdown) => {
+          if (otherDropdown !== dropdown) {
+            otherDropdown.classList.remove("open");
+          }
+        });
+
+        dropdown.classList.toggle("open");
+      });
+
+      options.forEach((option) => {
+        option.addEventListener("click", () => {
+          options.forEach((item) => item.classList.remove("active"));
+          option.classList.add("active");
+
+          valueText.textContent = option.textContent;
+          hiddenInput.value = option.dataset.value;
+
+          dropdown.classList.remove("open");
+          dropdown.classList.remove("invalid");
+        });
+      });
+    });
+
+    document.addEventListener("click", (event) => {
+      if (!event.target.closest("[data-custom-select]")) {
+        document.querySelectorAll("[data-custom-select]").forEach((dropdown) => {
+          dropdown.classList.remove("open");
+        });
+      }
+    });
+
+    const consultationForm = document.querySelector(".consultation-form");
+
+    if (consultationForm) {
+      consultationForm.addEventListener("submit", (event) => {
+        let valid = true;
+
+        consultationForm.querySelectorAll("[data-required-select='true']").forEach((input) => {
+          if (!input.value) {
+            input.closest("[data-custom-select]").classList.add("invalid");
+            valid = false;
+          }
+        });
+
+        if (!valid) {
+          event.preventDefault();
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>
