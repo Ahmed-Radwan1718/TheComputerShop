@@ -45,30 +45,64 @@
   </div>
 </div>
 
-<main class="product-detail-page">
-  <section class="product-detail-layout">
-    <div class="product-gallery">
-      <div class="product-main-image-frame">
-        <button class="product-gallery-arrow product-gallery-arrow-left" type="button">‹</button>
-        <img id="product-main-image" src="" alt="">
-        <button class="product-gallery-arrow product-gallery-arrow-right" type="button">›</button>
+<main class="build-detail-page product-template-page">
+  <section class="build-detail-layout">
+    <section class="build-media-column">
+      <h1 class="build-detail-heading" id="product-title">Product</h1>
+
+      <div class="featured-carousel manual-carousel">
+        <div class="featured-carousel-window">
+          <div class="featured-carousel-track" id="product-carousel-track"></div>
+
+          <button class="carousel-arrow carousel-arrow-left" type="button" aria-label="Previous photo">&#10094;</button>
+          <button class="carousel-arrow carousel-arrow-right" type="button" aria-label="Next photo">&#10095;</button>
+        </div>
+
+        <div class="carousel-thumbnails" id="product-thumbnails"></div>
       </div>
 
-      <div class="product-thumbnails" id="product-thumbnails"></div>
-    </div>
+      <section class="build-specs-under-carousel">
+        <h2 class="build-specs-title">Specifications</h2>
+        <div class="build-specs-list" id="product-specs-list"></div>
+      </section>
+    </section>
 
-    <aside class="product-detail-info">
-      <p class="product-detail-eyebrow" id="product-brand"></p>
-      <h1 id="product-name"></h1>
-      <p class="product-model" id="product-model"></p>
+    <aside class="build-purchase-panel">
+      <div class="build-purchase-content">
+        <p class="build-panel-eyebrow" id="product-brand">Graphics Card</p>
 
-      <div class="product-detail-price" id="product-price"></div>
+        <div class="build-price" id="product-price"></div>
 
-      <div class="product-specs-list" id="product-specs"></div>
+        <div class="build-description-block">
+          <h3 class="build-description-heading" id="product-model"></h3>
+          <div class="build-description" id="product-description">
+            High-performance graphics card selected for flagship gaming, rendering, and workstation performance.
+          </div>
+        </div>
 
-      <button class="product-add-cart-button" type="button">
-        Add to Cart
-      </button>
+        <div class="purchase-actions">
+          <div class="purchase-top-row">
+            <div class="quantity-control">
+              <button class="quantity-button quantity-minus" type="button" aria-label="Decrease quantity">−</button>
+              <input class="quantity-value" type="number" min="1" value="1" inputmode="numeric" aria-label="Quantity">
+              <button class="quantity-button quantity-plus" type="button" aria-label="Increase quantity">+</button>
+            </div>
+
+            <button class="add-to-cart-button" type="button">
+              Add to Cart
+            </button>
+          </div>
+
+          <button class="buy-now-button" type="button">Buy Now</button>
+        </div>
+
+        <p class="build-help-line">
+          Need help before ordering?
+          <a href="https://api.whatsapp.com/send/?phone=201010206091&text&type=phone_number&app_absent=0" target="_blank" rel="noopener noreferrer">Message us on WhatsApp</a>
+          or
+          <a href="mailto:ahmedradwan21@gmail.com">email us</a>.
+        </p>
+      </div>
     </aside>
   </section>
 </main>
@@ -82,55 +116,63 @@
 
   let currentImageIndex = 0;
 
-  const mainImage = document.getElementById("product-main-image");
+  const carouselTrack = document.getElementById("product-carousel-track");
   const thumbnailsContainer = document.getElementById("product-thumbnails");
 
   document.title = product.name + " - The Computer Shop";
-
+  document.getElementById("product-title").textContent = product.name;
   document.getElementById("product-brand").textContent = product.brand;
-  document.getElementById("product-name").textContent = product.name;
   document.getElementById("product-model").textContent = product.model;
   document.getElementById("product-price").textContent = product.price;
 
-  document.getElementById("product-specs").innerHTML = product.specs
-    .map((spec) => `<div class="product-spec-item">${spec}</div>`)
+  document.getElementById("product-specs-list").innerHTML = product.specs
+    .map((spec) => `<p><span>Spec</span>${spec}</p>`)
     .join("");
 
-  function renderImage() {
-    mainImage.src = product.images[currentImageIndex];
-    mainImage.alt = product.name;
-
-    document.querySelectorAll(".product-thumbnail").forEach((thumbnail, index) => {
-      thumbnail.classList.toggle("active", index === currentImageIndex);
-    });
-  }
+  carouselTrack.innerHTML = product.images
+    .map((image) => `
+      <article class="featured-slide">
+        <div class="featured-image-frame">
+          <img src="${image}" alt="${product.name}">
+        </div>
+      </article>
+    `)
+    .join("");
 
   thumbnailsContainer.innerHTML = product.images
     .map((image, index) => `
-      <button class="product-thumbnail" type="button" data-index="${index}">
+      <button class="carousel-thumbnail" type="button" data-index="${index}">
         <img src="${image}" alt="${product.name} image ${index + 1}">
       </button>
     `)
     .join("");
 
-  document.querySelectorAll(".product-thumbnail").forEach((thumbnail) => {
+  function renderCarousel() {
+    carouselTrack.style.transform = `translateX(-${currentImageIndex * 100}%)`;
+
+    document.querySelectorAll(".carousel-thumbnail").forEach((thumbnail, index) => {
+      thumbnail.classList.toggle("active", index === currentImageIndex);
+    });
+  }
+
+  document.querySelector(".carousel-arrow-left").addEventListener("click", () => {
+    currentImageIndex = (currentImageIndex - 1 + product.images.length) % product.images.length;
+    renderCarousel();
+  });
+
+  document.querySelector(".carousel-arrow-right").addEventListener("click", () => {
+    currentImageIndex = (currentImageIndex + 1) % product.images.length;
+    renderCarousel();
+  });
+
+  document.querySelectorAll(".carousel-thumbnail").forEach((thumbnail) => {
     thumbnail.addEventListener("click", () => {
       currentImageIndex = Number(thumbnail.dataset.index);
-      renderImage();
+      renderCarousel();
     });
   });
 
-  document.querySelector(".product-gallery-arrow-left").addEventListener("click", () => {
-    currentImageIndex = (currentImageIndex - 1 + product.images.length) % product.images.length;
-    renderImage();
-  });
-
-  document.querySelector(".product-gallery-arrow-right").addEventListener("click", () => {
-    currentImageIndex = (currentImageIndex + 1) % product.images.length;
-    renderImage();
-  });
-
-  renderImage();
+  renderCarousel();
 
   const menuButton = document.querySelector(".hamburger-toggle");
   const mainMenu = document.querySelector(".nav-menu-main");
