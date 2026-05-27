@@ -45,39 +45,37 @@
   </div>
 </div>
 
-<main class="build-detail-page product-template-page">
+<main class="build-detail-page component-detail-page">
   <section class="build-detail-layout">
     <section class="build-media-column">
-      <h1 class="build-detail-heading" id="product-title">Product</h1>
+      <h1 class="build-detail-heading" id="component-title">Component</h1>
 
       <div class="featured-carousel manual-carousel">
         <div class="featured-carousel-window">
-          <div class="featured-carousel-track" id="product-carousel-track"></div>
+          <div class="featured-carousel-track" id="component-carousel-track"></div>
 
           <button class="carousel-arrow carousel-arrow-left" type="button" aria-label="Previous photo">&#10094;</button>
           <button class="carousel-arrow carousel-arrow-right" type="button" aria-label="Next photo">&#10095;</button>
         </div>
 
-        <div class="carousel-thumbnails" id="product-thumbnails"></div>
+        <div class="carousel-thumbnails" id="component-thumbnails"></div>
       </div>
 
       <section class="build-specs-under-carousel">
         <h2 class="build-specs-title">Specifications</h2>
-        <div class="build-specs-list" id="product-specs-list"></div>
+        <div class="build-specs-list" id="component-specs-list"></div>
       </section>
     </section>
 
     <aside class="build-purchase-panel">
       <div class="build-purchase-content">
-        <p class="build-panel-eyebrow" id="product-brand">Graphics Card</p>
+        <p class="build-panel-eyebrow" id="component-eyebrow">Graphics Card</p>
 
-        <div class="build-price" id="product-price"></div>
+        <div class="build-price" id="component-price"></div>
 
         <div class="build-description-block">
-<h3 class="build-description-heading">Who is this for?</h3>
-<div class="build-description" id="product-description">
-  This graphics card is for users who want flagship-level gaming, rendering, AI, creative work, and high-performance workstation power without compromise.
-</div>
+          <h3 class="build-description-heading">Who is this for?</h3>
+          <div class="build-description" id="component-description"></div>
         </div>
 
         <div class="purchase-actions">
@@ -102,6 +100,33 @@
           or
           <a href="mailto:ahmedradwan21@gmail.com">email us</a>.
         </p>
+
+        <section class="build-included-section">
+          <h3 class="build-included-title">What’s included</h3>
+
+          <div class="build-included-list">
+            <div class="build-included-item">
+              <div class="build-included-main">
+                <span class="build-included-check">✓</span>
+                <span>Original product box and accessories</span>
+              </div>
+            </div>
+
+            <div class="build-included-item">
+              <div class="build-included-main">
+                <span class="build-included-check">✓</span>
+                <span>Warranty support guidance</span>
+              </div>
+            </div>
+
+            <div class="build-included-item">
+              <div class="build-included-main">
+                <span class="build-included-check">✓</span>
+                <span>Free lifetime troubleshooting</span>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
     </aside>
   </section>
@@ -116,15 +141,18 @@
 
   let currentImageIndex = 0;
 
-  const carouselTrack = document.getElementById("product-carousel-track");
-  const thumbnailsContainer = document.getElementById("product-thumbnails");
+  const carouselTrack = document.getElementById("component-carousel-track");
+  const thumbnailsContainer = document.getElementById("component-thumbnails");
 
   document.title = product.name + " - The Computer Shop";
-  document.getElementById("product-title").textContent = product.name;
-  document.getElementById("product-brand").textContent = product.brand;
-  document.getElementById("product-price").textContent = product.price;
 
-  document.getElementById("product-specs-list").innerHTML = product.specs
+  document.getElementById("component-title").textContent = product.name;
+  document.getElementById("component-eyebrow").textContent = product.brand;
+  document.getElementById("component-price").textContent = product.price;
+  document.getElementById("component-description").textContent =
+    "This graphics card is for users who want flagship-level gaming, rendering, AI, creative work, and high-performance workstation power without compromise.";
+
+  document.getElementById("component-specs-list").innerHTML = product.specs
     .map((spec) => `<p><span>Spec</span>${spec}</p>`)
     .join("");
 
@@ -172,6 +200,16 @@
   });
 
   renderCarousel();
+
+  document.querySelector(".quantity-minus").addEventListener("click", () => {
+    const input = document.querySelector(".quantity-value");
+    input.value = Math.max(1, Number(input.value) - 1);
+  });
+
+  document.querySelector(".quantity-plus").addEventListener("click", () => {
+    const input = document.querySelector(".quantity-value");
+    input.value = Number(input.value) + 1;
+  });
 
   const menuButton = document.querySelector(".hamburger-toggle");
   const mainMenu = document.querySelector(".nav-menu-main");
