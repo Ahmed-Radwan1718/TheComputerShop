@@ -413,7 +413,7 @@ body.nav-menu-open .nav-menu-overlay {
     transform 0.28s ease;
 }
 
-.nav-menu-panel.active {
+body.nav-menu-open .nav-menu-panel.active {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
