@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Motherboards - The Computer Shop</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<main class="component-page">
+  <section class="component-hero">
+    <div class="component-hero-bg"></div>
+    <div class="component-hero-overlay"></div>
+
+    <div class="component-hero-content">
+      <p class="component-hero-eyebrow">Components</p>
+      <h1>Motherboards</h1>
+      <p>Browse motherboards selected for compatibility, upgrade path, connectivity, and reliable power delivery.</p>
+    </div>
+  </section>
+
+  <section class="signature-layout">
+    <aside class="filters-panel">
+      <div class="filters-heading">Filter Motherboards</div>
+
+      <div class="filter-item">
+        <button class="filter-toggle" type="button"><span>Brand</span><span class="chevron">⌄</span></button>
+        <div class="filter-content">
+          <label><input type="checkbox"> Gigabyte</label>
+          <label><input type="checkbox"> ASUS</label>
+          <label><input type="checkbox"> MSI</label>
+        </div>
+      </div>
+
+      <div class="filter-item">
+        <button class="filter-toggle" type="button"><span>CPU Platform</span><span class="chevron">⌄</span></button>
+        <div class="filter-content">
+          <label><input type="checkbox"> Intel</label>
+          <label><input type="checkbox"> AMD</label>
+        </div>
+      </div>
+
+      <div class="filter-item">
+        <button class="filter-toggle" type="button"><span>Chipset</span><span class="chevron">⌄</span></button>
+        <div class="filter-content">
+          <label><input type="checkbox"> Z890</label>
+          <label><input type="checkbox"> B860</label>
+          <label><input type="checkbox"> X870E</label>
+        </div>
+      </div>
+
+      <div class="filter-item">
+        <button class="filter-toggle" type="button"><span>Form Factor</span><span class="chevron">⌄</span></button>
+        <div class="filter-content">
+          <label><input type="checkbox"> ATX</label>
+          <label><input type="checkbox"> Micro-ATX</label>
+          <label><input type="checkbox"> E-ATX</label>
+        </div>
+      </div>
+    </aside>
+
+    <section class="signature-products">
+      <div class="signature-builds-header">
+        <p class="signature-builds-eyebrow">Available Components</p>
+        <h2>Motherboards</h2>
+      </div>
+
+      <div class="signature-builds-grid"></div>
+    </section>
+  </section>
+</main>
+
+<script>
+  document.querySelectorAll(".filter-toggle").forEach((button) => {
+    button.addEventListener("click", () => {
+      button.closest(".filter-item").classList.toggle("open");
+    });
+  });
+</script>
+
+</body>
+</html>
