@@ -8,16 +8,16 @@
 </head>
 <body>
 
-<button class="hamburger-toggle" type="button" aria-label="Open menu">
-  <span></span>
-  <span></span>
-  <span></span>
-</button>
+  <button class="hamburger-toggle" type="button" aria-label="Open menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
 
-<a href="cart.html" class="nav-cart-link" aria-label="Cart">
-  <img src="cart-icon.png" alt="Cart">
-  <span class="nav-cart-count">0</span>
-</a>
+  <a href="cart.html" class="nav-cart-link" aria-label="Cart">
+    <img src="cart-icon.png" alt="Cart">
+    <span class="nav-cart-count">0</span>
+  </a>
 
   <div class="nav-menu-overlay">
     <div class="nav-menu-panel nav-menu-main active">
@@ -25,6 +25,7 @@
         <a href="index.html" class="nav-menu-link">Home</a>
         <a href="signature-builds.html" class="nav-menu-link">Signature Builds</a>
         <button class="nav-menu-button" type="button" id="open-components-menu">Components</button>
+        <a href="consultation.html" class="nav-menu-link">Need a Custom PC?</a>
       </div>
     </div>
 
@@ -44,77 +45,222 @@
     </div>
   </div>
 
-<main class="component-page">
-  <section class="component-hero">
-    <div class="component-hero-bg"></div>
-    <div class="component-hero-overlay"></div>
+  <main class="component-page" id="graphics-card-list-view">
+    <section class="component-hero">
+      <div class="component-hero-bg"></div>
+      <div class="component-hero-overlay"></div>
 
-    <div class="component-hero-content">
-      <p class="component-hero-eyebrow">Components</p>
-      <h1>Graphics Cards</h1>
-      <p>Browse GPUs selected for gaming, rendering, streaming, and high-performance visual workloads.</p>
-    </div>
-  </section>
-
-  <section class="signature-layout">
-    <aside class="filters-panel">
-      <div class="filters-heading">Filter GPUs</div>
-
-      <div class="filter-item">
-        <button class="filter-toggle" type="button"><span>Brand</span><span class="chevron">⌄</span></button>
-        <div class="filter-content">
-          <label><input type="checkbox"> Gigabyte</label>
-          <label><input type="checkbox"> ASUS</label>
-          <label><input type="checkbox"> MSI</label>
-          <label><input type="checkbox"> Zotac</label>
-        </div>
+      <div class="component-hero-content">
+        <p class="component-hero-eyebrow">Components</p>
+        <h1>Graphics Cards</h1>
+        <p>Browse GPUs selected for gaming, rendering, streaming, and high-performance visual workloads.</p>
       </div>
-
-      <div class="filter-item">
-        <button class="filter-toggle" type="button"><span>GPU Model</span><span class="chevron">⌄</span></button>
-        <div class="filter-content">
-          <label><input type="checkbox"> RTX 5050</label>
-          <label><input type="checkbox"> RTX 5060</label>
-          <label><input type="checkbox"> RTX 5060 Ti</label>
-          <label><input type="checkbox"> RTX 5070</label>
-          <label><input type="checkbox"> RTX 5070 Ti</label>
-          <label><input type="checkbox"> RTX 5080</label>
-          <label><input type="checkbox"> RTX 5090</label>
-        </div>
-      </div>
-
-      <div class="filter-item">
-        <button class="filter-toggle" type="button"><span>VRAM</span><span class="chevron">⌄</span></button>
-        <div class="filter-content">
-          <label><input type="checkbox"> 8GB</label>
-          <label><input type="checkbox"> 12GB</label>
-          <label><input type="checkbox"> 16GB</label>
-          <label><input type="checkbox"> 24GB</label>
-          <label><input type="checkbox"> 32GB</label>
-        </div>
-      </div>
-    </aside>
-
-    <section class="signature-products">
-      <div class="signature-builds-header">
-        <p class="signature-builds-eyebrow">Available Components</p>
-        <h2>Graphics Cards</h2>
-      </div>
-
-      <div class="signature-builds-grid"></div>
     </section>
-  </section>
-</main>
+
+    <section class="signature-layout">
+      <aside class="filters-panel">
+        <div class="filters-heading">Filter GPUs</div>
+
+        <div class="filter-item">
+          <button class="filter-toggle" type="button"><span>Brand</span><span class="chevron">⌄</span></button>
+          <div class="filter-content">
+            <label><input type="checkbox"> Gigabyte</label>
+            <label><input type="checkbox"> ASUS</label>
+            <label><input type="checkbox"> MSI</label>
+            <label><input type="checkbox"> Zotac</label>
+          </div>
+        </div>
+
+        <div class="filter-item">
+          <button class="filter-toggle" type="button"><span>GPU Model</span><span class="chevron">⌄</span></button>
+          <div class="filter-content">
+            <label><input type="checkbox"> RTX 5050</label>
+            <label><input type="checkbox"> RTX 5060</label>
+            <label><input type="checkbox"> RTX 5060 Ti</label>
+            <label><input type="checkbox"> RTX 5070</label>
+            <label><input type="checkbox"> RTX 5070 Ti</label>
+            <label><input type="checkbox"> RTX 5080</label>
+            <label><input type="checkbox"> RTX 5090</label>
+          </div>
+        </div>
+
+        <div class="filter-item">
+          <button class="filter-toggle" type="button"><span>VRAM</span><span class="chevron">⌄</span></button>
+          <div class="filter-content">
+            <label><input type="checkbox"> 8GB</label>
+            <label><input type="checkbox"> 12GB</label>
+            <label><input type="checkbox"> 16GB</label>
+            <label><input type="checkbox"> 24GB</label>
+            <label><input type="checkbox"> 32GB</label>
+          </div>
+        </div>
+      </aside>
+
+      <section class="signature-products">
+        <div class="signature-builds-header">
+          <p class="signature-builds-eyebrow">Available Components</p>
+          <h2>Graphics Cards</h2>
+        </div>
+
+        <div class="signature-builds-grid">
+          <article class="signature-build-card">
+            <a href="graphics-cards.html?product=gigabyte-rtx-5090-aorus-master" class="product-link">
+              <img src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-1.jpeg" alt="AORUS GeForce RTX 5090 MASTER 32G">
+              <h3>AORUS GeForce RTX 5090 MASTER 32G</h3>
+              <p>RTX 5090 | 32GB GDDR7 | 512-bit</p>
+              <div class="signature-build-price">Contact for price</div>
+            </a>
+          </article>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <main class="build-detail-page component-detail-page" id="graphics-card-detail-view" hidden>
+    <section class="build-detail-layout">
+      <section class="build-media-column">
+        <h1 class="build-detail-heading">AORUS GeForce RTX 5090 MASTER 32G</h1>
+
+        <div class="featured-carousel manual-carousel">
+          <div class="featured-carousel-window">
+            <div class="featured-carousel-track" id="product-carousel-track"></div>
+
+            <button class="carousel-arrow carousel-arrow-left" type="button" aria-label="Previous photo">&#10094;</button>
+            <button class="carousel-arrow carousel-arrow-right" type="button" aria-label="Next photo">&#10095;</button>
+          </div>
+
+          <div class="carousel-thumbnails" id="product-thumbnails"></div>
+        </div>
+
+        <section class="build-specs-under-carousel">
+          <h2 class="build-specs-title">Specifications</h2>
+
+          <div class="build-specs-list">
+            <p><span>Model</span> GV-N5090AORUS M-32GD</p>
+            <p><span>GPU</span> GeForce RTX 5090</p>
+            <p><span>Core Clock</span> 2655 MHz</p>
+            <p><span>CUDA Cores</span> 21760</p>
+            <p><span>Memory</span> 32GB GDDR7</p>
+            <p><span>Memory Clock</span> 28 Gbps</p>
+            <p><span>Memory Bus</span> 512-bit</p>
+            <p><span>Card Bus</span> PCI-E 5.0</p>
+            <p><span>Resolution</span> 7680 × 4320</p>
+            <p><span>Card Size</span> 360 × 150 × 75mm</p>
+            <p><span>Recommended PSU</span> 1000W</p>
+            <p><span>Power Connector</span> 16-pin × 1</p>
+            <p><span>Outputs</span> DisplayPort 2.1b × 3 / HDMI 2.1b × 1</p>
+          </div>
+        </section>
+      </section>
+
+      <aside class="build-purchase-panel">
+        <div class="build-purchase-content">
+          <p class="build-panel-eyebrow">Graphics Card</p>
+
+          <div class="build-price">Contact for price</div>
+
+          <div class="build-description-block">
+            <h3 class="build-description-heading">Who is this for?</h3>
+            <div class="build-description">
+              <p>
+                A flagship RTX 5090 graphics card for extreme gaming, rendering, AI workloads, high-resolution creative work, and premium custom builds that need top-tier GPU performance and 32GB of GDDR7 memory.
+              </p>
+            </div>
+          </div>
+
+          <div class="purchase-actions">
+            <div class="purchase-top-row">
+              <div class="quantity-control">
+                <button class="quantity-button quantity-minus" type="button">−</button>
+                <input class="quantity-value" type="number" min="1" value="1">
+                <button class="quantity-button quantity-plus" type="button">+</button>
+              </div>
+
+              <button
+                class="add-to-cart-button"
+                type="button"
+                data-id="gigabyte-rtx-5090-aorus-master"
+                data-name="AORUS GeForce RTX 5090 MASTER 32G"
+                data-price="0"
+                data-image="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-1.jpeg"
+                data-url="graphics-cards.html?product=gigabyte-rtx-5090-aorus-master"
+              >
+                Add to Cart
+              </button>
+            </div>
+
+            <button class="buy-now-button" type="button">Buy Now</button>
+          </div>
+
+          <p class="build-help-line">
+            Need help before ordering?
+            <a href="https://api.whatsapp.com/send/?phone=201010206091&text&type=phone_number&app_absent=0" target="_blank" rel="noopener noreferrer">Message us on WhatsApp</a>
+            or
+            <a href="mailto:ahmedradwan21@gmail.com">email us</a>.
+          </p>
+
+          <section class="build-included-section">
+            <h3 class="build-included-title">What’s included</h3>
+
+            <div class="build-included-list">
+              <div class="build-included-item">
+                <div class="build-included-main">
+                  <span>Original box included</span>
+                </div>
+                <p class="build-included-detail">Keep the original box and accessories for warranty support.</p>
+              </div>
+
+              <div class="build-included-item">
+                <div class="build-included-main">
+                  <span>VGA holder included</span>
+                </div>
+                <p class="build-included-detail">A GPU support holder is included to help support the card inside the system.</p>
+              </div>
+
+              <div class="build-included-item">
+                <div class="build-included-main">
+                  <span>Power adapter included</span>
+                </div>
+                <p class="build-included-detail">Includes a 12V-2x6 to 4x PCIe 8-pin adapter.</p>
+              </div>
+
+              <div class="build-included-item">
+                <div class="build-included-main">
+                  <span>Free troubleshooting</span>
+                </div>
+                <p class="build-included-detail">Free lifetime troubleshooting and diagnosis is included for products bought from our store.</p>
+              </div>
+            </div>
+          </section>
+        </div>
+      </aside>
+    </section>
+  </main>
 
 <script>
-  document.querySelectorAll(".filter-toggle").forEach((button) => {
-    button.addEventListener("click", () => {
-      button.closest(".filter-item").classList.toggle("open");
-    });
-  });
-</script>
+  const productImages = [
+    "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-1.jpeg",
+    "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-2.jpeg",
+    "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-3.jpeg",
+    "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-4.jpeg",
+    "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-5.jpeg",
+    "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-6.jpeg",
+    "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-7.jpeg",
+    "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-8.jpeg",
+    "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-9.jpeg",
+    "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-10.jpeg"
+  ];
 
-<script>
+  const params = new URLSearchParams(window.location.search);
+  const product = params.get("product");
+  const listView = document.getElementById("graphics-card-list-view");
+  const detailView = document.getElementById("graphics-card-detail-view");
+
+  if (product === "gigabyte-rtx-5090-aorus-master") {
+    listView.hidden = true;
+    detailView.hidden = false;
+  }
+
   const menuButton = document.querySelector(".hamburger-toggle");
   const mainMenu = document.querySelector(".nav-menu-main");
   const componentsMenu = document.querySelector(".nav-menu-components");
@@ -138,6 +284,103 @@
       mainMenu.classList.add("active");
     });
   }
+
+  const track = document.getElementById("product-carousel-track");
+  const thumbnails = document.getElementById("product-thumbnails");
+  let currentSlide = 0;
+
+  if (track && thumbnails) {
+    productImages.forEach((image, index) => {
+      track.innerHTML += `
+        <div class="featured-slide">
+          <div class="featured-image-frame">
+            <img src="${image}" alt="AORUS GeForce RTX 5090 MASTER photo ${index + 1}">
+          </div>
+        </div>
+      `;
+
+      thumbnails.innerHTML += `
+        <button class="carousel-thumbnail ${index === 0 ? "active" : ""}" type="button" data-index="${index}">
+          <img src="${image}" alt="Thumbnail ${index + 1}">
+        </button>
+      `;
+    });
+
+    function showSlide(index) {
+      currentSlide = index;
+      track.style.transform = `translateX(-${index * 100}%)`;
+
+      document.querySelectorAll(".carousel-thumbnail").forEach((thumb) => {
+        thumb.classList.toggle("active", Number(thumb.dataset.index) === index);
+      });
+    }
+
+    document.querySelector(".carousel-arrow-left").addEventListener("click", () => {
+      showSlide((currentSlide - 1 + productImages.length) % productImages.length);
+    });
+
+    document.querySelector(".carousel-arrow-right").addEventListener("click", () => {
+      showSlide((currentSlide + 1) % productImages.length);
+    });
+
+    document.querySelectorAll(".carousel-thumbnail").forEach((thumb) => {
+      thumb.addEventListener("click", () => {
+        showSlide(Number(thumb.dataset.index));
+      });
+    });
+  }
+
+  document.querySelectorAll(".filter-toggle").forEach((button) => {
+    button.addEventListener("click", () => {
+      button.closest(".filter-item").classList.toggle("open");
+    });
+  });
+
+  document.querySelectorAll(".build-included-item").forEach((item) => {
+    item.addEventListener("click", () => {
+      item.classList.toggle("open");
+    });
+  });
+
+  document.querySelectorAll(".quantity-control").forEach((control) => {
+    const input = control.querySelector(".quantity-value");
+    const minus = control.querySelector(".quantity-minus");
+    const plus = control.querySelector(".quantity-plus");
+
+    minus.addEventListener("click", () => {
+      input.value = Math.max(1, Number(input.value) - 1);
+    });
+
+    plus.addEventListener("click", () => {
+      input.value = Number(input.value) + 1;
+    });
+  });
+
+  document.querySelector(".add-to-cart-button")?.addEventListener("click", (event) => {
+    const button = event.currentTarget;
+    const quantity = Number(document.querySelector(".quantity-value").value) || 1;
+
+    const cartItem = {
+      id: button.dataset.id,
+      name: button.dataset.name,
+      price: Number(button.dataset.price),
+      image: button.dataset.image,
+      url: button.dataset.url,
+      quantity
+    };
+
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const existing = cart.find((item) => item.id === cartItem.id);
+
+    if (existing) {
+      existing.quantity += quantity;
+    } else {
+      cart.push(cartItem);
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    alert("Added to cart");
+  });
 </script>
 
 </body>
