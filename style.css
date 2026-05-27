@@ -2348,6 +2348,7 @@ body.nav-menu-open {
   object-fit: cover;
   display: block;
   padding: 0;
+  border-radius: 18px;
 }
 
 .product-detail-page {
