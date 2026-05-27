@@ -74,10 +74,10 @@
         <div class="build-price" id="product-price"></div>
 
         <div class="build-description-block">
-          <h3 class="build-description-heading" id="product-model"></h3>
-          <div class="build-description" id="product-description">
-            High-performance graphics card selected for flagship gaming, rendering, and workstation performance.
-          </div>
+<h3 class="build-description-heading">Who is this for?</h3>
+<div class="build-description" id="product-description">
+  This graphics card is for users who want flagship-level gaming, rendering, AI, creative work, and high-performance workstation power without compromise.
+</div>
         </div>
 
         <div class="purchase-actions">
@@ -122,7 +122,6 @@
   document.title = product.name + " - The Computer Shop";
   document.getElementById("product-title").textContent = product.name;
   document.getElementById("product-brand").textContent = product.brand;
-  document.getElementById("product-model").textContent = product.model;
   document.getElementById("product-price").textContent = product.price;
 
   document.getElementById("product-specs-list").innerHTML = product.specs
