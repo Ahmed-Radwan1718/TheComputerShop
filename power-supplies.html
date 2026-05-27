@@ -8,16 +8,16 @@
 </head>
 <body>
 
-<button class="hamburger-toggle" type="button" aria-label="Open menu">
-  <span></span>
-  <span></span>
-  <span></span>
-</button>
+  <button class="hamburger-toggle" type="button" aria-label="Open menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
 
-<a href="cart.html" class="nav-cart-link" aria-label="Cart">
-  <img src="cart-icon.png" alt="Cart">
-  <span class="nav-cart-count">0</span>
-</a>
+  <a href="cart.html" class="nav-cart-link" aria-label="Cart">
+    <img src="cart-icon.png" alt="Cart">
+    <span class="nav-cart-count">0</span>
+  </a>
 
   <div class="nav-menu-overlay">
     <div class="nav-menu-panel nav-menu-main active">
@@ -25,6 +25,7 @@
         <a href="index.html" class="nav-menu-link">Home</a>
         <a href="signature-builds.html" class="nav-menu-link">Signature Builds</a>
         <button class="nav-menu-button" type="button" id="open-components-menu">Components</button>
+        <a href="consultation.html" class="nav-menu-link">Need a Custom PC?</a>
       </div>
     </div>
 
@@ -44,107 +45,309 @@
     </div>
   </div>
 
-<main class="component-page">
-  <section class="component-hero">
-    <div class="component-hero-bg"></div>
-    <div class="component-hero-overlay"></div>
+  <main class="component-page" id="power-supply-list-view">
+    <section class="component-hero">
+      <div class="component-hero-bg"></div>
+      <div class="component-hero-overlay"></div>
 
-    <div class="component-hero-content">
-      <p class="component-hero-eyebrow">Components</p>
-      <h1>Power Supplies</h1>
-      <p>Browse PSUs selected for reliability, wattage headroom, efficiency, and clean cable management.</p>
-    </div>
-  </section>
-
-  <section class="signature-layout">
-    <aside class="filters-panel">
-      <div class="filters-heading">Filter Power Supplies</div>
-
-      <div class="filter-item">
-        <button class="filter-toggle" type="button"><span>Brand</span><span class="chevron">⌄</span></button>
-        <div class="filter-content">
-          <label><input type="checkbox"> Gigabyte</label>
-          <label><input type="checkbox"> ASUS</label>
-          <label><input type="checkbox"> Corsair</label>
-          <label><input type="checkbox"> Seasonic</label>
-          <label><input type="checkbox"> Cooler Master</label>
-        </div>
+      <div class="component-hero-content">
+        <p class="component-hero-eyebrow">Components</p>
+        <h1>Power Supplies</h1>
+        <p>Browse PSUs selected for reliability, wattage headroom, efficiency, and clean cable management.</p>
       </div>
-
-      <div class="filter-item">
-        <button class="filter-toggle" type="button"><span>Wattage</span><span class="chevron">⌄</span></button>
-        <div class="filter-content">
-          <label><input type="checkbox"> 750W</label>
-          <label><input type="checkbox"> 850W</label>
-          <label><input type="checkbox"> 1000W</label>
-          <label><input type="checkbox"> 1200W</label>
-          <label><input type="checkbox"> 1600W</label>
-        </div>
-      </div>
-
-      <div class="filter-item">
-        <button class="filter-toggle" type="button"><span>Efficiency</span><span class="chevron">⌄</span></button>
-        <div class="filter-content">
-          <label><input type="checkbox"> 80 Plus Bronze</label>
-          <label><input type="checkbox"> 80 Plus Gold</label>
-          <label><input type="checkbox"> 80 Plus Platinum</label>
-          <label><input type="checkbox"> 80 Plus Titanium</label>
-        </div>
-      </div>
-
-      <div class="filter-item">
-        <button class="filter-toggle" type="button"><span>Modularity</span><span class="chevron">⌄</span></button>
-        <div class="filter-content">
-          <label><input type="checkbox"> Fully Modular</label>
-          <label><input type="checkbox"> Semi-Modular</label>
-          <label><input type="checkbox"> Non-Modular</label>
-        </div>
-      </div>
-    </aside>
-
-    <section class="signature-products">
-      <div class="signature-builds-header">
-        <p class="signature-builds-eyebrow">Available Components</p>
-        <h2>Power Supplies</h2>
-      </div>
-
-      <div class="signature-builds-grid"></div>
     </section>
-  </section>
-</main>
+
+    <section class="signature-layout">
+      <aside class="filters-panel">
+        <div class="filters-heading">Filter Power Supplies</div>
+
+        <div class="filter-item">
+          <button class="filter-toggle" type="button"><span>Brand</span><span class="chevron">⌄</span></button>
+          <div class="filter-content">
+            <label><input type="checkbox"> Gigabyte</label>
+            <label><input type="checkbox"> ASUS</label>
+            <label><input type="checkbox"> Corsair</label>
+            <label><input type="checkbox"> Seasonic</label>
+            <label><input type="checkbox"> Cooler Master</label>
+          </div>
+        </div>
+
+        <div class="filter-item">
+          <button class="filter-toggle" type="button"><span>Wattage</span><span class="chevron">⌄</span></button>
+          <div class="filter-content">
+            <label><input type="checkbox"> 750W</label>
+            <label><input type="checkbox"> 850W</label>
+            <label><input type="checkbox"> 1000W</label>
+            <label><input type="checkbox"> 1200W</label>
+            <label><input type="checkbox"> 1600W</label>
+          </div>
+        </div>
+
+        <div class="filter-item">
+          <button class="filter-toggle" type="button"><span>Efficiency</span><span class="chevron">⌄</span></button>
+          <div class="filter-content">
+            <label><input type="checkbox"> 80 Plus Bronze</label>
+            <label><input type="checkbox"> 80 Plus Gold</label>
+            <label><input type="checkbox"> 80 Plus Platinum</label>
+            <label><input type="checkbox"> 80 Plus Titanium</label>
+          </div>
+        </div>
+
+        <div class="filter-item">
+          <button class="filter-toggle" type="button"><span>Modularity</span><span class="chevron">⌄</span></button>
+          <div class="filter-content">
+            <label><input type="checkbox"> Fully Modular</label>
+            <label><input type="checkbox"> Semi-Modular</label>
+            <label><input type="checkbox"> Non-Modular</label>
+          </div>
+        </div>
+      </aside>
+
+      <section class="signature-products">
+        <div class="signature-builds-header">
+          <p class="signature-builds-eyebrow">Available Components</p>
+          <h2>Power Supplies</h2>
+        </div>
+
+        <div class="signature-builds-grid">
+          <article class="signature-build-card">
+            <a href="power-supplies.html?product=gigabyte-ud1600pm-pg5" class="product-link">
+              <img src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/gigabyte-ud1600pm-pg5-1.jpeg" alt="Gigabyte UD1600PM PG5">
+              <h3>Gigabyte UD1600PM PG5</h3>
+              <p>1600W | 80 PLUS Platinum | ATX 3.1</p>
+              <div class="signature-build-price">Contact for price</div>
+            </a>
+          </article>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <main class="build-detail-page component-detail-page" id="power-supply-detail-view" hidden>
+    <section class="build-detail-layout">
+      <section class="build-media-column">
+        <h1 class="build-detail-heading">Gigabyte UD1600PM PG5</h1>
+
+        <div class="featured-carousel manual-carousel">
+          <div class="featured-carousel-window">
+            <div class="featured-carousel-track" id="product-carousel-track"></div>
+
+            <button class="carousel-arrow carousel-arrow-left" type="button" aria-label="Previous photo">&#10094;</button>
+            <button class="carousel-arrow carousel-arrow-right" type="button" aria-label="Next photo">&#10095;</button>
+          </div>
+
+          <div class="carousel-thumbnails" id="product-thumbnails"></div>
+        </div>
+
+        <section class="build-specs-under-carousel">
+          <h2 class="build-specs-title">Specifications</h2>
+
+          <div class="build-specs-list">
+            <p><span>Model</span> GP-UD1600PM PG5</p>
+            <p><span>Type</span> Intel Form Factor ATX 12V v3.1</p>
+            <p><span>Output Capacity</span> 1600W</p>
+            <p><span>Efficiency</span> 80 PLUS Platinum, 92% at typical load</p>
+            <p><span>Fan Type</span> 140mm Double Ball Bearing fan</p>
+            <p><span>Dimensions</span> 150 × 190 × 86mm</p>
+            <p><span>Protections</span> OVP / OPP / SCP / UVP / OCP / OTP</p>
+          </div>
+        </section>
+      </section>
+
+      <aside class="build-purchase-panel">
+        <div class="build-purchase-content">
+          <p class="build-panel-eyebrow">Power Supply</p>
+
+          <div class="build-price">Contact for price</div>
+
+          <div class="build-description-block">
+            <h3 class="build-description-heading">Who is this for?</h3>
+            <div class="build-description">
+              <p>
+                A high-capacity 1600W fully modular power supply for extreme gaming, workstation, and flagship GPU builds that need strong power headroom, ATX 3.1 support, PCIe Gen 5.0 readiness, and Platinum-level efficiency.
+              </p>
+            </div>
+          </div>
+
+          <div class="purchase-actions">
+            <div class="purchase-top-row">
+              <div class="quantity-control">
+                <button class="quantity-button quantity-minus" type="button">−</button>
+                <input class="quantity-value" type="number" min="1" value="1">
+                <button class="quantity-button quantity-plus" type="button">+</button>
+              </div>
+
+              <button
+                class="add-to-cart-button"
+                type="button"
+                data-id="gigabyte-ud1600pm-pg5"
+                data-name="Gigabyte UD1600PM PG5"
+                data-price="0"
+                data-image="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/gigabyte-ud1600pm-pg5-1.jpeg"
+                data-url="power-supplies.html?product=gigabyte-ud1600pm-pg5"
+              >
+                Add to Cart
+              </button>
+            </div>
+
+            <button class="buy-now-button" type="button">Buy Now</button>
+          </div>
+
+          <p class="build-help-line">
+            Need help before ordering?
+            <a href="https://api.whatsapp.com/send/?phone=201010206091&text&type=phone_number&app_absent=0" target="_blank" rel="noopener noreferrer">Message us on WhatsApp</a>
+            or
+            <a href="mailto:ahmedradwan21@gmail.com">email us</a>.
+          </p>
+
+          <section class="build-included-section">
+            <h3 class="build-included-title">What’s included</h3>
+
+            <div class="build-included-list">
+              <div class="build-included-item">
+                <div class="build-included-main">
+                  <span>Original box included</span>
+                </div>
+                <p class="build-included-detail">Keep the original box and accessories for warranty support.</p>
+              </div>
+
+              <div class="build-included-item">
+                <div class="build-included-main">
+                  <span>Fully modular cables</span>
+                </div>
+                <p class="build-included-detail">Only use the cables included with this exact PSU.</p>
+              </div>
+
+              <div class="build-included-item">
+                <div class="build-included-main">
+                  <span>Free troubleshooting</span>
+                </div>
+                <p class="build-included-detail">Free lifetime troubleshooting and diagnosis is included for products bought from our store.</p>
+              </div>
+            </div>
+          </section>
+        </div>
+      </aside>
+    </section>
+  </main>
 
 <script>
+  const productImages = [
+    "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/gigabyte-ud1600pm-pg5-1.jpeg",
+    "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/gigabyte-ud1600pm-pg5-2.jpeg",
+    "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/gigabyte-ud1600pm-pg5-3.jpeg",
+    "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/gigabyte-ud1600pm-pg5-4.jpeg",
+    "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/gigabyte-ud1600pm-pg5-5.jpeg",
+    "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/gigabyte-ud1600pm-pg5-6.jpeg",
+    "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/gigabyte-ud1600pm-pg5-7.jpeg"
+  ];
+
+  const params = new URLSearchParams(window.location.search);
+  const product = params.get("product");
+  const listView = document.getElementById("power-supply-list-view");
+  const detailView = document.getElementById("power-supply-detail-view");
+
+  if (product === "gigabyte-ud1600pm-pg5") {
+    listView.hidden = true;
+    detailView.hidden = false;
+  }
+
+  const track = document.getElementById("product-carousel-track");
+  const thumbnails = document.getElementById("product-thumbnails");
+  let currentSlide = 0;
+
+  if (track && thumbnails) {
+    productImages.forEach((image, index) => {
+      track.innerHTML += `
+        <div class="featured-slide">
+          <div class="featured-image-frame">
+            <img src="${image}" alt="Gigabyte UD1600PM PG5 photo ${index + 1}">
+          </div>
+        </div>
+      `;
+
+      thumbnails.innerHTML += `
+        <button class="carousel-thumbnail ${index === 0 ? "active" : ""}" type="button" data-index="${index}">
+          <img src="${image}" alt="Thumbnail ${index + 1}">
+        </button>
+      `;
+    });
+
+    function showSlide(index) {
+      currentSlide = index;
+      track.style.transform = `translateX(-${index * 100}%)`;
+
+      document.querySelectorAll(".carousel-thumbnail").forEach((thumb) => {
+        thumb.classList.toggle("active", Number(thumb.dataset.index) === index);
+      });
+    }
+
+    document.querySelector(".carousel-arrow-left").addEventListener("click", () => {
+      showSlide((currentSlide - 1 + productImages.length) % productImages.length);
+    });
+
+    document.querySelector(".carousel-arrow-right").addEventListener("click", () => {
+      showSlide((currentSlide + 1) % productImages.length);
+    });
+
+    document.querySelectorAll(".carousel-thumbnail").forEach((thumb) => {
+      thumb.addEventListener("click", () => {
+        showSlide(Number(thumb.dataset.index));
+      });
+    });
+  }
+
   document.querySelectorAll(".filter-toggle").forEach((button) => {
     button.addEventListener("click", () => {
       button.closest(".filter-item").classList.toggle("open");
     });
   });
-</script>
 
-<script>
-  const menuButton = document.querySelector(".hamburger-toggle");
-  const mainMenu = document.querySelector(".nav-menu-main");
-  const componentsMenu = document.querySelector(".nav-menu-components");
-  const openComponentsButton = document.getElementById("open-components-menu");
-  const backButton = document.getElementById("back-to-main-menu");
+  document.querySelectorAll(".build-included-item").forEach((item) => {
+    item.addEventListener("click", () => {
+      item.classList.toggle("open");
+    });
+  });
 
-  if (menuButton && mainMenu && componentsMenu && openComponentsButton && backButton) {
-    menuButton.addEventListener("click", () => {
-      document.body.classList.toggle("nav-menu-open");
-      mainMenu.classList.add("active");
-      componentsMenu.classList.remove("active");
+  document.querySelectorAll(".quantity-control").forEach((control) => {
+    const input = control.querySelector(".quantity-value");
+    const minus = control.querySelector(".quantity-minus");
+    const plus = control.querySelector(".quantity-plus");
+
+    minus.addEventListener("click", () => {
+      input.value = Math.max(1, Number(input.value) - 1);
     });
 
-    openComponentsButton.addEventListener("click", () => {
-      mainMenu.classList.remove("active");
-      componentsMenu.classList.add("active");
+    plus.addEventListener("click", () => {
+      input.value = Number(input.value) + 1;
     });
+  });
 
-    backButton.addEventListener("click", () => {
-      componentsMenu.classList.remove("active");
-      mainMenu.classList.add("active");
-    });
-  }
+  document.querySelector(".add-to-cart-button")?.addEventListener("click", (event) => {
+    const button = event.currentTarget;
+    const quantity = Number(document.querySelector(".quantity-value").value) || 1;
+
+    const cartItem = {
+      id: button.dataset.id,
+      name: button.dataset.name,
+      price: Number(button.dataset.price),
+      image: button.dataset.image,
+      url: button.dataset.url,
+      quantity
+    };
+
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const existing = cart.find((item) => item.id === cartItem.id);
+
+    if (existing) {
+      existing.quantity += quantity;
+    } else {
+      cart.push(cartItem);
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    alert("Added to cart");
+  });
 </script>
 
 </body>
