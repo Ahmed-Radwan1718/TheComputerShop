@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CPU Coolers - The Computer Shop</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<main class="component-page">
+  <section class="component-hero">
+    <div class="component-hero-bg"></div>
+    <div class="component-hero-overlay"></div>
+
+    <div class="component-hero-content">
+      <p class="component-hero-eyebrow">Components</p>
+      <h1>CPU Coolers</h1>
+      <p>Browse cooling options selected for thermal performance, noise level, compatibility, and aesthetics.</p>
+    </div>
+  </section>
+
+  <section class="signature-layout">
+    <aside class="filters-panel">
+      <div class="filters-heading">Filter CPU Coolers</div>
+
+      <div class="filter-item">
+        <button class="filter-toggle" type="button"><span>Brand</span><span class="chevron">⌄</span></button>
+        <div class="filter-content">
+          <label><input type="checkbox"> Gigabyte</label>
+          <label><input type="checkbox"> ASUS</label>
+          <label><input type="checkbox"> Corsair</label>
+          <label><input type="checkbox"> Cooler Master</label>
+          <label><input type="checkbox"> NZXT</label>
+        </div>
+      </div>
+
+      <div class="filter-item">
+        <button class="filter-toggle" type="button"><span>Cooler Type</span><span class="chevron">⌄</span></button>
+        <div class="filter-content">
+          <label><input type="checkbox"> AIO Liquid Cooler</label>
+          <label><input type="checkbox"> Air Cooler</label>
+        </div>
+      </div>
+
+      <div class="filter-item">
+        <button class="filter-toggle" type="button"><span>Radiator Size</span><span class="chevron">⌄</span></button>
+        <div class="filter-content">
+          <label><input type="checkbox"> 240mm</label>
+          <label><input type="checkbox"> 280mm</label>
+          <label><input type="checkbox"> 360mm</label>
+          <label><input type="checkbox"> 420mm</label>
+        </div>
+      </div>
+
+      <div class="filter-item">
+        <button class="filter-toggle" type="button"><span>Lighting</span><span class="chevron">⌄</span></button>
+        <div class="filter-content">
+          <label><input type="checkbox"> ARGB</label>
+          <label><input type="checkbox"> RGB</label>
+          <label><input type="checkbox"> Non-RGB</label>
+        </div>
+      </div>
+    </aside>
+
+    <section class="signature-products">
+      <div class="signature-builds-header">
+        <p class="signature-builds-eyebrow">Available Components</p>
+        <h2>CPU Coolers</h2>
+      </div>
+
+      <div class="signature-builds-grid"></div>
+    </section>
+  </section>
+</main>
+
+<script>
+  document.querySelectorAll(".filter-toggle").forEach((button) => {
+    button.addEventListener("click", () => {
+      button.closest(".filter-item").classList.toggle("open");
+    });
+  });
+</script>
+
+</body>
+</html>
