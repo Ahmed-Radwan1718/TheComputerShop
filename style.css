@@ -2690,6 +2690,98 @@ body.nav-menu-open {
   gap: 18px;
 }
 
+.cart-item {
+  display: grid;
+  grid-template-columns: 118px minmax(0, 1fr) auto;
+  gap: 22px;
+  align-items: center;
+  padding: 22px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.105);
+}
+
+.cart-item:last-child {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.105);
+}
+
+.cart-item-image-frame {
+  width: 118px;
+  aspect-ratio: 75 / 56;
+  border-radius: 16px;
+  overflow: hidden;
+  display: block;
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.cart-item-image-frame img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.cart-item-info {
+  min-width: 0;
+}
+
+.cart-item-title,
+.cart-item-title:visited {
+  display: inline-block;
+  margin-bottom: 8px;
+  color: white;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.18;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.cart-item-info p {
+  margin-bottom: 8px;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.55;
+}
+
+.cart-item-info span {
+  color: rgba(255, 255, 255, 0.46);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.cart-item-side {
+  display: grid;
+  gap: 14px;
+  justify-items: end;
+  text-align: right;
+}
+
+.cart-item-side strong {
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.cart-item-remove {
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.48);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.22s ease, opacity 0.22s ease;
+}
+
+.cart-item-remove:hover {
+  color: white;
+}
+
 .cart-empty {
   padding: 38px 0;
   border-top: 1px solid rgba(255, 255, 255, 0.105);
@@ -2847,7 +2939,22 @@ body.nav-menu-open {
     margin-top: 34px;
   }
 
-  .cart-header h1 {
-    font-size: 38px;
-  }
+.cart-header h1 {
+  font-size: 38px;
+}
+
+.cart-item {
+  grid-template-columns: 92px minmax(0, 1fr);
+  gap: 16px;
+}
+
+.cart-item-image-frame {
+  width: 92px;
+}
+
+.cart-item-side {
+  grid-column: 1 / -1;
+  justify-items: start;
+  text-align: left;
+}
 }
