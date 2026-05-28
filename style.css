@@ -1198,8 +1198,8 @@ body.nav-menu-open {
 }
 
 .product-included-box {
-  align-self: end;
-  padding-top: 68px;
+  align-self: start;
+  padding-top: 76px;
 }
 
 .product-included-header {
