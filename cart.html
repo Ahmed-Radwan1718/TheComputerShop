@@ -73,10 +73,10 @@
 
         <div class="cart-summary-total-row">
           <span>Total:</span>
-          <strong id="cart-total">0 EGP</strong>
+          <strong id="cart-total"></strong>
         </div>
 
-        <button class="cart-checkout-button" type="button">
+        <button class="cart-checkout-button" type="button" id="cart-checkout-button">
           Checkout
         </button>
       </aside>
@@ -123,11 +123,184 @@
   </footer>
 
 <script>
+  const CART_STORAGE_KEY = "computerShopCart";
+
   const menuButton = document.querySelector(".hamburger-toggle");
   const mainMenu = document.querySelector(".nav-menu-main");
   const componentsMenu = document.querySelector(".nav-menu-components");
   const openComponentsButton = document.getElementById("open-components-menu");
   const backButton = document.getElementById("back-to-main-menu");
+
+  const cartItemsContainer = document.getElementById("cart-items");
+  const cartEmpty = document.getElementById("cart-empty");
+  const cartSummary = document.getElementById("cart-summary");
+  const cartTotal = document.getElementById("cart-total");
+  const cartCheckoutButton = document.getElementById("cart-checkout-button");
+
+  function escapeHtml(value) {
+    return String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  function getCart() {
+    try {
+      const storedCart = localStorage.getItem(CART_STORAGE_KEY);
+      return storedCart ? JSON.parse(storedCart) : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function saveCart(cart) {
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+    renderCart();
+    updateCartCount();
+  }
+
+  function updateCartCount() {
+    const cart = getCart();
+    const totalQuantity = cart.reduce((sum, item) => sum + Number(item.quantity || 0), 0);
+
+    document.querySelectorAll(".nav-cart-count").forEach((badge) => {
+      badge.textContent = totalQuantity;
+      badge.style.display = totalQuantity > 0 ? "block" : "none";
+    });
+  }
+
+  function parsePrice(price) {
+    if (price === "" || price === null || price === undefined) {
+      return null;
+    }
+
+    const numericPrice = Number(String(price).replace(/[^\d.]/g, ""));
+    return Number.isFinite(numericPrice) ? numericPrice : null;
+  }
+
+  function formatPrice(value) {
+    return `${value.toLocaleString("en-US")} EGP`;
+  }
+
+  function setItemQuantity(productId, quantity) {
+    const cart = getCart();
+
+    if (quantity <= 0) {
+      saveCart(cart.filter((item) => item.id !== productId));
+      return;
+    }
+
+    const item = cart.find((cartItem) => cartItem.id === productId);
+
+    if (item) {
+      item.quantity = quantity;
+      saveCart(cart);
+    }
+  }
+
+  function removeItem(productId) {
+    const cart = getCart();
+    saveCart(cart.filter((item) => item.id !== productId));
+  }
+
+  function renderCart() {
+    const cart = getCart();
+    const hasItems = cart.length > 0;
+
+    cartEmpty.hidden = hasItems;
+    cartSummary.hidden = !hasItems;
+
+    if (!hasItems) {
+      cartItemsContainer.innerHTML = "";
+      cartTotal.textContent = "";
+      return;
+    }
+
+    cartItemsContainer.innerHTML = cart.map((item) => {
+      const itemPrice = parsePrice(item.price);
+      const itemTotal = itemPrice === null ? "" : formatPrice(itemPrice * Number(item.quantity || 1));
+
+      const priceHtml = itemTotal
+        ? `<div class="cart-item-price">${escapeHtml(itemTotal)}</div>`
+        : "";
+
+      return `
+        <article class="cart-item" data-cart-item-id="${escapeHtml(item.id)}">
+          <img
+            class="cart-item-image"
+            src="${escapeHtml(item.image)}"
+            alt="${escapeHtml(item.name)}"
+            width="2400"
+            height="1792"
+            loading="lazy"
+          >
+
+          <div class="cart-item-info">
+            <p class="cart-item-category">${escapeHtml(item.category || "")}</p>
+            <h2>${escapeHtml(item.name)}</h2>
+            <p>${escapeHtml(item.shortSpecs || "")}</p>
+            ${priceHtml}
+          </div>
+
+          <div class="cart-item-controls">
+            <div class="cart-item-quantity">
+              <button class="cart-qty-button" type="button" data-cart-decrease="${escapeHtml(item.id)}">−</button>
+              <span>${escapeHtml(item.quantity || 1)}</span>
+              <button class="cart-qty-button" type="button" data-cart-increase="${escapeHtml(item.id)}">+</button>
+            </div>
+
+            <button class="cart-remove-button" type="button" data-cart-remove="${escapeHtml(item.id)}">
+              Remove
+            </button>
+          </div>
+        </article>
+      `;
+    }).join("");
+
+    let hasPricedItems = false;
+    const total = cart.reduce((sum, item) => {
+      const itemPrice = parsePrice(item.price);
+
+      if (itemPrice === null) {
+        return sum;
+      }
+
+      hasPricedItems = true;
+      return sum + itemPrice * Number(item.quantity || 1);
+    }, 0);
+
+    cartTotal.textContent = hasPricedItems ? formatPrice(total) : "";
+
+    document.querySelectorAll("[data-cart-decrease]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const productId = button.dataset.cartDecrease;
+        const item = getCart().find((cartItem) => cartItem.id === productId);
+
+        if (item) {
+          setItemQuantity(productId, Number(item.quantity || 1) - 1);
+        }
+      });
+    });
+
+    document.querySelectorAll("[data-cart-increase]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const productId = button.dataset.cartIncrease;
+        const item = getCart().find((cartItem) => cartItem.id === productId);
+
+        if (item) {
+          setItemQuantity(productId, Number(item.quantity || 1) + 1);
+        }
+      });
+    });
+
+    document.querySelectorAll("[data-cart-remove]").forEach((button) => {
+      button.addEventListener("click", () => {
+        removeItem(button.dataset.cartRemove);
+      });
+    });
+  }
 
   if (menuButton && mainMenu && componentsMenu && openComponentsButton && backButton) {
     menuButton.addEventListener("click", () => {
@@ -146,6 +319,19 @@
       mainMenu.classList.add("active");
     });
   }
+
+  if (cartCheckoutButton) {
+    cartCheckoutButton.addEventListener("click", () => {
+      if (getCart().length === 0) {
+        return;
+      }
+
+      window.location.href = "consultation.html";
+    });
+  }
+
+  renderCart();
+  updateCartCount();
 </script>
 
 </body>
