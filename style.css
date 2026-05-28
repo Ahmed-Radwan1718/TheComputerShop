@@ -1171,8 +1171,8 @@ body.nav-menu-open {
 
 .product-specifications-inner {
   display: grid;
-  grid-template-columns: minmax(0, 920px) minmax(320px, 380px);
-  gap: 70px;
+  grid-template-columns: minmax(0, 760px) minmax(300px, 360px);
+  gap: 60px;
   align-items: start;
 }
 
