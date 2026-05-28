@@ -1225,8 +1225,7 @@ body.nav-menu-open {
 
 .product-title-block {
   margin-bottom: 28px;
-  padding-left: 18px;
-  border-left: 2px solid rgba(255, 255, 255, 0.22);
+  padding-left: 0;
 }
 
 .product-title-eyebrow,
@@ -1263,8 +1262,6 @@ body.nav-menu-open {
   justify-content: space-between;
   gap: 22px;
   padding: 22px 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.105);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.105);
 }
 
 .product-price-row span {
