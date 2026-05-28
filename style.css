@@ -1268,24 +1268,24 @@ body.nav-menu-open {
 .product-spec-row {
   display: grid;
   grid-template-columns: minmax(180px, 0.42fr) minmax(0, 1fr);
-  gap: 34px;
-  padding: 26px 0;
+  gap: 30px;
+  padding: 20px 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.14);
 }
 
 .product-spec-row span {
   color: rgba(255, 255, 255, 0.38);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 850;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
 }
 
 .product-spec-row strong {
   color: rgba(255, 255, 255, 0.82);
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 400;
-  line-height: 1.6;
+  line-height: 1.45;
 }
 
 .product-purchase-panel {
