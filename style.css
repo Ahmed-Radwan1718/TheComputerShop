@@ -1160,7 +1160,8 @@ body.nav-menu-open {
 .product-specifications-section {
   max-width: 1500px;
   margin: 0 auto;
-  padding: 0 120px 110px 40px;
+  padding: 0 120px 110px 0;
+  transform: translateX(-100px);
 }
 
 .product-specifications-inner {
