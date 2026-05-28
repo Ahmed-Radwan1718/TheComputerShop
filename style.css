@@ -1112,17 +1112,20 @@ body.nav-menu-open {
 
 .product-thumbnail-row {
   margin-top: 18px;
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 12px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  overflow-x: auto;
+  padding-bottom: 4px;
 }
 
 .product-thumbnail {
-  width: 100%;
-  aspect-ratio: 2400 / 1792;
+  width: 68px;
+  height: 52px;
+  flex: 0 0 68px;
   padding: 0;
   border: 1px solid rgba(255, 255, 255, 0.105);
-  border-radius: 14px;
+  border-radius: 10px;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.045);
   cursor: pointer;
@@ -1179,14 +1182,16 @@ body.nav-menu-open {
     border-radius: 22px;
   }
 
-  .product-thumbnail-row {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 8px;
-  }
+.product-thumbnail-row {
+  gap: 7px;
+}
 
-  .product-thumbnail {
-    border-radius: 10px;
-  }
+.product-thumbnail {
+  width: 56px;
+  height: 42px;
+  flex-basis: 56px;
+  border-radius: 9px;
+}
 }
 
 .component-hero {
