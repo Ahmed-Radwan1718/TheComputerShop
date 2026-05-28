@@ -1161,7 +1161,7 @@ body.nav-menu-open {
   max-width: 1500px;
   margin: 0 auto;
   padding: 0 120px 110px 0;
-  transform: translateX(-100px);
+  transform: translateX(-20px);
 }
 
 .product-specifications-inner {
