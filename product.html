@@ -203,6 +203,55 @@
         <strong>4 years with online registration</strong>
       </div>
     </div>
+
+    <aside class="product-included-box">
+      <div class="product-included-header">
+        <p class="product-specifications-eyebrow">Package Details</p>
+        <h2>What's Included</h2>
+      </div>
+
+      <div class="product-included-list">
+        <article class="product-included-item">
+          <button class="product-included-question" type="button">
+            <span>Graphics Card</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="product-included-answer">
+            <p>The AORUS GeForce RTX 5090 MASTER 32G graphics card is included as the main component, inspected and prepared for the build or order.</p>
+          </div>
+        </article>
+
+        <article class="product-included-item">
+          <button class="product-included-question" type="button">
+            <span>Original Packaging</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="product-included-answer">
+            <p>The product comes with its original box and packaging where available. Customers should keep the packaging for warranty and support purposes.</p>
+          </div>
+        </article>
+
+        <article class="product-included-item">
+          <button class="product-included-question" type="button">
+            <span>Required Accessories</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="product-included-answer">
+            <p>Included accessories depend on the manufacturer package contents and may include required adapters, documentation, or support brackets when supplied by Gigabyte.</p>
+          </div>
+        </article>
+
+        <article class="product-included-item">
+          <button class="product-included-question" type="button">
+            <span>Store Support</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="product-included-answer">
+            <p>Purchases include store support, basic guidance, and free lifetime troubleshooting and diagnosis for products bought from The Computer Shop.</p>
+          </div>
+        </article>
+      </div>
+    </aside>
   </div>
 </section>
 </main>
@@ -247,6 +296,13 @@
       });
     });
   }
+
+  document.querySelectorAll(".product-included-question").forEach((button) => {
+    button.addEventListener("click", () => {
+      const item = button.closest(".product-included-item");
+      item.classList.toggle("open");
+    });
+  });
 
   const decreaseQuantityButton = document.getElementById("decrease-quantity");
   const increaseQuantityButton = document.getElementById("increase-quantity");
