@@ -1395,12 +1395,28 @@ body.nav-menu-open {
   transform: translateY(1px);
 }
 
-#product-quantity {
-  min-width: 22px;
+#product-quantity,
+.product-quantity-input {
+  width: 38px;
+  min-width: 38px;
+  border: none;
+  background: transparent;
   color: white;
+  font-family: inherit;
   font-size: 16px;
   font-weight: 700;
   text-align: center;
+  outline: none;
+}
+
+.product-quantity-input::-webkit-outer-spin-button,
+.product-quantity-input::-webkit-inner-spin-button {
+  margin: 0;
+  appearance: none;
+}
+
+.product-quantity-input {
+  appearance: textfield;
 }
 
 .product-button-full {
