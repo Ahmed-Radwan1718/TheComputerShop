@@ -146,7 +146,96 @@
       mainMenu.classList.add("active");
     });
   }
-</script>
 
+  const cartItems = document.getElementById("cart-items");
+  const cartEmpty = document.getElementById("cart-empty");
+  const cartSummary = document.getElementById("cart-summary");
+  const cartTotal = document.getElementById("cart-total");
+
+  function getCart() {
+    return JSON.parse(localStorage.getItem("computerShopCart")) || [];
+  }
+
+  function saveCart(cart) {
+    localStorage.setItem("computerShopCart", JSON.stringify(cart));
+    updateCartCount();
+    renderCart();
+  }
+
+  function updateCartCount() {
+    const cart = getCart();
+    const totalQuantity = cart.reduce((total, item) => total + item.quantity, 0);
+
+    document.querySelectorAll(".nav-cart-count").forEach((count) => {
+      count.textContent = totalQuantity;
+      count.style.display = totalQuantity > 0 ? "block" : "none";
+    });
+  }
+
+  function renderCart() {
+    const cart = getCart();
+
+    if (!cartItems || !cartEmpty || !cartSummary || !cartTotal) {
+      return;
+    }
+
+    cartItems.innerHTML = "";
+
+    if (cart.length === 0) {
+      cartEmpty.style.display = "block";
+      cartSummary.style.display = "none";
+      cartTotal.textContent = "0 EGP";
+      return;
+    }
+
+    cartEmpty.style.display = "none";
+    cartSummary.style.display = "block";
+
+    cart.forEach((item) => {
+      const cartItem = document.createElement("article");
+      cartItem.className = "cart-item";
+
+      cartItem.innerHTML = `
+        <a href="${item.url}" class="cart-item-image-frame">
+          <img src="${item.image}" alt="${item.name}">
+        </a>
+
+        <div class="cart-item-info">
+          <a href="${item.url}" class="cart-item-title">${item.name}</a>
+          <p>${item.specsLine}</p>
+          <span>Quantity: ${item.quantity}</span>
+        </div>
+
+        <div class="cart-item-side">
+          <strong>${item.priceText}</strong>
+          <button class="cart-item-remove" type="button" data-id="${item.id}">
+            Remove
+          </button>
+        </div>
+      `;
+
+      cartItems.appendChild(cartItem);
+    });
+
+    const hasKnownPrices = cart.every((item) => typeof item.priceNumber === "number");
+
+    if (hasKnownPrices) {
+      const total = cart.reduce((sum, item) => sum + item.priceNumber * item.quantity, 0);
+      cartTotal.textContent = `${total.toLocaleString()} EGP`;
+    } else {
+      cartTotal.textContent = "Final price to be confirmed";
+    }
+
+    document.querySelectorAll(".cart-item-remove").forEach((button) => {
+      button.addEventListener("click", () => {
+        const updatedCart = getCart().filter((item) => item.id !== button.dataset.id);
+        saveCart(updatedCart);
+      });
+    });
+  }
+
+  updateCartCount();
+  renderCart();
+</script>
 </body>
 </html>
