@@ -2335,3 +2335,490 @@ body.nav-menu-open {
     font-size: 38px;
   }
 }
+
+/* GPU Product Cards */
+
+.gpu-products-grid {
+  align-items: start;
+}
+
+.gpu-product-card-button {
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.gpu-product-card-image {
+  width: 100%;
+  aspect-ratio: 75 / 56;
+  display: block;
+  object-fit: cover;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.055);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.18);
+  transition:
+    opacity 0.22s ease,
+    transform 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.gpu-product-card-button:hover .gpu-product-card-image {
+  opacity: 0.86;
+  transform: translateY(-2px);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.24);
+}
+
+.gpu-product-card-button h3 {
+  margin-top: 20px;
+  margin-bottom: 8px;
+  color: white;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.18;
+  text-transform: uppercase;
+}
+
+.gpu-product-card-button p {
+  max-width: 95%;
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.65;
+}
+
+/* GPU Product Detail Page */
+
+.gpu-product-detail {
+  background: #2a2b2a;
+  padding: 80px 60px 100px;
+}
+
+.gpu-product-detail-inner {
+  max-width: 1500px;
+  margin: 0 auto;
+}
+
+.gpu-back-button {
+  margin-bottom: 34px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.58);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.22s ease, opacity 0.22s ease;
+}
+
+.gpu-back-button:hover {
+  color: white;
+  opacity: 0.86;
+}
+
+.gpu-product-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(360px, 0.85fr);
+  gap: 70px;
+  align-items: start;
+}
+
+.gpu-gallery {
+  min-width: 0;
+}
+
+.gpu-main-carousel {
+  position: relative;
+  overflow: hidden;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.035);
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.26);
+}
+
+.gpu-main-image {
+  width: 100%;
+  aspect-ratio: 75 / 56;
+  display: block;
+  object-fit: cover;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.gpu-carousel-arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 4;
+  width: 48px;
+  height: 48px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  background: rgba(20, 21, 20, 0.58);
+  color: white;
+  font-family: inherit;
+  font-size: 42px;
+  font-weight: 300;
+  line-height: 40px;
+  cursor: pointer;
+  transform: translateY(-50%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition:
+    background 0.22s ease,
+    opacity 0.22s ease,
+    transform 0.22s ease;
+}
+
+.gpu-carousel-arrow:hover {
+  background: rgba(20, 21, 20, 0.82);
+  opacity: 0.9;
+}
+
+.gpu-carousel-arrow:active {
+  transform: translateY(-50%) scale(0.96);
+}
+
+.gpu-carousel-arrow-left {
+  left: 18px;
+}
+
+.gpu-carousel-arrow-right {
+  right: 18px;
+}
+
+.gpu-thumbnail-row {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.gpu-thumbnail-button {
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 16px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.045);
+  cursor: pointer;
+  opacity: 0.62;
+  transition:
+    opacity 0.22s ease,
+    border-color 0.22s ease,
+    transform 0.22s ease,
+    background 0.22s ease;
+}
+
+.gpu-thumbnail-button img {
+  width: 100%;
+  aspect-ratio: 75 / 56;
+  display: block;
+  object-fit: cover;
+}
+
+.gpu-thumbnail-button:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.gpu-thumbnail-button.active {
+  opacity: 1;
+  border-color: rgba(255, 255, 255, 0.56);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.gpu-product-info {
+  position: sticky;
+  top: 130px;
+  padding-top: 10px;
+}
+
+.gpu-product-eyebrow {
+  margin-bottom: 14px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.gpu-product-info h2 {
+  max-width: 620px;
+  margin-bottom: 20px;
+  color: white;
+  font-size: 46px;
+  font-weight: 700;
+  line-height: 1.06;
+  text-transform: uppercase;
+}
+
+.gpu-product-description {
+  max-width: 580px;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.75;
+}
+
+.gpu-product-price {
+  margin-top: 24px;
+  color: white;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.gpu-product-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 34px;
+}
+
+.gpu-buy-button,
+.gpu-cart-button {
+  min-height: 56px;
+  padding: 0 28px;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background 0.22s ease,
+    opacity 0.22s ease,
+    transform 0.22s ease;
+}
+
+.gpu-buy-button {
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: #d8d7d7;
+  color: #111111;
+}
+
+.gpu-cart-button {
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  background: rgba(255, 255, 255, 0.055);
+  color: white;
+}
+
+.gpu-buy-button:hover {
+  background: #cfcfcf;
+}
+
+.gpu-cart-button:hover {
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.gpu-buy-button:active,
+.gpu-cart-button:active {
+  transform: translateY(1px);
+}
+
+.gpu-quantity-controls {
+  min-height: 56px;
+  display: inline-flex;
+  align-items: center;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.gpu-quantity-controls button {
+  width: 54px;
+  height: 56px;
+  border: none;
+  background: transparent;
+  color: white;
+  font-family: inherit;
+  font-size: 24px;
+  font-weight: 300;
+  cursor: pointer;
+  transition: background 0.22s ease, opacity 0.22s ease;
+}
+
+.gpu-quantity-controls button:hover {
+  background: rgba(255, 255, 255, 0.075);
+}
+
+.gpu-quantity-controls span {
+  min-width: 42px;
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* GPU Specs Table */
+
+.gpu-specs-section {
+  margin-top: 90px;
+}
+
+.gpu-specs-section h2 {
+  margin-bottom: 28px;
+  color: white;
+  font-size: 38px;
+  font-weight: 700;
+  line-height: 1.08;
+  text-transform: uppercase;
+}
+
+.gpu-specs-table-wrapper {
+  overflow: hidden;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.gpu-specs-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.gpu-specs-table tr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.105);
+}
+
+.gpu-specs-table tr:last-child {
+  border-bottom: none;
+}
+
+.gpu-specs-table th,
+.gpu-specs-table td {
+  padding: 22px 0;
+  vertical-align: top;
+  text-align: left;
+}
+
+.gpu-specs-table th {
+  width: 32%;
+  padding-right: 40px;
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  line-height: 1.45;
+  text-transform: uppercase;
+}
+
+.gpu-specs-table td {
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.65;
+}
+
+@media (max-width: 1100px) {
+  .gpu-product-detail {
+    padding: 70px 60px 90px;
+  }
+
+  .gpu-product-layout {
+    grid-template-columns: 1fr;
+    gap: 42px;
+  }
+
+  .gpu-product-info {
+    position: static;
+  }
+
+  .gpu-product-info h2 {
+    max-width: 760px;
+  }
+}
+
+@media (max-width: 700px) {
+  .gpu-product-detail {
+    padding: 56px 25px 70px;
+  }
+
+  .gpu-back-button {
+    margin-bottom: 26px;
+  }
+
+  .gpu-main-carousel {
+    border-radius: 22px;
+  }
+
+  .gpu-carousel-arrow {
+    width: 40px;
+    height: 40px;
+    font-size: 34px;
+    line-height: 32px;
+  }
+
+  .gpu-carousel-arrow-left {
+    left: 12px;
+  }
+
+  .gpu-carousel-arrow-right {
+    right: 12px;
+  }
+
+  .gpu-thumbnail-row {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .gpu-thumbnail-button {
+    border-radius: 11px;
+  }
+
+  .gpu-product-info h2 {
+    font-size: 32px;
+  }
+
+  .gpu-product-description {
+    font-size: 16px;
+  }
+
+  .gpu-product-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .gpu-buy-button,
+  .gpu-cart-button,
+  .gpu-quantity-controls {
+    width: 100%;
+  }
+
+  .gpu-quantity-controls {
+    justify-content: space-between;
+  }
+
+  .gpu-specs-section {
+    margin-top: 64px;
+  }
+
+  .gpu-specs-section h2 {
+    font-size: 30px;
+  }
+
+  .gpu-specs-table th,
+  .gpu-specs-table td {
+    display: block;
+    width: 100%;
+    padding: 0;
+  }
+
+  .gpu-specs-table th {
+    padding-top: 20px;
+    padding-right: 0;
+    font-size: 12px;
+  }
+
+  .gpu-specs-table td {
+    padding-top: 8px;
+    padding-bottom: 20px;
+    font-size: 16px;
+  }
+}
