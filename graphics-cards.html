@@ -175,8 +175,306 @@
   const menuButton = document.querySelector(".hamburger-toggle");
   const mainMenu = document.querySelector(".nav-menu-main");
   const componentsMenu = document.querySelector(".nav-menu-components");
+<script>
+  const GPU_PRODUCTS = [
+    {
+      id: "rtx-5090-aorus-master",
+      name: "AORUS GeForce RTX 5090 MASTER 32G",
+      brand: "Gigabyte",
+      category: "Graphics Card",
+      price: "",
+      priceLabel: "",
+      shortSpecs: "RTX 5090 | 32GB GDDR7 | 512-bit",
+      description: "A flagship AORUS RTX 5090 graphics card built around high-end gaming, rendering, AI workloads, and premium cooling.",
+      imageBase: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-",
+      imageCount: 10,
+      specs: [
+        ["Brand", "Gigabyte"],
+        ["Series", "AORUS"],
+        ["Model", "AORUS GeForce RTX 5090 MASTER 32G"],
+        ["Model Number", "GV-N5090AORUS M-32GD"],
+        ["GPU", "GeForce RTX 5090"],
+        ["Core Clock", "2655 MHz"],
+        ["CUDA Cores", "21760"],
+        ["Memory Size", "32GB"],
+        ["Memory Type", "GDDR7"],
+        ["Memory Bus", "512-bit"],
+        ["Memory Clock", "28 Gbps"],
+        ["Card Bus", "PCI-E 5.0"],
+        ["Maximum Digital Resolution", "7680 × 4320"],
+        ["Multi-view Support", "4 displays"],
+        ["Display Outputs", "3 × DisplayPort 2.1b, 1 × HDMI 2.1b"],
+        ["Recommended PSU", "1000W"],
+        ["Power Connector", "1 × 16-pin"],
+        ["Card Size", "360 × 150 × 75 mm"],
+        ["Features", "WINDFORCE cooling, LCD Edge View, RGB Halo, Dual BIOS"]
+      ]
+    }
+  ];
+
+  const CART_STORAGE_KEY = "computerShopCart";
+
+  const menuButton = document.querySelector(".hamburger-toggle");
+  const mainMenu = document.querySelector(".nav-menu-main");
+  const componentsMenu = document.querySelector(".nav-menu-components");
   const openComponentsButton = document.getElementById("open-components-menu");
   const backButton = document.getElementById("back-to-main-menu");
+
+  const gpuProductsListing = document.getElementById("gpu-products-listing");
+  const gpuProductsGrid = document.getElementById("gpu-products-grid");
+  const gpuProductDetail = document.getElementById("gpu-product-detail");
+  const gpuBackButton = document.getElementById("gpu-back-button");
+
+  const gpuMainImage = document.getElementById("gpu-main-image");
+  const gpuThumbnailRow = document.getElementById("gpu-thumbnail-row");
+  const gpuCarouselPrev = document.getElementById("gpu-carousel-prev");
+  const gpuCarouselNext = document.getElementById("gpu-carousel-next");
+
+  const gpuProductBrand = document.getElementById("gpu-product-brand");
+  const gpuProductTitle = document.getElementById("gpu-product-title");
+  const gpuProductDescription = document.getElementById("gpu-product-description");
+  const gpuProductPrice = document.getElementById("gpu-product-price");
+  const gpuSpecsTableBody = document.getElementById("gpu-specs-table-body");
+
+  const gpuBuyNowButton = document.getElementById("gpu-buy-now-button");
+  const gpuAddToCartButton = document.getElementById("gpu-add-to-cart-button");
+  const gpuQuantityControls = document.getElementById("gpu-quantity-controls");
+  const gpuDecreaseQuantity = document.getElementById("gpu-decrease-quantity");
+  const gpuIncreaseQuantity = document.getElementById("gpu-increase-quantity");
+  const gpuCurrentQuantity = document.getElementById("gpu-current-quantity");
+
+  let activeProduct = null;
+  let activeImageIndex = 0;
+
+  function escapeHtml(value) {
+    return String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  function getProductImages(product) {
+    return Array.from({ length: product.imageCount }, (_, index) => {
+      return `${product.imageBase}${index + 1}.jpeg`;
+    });
+  }
+
+  function getCart() {
+    try {
+      const storedCart = localStorage.getItem(CART_STORAGE_KEY);
+      return storedCart ? JSON.parse(storedCart) : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function saveCart(cart) {
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+    updateCartCount();
+  }
+
+  function getCartQuantity(productId) {
+    const cart = getCart();
+    const item = cart.find((cartItem) => cartItem.id === productId);
+    return item ? item.quantity : 0;
+  }
+
+  function updateCartCount() {
+    const cart = getCart();
+    const totalQuantity = cart.reduce((sum, item) => sum + Number(item.quantity || 0), 0);
+
+    document.querySelectorAll(".nav-cart-count").forEach((badge) => {
+      badge.textContent = totalQuantity;
+      badge.style.display = totalQuantity > 0 ? "block" : "none";
+    });
+  }
+
+  function setCartQuantity(product, quantity) {
+    const cart = getCart();
+    const existingItem = cart.find((cartItem) => cartItem.id === product.id);
+
+    if (quantity <= 0) {
+      const updatedCart = cart.filter((cartItem) => cartItem.id !== product.id);
+      saveCart(updatedCart);
+      updateProductQuantityDisplay(product);
+      return;
+    }
+
+    if (existingItem) {
+      existingItem.quantity = quantity;
+    } else {
+      const images = getProductImages(product);
+
+      cart.push({
+        id: product.id,
+        name: product.name,
+        brand: product.brand,
+        category: product.category,
+        price: product.price,
+        priceLabel: product.priceLabel,
+        image: images[0],
+        shortSpecs: product.shortSpecs,
+        quantity: quantity
+      });
+    }
+
+    saveCart(cart);
+    updateProductQuantityDisplay(product);
+  }
+
+  function updateProductQuantityDisplay(product) {
+    const quantity = getCartQuantity(product.id);
+
+    if (quantity > 0) {
+      gpuAddToCartButton.hidden = true;
+      gpuQuantityControls.hidden = false;
+      gpuCurrentQuantity.textContent = quantity;
+    } else {
+      gpuAddToCartButton.hidden = false;
+      gpuQuantityControls.hidden = true;
+      gpuCurrentQuantity.textContent = "0";
+    }
+  }
+
+  function renderGpuProducts() {
+    if (!gpuProductsGrid) return;
+
+    gpuProductsGrid.innerHTML = GPU_PRODUCTS.map((product) => {
+      const images = getProductImages(product);
+      const priceHtml = product.priceLabel
+        ? `<div class="signature-build-price">${escapeHtml(product.priceLabel)}</div>`
+        : "";
+
+      return `
+        <article class="signature-build-card gpu-product-card">
+          <button class="gpu-product-card-button" type="button" data-product-id="${escapeHtml(product.id)}">
+            <img
+              class="gpu-product-card-image"
+              src="${escapeHtml(images[0])}"
+              alt="${escapeHtml(product.name)}"
+              width="2400"
+              height="1792"
+              loading="lazy"
+            >
+            <h3>${escapeHtml(product.name)}</h3>
+            <p>${escapeHtml(product.shortSpecs)}</p>
+            ${priceHtml}
+          </button>
+        </article>
+      `;
+    }).join("");
+
+    document.querySelectorAll("[data-product-id]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const productId = button.dataset.productId;
+        const product = GPU_PRODUCTS.find((item) => item.id === productId);
+
+        if (product) {
+          showProductDetail(product);
+        }
+      });
+    });
+  }
+
+  function showProductDetail(product) {
+    activeProduct = product;
+    activeImageIndex = 0;
+
+    const images = getProductImages(product);
+
+    gpuProductBrand.textContent = product.brand;
+    gpuProductTitle.textContent = product.name;
+    gpuProductDescription.textContent = product.description;
+
+    if (product.priceLabel) {
+      gpuProductPrice.textContent = product.priceLabel;
+      gpuProductPrice.hidden = false;
+    } else {
+      gpuProductPrice.textContent = "";
+      gpuProductPrice.hidden = true;
+    }
+
+    gpuSpecsTableBody.innerHTML = product.specs.map(([label, value]) => {
+      return `
+        <tr>
+          <th>${escapeHtml(label)}</th>
+          <td>${escapeHtml(value)}</td>
+        </tr>
+      `;
+    }).join("");
+
+    gpuThumbnailRow.innerHTML = images.map((image, index) => {
+      return `
+        <button class="gpu-thumbnail-button${index === 0 ? " active" : ""}" type="button" data-image-index="${index}">
+          <img
+            src="${escapeHtml(image)}"
+            alt="${escapeHtml(product.name)} image ${index + 1}"
+            width="2400"
+            height="1792"
+            loading="lazy"
+          >
+        </button>
+      `;
+    }).join("");
+
+    document.querySelectorAll("[data-image-index]").forEach((button) => {
+      button.addEventListener("click", () => {
+        setActiveImage(Number(button.dataset.imageIndex));
+      });
+    });
+
+    setActiveImage(0);
+    updateProductQuantityDisplay(product);
+
+    gpuProductsListing.hidden = true;
+    gpuProductDetail.hidden = false;
+
+    gpuProductDetail.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }
+
+  function setActiveImage(index) {
+    if (!activeProduct) return;
+
+    const images = getProductImages(activeProduct);
+
+    if (index < 0) {
+      activeImageIndex = images.length - 1;
+    } else if (index >= images.length) {
+      activeImageIndex = 0;
+    } else {
+      activeImageIndex = index;
+    }
+
+    gpuMainImage.src = images[activeImageIndex];
+    gpuMainImage.alt = `${activeProduct.name} image ${activeImageIndex + 1}`;
+
+    document.querySelectorAll(".gpu-thumbnail-button").forEach((button) => {
+      button.classList.toggle("active", Number(button.dataset.imageIndex) === activeImageIndex);
+    });
+  }
+
+  function hideProductDetail() {
+    gpuProductDetail.hidden = true;
+    gpuProductsListing.hidden = false;
+    activeProduct = null;
+    activeImageIndex = 0;
+
+    gpuProductsListing.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }
+
+  document.querySelectorAll(".filter-toggle").forEach((button) => {
+    button.addEventListener("click", () => {
+      button.closest(".filter-item").classList.toggle("open");
+    });
+  });
 
   if (menuButton && mainMenu && componentsMenu && openComponentsButton && backButton) {
     menuButton.addEventListener("click", () => {
@@ -195,6 +493,58 @@
       mainMenu.classList.add("active");
     });
   }
+
+  if (gpuBackButton) {
+    gpuBackButton.addEventListener("click", hideProductDetail);
+  }
+
+  if (gpuCarouselPrev) {
+    gpuCarouselPrev.addEventListener("click", () => {
+      setActiveImage(activeImageIndex - 1);
+    });
+  }
+
+  if (gpuCarouselNext) {
+    gpuCarouselNext.addEventListener("click", () => {
+      setActiveImage(activeImageIndex + 1);
+    });
+  }
+
+  if (gpuAddToCartButton) {
+    gpuAddToCartButton.addEventListener("click", () => {
+      if (activeProduct) {
+        setCartQuantity(activeProduct, 1);
+      }
+    });
+  }
+
+  if (gpuBuyNowButton) {
+    gpuBuyNowButton.addEventListener("click", () => {
+      if (activeProduct) {
+        setCartQuantity(activeProduct, Math.max(getCartQuantity(activeProduct.id), 1));
+        window.location.href = "cart.html";
+      }
+    });
+  }
+
+  if (gpuDecreaseQuantity) {
+    gpuDecreaseQuantity.addEventListener("click", () => {
+      if (activeProduct) {
+        setCartQuantity(activeProduct, getCartQuantity(activeProduct.id) - 1);
+      }
+    });
+  }
+
+  if (gpuIncreaseQuantity) {
+    gpuIncreaseQuantity.addEventListener("click", () => {
+      if (activeProduct) {
+        setCartQuantity(activeProduct, getCartQuantity(activeProduct.id) + 1);
+      }
+    });
+  }
+
+  renderGpuProducts();
+  updateCartCount();
 </script>
 
 </body>
