@@ -1203,44 +1203,36 @@ body.nav-menu-open {
 }
 
 .product-included-header {
-  margin-bottom: 26px;
-}
-
-.product-included-header h2 {
-  color: white;
-  font-size: 31px;
-  font-weight: 700;
-  line-height: 1.08;
-  text-transform: uppercase;
+  margin-bottom: 14px;
 }
 
 .product-included-list {
   display: grid;
-  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  gap: 4px;
 }
 
 .product-included-item {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  border-bottom: none;
 }
 
 .product-included-question {
   width: 100%;
-  padding: 24px 0;
+  padding: 8px 0;
   border: none;
   background: transparent;
   color: white;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 24px;
+  gap: 18px;
   align-items: center;
   text-align: left;
   cursor: pointer;
 }
 
 .product-included-question span:first-child {
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 400;
-  line-height: 1.4;
+  line-height: 1.45;
 }
 
 .product-included-item.open .faq-icon {
@@ -1261,11 +1253,11 @@ body.nav-menu-open {
 }
 
 .product-included-answer p {
-  padding: 0 46px 24px 0;
-  color: rgba(255, 255, 255, 0.68);
-  font-size: 15px;
+  padding: 2px 36px 10px 0;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 14px;
   font-weight: 400;
-  line-height: 1.75;
+  line-height: 1.65;
 }
 
 .product-spec-row {
@@ -1536,16 +1528,12 @@ body.nav-menu-open {
   font-size: 16px;
 }
 
-.product-included-header h2 {
-  font-size: 28px;
-}
-
 .product-included-question {
-  padding: 22px 0;
+  padding: 8px 0;
 }
 
 .product-included-question span:first-child {
-  font-size: 17px;
+  font-size: 15px;
 }
 
 .product-included-answer p {
