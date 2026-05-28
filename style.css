@@ -1158,9 +1158,10 @@ body.nav-menu-open {
 }
 
 .product-specifications-section {
-  max-width: 1500px;
-  margin: 0 auto;
-  padding: 0 120px 110px 80px;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0 120px 110px 60px;
 }
 
 .product-specifications-inner {
