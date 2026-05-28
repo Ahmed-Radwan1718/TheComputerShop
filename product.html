@@ -127,9 +127,9 @@
         Buy Now
       </button>
 
-      <button class="product-button product-button-primary product-button-full" type="button">
-        Add to Cart
-      </button>
+<button class="product-button product-button-primary product-button-full" type="button" id="add-to-cart-button">
+  Add to Cart
+</button>
     </div>
   </div>
 
@@ -284,6 +284,17 @@
 </script>
 
 <script>
+  const productData = {
+    id: "rtx-5090-aorus-master",
+    name: "RTX 5090 AORUS Master",
+    category: "Graphics Card",
+    specsLine: "Gigabyte | RTX 5090 | AORUS Master",
+    priceText: "Insert price here",
+    priceNumber: null,
+    image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-1.jpeg",
+    url: "product.html?product=rtx-5090-aorus-master"
+  };
+
   const productMainImage = document.getElementById("product-main-image");
   const productThumbnails = document.querySelectorAll(".product-thumbnail");
 
@@ -308,10 +319,30 @@
   const decreaseQuantityButton = document.getElementById("decrease-quantity");
   const increaseQuantityButton = document.getElementById("increase-quantity");
   const productQuantity = document.getElementById("product-quantity");
+  const addToCartButton = document.getElementById("add-to-cart-button");
+
+  let quantity = 1;
+
+  function getCart() {
+    return JSON.parse(localStorage.getItem("computerShopCart")) || [];
+  }
+
+  function saveCart(cart) {
+    localStorage.setItem("computerShopCart", JSON.stringify(cart));
+    updateCartCount();
+  }
+
+  function updateCartCount() {
+    const cart = getCart();
+    const totalQuantity = cart.reduce((total, item) => total + item.quantity, 0);
+
+    document.querySelectorAll(".nav-cart-count").forEach((count) => {
+      count.textContent = totalQuantity;
+      count.style.display = totalQuantity > 0 ? "block" : "none";
+    });
+  }
 
   if (decreaseQuantityButton && increaseQuantityButton && productQuantity) {
-    let quantity = 1;
-
     decreaseQuantityButton.addEventListener("click", () => {
       if (quantity > 1) {
         quantity -= 1;
@@ -324,6 +355,32 @@
       productQuantity.textContent = quantity;
     });
   }
+
+  if (addToCartButton) {
+    addToCartButton.addEventListener("click", () => {
+      const cart = getCart();
+      const existingItem = cart.find((item) => item.id === productData.id);
+
+      if (existingItem) {
+        existingItem.quantity += quantity;
+      } else {
+        cart.push({
+          ...productData,
+          quantity: quantity
+        });
+      }
+
+      saveCart(cart);
+
+      addToCartButton.textContent = "Added to Cart";
+
+      setTimeout(() => {
+        addToCartButton.textContent = "Add to Cart";
+      }, 1400);
+    });
+  }
+
+  updateCartCount();
 </script>
 
 </body>
