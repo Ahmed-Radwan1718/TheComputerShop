@@ -8,6 +8,10 @@
 </head>
 <body>
 
+<div class="cart-transition-overlay" aria-hidden="true">
+  <div class="cart-loading-spinner"></div>
+</div>
+
 <button class="hamburger-toggle" type="button" aria-label="Open menu">
   <span></span>
   <span></span>
@@ -319,7 +323,8 @@
   const decreaseQuantityButton = document.getElementById("decrease-quantity");
   const increaseQuantityButton = document.getElementById("increase-quantity");
   const productQuantity = document.getElementById("product-quantity");
-  const addToCartButton = document.getElementById("add-to-cart-button");
+const addToCartButton = document.getElementById("add-to-cart-button");
+const cartTransitionOverlay = document.querySelector(".cart-transition-overlay");
 
   let quantity = 1;
 
@@ -356,8 +361,15 @@
     });
   }
 
-  if (addToCartButton) {
-    addToCartButton.addEventListener("click", () => {
+if (addToCartButton) {
+  addToCartButton.addEventListener("click", () => {
+    if (cartTransitionOverlay) {
+      cartTransitionOverlay.classList.add("active");
+    }
+
+    addToCartButton.disabled = true;
+
+    setTimeout(() => {
       const cart = getCart();
       const existingItem = cart.find((item) => item.id === productData.id);
 
@@ -372,13 +384,19 @@
 
       saveCart(cart);
 
+      if (cartTransitionOverlay) {
+        cartTransitionOverlay.classList.remove("active");
+      }
+
       addToCartButton.textContent = "Added to Cart";
 
       setTimeout(() => {
         addToCartButton.textContent = "Add to Cart";
-      }, 1400);
-    });
-  }
+        addToCartButton.disabled = false;
+      }, 1200);
+    }, 700);
+  });
+}
 
   updateCartCount();
 </script>
