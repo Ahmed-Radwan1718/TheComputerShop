@@ -123,7 +123,15 @@
     <div class="product-action-grid">
       <div class="product-quantity-box">
         <button class="quantity-button" type="button" id="decrease-quantity">−</button>
-        <span id="product-quantity">1</span>
+<input
+  id="product-quantity"
+  class="product-quantity-input"
+  type="text"
+  inputmode="numeric"
+  pattern="[0-9]*"
+  value="1"
+  aria-label="Product quantity"
+>
         <button class="quantity-button" type="button" id="increase-quantity">+</button>
       </div>
 
@@ -320,13 +328,31 @@
     });
   });
 
-  const decreaseQuantityButton = document.getElementById("decrease-quantity");
-  const increaseQuantityButton = document.getElementById("increase-quantity");
-  const productQuantity = document.getElementById("product-quantity");
+const decreaseQuantityButton = document.getElementById("decrease-quantity");
+const increaseQuantityButton = document.getElementById("increase-quantity");
+const productQuantity = document.getElementById("product-quantity");
 const addToCartButton = document.getElementById("add-to-cart-button");
 const cartTransitionOverlay = document.querySelector(".cart-transition-overlay");
 
-  let quantity = 1;
+let quantity = 1;
+
+function syncQuantityInput() {
+  if (productQuantity) {
+    productQuantity.value = quantity;
+  }
+}
+
+function setQuantityFromInput() {
+  if (!productQuantity) {
+    return;
+  }
+
+  const cleanedValue = productQuantity.value.replace(/\D/g, "");
+  const numericValue = Number(cleanedValue);
+
+  quantity = numericValue >= 1 ? numericValue : 1;
+  syncQuantityInput();
+}
 
   function getCart() {
     return JSON.parse(localStorage.getItem("computerShopCart")) || [];
@@ -347,19 +373,35 @@ const cartTransitionOverlay = document.querySelector(".cart-transition-overlay")
     });
   }
 
-  if (decreaseQuantityButton && increaseQuantityButton && productQuantity) {
-    decreaseQuantityButton.addEventListener("click", () => {
-      if (quantity > 1) {
-        quantity -= 1;
-        productQuantity.textContent = quantity;
-      }
-    });
+if (decreaseQuantityButton && increaseQuantityButton && productQuantity) {
+  decreaseQuantityButton.addEventListener("click", () => {
+    if (quantity > 1) {
+      quantity -= 1;
+      syncQuantityInput();
+    }
+  });
 
-    increaseQuantityButton.addEventListener("click", () => {
-      quantity += 1;
-      productQuantity.textContent = quantity;
-    });
-  }
+  increaseQuantityButton.addEventListener("click", () => {
+    quantity += 1;
+    syncQuantityInput();
+  });
+
+  productQuantity.addEventListener("input", () => {
+    productQuantity.value = productQuantity.value.replace(/\D/g, "");
+  });
+
+  productQuantity.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      setQuantityFromInput();
+      productQuantity.blur();
+    }
+  });
+
+  productQuantity.addEventListener("blur", () => {
+    setQuantityFromInput();
+  });
+}
 
 if (addToCartButton) {
   addToCartButton.addEventListener("click", () => {
