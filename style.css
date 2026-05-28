@@ -2366,53 +2366,75 @@ body.nav-menu-open {
 }
 
 .gpu-product-inner {
-  max-width: 1400px;
+  max-width: 1180px;
   margin: 0 auto;
 }
 
-.gpu-back-link,
-.gpu-back-link:visited {
-  display: inline-flex;
-  margin-bottom: 36px;
-  color: rgba(255, 255, 255, 0.64);
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  text-decoration: none;
-  transition: color 0.22s ease;
-}
-
-.gpu-back-link:hover {
-  color: white;
-}
-
-.gpu-product-header {
+.gpu-product-inner h1 {
   margin-bottom: 38px;
-}
-
-.gpu-product-header h1 {
-  max-width: 900px;
   color: white;
   font-size: 52px;
   font-weight: 700;
   line-height: 1.06;
+  text-align: center;
   text-transform: uppercase;
 }
 
-.gpu-gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 22px;
+.gpu-carousel {
+  position: relative;
+  width: 100%;
 }
 
-.gpu-gallery-grid img {
+.gpu-carousel-window {
   width: 100%;
-  border-radius: 22px;
+  overflow: hidden;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.26);
+}
+
+.gpu-carousel-track {
+  display: flex;
+  width: 100%;
+  transition: transform 0.32s ease;
+}
+
+.gpu-carousel-track img {
+  width: 100%;
+  min-width: 100%;
   display: block;
-  object-fit: cover;
-  background: rgba(255, 255, 255, 0.055);
-  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.2);
+  object-fit: contain;
+  background: #202120;
+}
+
+.gpu-carousel-button {
+  position: absolute;
+  top: 50%;
+  z-index: 5;
+  width: 52px;
+  height: 52px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.38);
+  color: white;
+  font-size: 42px;
+  font-weight: 200;
+  line-height: 1;
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: background 0.22s ease, opacity 0.22s ease;
+}
+
+.gpu-carousel-button:hover {
+  background: rgba(0, 0, 0, 0.62);
+}
+
+.gpu-carousel-prev {
+  left: 22px;
+}
+
+.gpu-carousel-next {
+  right: 22px;
 }
 
 @media (max-width: 900px) {
@@ -2420,11 +2442,26 @@ body.nav-menu-open {
     padding: 120px 25px 70px;
   }
 
-  .gpu-product-header h1 {
-    font-size: 36px;
+  .gpu-product-inner h1 {
+    font-size: 34px;
+    text-align: left;
   }
 
-  .gpu-gallery-grid {
-    grid-template-columns: 1fr;
+  .gpu-carousel-window {
+    border-radius: 22px;
+  }
+
+  .gpu-carousel-button {
+    width: 44px;
+    height: 44px;
+    font-size: 34px;
+  }
+
+  .gpu-carousel-prev {
+    left: 12px;
+  }
+
+  .gpu-carousel-next {
+    right: 12px;
   }
 }
