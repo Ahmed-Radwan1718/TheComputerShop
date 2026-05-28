@@ -1218,6 +1218,10 @@ body.nav-menu-open {
 }
 
 .product-included-item {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.105);
+}
+
+.product-included-item:last-child {
   border-bottom: none;
 }
 
