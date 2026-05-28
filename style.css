@@ -1160,17 +1160,17 @@ body.nav-menu-open {
 .product-purchase-panel {
   position: sticky;
   top: 140px;
-  padding: 34px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 28px;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.022)),
-    rgba(255, 255, 255, 0.025);
-  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.2);
+  padding-top: 86px;
 }
 
-.product-purchase-eyebrow {
-  margin-bottom: 14px;
+.product-title-block {
+  margin-bottom: 28px;
+  padding-left: 18px;
+  border-left: 2px solid rgba(255, 255, 255, 0.22);
+}
+
+.product-title-eyebrow {
+  margin-bottom: 12px;
   color: rgba(255, 255, 255, 0.52);
   font-size: 13px;
   font-weight: 700;
@@ -1178,13 +1178,13 @@ body.nav-menu-open {
   text-transform: uppercase;
 }
 
-.product-purchase-panel h1 {
-  margin-bottom: 18px;
+.product-title-block h1 {
+  max-width: 820px;
   color: white;
-  font-size: 38px;
+  font-size: 46px;
   font-weight: 700;
-  line-height: 1.06;
-  letter-spacing: -0.02em;
+  line-height: 1.04;
+  letter-spacing: -0.025em;
   text-transform: uppercase;
 }
 
@@ -1372,12 +1372,16 @@ body.nav-menu-open {
 }
 
 .product-purchase-panel {
-  padding: 24px;
-  border-radius: 24px;
+  padding-top: 0;
 }
 
-.product-purchase-panel h1 {
-  font-size: 30px;
+.product-title-block {
+  margin-bottom: 22px;
+  padding-left: 14px;
+}
+
+.product-title-block h1 {
+  font-size: 32px;
 }
 
 .product-quantity-control {
