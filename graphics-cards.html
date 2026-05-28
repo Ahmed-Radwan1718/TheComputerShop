@@ -63,10 +63,10 @@
       <div class="filter-item">
         <button class="filter-toggle" type="button"><span>Brand</span><span class="chevron">⌄</span></button>
         <div class="filter-content">
-          <label><input type="checkbox"> Gigabyte</label>
-          <label><input type="checkbox"> ASUS</label>
-          <label><input type="checkbox"> MSI</label>
-          <label><input type="checkbox"> Zotac</label>
+          <label><input type="checkbox" data-filter-type="brand" value="Gigabyte"> Gigabyte</label>
+          <label><input type="checkbox" data-filter-type="brand" value="ASUS"> ASUS</label>
+          <label><input type="checkbox" data-filter-type="brand" value="MSI"> MSI</label>
+          <label><input type="checkbox" data-filter-type="brand" value="Zotac"> Zotac</label>
         </div>
       </div>
 
@@ -185,6 +185,11 @@
       price: "",
       priceLabel: "",
       shortSpecs: "RTX 5090 | 32GB GDDR7 | 512-bit",
+      filters: {
+        brand: "Gigabyte",
+        model: "RTX 5090",
+        vram: "32GB"
+      },
       description: "A flagship AORUS RTX 5090 graphics card built around high-end gaming, rendering, AI workloads, and premium cooling.",
       imageBase: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-",
       imageCount: 10,
