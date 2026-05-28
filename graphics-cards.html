@@ -56,7 +56,7 @@
     </div>
   </section>
 
-  <section class="signature-layout">
+  <section class="signature-layout" id="gpu-products-listing">
     <aside class="filters-panel">
       <div class="filters-heading">Filter GPUs</div>
 
@@ -101,8 +101,65 @@
         <h2>Graphics Cards</h2>
       </div>
 
-      <div class="signature-builds-grid"></div>
+      <div class="signature-builds-grid gpu-products-grid" id="gpu-products-grid"></div>
     </section>
+  </section>
+
+  <section class="gpu-product-detail" id="gpu-product-detail" hidden>
+    <div class="gpu-product-detail-inner">
+      <button class="gpu-back-button" type="button" id="gpu-back-button">Back to Graphics Cards</button>
+
+      <div class="gpu-product-layout">
+        <div class="gpu-gallery">
+          <div class="gpu-main-carousel">
+            <button class="gpu-carousel-arrow gpu-carousel-arrow-left" type="button" id="gpu-carousel-prev" aria-label="Previous image">‹</button>
+
+            <img
+              id="gpu-main-image"
+              class="gpu-main-image"
+              src=""
+              alt=""
+              width="2400"
+              height="1792"
+            >
+
+            <button class="gpu-carousel-arrow gpu-carousel-arrow-right" type="button" id="gpu-carousel-next" aria-label="Next image">›</button>
+          </div>
+
+          <div class="gpu-thumbnail-row" id="gpu-thumbnail-row"></div>
+        </div>
+
+        <div class="gpu-product-info">
+          <p class="gpu-product-eyebrow" id="gpu-product-brand"></p>
+          <h2 id="gpu-product-title"></h2>
+          <p class="gpu-product-description" id="gpu-product-description"></p>
+
+          <div class="gpu-product-price" id="gpu-product-price" hidden></div>
+
+          <div class="gpu-product-actions">
+            <button class="gpu-buy-button" type="button" id="gpu-buy-now-button">Buy Now</button>
+            <button class="gpu-cart-button" type="button" id="gpu-add-to-cart-button">Add to Cart</button>
+
+            <div class="gpu-quantity-controls" id="gpu-quantity-controls" hidden>
+              <button type="button" id="gpu-decrease-quantity" aria-label="Decrease quantity">−</button>
+              <span id="gpu-current-quantity">1</span>
+              <button type="button" id="gpu-increase-quantity" aria-label="Increase quantity">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="gpu-specs-section">
+        <p class="signature-builds-eyebrow">Product Specifications</p>
+        <h2>Specs</h2>
+
+        <div class="gpu-specs-table-wrapper">
+          <table class="gpu-specs-table">
+            <tbody id="gpu-specs-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </section>
 </main>
 
