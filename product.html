@@ -296,16 +296,193 @@
 </script>
 
 <script>
-  const productData = {
-    id: "rtx-5090-aorus-master",
-    name: "RTX 5090 AORUS Master",
-    category: "Graphics Card",
-    specsLine: "Gigabyte | RTX 5090 | AORUS Master",
-    priceText: "Insert price here",
-    priceNumber: null,
-    image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-1.jpeg",
-    url: "product.html?product=rtx-5090-aorus-master"
+  const products = {
+    "rtx-5090-aorus-master": {
+      id: "rtx-5090-aorus-master",
+      name: "RTX 5090 AORUS Master",
+      category: "Graphics Card",
+      specsLine: "Gigabyte | RTX 5090 | AORUS Master",
+      priceText: "Insert price here",
+      priceNumber: null,
+      url: "product.html?product=rtx-5090-aorus-master",
+      images: Array.from({ length: 10 }, (_, index) => {
+        const imageNumber = index + 1;
+        return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-${imageNumber}.jpeg`;
+      }),
+      whoIsThisFor: "Flagship graphics performance for extreme gaming, high-end rendering, AI workloads, and uncompromised creator systems.",
+      specs: [
+        ["Product Name", "AORUS GeForce RTX 5090 MASTER 32G"],
+        ["Graphics Processing", "GeForce RTX 5090"],
+        ["CUDA Cores", "21,760"],
+        ["Memory Size", "32GB"],
+        ["Memory Type", "GDDR7"],
+        ["Memory Bus", "512-bit"],
+        ["Memory Clock", "28Gbps"],
+        ["Card Bus", "PCIe 5.0"],
+        ["Cooling", "WINDFORCE cooling system"],
+        ["Display Features", "LCD Edge View, RGB Halo"],
+        ["BIOS", "Dual BIOS: Performance / Silent"],
+        ["Warranty", "4 years with online registration"]
+      ],
+      included: [
+        {
+          title: "Graphics Card",
+          text: "The AORUS GeForce RTX 5090 MASTER 32G graphics card is included as the main component, inspected and prepared for the build or order."
+        },
+        {
+          title: "Original Packaging",
+          text: "The product comes with its original box and packaging where available. Customers should keep the packaging for warranty and support purposes."
+        },
+        {
+          title: "Required Accessories",
+          text: "Included accessories depend on the manufacturer package contents and may include required adapters, documentation, or support brackets when supplied by Gigabyte."
+        },
+        {
+          title: "Store Support",
+          text: "Purchases include store support, basic guidance, and free lifetime troubleshooting and diagnosis for products bought from The Computer Shop."
+        }
+      ]
+    },
+
+    "rtx-5060-ti-aorus-elite": {
+      id: "rtx-5060-ti-aorus-elite",
+      name: "RTX 5060 Ti AORUS Elite 16G",
+      category: "Graphics Card",
+      specsLine: "Gigabyte | RTX 5060 Ti | AORUS Elite 16G",
+      priceText: "Insert price here",
+      priceNumber: null,
+      url: "product.html?product=rtx-5060-ti-aorus-elite",
+      images: Array.from({ length: 10 }, (_, index) => {
+        const imageNumber = index + 1;
+        return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5060-ti-aorus-elite-${imageNumber}.jpeg`;
+      }),
+      whoIsThisFor: "A strong choice for high-quality 1080p and 1440p gaming, smooth everyday performance, streaming, and creator workloads that benefit from modern NVIDIA features and 16GB of VRAM.",
+      specs: [
+        ["Product Name", "AORUS GeForce RTX 5060 Ti ELITE 16G"],
+        ["Graphics Processing", "GeForce RTX 5060 Ti"],
+        ["Core Clock", "2722 MHz"],
+        ["CUDA Cores", "4,608"],
+        ["Memory Size", "16GB"],
+        ["Memory Type", "GDDR7"],
+        ["Memory Bus", "128-bit"],
+        ["Memory Clock", "28Gbps"],
+        ["Card Bus", "PCIe 5.0"],
+        ["Digital Max Resolution", "7680 × 4320"],
+        ["Card Size", "L=329 W=128 H=41 mm"],
+        ["Recommended PSU", "650W"],
+        ["Power Connector", "8-pin × 1"],
+        ["Outputs", "DisplayPort 2.1b × 3, HDMI 2.1b × 1"]
+      ],
+      included: [
+        {
+          title: "Graphics Card",
+          text: "The AORUS GeForce RTX 5060 Ti ELITE 16G graphics card is included as the main component, inspected and prepared for the build or order."
+        },
+        {
+          title: "Original Packaging",
+          text: "The product comes with its original box and packaging where available. Customers should keep the packaging for warranty and support purposes."
+        },
+        {
+          title: "Included Accessories",
+          text: "The official package contents list a quick guide, warranty registration, and AORUS metal sticker."
+        },
+        {
+          title: "Store Support",
+          text: "Purchases include store support, basic guidance, and free lifetime troubleshooting and diagnosis for products bought from The Computer Shop."
+        }
+      ]
+    }
   };
+
+  const productKey = new URLSearchParams(window.location.search).get("product") || "rtx-5090-aorus-master";
+  const currentProduct = products[productKey] || products["rtx-5090-aorus-master"];
+
+  let productData = {
+    id: currentProduct.id,
+    name: currentProduct.name,
+    category: currentProduct.category,
+    specsLine: currentProduct.specsLine,
+    priceText: currentProduct.priceText,
+    priceNumber: currentProduct.priceNumber,
+    image: currentProduct.images[0],
+    url: currentProduct.url
+  };
+
+  function renderProductPage(product) {
+    document.title = `${product.name} - The Computer Shop`;
+
+    const productTitle = document.querySelector(".product-title-block h1");
+    const productCategory = document.querySelector(".product-title-eyebrow");
+    const productSubtitle = document.querySelector(".product-purchase-subtitle");
+    const productPrice = document.querySelector(".product-price-row strong");
+    const productMainImage = document.getElementById("product-main-image");
+    const thumbnailRow = document.querySelector(".product-thumbnail-row");
+    const specificationsTable = document.querySelector(".product-specifications-table");
+    const includedList = document.querySelector(".product-included-list");
+
+    if (productTitle) {
+      productTitle.textContent = product.name;
+    }
+
+    if (productCategory) {
+      productCategory.textContent = product.category;
+    }
+
+    if (productSubtitle) {
+      productSubtitle.textContent = product.whoIsThisFor;
+    }
+
+    if (productPrice) {
+      productPrice.textContent = product.priceText;
+    }
+
+    if (productMainImage) {
+      productMainImage.src = product.images[0];
+      productMainImage.alt = product.name;
+    }
+
+    if (thumbnailRow) {
+      thumbnailRow.innerHTML = product.images.map((image, index) => {
+        const imageNumber = index + 1;
+        const activeClass = index === 0 ? " active" : "";
+
+        return `
+          <button class="product-thumbnail${activeClass}" type="button" data-image="${image}">
+            <img src="${image}" alt="${product.name} thumbnail ${imageNumber}">
+          </button>
+        `;
+      }).join("");
+    }
+
+    if (specificationsTable) {
+      specificationsTable.innerHTML = product.specs.map((spec) => {
+        return `
+          <div class="product-spec-row">
+            <span>${spec[0]}</span>
+            <strong>${spec[1]}</strong>
+          </div>
+        `;
+      }).join("");
+    }
+
+    if (includedList) {
+      includedList.innerHTML = product.included.map((item) => {
+        return `
+          <article class="product-included-item">
+            <button class="product-included-question" type="button">
+              <span>${item.title}</span>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="product-included-answer">
+              <p>${item.text}</p>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+  }
+
+  renderProductPage(currentProduct);
 
   const productMainImage = document.getElementById("product-main-image");
   const productThumbnails = document.querySelectorAll(".product-thumbnail");
@@ -328,31 +505,31 @@
     });
   });
 
-const decreaseQuantityButton = document.getElementById("decrease-quantity");
-const increaseQuantityButton = document.getElementById("increase-quantity");
-const productQuantity = document.getElementById("product-quantity");
-const addToCartButton = document.getElementById("add-to-cart-button");
-const cartTransitionOverlay = document.querySelector(".cart-transition-overlay");
+  const decreaseQuantityButton = document.getElementById("decrease-quantity");
+  const increaseQuantityButton = document.getElementById("increase-quantity");
+  const productQuantity = document.getElementById("product-quantity");
+  const addToCartButton = document.getElementById("add-to-cart-button");
+  const cartTransitionOverlay = document.querySelector(".cart-transition-overlay");
 
-let quantity = 1;
+  let quantity = 1;
 
-function syncQuantityInput() {
-  if (productQuantity) {
-    productQuantity.value = quantity;
-  }
-}
-
-function setQuantityFromInput() {
-  if (!productQuantity) {
-    return;
+  function syncQuantityInput() {
+    if (productQuantity) {
+      productQuantity.value = quantity;
+    }
   }
 
-  const cleanedValue = productQuantity.value.replace(/\D/g, "");
-  const numericValue = Number(cleanedValue);
+  function setQuantityFromInput() {
+    if (!productQuantity) {
+      return;
+    }
 
-  quantity = numericValue >= 1 ? numericValue : 1;
-  syncQuantityInput();
-}
+    const cleanedValue = productQuantity.value.replace(/\D/g, "");
+    const numericValue = Number(cleanedValue);
+
+    quantity = numericValue >= 1 ? numericValue : 1;
+    syncQuantityInput();
+  }
 
   function getCart() {
     return JSON.parse(localStorage.getItem("computerShopCart")) || [];
@@ -373,72 +550,72 @@ function setQuantityFromInput() {
     });
   }
 
-if (decreaseQuantityButton && increaseQuantityButton && productQuantity) {
-  decreaseQuantityButton.addEventListener("click", () => {
-    if (quantity > 1) {
-      quantity -= 1;
+  if (decreaseQuantityButton && increaseQuantityButton && productQuantity) {
+    decreaseQuantityButton.addEventListener("click", () => {
+      if (quantity > 1) {
+        quantity -= 1;
+        syncQuantityInput();
+      }
+    });
+
+    increaseQuantityButton.addEventListener("click", () => {
+      quantity += 1;
       syncQuantityInput();
-    }
-  });
+    });
 
-  increaseQuantityButton.addEventListener("click", () => {
-    quantity += 1;
-    syncQuantityInput();
-  });
+    productQuantity.addEventListener("input", () => {
+      productQuantity.value = productQuantity.value.replace(/\D/g, "");
+    });
 
-  productQuantity.addEventListener("input", () => {
-    productQuantity.value = productQuantity.value.replace(/\D/g, "");
-  });
+    productQuantity.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        setQuantityFromInput();
+        productQuantity.blur();
+      }
+    });
 
-  productQuantity.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") {
-      event.preventDefault();
+    productQuantity.addEventListener("blur", () => {
       setQuantityFromInput();
-      productQuantity.blur();
-    }
-  });
+    });
+  }
 
-  productQuantity.addEventListener("blur", () => {
-    setQuantityFromInput();
-  });
-}
-
-if (addToCartButton) {
-  addToCartButton.addEventListener("click", () => {
-    if (cartTransitionOverlay) {
-      cartTransitionOverlay.classList.add("active");
-    }
-
-    addToCartButton.disabled = true;
-
-    setTimeout(() => {
-      const cart = getCart();
-      const existingItem = cart.find((item) => item.id === productData.id);
-
-      if (existingItem) {
-        existingItem.quantity += quantity;
-      } else {
-        cart.push({
-          ...productData,
-          quantity: quantity
-        });
-      }
-
-      saveCart(cart);
-
+  if (addToCartButton) {
+    addToCartButton.addEventListener("click", () => {
       if (cartTransitionOverlay) {
-        cartTransitionOverlay.classList.remove("active");
+        cartTransitionOverlay.classList.add("active");
       }
 
-      addToCartButton.textContent = "Added to Cart";
+      addToCartButton.disabled = true;
 
       setTimeout(() => {
-        addToCartButton.textContent = "Add to Cart";
-        addToCartButton.disabled = false;
-      }, 1200);
-    }, 700);
-  });
-}
+        const cart = getCart();
+        const existingItem = cart.find((item) => item.id === productData.id);
+
+        if (existingItem) {
+          existingItem.quantity += quantity;
+        } else {
+          cart.push({
+            ...productData,
+            quantity: quantity
+          });
+        }
+
+        saveCart(cart);
+
+        if (cartTransitionOverlay) {
+          cartTransitionOverlay.classList.remove("active");
+        }
+
+        addToCartButton.textContent = "Added to Cart";
+
+        setTimeout(() => {
+          addToCartButton.textContent = "Add to Cart";
+          addToCartButton.disabled = false;
+        }, 1200);
+      }, 700);
+    });
+  }
 
   updateCartCount();
 </script>
