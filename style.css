@@ -1073,10 +1073,44 @@ body.nav-menu-open {
   }
 }
 
-.component-page {
+.component-page,
+.product-page {
   min-height: 100vh;
   background: #2a2b2a;
   padding-top: 120px;
+}
+
+.product-empty-page {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 140px 60px 100px;
+}
+
+.product-empty-eyebrow {
+  margin-bottom: 14px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.product-empty-page h1 {
+  max-width: 760px;
+  margin-bottom: 22px;
+  color: white;
+  font-size: 52px;
+  font-weight: 700;
+  line-height: 1.06;
+  text-transform: uppercase;
+}
+
+.product-empty-page p:last-child {
+  max-width: 650px;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.75;
 }
 
 .component-hero {
