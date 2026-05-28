@@ -343,10 +343,53 @@
     }
   }
 
+  function getSelectedGpuFilters() {
+    const selectedFilters = {
+      brand: [],
+      model: [],
+      vram: []
+    };
+
+    document.querySelectorAll("[data-filter-type]:checked").forEach((input) => {
+      const filterType = input.dataset.filterType;
+
+      if (selectedFilters[filterType]) {
+        selectedFilters[filterType].push(input.value);
+      }
+    });
+
+    return selectedFilters;
+  }
+
+  function productMatchesFilters(product, selectedFilters) {
+    return Object.entries(selectedFilters).every(([filterType, selectedValues]) => {
+      if (selectedValues.length === 0) {
+        return true;
+      }
+
+      return selectedValues.includes(product.filters[filterType]);
+    });
+  }
+
   function renderGpuProducts() {
     if (!gpuProductsGrid) return;
 
-    gpuProductsGrid.innerHTML = GPU_PRODUCTS.map((product) => {
+    const selectedFilters = getSelectedGpuFilters();
+    const visibleProducts = GPU_PRODUCTS.filter((product) => {
+      return productMatchesFilters(product, selectedFilters);
+    });
+
+    if (visibleProducts.length === 0) {
+      gpuProductsGrid.innerHTML = `
+        <div class="gpu-no-results">
+          <h3>No graphics cards found</h3>
+          <p>Try changing or clearing your selected filters.</p>
+        </div>
+      `;
+      return;
+    }
+
+    gpuProductsGrid.innerHTML = visibleProducts.map((product) => {
       const images = getProductImages(product);
       const priceHtml = product.priceLabel
         ? `<div class="signature-build-price">${escapeHtml(product.priceLabel)}</div>`
@@ -547,6 +590,10 @@
       }
     });
   }
+
+  document.querySelectorAll("[data-filter-type]").forEach((input) => {
+    input.addEventListener("change", renderGpuProducts);
+  });
 
   renderGpuProducts();
   updateCartCount();
