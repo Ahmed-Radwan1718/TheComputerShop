@@ -1284,9 +1284,12 @@ body.nav-menu-open {
 }
 
 .product-purchase-panel {
-  position: sticky;
+  position: fixed;
   top: 140px;
+  right: max(60px, calc((100vw - 1500px) / 2 + 120px));
+  width: 420px;
   padding-top: 86px;
+  z-index: 20;
 }
 
 .product-title-block {
@@ -1455,6 +1458,7 @@ body.nav-menu-open {
 
 .product-purchase-panel {
   position: static;
+  width: auto;
 }
 
 .product-specifications-section {
