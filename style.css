@@ -1229,7 +1229,8 @@ body.nav-menu-open {
   border-left: 2px solid rgba(255, 255, 255, 0.22);
 }
 
-.product-title-eyebrow {
+.product-title-eyebrow,
+.product-purchase-eyebrow {
   margin-bottom: 12px;
   color: rgba(255, 255, 255, 0.52);
   font-size: 13px;
