@@ -99,7 +99,42 @@
       </div>
     </div>
 
-    <aside class="product-purchase-area"></aside>
+<aside class="product-purchase-area">
+  <div class="product-purchase-panel">
+    <p class="product-purchase-eyebrow">Graphics Card</p>
+
+    <h1>RTX 5090 AORUS Master</h1>
+
+    <p class="product-purchase-subtitle">
+      Flagship graphics performance for extreme gaming, high-end rendering, AI workloads, and uncompromised creator systems.
+    </p>
+
+    <div class="product-price-row">
+      <span>Price</span>
+      <strong>Price coming soon</strong>
+    </div>
+
+    <div class="product-quantity-control">
+      <span class="product-quantity-label">Quantity</span>
+
+      <div class="product-quantity-box">
+        <button class="quantity-button" type="button" id="decrease-quantity">−</button>
+        <span id="product-quantity">1</span>
+        <button class="quantity-button" type="button" id="increase-quantity">+</button>
+      </div>
+    </div>
+
+    <div class="product-action-buttons">
+      <button class="product-button product-button-primary" type="button">
+        Buy Now
+      </button>
+
+      <button class="product-button product-button-secondary" type="button">
+        Add to Cart
+      </button>
+    </div>
+  </div>
+</aside>
   </section>
 </main>
 
@@ -141,6 +176,26 @@
         productThumbnails.forEach((item) => item.classList.remove("active"));
         thumbnail.classList.add("active");
       });
+    });
+  }
+
+  const decreaseQuantityButton = document.getElementById("decrease-quantity");
+  const increaseQuantityButton = document.getElementById("increase-quantity");
+  const productQuantity = document.getElementById("product-quantity");
+
+  if (decreaseQuantityButton && increaseQuantityButton && productQuantity) {
+    let quantity = 1;
+
+    decreaseQuantityButton.addEventListener("click", () => {
+      if (quantity > 1) {
+        quantity -= 1;
+        productQuantity.textContent = quantity;
+      }
+    });
+
+    increaseQuantityButton.addEventListener("click", () => {
+      quantity += 1;
+      productQuantity.textContent = quantity;
     });
   }
 </script>
