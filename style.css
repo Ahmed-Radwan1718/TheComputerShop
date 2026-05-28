@@ -1117,6 +1117,11 @@ body.nav-menu-open {
   gap: 9px;
   overflow-x: auto;
   padding-bottom: 4px;
+  scrollbar-width: none;
+}
+
+.product-thumbnail-row::-webkit-scrollbar {
+  display: none;
 }
 
 .product-thumbnail {
