@@ -1284,8 +1284,7 @@ body.nav-menu-open {
 }
 
 .product-purchase-panel {
-  position: sticky;
-  top: 140px;
+  position: static;
   padding-top: 86px;
 }
 
