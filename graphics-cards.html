@@ -101,8 +101,42 @@
         <h2>Graphics Cards</h2>
       </div>
 
-      <div class="signature-builds-grid"></div>
+      <div class="signature-builds-grid">
+        <a href="graphics-cards.html#gigabyte-rtx-5090-aorus-master" class="signature-build-card product-card-link">
+          <img
+            class="signature-build-image"
+            src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-1.jpeg"
+            alt="Gigabyte RTX 5090 AORUS MASTER"
+          >
+
+          <h3>RTX 5090 AORUS MASTER</h3>
+          <p>Gigabyte Graphics Card</p>
+        </a>
+      </div>
     </section>
+  </section>
+  <section class="gpu-product-page" id="gigabyte-rtx-5090-aorus-master" hidden>
+    <div class="gpu-product-inner">
+      <a href="graphics-cards.html" class="gpu-back-link">Back to Graphics Cards</a>
+
+      <div class="gpu-product-header">
+        <p class="component-hero-eyebrow">Graphics Card</p>
+        <h1>RTX 5090 AORUS MASTER</h1>
+      </div>
+
+      <div class="gpu-gallery-grid">
+        <img src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-1.jpeg" alt="RTX 5090 AORUS MASTER photo 1">
+        <img src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-2.jpeg" alt="RTX 5090 AORUS MASTER photo 2">
+        <img src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-3.jpeg" alt="RTX 5090 AORUS MASTER photo 3">
+        <img src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-4.jpeg" alt="RTX 5090 AORUS MASTER photo 4">
+        <img src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-5.jpeg" alt="RTX 5090 AORUS MASTER photo 5">
+        <img src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-6.jpeg" alt="RTX 5090 AORUS MASTER photo 6">
+        <img src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-7.jpeg" alt="RTX 5090 AORUS MASTER photo 7">
+        <img src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-8.jpeg" alt="RTX 5090 AORUS MASTER photo 8">
+        <img src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-9.jpeg" alt="RTX 5090 AORUS MASTER photo 9">
+        <img src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-10.jpeg" alt="RTX 5090 AORUS MASTER photo 10">
+      </div>
+    </div>
   </section>
 </main>
 
@@ -112,6 +146,24 @@
       button.closest(".filter-item").classList.toggle("open");
     });
   });
+
+  const catalogSections = document.querySelectorAll(".component-hero, .signature-layout");
+  const gpuProductPage = document.getElementById("gigabyte-rtx-5090-aorus-master");
+
+  function updateGraphicsCardPageView() {
+    const isProductPage = window.location.hash === "#gigabyte-rtx-5090-aorus-master";
+
+    catalogSections.forEach((section) => {
+      section.hidden = isProductPage;
+    });
+
+    if (gpuProductPage) {
+      gpuProductPage.hidden = !isProductPage;
+    }
+  }
+
+  window.addEventListener("hashchange", updateGraphicsCardPageView);
+  updateGraphicsCardPageView();
 </script>
 
 <script>
