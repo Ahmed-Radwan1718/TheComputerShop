@@ -2335,3 +2335,96 @@ body.nav-menu-open {
     font-size: 38px;
   }
 }
+
+.product-card-link,
+.product-card-link:visited {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.signature-build-image {
+  width: 100%;
+  aspect-ratio: 75 / 56;
+  border-radius: 18px;
+  display: block;
+  object-fit: cover;
+  background: rgba(255, 255, 255, 0.055);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.18);
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+.product-card-link:hover .signature-build-image {
+  opacity: 0.82;
+  transform: translateY(-2px);
+}
+
+.gpu-product-page {
+  min-height: 100vh;
+  background: #2a2b2a;
+  padding: 150px 60px 100px;
+}
+
+.gpu-product-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.gpu-back-link,
+.gpu-back-link:visited {
+  display: inline-flex;
+  margin-bottom: 36px;
+  color: rgba(255, 255, 255, 0.64);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: color 0.22s ease;
+}
+
+.gpu-back-link:hover {
+  color: white;
+}
+
+.gpu-product-header {
+  margin-bottom: 38px;
+}
+
+.gpu-product-header h1 {
+  max-width: 900px;
+  color: white;
+  font-size: 52px;
+  font-weight: 700;
+  line-height: 1.06;
+  text-transform: uppercase;
+}
+
+.gpu-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.gpu-gallery-grid img {
+  width: 100%;
+  border-radius: 22px;
+  display: block;
+  object-fit: cover;
+  background: rgba(255, 255, 255, 0.055);
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 900px) {
+  .gpu-product-page {
+    padding: 120px 25px 70px;
+  }
+
+  .gpu-product-header h1 {
+    font-size: 36px;
+  }
+
+  .gpu-gallery-grid {
+    grid-template-columns: 1fr;
+  }
+}
