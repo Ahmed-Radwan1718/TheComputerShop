@@ -1285,10 +1285,10 @@ body.nav-menu-open {
 
 .product-purchase-panel {
   position: fixed;
-  top: 140px;
+  top: 226px;
   right: max(60px, calc((100vw - 1500px) / 2 + 120px));
   width: 420px;
-  padding-top: 86px;
+  padding-top: 0;
   z-index: 20;
 }
 
@@ -1457,8 +1457,11 @@ body.nav-menu-open {
 }
 
 .product-purchase-panel {
-  position: static;
-  width: auto;
+  position: fixed;
+  top: 226px;
+  right: 60px;
+  width: 360px;
+  padding-top: 0;
 }
 
 .product-specifications-section {
