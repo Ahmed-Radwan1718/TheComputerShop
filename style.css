@@ -1165,7 +1165,10 @@ body.nav-menu-open {
 }
 
 .product-specifications-inner {
-  max-width: 920px;
+  display: grid;
+  grid-template-columns: minmax(0, 920px) minmax(320px, 380px);
+  gap: 70px;
+  align-items: start;
 }
 
 .product-specifications-header {
@@ -1192,6 +1195,77 @@ body.nav-menu-open {
 .product-specifications-table {
   display: grid;
   border-top: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.product-included-box {
+  align-self: end;
+  padding-top: 68px;
+}
+
+.product-included-header {
+  margin-bottom: 26px;
+}
+
+.product-included-header h2 {
+  color: white;
+  font-size: 31px;
+  font-weight: 700;
+  line-height: 1.08;
+  text-transform: uppercase;
+}
+
+.product-included-list {
+  display: grid;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.product-included-item {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.product-included-question {
+  width: 100%;
+  padding: 24px 0;
+  border: none;
+  background: transparent;
+  color: white;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 24px;
+  align-items: center;
+  text-align: left;
+  cursor: pointer;
+}
+
+.product-included-question span:first-child {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.product-included-item.open .faq-icon {
+  color: white;
+  transform: rotate(45deg);
+}
+
+.product-included-answer {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.32s ease, opacity 0.22s ease;
+}
+
+.product-included-item.open .product-included-answer {
+  max-height: 300px;
+  opacity: 1;
+}
+
+.product-included-answer p {
+  padding: 0 46px 24px 0;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.75;
 }
 
 .product-spec-row {
@@ -1396,7 +1470,13 @@ body.nav-menu-open {
 }
 
 .product-specifications-inner {
-  max-width: none;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 54px;
+}
+
+.product-included-box {
+  padding-top: 0;
 }
 }
 
@@ -1454,6 +1534,23 @@ body.nav-menu-open {
 
 .product-spec-row strong {
   font-size: 16px;
+}
+
+.product-included-header h2 {
+  font-size: 28px;
+}
+
+.product-included-question {
+  padding: 22px 0;
+}
+
+.product-included-question span:first-child {
+  font-size: 17px;
+}
+
+.product-included-answer p {
+  padding-right: 0;
+  font-size: 15px;
 }
 
 .product-action-grid {
