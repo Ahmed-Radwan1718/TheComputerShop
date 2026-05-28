@@ -46,10 +46,60 @@
 </div>
 
 <main class="product-page">
-  <section class="product-empty-page">
-    <p class="product-empty-eyebrow">Product Page</p>
-    <h1>Product page ready</h1>
-    <p>This page is intentionally empty for now. We will build the product layout here next.</p>
+  <section class="product-detail-layout">
+    <div class="product-media-area">
+      <div class="product-carousel-main">
+        <img
+          id="product-main-image"
+          src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-1.jpeg"
+          alt="RTX 5090 AORUS Master"
+        >
+      </div>
+
+      <div class="product-thumbnail-row">
+        <button class="product-thumbnail active" type="button" data-image="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-1.jpeg">
+          <img src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-1.jpeg" alt="RTX 5090 AORUS Master thumbnail 1">
+        </button>
+
+        <button class="product-thumbnail" type="button" data-image="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-2.jpeg">
+          <img src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-2.jpeg" alt="RTX 5090 AORUS Master thumbnail 2">
+        </button>
+
+        <button class="product-thumbnail" type="button" data-image="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-3.jpeg">
+          <img src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-3.jpeg" alt="RTX 5090 AORUS Master thumbnail 3">
+        </button>
+
+        <button class="product-thumbnail" type="button" data-image="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-4.jpeg">
+          <img src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-4.jpeg" alt="RTX 5090 AORUS Master thumbnail 4">
+        </button>
+
+        <button class="product-thumbnail" type="button" data-image="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-5.jpeg">
+          <img src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-5.jpeg" alt="RTX 5090 AORUS Master thumbnail 5">
+        </button>
+
+        <button class="product-thumbnail" type="button" data-image="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-6.jpeg">
+          <img src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-6.jpeg" alt="RTX 5090 AORUS Master thumbnail 6">
+        </button>
+
+        <button class="product-thumbnail" type="button" data-image="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-7.jpeg">
+          <img src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-7.jpeg" alt="RTX 5090 AORUS Master thumbnail 7">
+        </button>
+
+        <button class="product-thumbnail" type="button" data-image="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-8.jpeg">
+          <img src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-8.jpeg" alt="RTX 5090 AORUS Master thumbnail 8">
+        </button>
+
+        <button class="product-thumbnail" type="button" data-image="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-9.jpeg">
+          <img src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-9.jpeg" alt="RTX 5090 AORUS Master thumbnail 9">
+        </button>
+
+        <button class="product-thumbnail" type="button" data-image="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-10.jpeg">
+          <img src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-10.jpeg" alt="RTX 5090 AORUS Master thumbnail 10">
+        </button>
+      </div>
+    </div>
+
+    <aside class="product-purchase-area"></aside>
   </section>
 </main>
 
@@ -75,6 +125,22 @@
     backButton.addEventListener("click", () => {
       componentsMenu.classList.remove("active");
       mainMenu.classList.add("active");
+    });
+  }
+</script>
+
+<script>
+  const productMainImage = document.getElementById("product-main-image");
+  const productThumbnails = document.querySelectorAll(".product-thumbnail");
+
+  if (productMainImage && productThumbnails.length) {
+    productThumbnails.forEach((thumbnail) => {
+      thumbnail.addEventListener("click", () => {
+        productMainImage.src = thumbnail.dataset.image;
+
+        productThumbnails.forEach((item) => item.classList.remove("active"));
+        thumbnail.classList.add("active");
+      });
     });
   }
 </script>
