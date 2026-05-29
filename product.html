@@ -1759,6 +1759,125 @@ images: Array.from({ length: 4 }, (_, index) => {
       ]
     },
 
+    "samsung-9100-pro-nvme-ssd": {
+      id: "samsung-9100-pro-nvme-ssd",
+      name: "Samsung 9100 PRO NVMe SSD",
+      category: "Storage",
+      specsLine: "Samsung | PCIe 5.0 NVMe | 1TB–8TB",
+      priceText: "Insert price here",
+      priceNumber: null,
+      url: "product.html?product=samsung-9100-pro-nvme-ssd",
+      images: Array.from({ length: 3 }, (_, index) => {
+        const imageNumber = index + 1;
+        return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Storage/samsung-9100-pro-1tb-${imageNumber}.jpeg`;
+      }),
+      defaultVariant: "1tb",
+      variants: [
+        {
+          id: "1tb",
+          capacity: "1TB",
+          modelNumber: "MZ-VAP1T0BW",
+          priceText: "Insert price here",
+          priceNumber: null,
+          images: Array.from({ length: 3 }, (_, index) => {
+            const imageNumber = index + 1;
+            return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Storage/samsung-9100-pro-1tb-${imageNumber}.jpeg`;
+          }),
+          sequentialRead: "Up to 14,700MB/s",
+          sequentialWrite: "Up to 13,300MB/s",
+          randomRead: "Up to 1,850K IOPS",
+          randomWrite: "Up to 2,600K IOPS",
+          cacheMemory: "1GB LPDDR4X",
+          endurance: "600 TBW",
+          dimensions: "80.15 × 22.15 × 2.38mm"
+        },
+        {
+          id: "2tb",
+          capacity: "2TB",
+          modelNumber: "MZ-VAP2T0BW",
+          priceText: "Insert price here",
+          priceNumber: null,
+          images: Array.from({ length: 3 }, (_, index) => {
+            const imageNumber = index + 1;
+            return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Storage/samsung-9100-pro-2tb-${imageNumber}.jpeg`;
+          }),
+          sequentialRead: "Up to 14,700MB/s",
+          sequentialWrite: "Up to 13,400MB/s",
+          randomRead: "Up to 1,850K IOPS",
+          randomWrite: "Up to 2,600K IOPS",
+          cacheMemory: "2GB LPDDR4X",
+          endurance: "1,200 TBW",
+          dimensions: "80.15 × 22.15 × 2.38mm"
+        },
+        {
+          id: "4tb",
+          capacity: "4TB",
+          modelNumber: "MZ-VAP4T0BW",
+          priceText: "Insert price here",
+          priceNumber: null,
+          images: Array.from({ length: 3 }, (_, index) => {
+            const imageNumber = index + 1;
+            return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Storage/samsung-9100-pro-4tb-${imageNumber}.jpeg`;
+          }),
+          sequentialRead: "Up to 14,800MB/s",
+          sequentialWrite: "Up to 13,400MB/s",
+          randomRead: "Up to 2,200K IOPS",
+          randomWrite: "Up to 2,600K IOPS",
+          cacheMemory: "4GB LPDDR4X",
+          endurance: "2,400 TBW",
+          dimensions: "80.15 × 22.15 × 2.38mm"
+        },
+        {
+          id: "8tb",
+          capacity: "8TB",
+          modelNumber: "MZ-VAP8T0BW",
+          priceText: "Insert price here",
+          priceNumber: null,
+          images: Array.from({ length: 3 }, (_, index) => {
+            const imageNumber = index + 1;
+            return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Storage/samsung-9100-pro-8tb-${imageNumber}.jpeg`;
+          }),
+          sequentialRead: "Up to 14,800MB/s",
+          sequentialWrite: "Up to 13,400MB/s",
+          randomRead: "Up to 2,200K IOPS",
+          randomWrite: "Up to 2,600K IOPS",
+          cacheMemory: "8GB LPDDR4X",
+          endurance: "4,800 TBW",
+          dimensions: "80.15 × 22.15 × 3.88mm"
+        }
+      ],
+      whoIsThisFor: "A flagship PCIe Gen 5 NVMe SSD for extreme gaming, high-end workstations, video editing, 3D work, AI workloads, large project files, and users who want selectable 1TB, 2TB, 4TB, or 8TB capacity options with capacity-specific product photos.",
+      specs: [
+        ["Product Name", "Samsung 9100 PRO NVMe SSD"],
+        ["Form Factor", "M.2 2280"],
+        ["Interface", "PCIe Gen 5.0 x4 NVMe 2.0"],
+        ["NAND", "Samsung V-NAND TLC"],
+        ["Controller", "Samsung Presto Controller"],
+        ["Hardware Encryption", "AES 256-bit Full Disk Encryption, TCG/Opal, IEEE1667"],
+        ["Operating Temperature", "0°C to 70°C"],
+        ["MTBF", "1.5 million hours"],
+        ["Warranty", "5 years or max endurance limit, whichever comes first"]
+      ],
+      included: [
+        {
+          title: "Storage Drive",
+          text: "The Samsung 9100 PRO NVMe SSD is included as the main component in the selected capacity, inspected and prepared for the build or order."
+        },
+        {
+          title: "Original Packaging",
+          text: "The product comes with its original box and packaging where available. Customers should keep the packaging for warranty and support purposes."
+        },
+        {
+          title: "Included Accessories",
+          text: "Included accessories depend on the official storage package contents supplied by Samsung."
+        },
+        {
+          title: "Store Support",
+          text: "Purchases include store support, basic guidance, and free lifetime troubleshooting and diagnosis for products bought from The Computer Shop."
+        }
+      ]
+    },
+
     "wd-black-sn8100-nvme-ssd": {
       id: "wd-black-sn8100-nvme-ssd",
       name: "WD_BLACK SN8100 NVMe SSD",
@@ -2197,20 +2316,50 @@ images: Array.from({ length: 4 }, (_, index) => {
       return product.specs;
     }
 
-    return [
+    const variantSpecs = [
       ["Selected Capacity", selectedVariant.capacity],
       ["Model Number", selectedVariant.modelNumber],
       ["Sequential Read", selectedVariant.sequentialRead],
       ["Sequential Write", selectedVariant.sequentialWrite],
       ["Random Read", selectedVariant.randomRead],
-      ["Random Write", selectedVariant.randomWrite],
-      ["Average Active Power Read", selectedVariant.averageReadPower],
-      ["Average Active Power Write", selectedVariant.averageWritePower],
+      ["Random Write", selectedVariant.randomWrite]
+    ];
+
+    if (selectedVariant.cacheMemory) {
+      variantSpecs.push(["Cache Memory", selectedVariant.cacheMemory]);
+    }
+
+    if (selectedVariant.averageReadPower) {
+      variantSpecs.push(["Average Active Power Read", selectedVariant.averageReadPower]);
+    }
+
+    if (selectedVariant.averageWritePower) {
+      variantSpecs.push(["Average Active Power Write", selectedVariant.averageWritePower]);
+    }
+
+    variantSpecs.push(
       ["Endurance", selectedVariant.endurance],
-      ["Dimensions", selectedVariant.dimensions],
-      ["Weight", selectedVariant.weight],
+      ["Dimensions", selectedVariant.dimensions]
+    );
+
+    if (selectedVariant.weight) {
+      variantSpecs.push(["Weight", selectedVariant.weight]);
+    }
+
+    return [
+      ...variantSpecs,
       ...product.specs
     ];
+  }
+
+  function getProductImages(product) {
+    const selectedVariant = getSelectedVariant(product);
+
+    if (selectedVariant && selectedVariant.images) {
+      return selectedVariant.images;
+    }
+
+    return product.images;
   }
 
   function buildProductData(product) {
@@ -2224,7 +2373,7 @@ images: Array.from({ length: 4 }, (_, index) => {
         specsLine: product.specsLine,
         priceText: product.priceText,
         priceNumber: product.priceNumber,
-        image: product.images[0],
+        image: getProductImages(product)[0],
         url: product.url
       };
     }
@@ -2257,6 +2406,7 @@ images: Array.from({ length: 4 }, (_, index) => {
     const purchasePanel = document.querySelector(".product-purchase-panel");
 
     const selectedVariant = getSelectedVariant(product);
+    const productImages = getProductImages(product);
 
     if (productTitle) {
       productTitle.textContent = selectedVariant ? `${product.name} ${selectedVariant.capacity}` : product.name;
@@ -2304,12 +2454,12 @@ images: Array.from({ length: 4 }, (_, index) => {
     }
 
     if (productMainImage) {
-      productMainImage.src = product.images[0];
+      productMainImage.src = productImages[0];
       productMainImage.alt = product.name;
     }
 
     if (thumbnailRow) {
-      thumbnailRow.innerHTML = product.images.map((image, index) => {
+      thumbnailRow.innerHTML = productImages.map((image, index) => {
         const imageNumber = index + 1;
         const activeClass = index === 0 ? " active" : "";
 
@@ -2357,8 +2507,11 @@ images: Array.from({ length: 4 }, (_, index) => {
       productData = buildProductData(currentProduct);
 
       const selectedVariant = getSelectedVariant(currentProduct);
+      const productImages = getProductImages(currentProduct);
       const productTitle = document.querySelector(".product-title-block h1");
       const productPrice = document.querySelector(".product-price-row strong");
+      const productMainImage = document.getElementById("product-main-image");
+      const thumbnailRow = document.querySelector(".product-thumbnail-row");
       const specificationsTable = document.querySelector(".product-specifications-table");
 
       if (productTitle) {
@@ -2367,6 +2520,26 @@ images: Array.from({ length: 4 }, (_, index) => {
 
       if (productPrice) {
         productPrice.textContent = selectedVariant.priceText;
+      }
+
+      if (productMainImage) {
+        productMainImage.src = productImages[0];
+        productMainImage.alt = `${currentProduct.name} ${selectedVariant.capacity}`;
+      }
+
+      if (thumbnailRow) {
+        thumbnailRow.innerHTML = productImages.map((image, index) => {
+          const imageNumber = index + 1;
+          const activeClass = index === 0 ? " active" : "";
+
+          return `
+            <button class="product-thumbnail${activeClass}" type="button" data-image="${image}">
+              <img src="${image}" alt="${currentProduct.name} ${selectedVariant.capacity} thumbnail ${imageNumber}">
+            </button>
+          `;
+        }).join("");
+
+        setupProductThumbnailClicks();
       }
 
       if (specificationsTable) {
@@ -2386,19 +2559,23 @@ images: Array.from({ length: 4 }, (_, index) => {
     });
   });
 
-  const productMainImage = document.getElementById("product-main-image");
-  const productThumbnails = document.querySelectorAll(".product-thumbnail");
+  function setupProductThumbnailClicks() {
+    const productMainImage = document.getElementById("product-main-image");
+    const productThumbnails = document.querySelectorAll(".product-thumbnail");
 
-  if (productMainImage && productThumbnails.length) {
-    productThumbnails.forEach((thumbnail) => {
-      thumbnail.addEventListener("click", () => {
-        productMainImage.src = thumbnail.dataset.image;
+    if (productMainImage && productThumbnails.length) {
+      productThumbnails.forEach((thumbnail) => {
+        thumbnail.addEventListener("click", () => {
+          productMainImage.src = thumbnail.dataset.image;
 
-        productThumbnails.forEach((item) => item.classList.remove("active"));
-        thumbnail.classList.add("active");
+          productThumbnails.forEach((item) => item.classList.remove("active"));
+          thumbnail.classList.add("active");
+        });
       });
-    });
+    }
   }
+
+  setupProductThumbnailClicks();
 
   document.querySelectorAll(".product-included-question").forEach((button) => {
     button.addEventListener("click", () => {
