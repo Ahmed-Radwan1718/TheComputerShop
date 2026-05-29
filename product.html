@@ -1535,6 +1535,119 @@ images: Array.from({ length: 4 }, (_, index) => {
       ]
     },
 
+    "wd-black-sn8100-nvme-ssd": {
+      id: "wd-black-sn8100-nvme-ssd",
+      name: "WD_BLACK SN8100 NVMe SSD",
+      category: "Storage",
+      specsLine: "WD_BLACK | PCIe 5.0 NVMe | 1TB–8TB",
+      priceText: "Insert price here",
+      priceNumber: null,
+      url: "product.html?product=wd-black-sn8100-nvme-ssd",
+      images: Array.from({ length: 2 }, (_, index) => {
+        const imageNumber = index + 1;
+        return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Storage/wd-black-sn8100-nvme-ssd-${imageNumber}.jpeg`;
+      }),
+      defaultVariant: "1tb",
+      variants: [
+        {
+          id: "1tb",
+          capacity: "1TB",
+          modelNumber: "WDS100T1X0M-00CMT0",
+          priceText: "Insert price here",
+          priceNumber: null,
+          sequentialRead: "Up to 14,900MB/s",
+          sequentialWrite: "Up to 11,000MB/s",
+          randomRead: "Up to 1.6M IOPS",
+          randomWrite: "Up to 2.4M IOPS",
+          averageReadPower: "6.2W",
+          averageWritePower: "6.1W",
+          endurance: "600 TBW",
+          dimensions: "80 × 22 × 2.38mm",
+          weight: "7.5g"
+        },
+        {
+          id: "2tb",
+          capacity: "2TB",
+          modelNumber: "WDS200T1X0M-00CMT0",
+          priceText: "Insert price here",
+          priceNumber: null,
+          sequentialRead: "Up to 14,900MB/s",
+          sequentialWrite: "Up to 14,000MB/s",
+          randomRead: "Up to 2.3M IOPS",
+          randomWrite: "Up to 2.4M IOPS",
+          averageReadPower: "6.4W",
+          averageWritePower: "7.0W",
+          endurance: "1,200 TBW",
+          dimensions: "80 × 22 × 2.38mm",
+          weight: "7.5g"
+        },
+        {
+          id: "4tb",
+          capacity: "4TB",
+          modelNumber: "WDS400T1X0M-00CMT0",
+          priceText: "Insert price here",
+          priceNumber: null,
+          sequentialRead: "Up to 14,900MB/s",
+          sequentialWrite: "Up to 14,000MB/s",
+          randomRead: "Up to 2.3M IOPS",
+          randomWrite: "Up to 2.4M IOPS",
+          averageReadPower: "6.5W",
+          averageWritePower: "7.0W",
+          endurance: "2,400 TBW",
+          dimensions: "80 × 22 × 2.38mm",
+          weight: "7.5g"
+        },
+        {
+          id: "8tb",
+          capacity: "8TB",
+          modelNumber: "WDS800T1X0M-00CMT0",
+          priceText: "Insert price here",
+          priceNumber: null,
+          sequentialRead: "Up to 14,900MB/s",
+          sequentialWrite: "Up to 13,200MB/s",
+          randomRead: "Up to 2.2M IOPS",
+          randomWrite: "Up to 2.4M IOPS",
+          averageReadPower: "7.1W",
+          averageWritePower: "7.3W",
+          endurance: "4,800 TBW",
+          dimensions: "80 × 22 × 3.88mm",
+          weight: "8.6g"
+        }
+      ],
+      whoIsThisFor: "A flagship PCIe Gen 5 NVMe SSD for high-end gaming, workstation builds, content creation, AI workloads, large project files, and users who want extremely fast storage with selectable 1TB, 2TB, 4TB, or 8TB capacity options.",
+      specs: [
+        ["Product Name", "WD_BLACK SN8100 NVMe SSD"],
+        ["Form Factor", "M.2 2280"],
+        ["Interface", "PCIe Gen 5.0 x4 NVMe 2.0"],
+        ["NAND", "TLC 3D CBA NAND"],
+        ["DRAM", "Yes"],
+        ["Compatibility", "Backward compatible with PCIe Gen4, Gen3, and Gen2"],
+        ["Security", "TCG Opal 2.02"],
+        ["Operating Temperature", "0°C to 85°C"],
+        ["Non-Operating Temperature", "-40°C to 85°C"],
+        ["MTTF", "Up to 1.75M hours"],
+        ["Warranty", "5 years or max endurance limit, whichever comes first"]
+      ],
+      included: [
+        {
+          title: "Storage Drive",
+          text: "The WD_BLACK SN8100 NVMe SSD is included as the main component in the selected capacity, inspected and prepared for the build or order."
+        },
+        {
+          title: "Original Packaging",
+          text: "The product comes with its original box and packaging where available. Customers should keep the packaging for warranty and support purposes."
+        },
+        {
+          title: "Included Accessories",
+          text: "Included accessories depend on the official storage package contents supplied by SanDisk / WD_BLACK."
+        },
+        {
+          title: "Store Support",
+          text: "Purchases include store support, basic guidance, and free lifetime troubleshooting and diagnosis for products bought from The Computer Shop."
+        }
+      ]
+    },
+
     "z890-aorus-elite-wifi7": {
       id: "z890-aorus-elite-wifi7",
       name: "Z890 AORUS Elite WIFI7",
@@ -1843,16 +1956,68 @@ images: Array.from({ length: 4 }, (_, index) => {
   const productKey = new URLSearchParams(window.location.search).get("product") || "rtx-5090-aorus-master";
   const currentProduct = products[productKey] || products["rtx-5090-aorus-master"];
 
-  let productData = {
-    id: currentProduct.id,
-    name: currentProduct.name,
-    category: currentProduct.category,
-    specsLine: currentProduct.specsLine,
-    priceText: currentProduct.priceText,
-    priceNumber: currentProduct.priceNumber,
-    image: currentProduct.images[0],
-    url: currentProduct.url
-  };
+  let selectedVariantKey = currentProduct.defaultVariant || null;
+
+  function getSelectedVariant(product) {
+    if (!product.variants) {
+      return null;
+    }
+
+    return product.variants.find((variant) => variant.id === selectedVariantKey) || product.variants[0];
+  }
+
+  function getProductSpecs(product) {
+    const selectedVariant = getSelectedVariant(product);
+
+    if (!selectedVariant) {
+      return product.specs;
+    }
+
+    return [
+      ["Selected Capacity", selectedVariant.capacity],
+      ["Model Number", selectedVariant.modelNumber],
+      ["Sequential Read", selectedVariant.sequentialRead],
+      ["Sequential Write", selectedVariant.sequentialWrite],
+      ["Random Read", selectedVariant.randomRead],
+      ["Random Write", selectedVariant.randomWrite],
+      ["Average Active Power Read", selectedVariant.averageReadPower],
+      ["Average Active Power Write", selectedVariant.averageWritePower],
+      ["Endurance", selectedVariant.endurance],
+      ["Dimensions", selectedVariant.dimensions],
+      ["Weight", selectedVariant.weight],
+      ...product.specs
+    ];
+  }
+
+  function buildProductData(product) {
+    const selectedVariant = getSelectedVariant(product);
+
+    if (!selectedVariant) {
+      return {
+        id: product.id,
+        name: product.name,
+        category: product.category,
+        specsLine: product.specsLine,
+        priceText: product.priceText,
+        priceNumber: product.priceNumber,
+        image: product.images[0],
+        url: product.url
+      };
+    }
+
+    return {
+      id: `${product.id}-${selectedVariant.id}`,
+      name: `${product.name} - ${selectedVariant.capacity}`,
+      category: product.category,
+      specsLine: `${product.specsLine} | ${selectedVariant.capacity}`,
+      priceText: selectedVariant.priceText,
+      priceNumber: selectedVariant.priceNumber,
+      image: product.images[0],
+      url: product.url
+    };
+  }
+
+  let productData = buildProductData(currentProduct);
 
   function renderProductPage(product) {
     document.title = `${product.name} - The Computer Shop`;
@@ -1865,9 +2030,12 @@ images: Array.from({ length: 4 }, (_, index) => {
     const thumbnailRow = document.querySelector(".product-thumbnail-row");
     const specificationsTable = document.querySelector(".product-specifications-table");
     const includedList = document.querySelector(".product-included-list");
+    const purchasePanel = document.querySelector(".product-purchase-panel");
+
+    const selectedVariant = getSelectedVariant(product);
 
     if (productTitle) {
-      productTitle.textContent = product.name;
+      productTitle.textContent = selectedVariant ? `${product.name} ${selectedVariant.capacity}` : product.name;
     }
 
     if (productCategory) {
@@ -1879,7 +2047,36 @@ images: Array.from({ length: 4 }, (_, index) => {
     }
 
     if (productPrice) {
-      productPrice.textContent = product.priceText;
+      productPrice.textContent = selectedVariant ? selectedVariant.priceText : product.priceText;
+    }
+
+    if (purchasePanel) {
+      const existingCapacitySelector = purchasePanel.querySelector(".product-capacity-selector");
+
+      if (existingCapacitySelector) {
+        existingCapacitySelector.remove();
+      }
+
+      if (product.variants) {
+        const capacitySelector = document.createElement("div");
+        capacitySelector.className = "product-capacity-selector";
+        capacitySelector.innerHTML = `
+          <p class="product-capacity-label">Choose Capacity</p>
+          <div class="product-capacity-options">
+            ${product.variants.map((variant) => {
+              const activeClass = variant.id === selectedVariant.id ? " active" : "";
+
+              return `
+                <button class="product-capacity-button${activeClass}" type="button" data-capacity="${variant.id}">
+                  ${variant.capacity}
+                </button>
+              `;
+            }).join("")}
+          </div>
+        `;
+
+        productPrice.closest(".product-price-row").insertAdjacentElement("afterend", capacitySelector);
+      }
     }
 
     if (productMainImage) {
@@ -1901,7 +2098,7 @@ images: Array.from({ length: 4 }, (_, index) => {
     }
 
     if (specificationsTable) {
-      specificationsTable.innerHTML = product.specs.map((spec) => {
+      specificationsTable.innerHTML = getProductSpecs(product).map((spec) => {
         return `
           <div class="product-spec-row">
             <span>${spec[0]}</span>
@@ -1929,6 +2126,41 @@ images: Array.from({ length: 4 }, (_, index) => {
   }
 
   renderProductPage(currentProduct);
+
+  document.querySelectorAll(".product-capacity-button").forEach((button) => {
+    button.addEventListener("click", () => {
+      selectedVariantKey = button.dataset.capacity;
+      productData = buildProductData(currentProduct);
+
+      const selectedVariant = getSelectedVariant(currentProduct);
+      const productTitle = document.querySelector(".product-title-block h1");
+      const productPrice = document.querySelector(".product-price-row strong");
+      const specificationsTable = document.querySelector(".product-specifications-table");
+
+      if (productTitle) {
+        productTitle.textContent = `${currentProduct.name} ${selectedVariant.capacity}`;
+      }
+
+      if (productPrice) {
+        productPrice.textContent = selectedVariant.priceText;
+      }
+
+      if (specificationsTable) {
+        specificationsTable.innerHTML = getProductSpecs(currentProduct).map((spec) => {
+          return `
+            <div class="product-spec-row">
+              <span>${spec[0]}</span>
+              <strong>${spec[1]}</strong>
+            </div>
+          `;
+        }).join("");
+      }
+
+      document.querySelectorAll(".product-capacity-button").forEach((capacityButton) => {
+        capacityButton.classList.toggle("active", capacityButton.dataset.capacity === selectedVariantKey);
+      });
+    });
+  });
 
   const productMainImage = document.getElementById("product-main-image");
   const productThumbnails = document.querySelectorAll(".product-thumbnail");
