@@ -2795,6 +2795,10 @@ images: Array.from({ length: 4 }, (_, index) => {
 
   document.querySelectorAll(".product-capacity-button").forEach((button) => {
     button.addEventListener("click", () => {
+      if (button.dataset.capacity === selectedVariantKey) {
+        return;
+      }
+
       selectedVariantKey = button.dataset.capacity;
       productData = buildProductData(currentProduct);
 
@@ -2806,48 +2810,65 @@ images: Array.from({ length: 4 }, (_, index) => {
       const thumbnailRow = document.querySelector(".product-thumbnail-row");
       const specificationsTable = document.querySelector(".product-specifications-table");
 
-      if (productTitle) {
-        productTitle.textContent = `${currentProduct.name} ${selectedVariant.capacity}`;
-      }
-
-      if (productPrice) {
-        productPrice.textContent = selectedVariant.priceText;
-      }
-
-      if (productMainImage) {
-        productMainImage.src = productImages[0];
-        productMainImage.alt = `${currentProduct.name} ${selectedVariant.capacity}`;
-      }
-
-      if (thumbnailRow) {
-        thumbnailRow.innerHTML = productImages.map((image, index) => {
-          const imageNumber = index + 1;
-          const activeClass = index === 0 ? " active" : "";
-
-          return `
-            <button class="product-thumbnail${activeClass}" type="button" data-image="${image}">
-              <img src="${image}" alt="${currentProduct.name} ${selectedVariant.capacity} thumbnail ${imageNumber}">
-            </button>
-          `;
-        }).join("");
-
-        setupProductThumbnailClicks();
-      }
-
-      if (specificationsTable) {
-        specificationsTable.innerHTML = getProductSpecs(currentProduct).map((spec) => {
-          return `
-            <div class="product-spec-row">
-              <span>${spec[0]}</span>
-              <strong>${spec[1]}</strong>
-            </div>
-          `;
-        }).join("");
-      }
-
       document.querySelectorAll(".product-capacity-button").forEach((capacityButton) => {
         capacityButton.classList.toggle("active", capacityButton.dataset.capacity === selectedVariantKey);
       });
+
+      [productTitle, productPrice, specificationsTable, thumbnailRow].forEach((element) => {
+        if (element) {
+          element.style.transition = "opacity 0.28s ease, transform 0.28s ease";
+          element.style.opacity = "0";
+          element.style.transform = "translateY(8px)";
+        }
+      });
+
+      setTimeout(() => {
+        if (productTitle) {
+          productTitle.textContent = `${currentProduct.name} ${selectedVariant.capacity}`;
+        }
+
+        if (productPrice) {
+          productPrice.textContent = selectedVariant.priceText;
+        }
+
+        if (thumbnailRow) {
+          thumbnailRow.innerHTML = productImages.map((image, index) => {
+            const imageNumber = index + 1;
+            const activeClass = index === 0 ? " active" : "";
+
+            return `
+              <button class="product-thumbnail${activeClass}" type="button" data-image="${image}">
+                <img src="${image}" alt="${currentProduct.name} ${selectedVariant.capacity} thumbnail ${imageNumber}">
+              </button>
+            `;
+          }).join("");
+
+          setupProductThumbnailClicks();
+        }
+
+        if (specificationsTable) {
+          specificationsTable.innerHTML = getProductSpecs(currentProduct).map((spec) => {
+            return `
+              <div class="product-spec-row">
+                <span>${spec[0]}</span>
+                <strong>${spec[1]}</strong>
+              </div>
+            `;
+          }).join("");
+        }
+
+        if (productMainImage && productImages[0] && productMainImage.src !== productImages[0]) {
+          slideProductMainImage(productImages[0], "next");
+          productMainImage.alt = `${currentProduct.name} ${selectedVariant.capacity}`;
+        }
+
+        [productTitle, productPrice, specificationsTable, thumbnailRow].forEach((element) => {
+          if (element) {
+            element.style.opacity = "1";
+            element.style.transform = "translateY(0)";
+          }
+        });
+      }, 280);
     });
   });
 
