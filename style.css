@@ -1115,6 +1115,7 @@ body.nav-menu-open {
   margin-top: 18px;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 9px;
   overflow-x: auto;
   padding-bottom: 4px;
