@@ -114,14 +114,15 @@
         </div>
 
 <div class="component-wall-grid">
-  <a href="motherboards.html" class="component-wall-card component-wall-card-large">
+  <a href="product.html?product=rtx-5090-aorus-master" class="component-wall-card component-wall-card-large" id="featured-component-carousel">
     <div
       class="component-wall-placeholder"
-      style="background-image: url('https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Motherboards/gigabyte-x870e-aorus-xtreme-x3d-ai-top-1.jpeg'); background-size: cover; background-position: center;"
+      id="featured-component-carousel-image"
+      style="background-image: url('https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-1.jpeg'); background-size: cover; background-position: center;"
     ></div>
     <div class="component-wall-card-info">
-      <h3>Motherboards</h3>
-      <p>Selected for clean, balanced, high-performance builds.</p>
+      <h3 id="featured-component-carousel-title">RTX 5090 AORUS Master</h3>
+      <p id="featured-component-carousel-specs">Gigabyte | RTX 5090 | AORUS Master</p>
     </div>
   </a>
 
@@ -272,6 +273,95 @@
     </div>
   </div>
 </footer>
+
+<script>
+  const featuredComponentSlides = [
+    {
+      title: "RTX 5090 AORUS Master",
+      specs: "Gigabyte | RTX 5090 | AORUS Master",
+      image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-1.jpeg",
+      url: "product.html?product=rtx-5090-aorus-master"
+    },
+    {
+      title: "X870E AORUS XTREME X3D AI TOP",
+      specs: "Gigabyte | AMD X870E | WIFI7",
+      image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Motherboards/gigabyte-x870e-aorus-xtreme-x3d-ai-top-1.jpeg",
+      url: "product.html?product=x870e-aorus-xtreme-x3d-ai-top"
+    },
+    {
+      title: "Intel Core Ultra 9 285K",
+      specs: "Intel | Core Ultra 9 | 24 Cores",
+      image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/CPU/intel-core-ultra-9-285k-1.jpeg",
+      url: "product.html?product=intel-core-ultra-9-285k"
+    },
+    {
+      title: "AORUS WATERFORCE II 360",
+      specs: "Gigabyte | 360mm AIO | ARGB",
+      image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Coolers/gigabyte-aorus-waterforce-ii-360-1.jpeg",
+      url: "product.html?product=aorus-waterforce-ii-360"
+    },
+    {
+      title: "Corsair Dominator Titanium RGB 96GB DDR5 7000 CL40",
+      specs: "Corsair | 96GB 2×48GB | DDR5 7000MT/s CL40",
+      image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Ram/corsair-dominator-titanium-rgb-96gb-ddr5-7000-cl40-1.jpeg",
+      url: "product.html?product=corsair-dominator-titanium-rgb-96gb-ddr5-7000-cl40"
+    },
+    {
+      title: "Samsung 9100 PRO NVMe SSD",
+      specs: "Samsung | PCIe 5.0 NVMe | 1TB–8TB",
+      image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Storage/samsung-9100-pro-1tb-1.jpeg",
+      url: "product.html?product=samsung-9100-pro-nvme-ssd"
+    },
+    {
+      title: "UD1600PM PG5 AI TOP",
+      specs: "Gigabyte | 1600W | 80 Plus Platinum",
+      image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Power%20supplies/gigabyte-ud1600pm-pg5-ai-top-1.jpeg",
+      url: "product.html?product=ud1600pm-pg5-ai-top"
+    },
+    {
+      title: "AORUS C500 GLASS",
+      specs: "Gigabyte | Mid Tower | Tempered Glass",
+      image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Cases/gigabyte-aorus-c500-glass-1.jpeg",
+      url: "product.html?product=aorus-c500-glass"
+    }
+  ];
+
+  const featuredComponentCard = document.getElementById("featured-component-carousel");
+  const featuredComponentImage = document.getElementById("featured-component-carousel-image");
+  const featuredComponentTitle = document.getElementById("featured-component-carousel-title");
+  const featuredComponentSpecs = document.getElementById("featured-component-carousel-specs");
+
+  let featuredComponentIndex = 0;
+
+  function showFeaturedComponentSlide(index) {
+    const slide = featuredComponentSlides[index];
+
+    if (featuredComponentCard) {
+      featuredComponentCard.href = slide.url;
+    }
+
+    if (featuredComponentImage) {
+      featuredComponentImage.style.backgroundImage = `url('${slide.image}')`;
+      featuredComponentImage.style.backgroundSize = "cover";
+      featuredComponentImage.style.backgroundPosition = "center";
+    }
+
+    if (featuredComponentTitle) {
+      featuredComponentTitle.textContent = slide.title;
+    }
+
+    if (featuredComponentSpecs) {
+      featuredComponentSpecs.textContent = slide.specs;
+    }
+  }
+
+  if (featuredComponentCard && featuredComponentImage && featuredComponentTitle && featuredComponentSpecs) {
+    setInterval(() => {
+      featuredComponentIndex = (featuredComponentIndex + 1) % featuredComponentSlides.length;
+      showFeaturedComponentSlide(featuredComponentIndex);
+    }, 7000);
+  }
+</script>
 
 </body>
 </html>
