@@ -330,10 +330,24 @@
   const featuredComponentImage = document.getElementById("featured-component-carousel-image");
   const featuredComponentTitle = document.getElementById("featured-component-carousel-title");
   const featuredComponentSpecs = document.getElementById("featured-component-carousel-specs");
+  const featuredComponentInfo = featuredComponentTitle ? featuredComponentTitle.closest(".component-wall-card-info") : null;
 
   let featuredComponentIndex = 0;
 
-  function showFeaturedComponentSlide(index) {
+  featuredComponentSlides.forEach((slide) => {
+    const preloadImage = new Image();
+    preloadImage.src = slide.image;
+  });
+
+  if (featuredComponentImage) {
+    featuredComponentImage.style.transition = "opacity 0.45s ease, transform 0.45s ease";
+  }
+
+  if (featuredComponentInfo) {
+    featuredComponentInfo.style.transition = "opacity 0.45s ease, transform 0.45s ease";
+  }
+
+  function updateFeaturedComponentSlide(index) {
     const slide = featuredComponentSlides[index];
 
     if (featuredComponentCard) {
@@ -355,10 +369,38 @@
     }
   }
 
+  function transitionToFeaturedComponentSlide(index) {
+    if (!featuredComponentCard || !featuredComponentImage || !featuredComponentTitle || !featuredComponentSpecs) {
+      return;
+    }
+
+    featuredComponentImage.style.opacity = "0";
+    featuredComponentImage.style.transform = "scale(1.025)";
+
+    if (featuredComponentInfo) {
+      featuredComponentInfo.style.opacity = "0";
+      featuredComponentInfo.style.transform = "translateY(8px)";
+    }
+
+    setTimeout(() => {
+      updateFeaturedComponentSlide(index);
+
+      featuredComponentImage.style.opacity = "1";
+      featuredComponentImage.style.transform = "scale(1)";
+
+      if (featuredComponentInfo) {
+        featuredComponentInfo.style.opacity = "1";
+        featuredComponentInfo.style.transform = "translateY(0)";
+      }
+    }, 450);
+  }
+
   if (featuredComponentCard && featuredComponentImage && featuredComponentTitle && featuredComponentSpecs) {
+    updateFeaturedComponentSlide(featuredComponentIndex);
+
     setInterval(() => {
       featuredComponentIndex = (featuredComponentIndex + 1) % featuredComponentSlides.length;
-      showFeaturedComponentSlide(featuredComponentIndex);
+      transitionToFeaturedComponentSlide(featuredComponentIndex);
     }, 7000);
   }
 </script>
