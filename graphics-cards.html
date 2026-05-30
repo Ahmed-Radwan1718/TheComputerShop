@@ -305,11 +305,170 @@
 </main>
 
 <script>
+<script>
+  const componentFilterTags = {
+    "rtx-5090-aorus-master": ["Gigabyte", "RTX 5090", "32GB"],
+    "rtx-5060-ti-aorus-elite": ["Gigabyte", "RTX 5060 Ti", "16GB"],
+    "rtx-5070-gaming-oc": ["Gigabyte", "RTX 5070", "12GB"],
+    "rtx-5060-eagle-oc": ["Gigabyte", "RTX 5060", "8GB"],
+    "rtx-5050-gaming-oc": ["Gigabyte", "RTX 5050", "8GB"],
+    "rtx-5060-ti-windforce-max-oc": ["Gigabyte", "RTX 5060 Ti", "16GB"],
+    "rtx-5070-eagle-oc-sff": ["Gigabyte", "RTX 5070", "12GB"],
+    "rtx-5060-eagle-max-oc": ["Gigabyte", "RTX 5060", "8GB"],
+    "rtx-5070-ti-eagle-oc-sff-16g": ["Gigabyte", "RTX 5070 Ti", "16GB"],
+    "rtx-5060-windforce-max-oc-8g": ["Gigabyte", "RTX 5060", "8GB"],
+    "rtx-5080-windforce-oc-sff-16g": ["Gigabyte", "RTX 5080", "16GB"],
+    "rx-9060-xt-gaming-oc-8g": ["Gigabyte", "RX 9060 XT", "8GB"],
+    "rx-9060-xt-gaming-oc-16g": ["Gigabyte", "RX 9060 XT", "16GB"],
+    "rx-9070-xt-gaming-oc-16g": ["Gigabyte", "RX 9070 XT", "16GB"],
+
+    "z890-aorus-elite-wifi7": ["Gigabyte", "Intel", "Z890", "ATX"],
+    "z890-aorus-master": ["Gigabyte", "Intel", "Z890", "ATX"],
+    "x870e-aorus-xtreme-x3d-ai-top": ["Gigabyte", "AMD", "X870E", "E-ATX"],
+    "x870e-aorus-elite-x3d": ["Gigabyte", "AMD", "X870E", "ATX"],
+    "b850-aorus-elite-wifi7": ["Gigabyte", "AMD", "B850", "ATX"],
+    "b860m-aorus-elite-wifi6e": ["Gigabyte", "Intel", "B860", "Micro-ATX"],
+
+    "intel-core-ultra-5-245k": ["Intel", "Intel Core Ultra 5", "LGA 1851", "14 Cores"],
+    "intel-core-ultra-7-265k": ["Intel", "Intel Core Ultra 7", "LGA 1851", "20 Cores"],
+    "intel-core-ultra-9-285k": ["Intel", "Intel Core Ultra 9", "LGA 1851", "24 Cores"],
+
+    "aorus-waterforce-ii-360": ["Gigabyte", "AIO Liquid Cooler", "360mm", "ARGB"],
+
+    "corsair-dominator-titanium-rgb-96gb-ddr5-7000-cl40": ["Corsair", "96GB", "7000MT/s", "RGB", "DDR5"],
+    "corsair-vengeance-rgb-48gb-ddr5-6000-c36": ["Corsair", "48GB", "6000MT/s", "RGB", "DDR5"],
+    "klevv-cras-v-rgb-ddr5": ["Klevv", "32GB", "48GB", "64GB", "6000MT/s", "6400MT/s", "7200MT/s", "RGB", "DDR5"],
+
+    "wd-black-sn8100-nvme-ssd": ["Western Digital", "WD_BLACK", "WD", "1TB", "2TB", "4TB", "8TB", "PCIe 5.0", "NVMe"],
+    "wd-black-sn850x-nvme-ssd": ["Western Digital", "WD_BLACK", "WD", "1TB", "2TB", "4TB", "8TB", "PCIe 4.0", "NVMe"],
+    "wd-black-sn7100-nvme-ssd": ["Western Digital", "WD_BLACK", "WD", "500GB", "1TB", "2TB", "4TB", "PCIe 4.0", "NVMe"],
+    "samsung-9100-pro-nvme-ssd": ["Samsung", "1TB", "2TB", "4TB", "8TB", "PCIe 5.0", "NVMe"],
+
+    "ud1600pm-pg5-ai-top": ["Gigabyte", "1600W", "80 Plus Platinum", "Platinum"],
+    "aorus-elite-p850w-platinum-pg5": ["Gigabyte", "850W", "80 Plus Platinum", "Platinum"],
+    "aorus-elite-p1000w-platinum-pg5": ["Gigabyte", "1000W", "80 Plus Platinum", "Platinum"],
+
+    "gigabyte-c500-panoramic-stealth": ["Gigabyte", "Mid Tower", "Black", "Panoramic Glass"],
+    "aorus-c500-glass": ["Gigabyte", "Mid Tower", "Black", "Tempered Glass", "Airflow"],
+    "aorus-c400-glass": ["Gigabyte", "Mid Tower", "Black", "Tempered Glass", "Airflow"]
+  };
+
+  function normalizeFilterValue(value) {
+    return String(value || "")
+      .toLowerCase()
+      .replace(/×/g, "x")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function getCheckboxLabelText(checkbox) {
+    const label = checkbox.closest("label");
+
+    if (!label) {
+      return "";
+    }
+
+    return label.textContent.trim();
+  }
+
+  function getProductKeyFromCard(card) {
+    const href = card.getAttribute("href") || "";
+    const queryString = href.includes("?") ? href.split("?")[1] : "";
+    const params = new URLSearchParams(queryString);
+
+    return params.get("product") || "";
+  }
+
+  function getCardSearchText(card) {
+    const imageText = Array.from(card.querySelectorAll("img")).map((image) => {
+      return `${image.alt || ""} ${image.src || ""}`;
+    }).join(" ");
+
+    return normalizeFilterValue(`
+      ${card.textContent || ""}
+      ${card.getAttribute("href") || ""}
+      ${imageText}
+    `);
+  }
+
+  function getSelectedFilterGroups() {
+    return Array.from(document.querySelectorAll(".filter-item")).map((filterItem) => {
+      return Array.from(filterItem.querySelectorAll("input[type='checkbox']:checked")).map((checkbox) => {
+        return getCheckboxLabelText(checkbox);
+      });
+    }).filter((group) => group.length > 0);
+  }
+
+  function cardMatchesFilterGroups(card, selectedGroups) {
+    const productKey = getProductKeyFromCard(card);
+    const mappedTags = componentFilterTags[productKey] || [];
+    const normalizedMappedTags = mappedTags.map(normalizeFilterValue);
+    const searchableText = getCardSearchText(card);
+
+    return selectedGroups.every((group) => {
+      return group.some((selectedValue) => {
+        const normalizedSelectedValue = normalizeFilterValue(selectedValue);
+
+        if (normalizedMappedTags.length) {
+          return normalizedMappedTags.includes(normalizedSelectedValue);
+        }
+
+        return searchableText.includes(normalizedSelectedValue);
+      });
+    });
+  }
+
+  function updateComponentFilters() {
+    const selectedGroups = getSelectedFilterGroups();
+    const cards = Array.from(document.querySelectorAll(".signature-build-card"));
+    let visibleCards = 0;
+
+    cards.forEach((card) => {
+      const shouldShow = selectedGroups.length === 0 || cardMatchesFilterGroups(card, selectedGroups);
+
+      card.hidden = !shouldShow;
+
+      if (shouldShow) {
+        visibleCards += 1;
+      }
+    });
+
+    const grid = document.querySelector(".signature-builds-grid");
+
+    if (!grid) {
+      return;
+    }
+
+    let emptyMessage = document.getElementById("component-filter-empty");
+
+    if (!emptyMessage) {
+      emptyMessage = document.createElement("div");
+      emptyMessage.id = "component-filter-empty";
+      emptyMessage.textContent = "No products match the selected filters.";
+      emptyMessage.style.gridColumn = "1 / -1";
+      emptyMessage.style.padding = "28px";
+      emptyMessage.style.borderRadius = "18px";
+      emptyMessage.style.background = "rgba(255, 255, 255, 0.055)";
+      emptyMessage.style.color = "rgba(255, 255, 255, 0.72)";
+      emptyMessage.style.fontSize = "15px";
+      emptyMessage.style.lineHeight = "1.6";
+      grid.appendChild(emptyMessage);
+    }
+
+    emptyMessage.hidden = visibleCards > 0 || selectedGroups.length === 0;
+  }
+
   document.querySelectorAll(".filter-toggle").forEach((button) => {
     button.addEventListener("click", () => {
       button.closest(".filter-item").classList.toggle("open");
     });
   });
+
+  document.querySelectorAll(".filter-content input[type='checkbox']").forEach((checkbox) => {
+    checkbox.addEventListener("change", updateComponentFilters);
+  });
+
+  updateComponentFilters();
 </script>
 
 <script>
