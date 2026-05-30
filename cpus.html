@@ -178,13 +178,14 @@
   }
 
   function getCardFilterTags(card) {
+    const title = card.querySelector("h3");
     const specsLine = card.querySelector("p");
 
-    if (!specsLine) {
-      return [];
-    }
-
-    return specsLine.textContent
+    return [
+      title ? title.textContent : "",
+      specsLine ? specsLine.textContent : ""
+    ]
+      .join(" | ")
       .split("|")
       .map((tag) => normalizeFilterValue(tag));
   }
