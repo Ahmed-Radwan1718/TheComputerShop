@@ -1095,6 +1095,43 @@ body.nav-menu-open {
   transform: translateX(-40px);
 }
 
+.product-carousel-arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 6;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.42);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: white;
+  font-family: inherit;
+  font-size: 34px;
+  font-weight: 300;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: opacity 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.product-carousel-arrow:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.38);
+}
+
+.product-carousel-arrow-left {
+  left: 18px;
+}
+
+.product-carousel-arrow-right {
+  right: 18px;
+}
+
 .product-carousel-main {
   width: 100%;
   aspect-ratio: 2400 / 1792;
