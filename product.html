@@ -968,9 +968,9 @@
 
     "klevv-cras-v-rgb-ddr5": {
       id: "klevv-cras-v-rgb-ddr5",
-      name: "KLEVV CRAS V RGB DDR5",
+      name: "Klevv Cras V RGB DDR5",
       category: "Memory",
-      specsLine: "KLEVV | DDR5 RGB | Up to 8400MT/s",
+      specsLine: "Klevv | DDR5 RGB | 32GB–64GB",
       priceText: "Insert price here",
       priceNumber: null,
       url: "product.html?product=klevv-cras-v-rgb-ddr5",
@@ -978,18 +978,78 @@
         const imageNumber = index + 1;
         return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Ram/klevv-cras-v-rgb-ddr5-${imageNumber}.jpeg`;
       }),
-      whoIsThisFor: "A premium DDR5 RGB memory kit for gaming, overclocking, creator, and enthusiast builds that need fast DDR5 performance, Intel XMP 3.0 and AMD EXPO support, aluminum heatsinks, RGB lighting, and strong platform compatibility.",
+      defaultVariant: "48gb-6000-cl28",
+      variantSelectorLabel: "Choose Configuration",
+      variants: [
+        {
+          id: "48gb-6000-cl28",
+          capacity: "48GB CL28 6000MT/s 2×24GB",
+          priceText: "Insert price here",
+          priceNumber: null,
+          specs: [
+            ["Selected Configuration", "48GB CL28 6000MT/s 2×24GB"],
+            ["Memory Size", "48GB"],
+            ["Kit Configuration", "2×24GB"],
+            ["Tested Speed", "6000MT/s"],
+            ["Tested Latency", "CL28"],
+            ["Memory Type", "DDR5"],
+            ["Lighting", "RGB"]
+          ]
+        },
+        {
+          id: "32gb-6400-cl30",
+          capacity: "32GB CL30 6400MT/s 2×16GB",
+          priceText: "Insert price here",
+          priceNumber: null,
+          specs: [
+            ["Selected Configuration", "32GB CL30 6400MT/s 2×16GB"],
+            ["Memory Size", "32GB"],
+            ["Kit Configuration", "2×16GB"],
+            ["Tested Speed", "6400MT/s"],
+            ["Tested Latency", "CL30"],
+            ["Memory Type", "DDR5"],
+            ["Lighting", "RGB"]
+          ]
+        },
+        {
+          id: "64gb-6400-cl32",
+          capacity: "64GB CL32 6400MT/s 2×32GB",
+          priceText: "Insert price here",
+          priceNumber: null,
+          specs: [
+            ["Selected Configuration", "64GB CL32 6400MT/s 2×32GB"],
+            ["Memory Size", "64GB"],
+            ["Kit Configuration", "2×32GB"],
+            ["Tested Speed", "6400MT/s"],
+            ["Tested Latency", "CL32"],
+            ["Memory Type", "DDR5"],
+            ["Lighting", "RGB"]
+          ]
+        },
+        {
+          id: "32gb-7200-cl34",
+          capacity: "32GB CL34 7200MT/s 2×16GB",
+          priceText: "Insert price here",
+          priceNumber: null,
+          specs: [
+            ["Selected Configuration", "32GB CL34 7200MT/s 2×16GB"],
+            ["Memory Size", "32GB"],
+            ["Kit Configuration", "2×16GB"],
+            ["Tested Speed", "7200MT/s"],
+            ["Tested Latency", "CL34"],
+            ["Memory Type", "DDR5"],
+            ["Lighting", "RGB"]
+          ]
+        }
+      ],
+      whoIsThisFor: "A premium DDR5 RGB memory kit for gaming, creator, productivity, and enthusiast builds with selectable capacity, speed, and latency configurations.",
       specs: [
-        ["Product Name", "KLEVV CRAS V RGB DDR5"],
+        ["Product Name", "Klevv Cras V RGB DDR5"],
         ["Format", "288 Pin DDR5 Unbuffered DIMM"],
-        ["Color", "Obsidian Black, Brilliant White"],
-        ["Tested Speed", "6000MT/s, 6400MT/s, 7200MT/s, 7600MT/s, 8000MT/s, 8200MT/s, 8400MT/s"],
-        ["Capacity Options", "16GB×2, 24GB×2, 32GB×2, 64GB×2"],
+        ["Profile Support", "Intel XMP 3.0, AMD EXPO"],
         ["SPD Speed", "4800MT/s"],
         ["SPD Timing", "40-40-40-77"],
         ["SPD Voltage", "1.1V"],
-        ["Profile Support", "Intel XMP 3.0, AMD EXPO"],
-        ["Lighting", "RGB"],
         ["Heat Spreader", "Aluminum heatsink"],
         ["Dimensions", "133.3 × 44 × 8mm"],
         ["Warranty", "Limited Lifetime Warranty"]
@@ -997,7 +1057,7 @@
       included: [
         {
           title: "Memory Kit",
-          text: "The KLEVV CRAS V RGB DDR5 memory kit is included as the main component, inspected and prepared for the build or order."
+          text: "The Klevv Cras V RGB DDR5 memory kit is included as the main component in the selected configuration, inspected and prepared for the build or order."
         },
         {
           title: "Original Packaging",
@@ -1005,7 +1065,7 @@
         },
         {
           title: "Included Accessories",
-          text: "Included accessories depend on the official memory package contents supplied by KLEVV."
+          text: "Included accessories depend on the official memory package contents supplied by Klevv."
         },
         {
           title: "Store Support",
@@ -2541,6 +2601,13 @@ images: Array.from({ length: 4 }, (_, index) => {
       return product.specs;
     }
 
+    if (selectedVariant.specs) {
+      return [
+        ...selectedVariant.specs,
+        ...product.specs
+      ];
+    }
+
     const variantSpecs = [
       ["Selected Capacity", selectedVariant.capacity],
       ["Model Number", selectedVariant.modelNumber],
@@ -2660,7 +2727,7 @@ images: Array.from({ length: 4 }, (_, index) => {
         const capacitySelector = document.createElement("div");
         capacitySelector.className = "product-capacity-selector";
         capacitySelector.innerHTML = `
-          <p class="product-capacity-label">Choose Capacity</p>
+          <p class="product-capacity-label">${product.variantSelectorLabel || "Choose Capacity"}</p>
           <div class="product-capacity-options">
             ${product.variants.map((variant) => {
               const activeClass = variant.id === selectedVariant.id ? " active" : "";
