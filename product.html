@@ -2802,6 +2802,53 @@ images: Array.from({ length: 4 }, (_, index) => {
 
   setupProductThumbnailClicks();
 
+  function getActiveProductThumbnailIndex() {
+    const thumbnails = Array.from(document.querySelectorAll(".product-thumbnail"));
+    return thumbnails.findIndex((thumbnail) => thumbnail.classList.contains("active"));
+  }
+
+  function showProductImageByIndex(index) {
+    const productMainImage = document.getElementById("product-main-image");
+    const thumbnails = Array.from(document.querySelectorAll(".product-thumbnail"));
+
+    if (!productMainImage || !thumbnails.length) {
+      return;
+    }
+
+    const safeIndex = (index + thumbnails.length) % thumbnails.length;
+    const selectedThumbnail = thumbnails[safeIndex];
+
+    productMainImage.src = selectedThumbnail.dataset.image;
+
+    thumbnails.forEach((thumbnail) => {
+      thumbnail.classList.remove("active");
+    });
+
+    selectedThumbnail.classList.add("active");
+    selectedThumbnail.scrollIntoView({
+      behavior: "smooth",
+      inline: "center",
+      block: "nearest"
+    });
+  }
+
+  const productCarouselPrev = document.getElementById("product-carousel-prev");
+  const productCarouselNext = document.getElementById("product-carousel-next");
+
+  if (productCarouselPrev) {
+    productCarouselPrev.addEventListener("click", () => {
+      const activeIndex = getActiveProductThumbnailIndex();
+      showProductImageByIndex(activeIndex - 1);
+    });
+  }
+
+  if (productCarouselNext) {
+    productCarouselNext.addEventListener("click", () => {
+      const activeIndex = getActiveProductThumbnailIndex();
+      showProductImageByIndex(activeIndex + 1);
+    });
+  }
+
   document.querySelectorAll(".product-included-question").forEach((button) => {
     button.addEventListener("click", () => {
       const item = button.closest(".product-included-item");
