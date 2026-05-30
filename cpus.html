@@ -177,31 +177,24 @@
       .filter((group) => group.length > 0);
   }
 
-  function getCardFilterTags(card) {
+  function getCardFilterText(card) {
     const title = card.querySelector("h3");
     const specsLine = card.querySelector("p");
 
     return [
       title ? title.textContent : "",
       specsLine ? specsLine.textContent : ""
-    ]
-      .join(" | ")
-      .split("|")
-      .map((tag) => normalizeFilterValue(tag));
+    ].join(" | ");
   }
 
   function cardMatchesFilters(card, selectedGroups) {
-    const cardTags = getCardFilterTags(card);
-    const cardSearchText = cardTags.join(" ");
+    const cardSearchText = normalizeFilterValue(getCardFilterText(card));
 
     return selectedGroups.every((group) => {
       return group.some((selectedValue) => {
         const normalizedSelectedValue = normalizeFilterValue(selectedValue);
 
-        return (
-          cardTags.includes(normalizedSelectedValue) ||
-          cardSearchText.includes(normalizedSelectedValue)
-        );
+        return cardSearchText.includes(normalizedSelectedValue);
       });
     });
   }
