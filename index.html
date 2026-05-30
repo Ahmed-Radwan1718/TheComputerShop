@@ -333,6 +333,7 @@
   const featuredComponentInfo = featuredComponentTitle ? featuredComponentTitle.closest(".component-wall-card-info") : null;
 
   let featuredComponentIndex = 0;
+  let isFeaturedComponentSliding = false;
 
   featuredComponentSlides.forEach((slide) => {
     const preloadImage = new Image();
@@ -340,24 +341,40 @@
   });
 
   if (featuredComponentImage) {
-    featuredComponentImage.style.transition = "opacity 0.45s ease, transform 0.45s ease";
+    featuredComponentImage.style.position = "relative";
+    featuredComponentImage.style.overflow = "hidden";
+    featuredComponentImage.style.backgroundImage = "none";
   }
 
   if (featuredComponentInfo) {
-    featuredComponentInfo.style.transition = "opacity 0.45s ease, transform 0.45s ease";
+    featuredComponentInfo.style.transition = "opacity 0.55s ease, transform 0.55s ease";
   }
 
-  function updateFeaturedComponentSlide(index) {
-    const slide = featuredComponentSlides[index];
+  function createFeaturedComponentImageLayer(imageUrl, startPosition) {
+    const layer = document.createElement("div");
+
+    layer.style.position = "absolute";
+    layer.style.inset = "0";
+    layer.style.backgroundImage = `url('${imageUrl}')`;
+    layer.style.backgroundSize = "cover";
+    layer.style.backgroundPosition = "center";
+    layer.style.transform = `translateX(${startPosition})`;
+    layer.style.transition = "transform 0.75s cubic-bezier(0.22, 1, 0.36, 1)";
+    layer.style.willChange = "transform";
+
+    return layer;
+  }
+
+  function setInitialFeaturedComponentSlide() {
+    const slide = featuredComponentSlides[featuredComponentIndex];
 
     if (featuredComponentCard) {
       featuredComponentCard.href = slide.url;
     }
 
     if (featuredComponentImage) {
-      featuredComponentImage.style.backgroundImage = `url('${slide.image}')`;
-      featuredComponentImage.style.backgroundSize = "cover";
-      featuredComponentImage.style.backgroundPosition = "center";
+      featuredComponentImage.innerHTML = "";
+      featuredComponentImage.appendChild(createFeaturedComponentImageLayer(slide.image, "0%"));
     }
 
     if (featuredComponentTitle) {
@@ -369,38 +386,68 @@
     }
   }
 
-  function transitionToFeaturedComponentSlide(index) {
-    if (!featuredComponentCard || !featuredComponentImage || !featuredComponentTitle || !featuredComponentSpecs) {
+  function swipeToFeaturedComponentSlide(nextIndex) {
+    if (
+      isFeaturedComponentSliding ||
+      !featuredComponentCard ||
+      !featuredComponentImage ||
+      !featuredComponentTitle ||
+      !featuredComponentSpecs
+    ) {
       return;
     }
 
-    featuredComponentImage.style.opacity = "0";
-    featuredComponentImage.style.transform = "scale(1.025)";
+    isFeaturedComponentSliding = true;
+
+    const nextSlide = featuredComponentSlides[nextIndex];
+    const currentLayer = featuredComponentImage.querySelector("div");
+    const nextLayer = createFeaturedComponentImageLayer(nextSlide.image, "100%");
+
+    featuredComponentImage.appendChild(nextLayer);
 
     if (featuredComponentInfo) {
       featuredComponentInfo.style.opacity = "0";
-      featuredComponentInfo.style.transform = "translateY(8px)";
+      featuredComponentInfo.style.transform = "translateX(-18px)";
     }
 
-    setTimeout(() => {
-      updateFeaturedComponentSlide(index);
+    requestAnimationFrame(() => {
+      if (currentLayer) {
+        currentLayer.style.transform = "translateX(-100%)";
+      }
 
-      featuredComponentImage.style.opacity = "1";
-      featuredComponentImage.style.transform = "scale(1)";
+      nextLayer.style.transform = "translateX(0%)";
+    });
+
+    setTimeout(() => {
+      featuredComponentCard.href = nextSlide.url;
+      featuredComponentTitle.textContent = nextSlide.title;
+      featuredComponentSpecs.textContent = nextSlide.specs;
 
       if (featuredComponentInfo) {
-        featuredComponentInfo.style.opacity = "1";
-        featuredComponentInfo.style.transform = "translateY(0)";
+        featuredComponentInfo.style.transform = "translateX(18px)";
+
+        requestAnimationFrame(() => {
+          featuredComponentInfo.style.opacity = "1";
+          featuredComponentInfo.style.transform = "translateX(0)";
+        });
       }
-    }, 450);
+    }, 260);
+
+    setTimeout(() => {
+      featuredComponentImage.innerHTML = "";
+      featuredComponentImage.appendChild(createFeaturedComponentImageLayer(nextSlide.image, "0%"));
+
+      featuredComponentIndex = nextIndex;
+      isFeaturedComponentSliding = false;
+    }, 780);
   }
 
   if (featuredComponentCard && featuredComponentImage && featuredComponentTitle && featuredComponentSpecs) {
-    updateFeaturedComponentSlide(featuredComponentIndex);
+    setInitialFeaturedComponentSlide();
 
     setInterval(() => {
-      featuredComponentIndex = (featuredComponentIndex + 1) % featuredComponentSlides.length;
-      transitionToFeaturedComponentSlide(featuredComponentIndex);
+      const nextIndex = (featuredComponentIndex + 1) % featuredComponentSlides.length;
+      swipeToFeaturedComponentSlide(nextIndex);
     }, 7000);
   }
 </script>
