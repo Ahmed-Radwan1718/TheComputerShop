@@ -1135,6 +1135,7 @@ body.nav-menu-open {
 }
 
 .product-carousel-main {
+  position: relative;
   width: 100%;
   aspect-ratio: 2400 / 1792;
   border-radius: 28px;
