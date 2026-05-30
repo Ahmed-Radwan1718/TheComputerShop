@@ -119,7 +119,7 @@
   </div>
 
   <h3>Intel Core Ultra 5 245K</h3>
-  <p>Intel | Core Ultra 5 | 14 Cores</p>
+  <p>Intel | Core Ultra 5 | LGA 1851 | 14 Cores</p>
   <div class="signature-build-price">Price coming soon</div>
 </a>
 
@@ -133,7 +133,7 @@
   </div>
 
   <h3>Intel Core Ultra 7 265K</h3>
-  <p>Intel | Core Ultra 7 | 20 Cores</p>
+  <p>Intel | Core Ultra 7 | LGA 1851 | 20 Cores</p>
   <div class="signature-build-price">Price coming soon</div>
 </a>
 
@@ -147,7 +147,7 @@
   </div>
 
   <h3>Intel Core Ultra 9 285K</h3>
-  <p>Intel | Core Ultra 9 | 24 Cores</p>
+  <p>Intel | Core Ultra 9 | LGA 1851 | 24 Cores</p>
   <div class="signature-build-price">Price coming soon</div>
 </a>
 </div>
@@ -156,14 +156,107 @@
 </main>
 
 <script>
+  function normalizeFilterValue(value) {
+    return String(value || "")
+      .toLowerCase()
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function getCheckboxLabelText(checkbox) {
+    const label = checkbox.closest("label");
+    return label ? label.textContent.trim() : "";
+  }
+
+  function getSelectedFilterGroups() {
+    return Array.from(document.querySelectorAll(".filter-item"))
+      .map((filterItem) => {
+        return Array.from(filterItem.querySelectorAll("input[type='checkbox']:checked"))
+          .map((checkbox) => getCheckboxLabelText(checkbox));
+      })
+      .filter((group) => group.length > 0);
+  }
+
+  function getCardFilterTags(card) {
+    const specsLine = card.querySelector("p");
+
+    if (!specsLine) {
+      return [];
+    }
+
+    return specsLine.textContent
+      .split("|")
+      .map((tag) => normalizeFilterValue(tag));
+  }
+
+  function cardMatchesFilters(card, selectedGroups) {
+    const cardTags = getCardFilterTags(card);
+    const cardSearchText = cardTags.join(" ");
+
+    return selectedGroups.every((group) => {
+      return group.some((selectedValue) => {
+        const normalizedSelectedValue = normalizeFilterValue(selectedValue);
+
+        return (
+          cardTags.includes(normalizedSelectedValue) ||
+          cardSearchText.includes(normalizedSelectedValue)
+        );
+      });
+    });
+  }
+
+  function updateComponentFilters() {
+    const selectedGroups = getSelectedFilterGroups();
+    const cards = Array.from(document.querySelectorAll(".signature-build-card"));
+    let visibleCards = 0;
+
+    cards.forEach((card) => {
+      const shouldShow = selectedGroups.length === 0 || cardMatchesFilters(card, selectedGroups);
+
+      card.style.display = shouldShow ? "" : "none";
+
+      if (shouldShow) {
+        visibleCards += 1;
+      }
+    });
+
+    const grid = document.querySelector(".signature-builds-grid");
+
+    if (!grid) {
+      return;
+    }
+
+    let emptyMessage = document.getElementById("component-filter-empty");
+
+    if (!emptyMessage) {
+      emptyMessage = document.createElement("div");
+      emptyMessage.id = "component-filter-empty";
+      emptyMessage.textContent = "No CPUs match the selected filters.";
+      emptyMessage.style.gridColumn = "1 / -1";
+      emptyMessage.style.padding = "28px";
+      emptyMessage.style.borderRadius = "18px";
+      emptyMessage.style.background = "rgba(255, 255, 255, 0.055)";
+      emptyMessage.style.color = "rgba(255, 255, 255, 0.72)";
+      emptyMessage.style.fontSize = "15px";
+      emptyMessage.style.lineHeight = "1.6";
+      grid.appendChild(emptyMessage);
+    }
+
+    emptyMessage.style.display = visibleCards === 0 && selectedGroups.length > 0 ? "block" : "none";
+  }
+
   document.querySelectorAll(".filter-toggle").forEach((button) => {
     button.addEventListener("click", () => {
       button.closest(".filter-item").classList.toggle("open");
     });
   });
-</script>
 
-<script>
+  document.querySelectorAll(".filter-content input[type='checkbox']").forEach((checkbox) => {
+    checkbox.addEventListener("change", updateComponentFilters);
+  });
+
+  updateComponentFilters();
+
   const menuButton = document.querySelector(".hamburger-toggle");
   const mainMenu = document.querySelector(".nav-menu-main");
   const componentsMenu = document.querySelector(".nav-menu-components");
