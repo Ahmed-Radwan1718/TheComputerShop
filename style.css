@@ -2441,6 +2441,43 @@ body.nav-menu-open {
   pointer-events: none;
 }
 
+#featured-component-carousel {
+  position: relative;
+  overflow: hidden;
+}
+
+.featured-component-progress-track {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 18px;
+  z-index: 5;
+  height: 3px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.16);
+  box-shadow: 0 0 18px rgba(255, 255, 255, 0.08);
+}
+
+.featured-component-progress-bar {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: rgba(255, 255, 255, 0.82);
+  transform-origin: left;
+  animation: featuredComponentProgress 7s linear infinite;
+}
+
+@keyframes featuredComponentProgress {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
 .component-wall-card-info {
   position: absolute;
   left: 24px;
