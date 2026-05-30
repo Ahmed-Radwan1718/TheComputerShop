@@ -355,7 +355,26 @@
       componentsMenu.classList.remove("active");
       mainMenu.classList.add("active");
     });
-  </script>
+</script>
+
+<script>
+  const featuredCarouselTrack = document.querySelector(".featured-carousel-track");
+  const featuredSlides = document.querySelectorAll(".featured-slide");
+
+  if (featuredCarouselTrack && featuredSlides.length > 1) {
+    let featuredSlideIndex = 0;
+
+    setInterval(() => {
+      featuredSlideIndex = (featuredSlideIndex + 1) % featuredSlides.length;
+
+      featuredCarouselTrack.style.transform = `translateX(-${featuredSlideIndex * 100}%)`;
+
+      featuredSlides.forEach((slide, index) => {
+        slide.classList.toggle("active", index === featuredSlideIndex);
+      });
+    }, 7000);
+  }
+</script>
 
 <footer class="site-footer">
   <div class="site-footer-inner">
