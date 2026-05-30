@@ -2850,29 +2850,29 @@ images: Array.from({ length: 4 }, (_, index) => {
     return thumbnails.findIndex((thumbnail) => thumbnail.classList.contains("active"));
   }
 
-  function showProductImageByIndex(index, direction) {
-    const thumbnails = Array.from(document.querySelectorAll(".product-thumbnail"));
+function showProductImageByIndex(index, direction) {
+  const thumbnails = Array.from(document.querySelectorAll(".product-thumbnail"));
 
-    if (!thumbnails.length) {
-      return;
-    }
-
-    const safeIndex = (index + thumbnails.length) % thumbnails.length;
-    const selectedThumbnail = thumbnails[safeIndex];
-
-    slideProductMainImage(selectedThumbnail.dataset.image, direction, () => {
-      thumbnails.forEach((thumbnail) => {
-        thumbnail.classList.remove("active");
-      });
-
-      selectedThumbnail.classList.add("active");
-      selectedThumbnail.scrollIntoView({
-        behavior: "smooth",
-        inline: "center",
-        block: "nearest"
-      });
-    });
+  if (!thumbnails.length || isProductCarouselSliding) {
+    return;
   }
+
+  const safeIndex = (index + thumbnails.length) % thumbnails.length;
+  const selectedThumbnail = thumbnails[safeIndex];
+
+  thumbnails.forEach((thumbnail) => {
+    thumbnail.classList.remove("active");
+  });
+
+  selectedThumbnail.classList.add("active");
+  selectedThumbnail.scrollIntoView({
+    behavior: "smooth",
+    inline: "center",
+    block: "nearest"
+  });
+
+  slideProductMainImage(selectedThumbnail.dataset.image, direction);
+}
 
   function setupProductThumbnailClicks() {
     const productThumbnails = Array.from(document.querySelectorAll(".product-thumbnail"));
