@@ -2448,22 +2448,19 @@ body.nav-menu-open {
 
 .featured-component-progress-track {
   position: absolute;
-  left: 24px;
-  right: 24px;
-  bottom: 18px;
+  left: 0;
+  right: 0;
+  bottom: 0;
   z-index: 5;
-  height: 3px;
-  border-radius: 999px;
+  height: 4px;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.16);
-  box-shadow: 0 0 18px rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .featured-component-progress-bar {
   width: 100%;
   height: 100%;
-  border-radius: inherit;
-  background: rgba(255, 255, 255, 0.82);
+  background: rgba(255, 255, 255, 0.85);
   transform-origin: left;
   animation: featuredComponentProgress 7s linear infinite;
 }
