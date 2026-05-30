@@ -336,124 +336,129 @@
   const featuredComponentTitle = document.getElementById("featured-component-carousel-title");
   const featuredComponentSpecs = document.getElementById("featured-component-carousel-specs");
   const featuredComponentInfo = featuredComponentTitle ? featuredComponentTitle.closest(".component-wall-card-info") : null;
+  const featuredComponentProgressBar = document.querySelector(".featured-component-progress-bar");
 
   let featuredComponentIndex = 0;
-  let isFeaturedComponentSliding = false;
+  let featuredComponentInterval = null;
 
   featuredComponentSlides.forEach((slide) => {
     const preloadImage = new Image();
     preloadImage.src = slide.image;
   });
 
-  if (featuredComponentImage) {
+  function buildFeaturedComponentTrack() {
+    if (!featuredComponentImage) {
+      return null;
+    }
+
     featuredComponentImage.style.position = "relative";
     featuredComponentImage.style.overflow = "hidden";
     featuredComponentImage.style.backgroundImage = "none";
+
+    const track = document.createElement("div");
+    track.id = "featured-component-track";
+    track.style.position = "absolute";
+    track.style.inset = "0";
+    track.style.display = "flex";
+    track.style.width = "100%";
+    track.style.height = "100%";
+    track.style.transform = "translate3d(0, 0, 0)";
+    track.style.transition = "transform 950ms cubic-bezier(0.22, 1, 0.36, 1)";
+    track.style.willChange = "transform";
+
+    const slidesWithClone = [...featuredComponentSlides, featuredComponentSlides[0]];
+
+    slidesWithClone.forEach((slide) => {
+      const slideElement = document.createElement("div");
+      slideElement.style.flex = "0 0 100%";
+      slideElement.style.width = "100%";
+      slideElement.style.height = "100%";
+      slideElement.style.backgroundImage = `url('${slide.image}')`;
+      slideElement.style.backgroundSize = "cover";
+      slideElement.style.backgroundPosition = "center";
+      slideElement.style.transform = "translateZ(0)";
+
+      track.appendChild(slideElement);
+    });
+
+    featuredComponentImage.innerHTML = "";
+    featuredComponentImage.appendChild(track);
+
+    return track;
   }
 
-  if (featuredComponentInfo) {
-    featuredComponentInfo.style.transition = "opacity 0.55s ease, transform 0.55s ease";
+  const featuredComponentTrack = buildFeaturedComponentTrack();
+
+  function restartFeaturedComponentProgress() {
+    if (!featuredComponentProgressBar) {
+      return;
+    }
+
+    featuredComponentProgressBar.style.animation = "none";
+    featuredComponentProgressBar.offsetHeight;
+    featuredComponentProgressBar.style.animation = "featuredComponentProgress 7s linear forwards";
   }
 
-  function createFeaturedComponentImageLayer(imageUrl, startPosition) {
-    const layer = document.createElement("div");
-
-    layer.style.position = "absolute";
-    layer.style.inset = "0";
-    layer.style.backgroundImage = `url('${imageUrl}')`;
-    layer.style.backgroundSize = "cover";
-    layer.style.backgroundPosition = "center";
-    layer.style.transform = `translateX(${startPosition})`;
-    layer.style.transition = "transform 0.75s cubic-bezier(0.22, 1, 0.36, 1)";
-    layer.style.willChange = "transform";
-
-    return layer;
-  }
-
-  function setInitialFeaturedComponentSlide() {
-    const slide = featuredComponentSlides[featuredComponentIndex];
+  function updateFeaturedComponentText(index) {
+    const slide = featuredComponentSlides[index];
 
     if (featuredComponentCard) {
       featuredComponentCard.href = slide.url;
     }
 
-    if (featuredComponentImage) {
-      featuredComponentImage.innerHTML = "";
-      featuredComponentImage.appendChild(createFeaturedComponentImageLayer(slide.image, "0%"));
+    if (featuredComponentInfo) {
+      featuredComponentInfo.style.transition = "opacity 350ms ease, transform 350ms ease";
+      featuredComponentInfo.style.opacity = "0";
+      featuredComponentInfo.style.transform = "translateX(-14px)";
     }
 
-    if (featuredComponentTitle) {
-      featuredComponentTitle.textContent = slide.title;
-    }
+    setTimeout(() => {
+      if (featuredComponentTitle) {
+        featuredComponentTitle.textContent = slide.title;
+      }
 
-    if (featuredComponentSpecs) {
-      featuredComponentSpecs.textContent = slide.specs;
-    }
+      if (featuredComponentSpecs) {
+        featuredComponentSpecs.textContent = slide.specs;
+      }
+
+      if (featuredComponentInfo) {
+        featuredComponentInfo.style.opacity = "1";
+        featuredComponentInfo.style.transform = "translateX(0)";
+      }
+    }, 220);
   }
 
-  function swipeToFeaturedComponentSlide(nextIndex) {
-    if (
-      isFeaturedComponentSliding ||
-      !featuredComponentCard ||
-      !featuredComponentImage ||
-      !featuredComponentTitle ||
-      !featuredComponentSpecs
-    ) {
+  function moveFeaturedComponentCarousel() {
+    if (!featuredComponentTrack) {
       return;
     }
 
-    isFeaturedComponentSliding = true;
+    featuredComponentIndex += 1;
 
-    const nextSlide = featuredComponentSlides[nextIndex];
-    const currentLayer = featuredComponentImage.querySelector("div");
-    const nextLayer = createFeaturedComponentImageLayer(nextSlide.image, "100%");
+    featuredComponentTrack.style.transition = "transform 950ms cubic-bezier(0.22, 1, 0.36, 1)";
+    featuredComponentTrack.style.transform = `translate3d(-${featuredComponentIndex * 100}%, 0, 0)`;
 
-    featuredComponentImage.appendChild(nextLayer);
+    const realIndex = featuredComponentIndex % featuredComponentSlides.length;
+    updateFeaturedComponentText(realIndex);
+    restartFeaturedComponentProgress();
 
-    if (featuredComponentInfo) {
-      featuredComponentInfo.style.opacity = "0";
-      featuredComponentInfo.style.transform = "translateX(-18px)";
+    if (featuredComponentIndex === featuredComponentSlides.length) {
+      setTimeout(() => {
+        featuredComponentTrack.style.transition = "none";
+        featuredComponentTrack.style.transform = "translate3d(0, 0, 0)";
+        featuredComponentIndex = 0;
+
+        featuredComponentTrack.offsetHeight;
+        featuredComponentTrack.style.transition = "transform 950ms cubic-bezier(0.22, 1, 0.36, 1)";
+      }, 970);
     }
-
-    requestAnimationFrame(() => {
-      if (currentLayer) {
-        currentLayer.style.transform = "translateX(-100%)";
-      }
-
-      nextLayer.style.transform = "translateX(0%)";
-    });
-
-    setTimeout(() => {
-      featuredComponentCard.href = nextSlide.url;
-      featuredComponentTitle.textContent = nextSlide.title;
-      featuredComponentSpecs.textContent = nextSlide.specs;
-
-      if (featuredComponentInfo) {
-        featuredComponentInfo.style.transform = "translateX(18px)";
-
-        requestAnimationFrame(() => {
-          featuredComponentInfo.style.opacity = "1";
-          featuredComponentInfo.style.transform = "translateX(0)";
-        });
-      }
-    }, 260);
-
-    setTimeout(() => {
-      featuredComponentImage.innerHTML = "";
-      featuredComponentImage.appendChild(createFeaturedComponentImageLayer(nextSlide.image, "0%"));
-
-      featuredComponentIndex = nextIndex;
-      isFeaturedComponentSliding = false;
-    }, 780);
   }
 
-  if (featuredComponentCard && featuredComponentImage && featuredComponentTitle && featuredComponentSpecs) {
-    setInitialFeaturedComponentSlide();
+  if (featuredComponentCard && featuredComponentImage && featuredComponentTitle && featuredComponentSpecs && featuredComponentTrack) {
+    updateFeaturedComponentText(0);
+    restartFeaturedComponentProgress();
 
-    setInterval(() => {
-      const nextIndex = (featuredComponentIndex + 1) % featuredComponentSlides.length;
-      swipeToFeaturedComponentSlide(nextIndex);
-    }, 7000);
+    featuredComponentInterval = setInterval(moveFeaturedComponentCarousel, 7000);
   }
 </script>
 
