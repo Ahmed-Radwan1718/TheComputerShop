@@ -2703,8 +2703,7 @@ images: Array.from({ length: 4 }, (_, index) => {
       priceText: "Insert price here",
       priceNumber: null,
       url: "product.html?product=fractal-design-north-xl-charcoal-black",
-      images: Array.from({ length: 12 }, (_, index) => {
-        const imageNumber = index + 1;
+      images: [1, 2, 3, 4, 6, 8, 9, 11].map((imageNumber) => {
         return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Cases/fractal-design-north-xl-charcoal-black-${imageNumber}.jpeg`;
       }),
       defaultVariant: "charcoal-black",
@@ -2715,10 +2714,9 @@ images: Array.from({ length: 4 }, (_, index) => {
           capacity: "Charcoal Black",
           priceText: "Insert price here",
           priceNumber: null,
-          images: Array.from({ length: 12 }, (_, index) => {
-            const imageNumber = index + 1;
-            return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Cases/fractal-design-north-xl-charcoal-black-${imageNumber}.jpeg`;
-          }),
+      images: [1, 2, 3, 4, 6, 8, 9, 11].map((imageNumber) => {
+        return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Cases/fractal-design-north-xl-charcoal-black-${imageNumber}.jpeg`;
+      }),
           specs: [
             ["Selected Color", "Charcoal Black"],
             ["Color", "Charcoal Black"]
