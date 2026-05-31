@@ -262,6 +262,29 @@
     });
   });
 
+  let filterTransitionTimer;
+
+  function runFilterTransition() {
+    const grid = document.querySelector(".signature-builds-grid");
+
+    if (!grid) {
+      updateComponentFilters();
+      return;
+    }
+
+    grid.classList.add("filter-is-updating");
+
+    clearTimeout(filterTransitionTimer);
+
+    filterTransitionTimer = setTimeout(() => {
+      updateComponentFilters();
+
+      requestAnimationFrame(() => {
+        grid.classList.remove("filter-is-updating");
+      });
+    }, 140);
+  }
+
   document.querySelectorAll(".filter-content input[type='checkbox']").forEach((checkbox) => {
     checkbox.addEventListener("change", runFilterTransition);
   });
