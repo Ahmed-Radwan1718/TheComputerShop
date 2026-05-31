@@ -107,7 +107,7 @@
       </div>
 
 <div class="signature-builds-grid">
-<a href="product.html?product=aorus-waterforce-ii-360" class="signature-build-card product-card-link">
+<a href="product.html?product=aorus-waterforce-ii-360" class="signature-build-card product-card-link" data-filter-tags="Gigabyte AIO Liquid Cooler 360mm ARGB">
   <div class="signature-build-image-frame">
     <img
       src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Coolers/gigabyte-aorus-waterforce-ii-360-1.jpeg"
@@ -126,14 +126,148 @@
 </main>
 
 <script>
+  function normalizeFilterValue(value) {
+    return String(value || "")
+      .toLowerCase()
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function compactFilterValue(value) {
+    return normalizeFilterValue(value).replace(/[^a-z0-9]/g, "");
+  }
+
+  function getCheckboxLabelText(checkbox) {
+    const label = checkbox.closest("label");
+    return label ? label.textContent.trim() : "";
+  }
+
+  function getSelectedFilterGroups() {
+    return Array.from(document.querySelectorAll(".filter-item"))
+      .map((filterItem) => {
+        return Array.from(filterItem.querySelectorAll("input[type='checkbox']:checked"))
+          .map((checkbox) => getCheckboxLabelText(checkbox));
+      })
+      .filter((group) => group.length > 0);
+  }
+
+  function getCardFilterText(card) {
+    const title = card.querySelector("h3");
+    const specsLine = card.querySelector("p");
+    const extraTags = card.getAttribute("data-filter-tags") || "";
+
+    return [
+      title ? title.textContent : "",
+      specsLine ? specsLine.textContent : "",
+      extraTags
+    ].join(" | ");
+  }
+
+  function cardMatchesFilters(card, selectedGroups) {
+    const cardFilterText = getCardFilterText(card);
+    const cardSearchText = normalizeFilterValue(cardFilterText);
+    const compactCardSearchText = compactFilterValue(cardFilterText);
+
+    return selectedGroups.every((group) => {
+      return group.some((selectedValue) => {
+        const normalizedSelectedValue = normalizeFilterValue(selectedValue);
+        const compactSelectedValue = compactFilterValue(selectedValue);
+
+        if (normalizedSelectedValue === "argb") {
+          return cardSearchText.includes("argb");
+        }
+
+        if (normalizedSelectedValue === "rgb") {
+          return !cardSearchText.includes("argb") && !cardSearchText.includes("non-rgb") && !cardSearchText.includes("non rgb") && cardSearchText.includes("rgb");
+        }
+
+        if (normalizedSelectedValue === "non-rgb") {
+          return cardSearchText.includes("non-rgb") || cardSearchText.includes("non rgb");
+        }
+
+        return (
+          cardSearchText.includes(normalizedSelectedValue) ||
+          compactCardSearchText.includes(compactSelectedValue)
+        );
+      });
+    });
+  }
+
+  function updateComponentFilters() {
+    const selectedGroups = getSelectedFilterGroups();
+    const cards = Array.from(document.querySelectorAll(".signature-build-card"));
+    let visibleCards = 0;
+
+    cards.forEach((card) => {
+      const shouldShow = selectedGroups.length === 0 || cardMatchesFilters(card, selectedGroups);
+
+      card.style.display = shouldShow ? "" : "none";
+
+      if (shouldShow) {
+        visibleCards += 1;
+      }
+    });
+
+    const grid = document.querySelector(".signature-builds-grid");
+
+    if (!grid) {
+      return;
+    }
+
+    let emptyMessage = document.getElementById("component-filter-empty");
+
+    if (!emptyMessage) {
+      emptyMessage = document.createElement("div");
+      emptyMessage.id = "component-filter-empty";
+      emptyMessage.textContent = "No CPU coolers match the selected filters.";
+      emptyMessage.style.gridColumn = "1 / -1";
+      emptyMessage.style.padding = "28px";
+      emptyMessage.style.borderRadius = "18px";
+      emptyMessage.style.background = "rgba(255, 255, 255, 0.055)";
+      emptyMessage.style.color = "rgba(255, 255, 255, 0.72)";
+      emptyMessage.style.fontSize = "15px";
+      emptyMessage.style.lineHeight = "1.6";
+      grid.appendChild(emptyMessage);
+    }
+
+    emptyMessage.style.display = visibleCards === 0 && selectedGroups.length > 0 ? "block" : "none";
+  }
+
+  let filterTransitionTimer;
+
+  function runFilterTransition() {
+    const grid = document.querySelector(".signature-builds-grid");
+
+    if (!grid) {
+      updateComponentFilters();
+      return;
+    }
+
+    grid.classList.add("filter-is-updating");
+
+    clearTimeout(filterTransitionTimer);
+
+    filterTransitionTimer = setTimeout(() => {
+      updateComponentFilters();
+
+      requestAnimationFrame(() => {
+        grid.classList.remove("filter-is-updating");
+      });
+    }, 140);
+  }
+
   document.querySelectorAll(".filter-toggle").forEach((button) => {
     button.addEventListener("click", () => {
       button.closest(".filter-item").classList.toggle("open");
     });
   });
-</script>
 
-<script>
+  document.querySelectorAll(".filter-content input[type='checkbox']").forEach((checkbox) => {
+    checkbox.addEventListener("change", runFilterTransition);
+  });
+
+  updateComponentFilters();
+
   const menuButton = document.querySelector(".hamburger-toggle");
   const mainMenu = document.querySelector(".nav-menu-main");
   const componentsMenu = document.querySelector(".nav-menu-components");
