@@ -3095,17 +3095,19 @@ images: Array.from({ length: 4 }, (_, index) => {
     });
   });
 
-  let isProductCarouselSliding = false;
+  let productCarouselSlideTimer;
 
   function slideProductMainImage(nextImage, direction, afterSlide) {
     const productMainImage = document.getElementById("product-main-image");
     const carouselFrame = document.querySelector(".product-carousel-main");
 
-    if (!productMainImage || !carouselFrame || isProductCarouselSliding) {
+    if (!productMainImage || !carouselFrame) {
       return;
     }
 
-    if (productMainImage.src === nextImage) {
+    const currentImage = carouselFrame.dataset.currentImage || productMainImage.src;
+
+    if (currentImage === nextImage) {
       if (afterSlide) {
         afterSlide();
       }
@@ -3113,12 +3115,18 @@ images: Array.from({ length: 4 }, (_, index) => {
       return;
     }
 
-    isProductCarouselSliding = true;
+    clearTimeout(productCarouselSlideTimer);
+
+    carouselFrame.querySelectorAll(".product-carousel-slide-layer").forEach((layer) => {
+      layer.remove();
+    });
+
+    carouselFrame.classList.remove("is-sliding");
 
     const currentLayer = document.createElement("img");
     const nextLayer = document.createElement("img");
 
-    currentLayer.src = productMainImage.src;
+    currentLayer.src = currentImage;
     nextLayer.src = nextImage;
 
     currentLayer.className = "product-carousel-slide-layer";
@@ -3133,6 +3141,7 @@ images: Array.from({ length: 4 }, (_, index) => {
     carouselFrame.appendChild(currentLayer);
     carouselFrame.appendChild(nextLayer);
     carouselFrame.classList.add("is-sliding");
+    carouselFrame.dataset.currentImage = nextImage;
 
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
@@ -3141,14 +3150,12 @@ images: Array.from({ length: 4 }, (_, index) => {
       });
     });
 
-    setTimeout(() => {
+    productCarouselSlideTimer = setTimeout(() => {
       productMainImage.src = nextImage;
 
       currentLayer.remove();
       nextLayer.remove();
       carouselFrame.classList.remove("is-sliding");
-
-      isProductCarouselSliding = false;
 
       if (afterSlide) {
         afterSlide();
@@ -3164,7 +3171,7 @@ images: Array.from({ length: 4 }, (_, index) => {
 function showProductImageByIndex(index, direction) {
   const thumbnails = Array.from(document.querySelectorAll(".product-thumbnail"));
 
-  if (!thumbnails.length || isProductCarouselSliding) {
+  if (!thumbnails.length) {
     return;
   }
 
