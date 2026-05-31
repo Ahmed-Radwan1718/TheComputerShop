@@ -184,6 +184,89 @@
       .filter((group) => group.length > 0);
   }
 
+  function getSelectedFilterCheckboxes() {
+    return Array.from(document.querySelectorAll(".filter-content input[type='checkbox']:checked"));
+  }
+
+  function runFilterUpdateFromChip() {
+    if (typeof runFilterTransition === "function") {
+      runFilterTransition();
+    } else {
+      updateComponentFilters();
+    }
+  }
+
+  function updateSelectedFilterChips() {
+    const header = document.querySelector(".signature-builds-header");
+
+    if (!header) {
+      return;
+    }
+
+    let chipsRow = document.getElementById("selected-filter-chips");
+
+    if (!chipsRow) {
+      chipsRow = document.createElement("div");
+      chipsRow.id = "selected-filter-chips";
+      chipsRow.className = "selected-filter-chips";
+      header.insertAdjacentElement("afterend", chipsRow);
+    }
+
+    const selectedCheckboxes = getSelectedFilterCheckboxes();
+
+    if (selectedCheckboxes.length === 0) {
+      chipsRow.innerHTML = "";
+      chipsRow.style.display = "none";
+      return;
+    }
+
+    chipsRow.innerHTML = "";
+    chipsRow.style.display = "flex";
+
+    const label = document.createElement("span");
+    label.className = "selected-filter-label";
+    label.textContent = "Selected:";
+    chipsRow.appendChild(label);
+
+    selectedCheckboxes.forEach((checkbox) => {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "selected-filter-chip";
+
+      const chipText = document.createElement("span");
+      chipText.textContent = getCheckboxLabelText(checkbox);
+
+      const chipIcon = document.createElement("span");
+      chipIcon.textContent = "×";
+      chipIcon.setAttribute("aria-hidden", "true");
+
+      chip.appendChild(chipText);
+      chip.appendChild(chipIcon);
+
+      chip.addEventListener("click", () => {
+        checkbox.checked = false;
+        runFilterUpdateFromChip();
+      });
+
+      chipsRow.appendChild(chip);
+    });
+
+    const clearButton = document.createElement("button");
+    clearButton.type = "button";
+    clearButton.className = "selected-filter-clear";
+    clearButton.textContent = "Clear all";
+
+    clearButton.addEventListener("click", () => {
+      document.querySelectorAll(".filter-content input[type='checkbox']:checked").forEach((checkbox) => {
+        checkbox.checked = false;
+      });
+
+      runFilterUpdateFromChip();
+    });
+
+    chipsRow.appendChild(clearButton);
+  }
+
   function getCardFilterText(card) {
     const title = card.querySelector("h3");
     const specsLine = card.querySelector("p");
@@ -222,6 +305,8 @@
 
   function updateComponentFilters() {
     const selectedGroups = getSelectedFilterGroups();
+    updateSelectedFilterChips();
+
     const cards = Array.from(document.querySelectorAll(".signature-build-card"));
     let visibleCards = 0;
 
