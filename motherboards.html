@@ -114,7 +114,7 @@
 </div>
 
 <div class="signature-builds-grid">
-<a href="product.html?product=z890-aorus-elite-wifi7" class="signature-build-card product-card-link">
+<a href="product.html?product=z890-aorus-elite-wifi7" class="signature-build-card product-card-link" data-filter-tags="Gigabyte AORUS Elite Z890 Intel LGA1851 LGA 1851 ATX WiFi7 WIFI 7 DDR5 Motherboard">
   <div class="signature-build-image-frame">
     <img
       src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Motherboards/gigabyte-z890-aorus-elite-wifi7-1.jpeg"
@@ -128,7 +128,7 @@
   <div class="signature-build-price">Price coming soon</div>
 </a>
 
-<a href="product.html?product=z890-aorus-master" class="signature-build-card product-card-link">
+<a href="product.html?product=z890-aorus-master" class="signature-build-card product-card-link" data-filter-tags="Gigabyte AORUS Master Z890 Intel LGA1851 LGA 1851 ATX WiFi7 WIFI 7 DDR5 Motherboard">
   <div class="signature-build-image-frame">
     <img
       src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Motherboards/gigabyte-z890-aorus-master-1.jpeg"
@@ -142,7 +142,7 @@
   <div class="signature-build-price">Price coming soon</div>
 </a>
 
-<a href="product.html?product=x870e-aorus-xtreme-x3d-ai-top" class="signature-build-card product-card-link">
+<a href="product.html?product=x870e-aorus-xtreme-x3d-ai-top" class="signature-build-card product-card-link" data-filter-tags="Gigabyte AORUS Xtreme X3D AI Top X870E AMD AM5 E-ATX WiFi7 WIFI 7 DDR5 Motherboard">
   <div class="signature-build-image-frame">
     <img
       src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Motherboards/gigabyte-x870e-aorus-xtreme-x3d-ai-top-1.jpeg"
@@ -156,7 +156,7 @@
   <div class="signature-build-price">Price coming soon</div>
 </a>
 
-<a href="product.html?product=x870e-aorus-elite-x3d" class="signature-build-card product-card-link">
+<a href="product.html?product=x870e-aorus-elite-x3d" class="signature-build-card product-card-link" data-filter-tags="Gigabyte AORUS Elite X3D X870E AMD AM5 ATX WiFi7 WIFI 7 DDR5 Motherboard">
   <div class="signature-build-image-frame">
     <img
       src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Motherboards/gigabyte-x870e-aorus-elite-x3d-1.jpeg"
@@ -170,7 +170,7 @@
   <div class="signature-build-price">Price coming soon</div>
 </a>
 
-<a href="product.html?product=b850-aorus-elite-wifi7" class="signature-build-card product-card-link">
+<a href="product.html?product=b850-aorus-elite-wifi7" class="signature-build-card product-card-link" data-filter-tags="Gigabyte AORUS Elite B850 AMD AM5 ATX WiFi7 WIFI 7 DDR5 Motherboard">
   <div class="signature-build-image-frame">
     <img
       src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Motherboards/gigabyte-b850-aorus-elite-wifi7-1.jpeg"
@@ -184,7 +184,7 @@
   <div class="signature-build-price">Price coming soon</div>
 </a>
 
-<a href="product.html?product=b860m-aorus-elite-wifi6e" class="signature-build-card product-card-link">
+<a href="product.html?product=b860m-aorus-elite-wifi6e" class="signature-build-card product-card-link" data-filter-tags="Gigabyte AORUS Elite B860M Intel B860 LGA1851 LGA 1851 Micro-ATX mATX WiFi6E WIFI 6E DDR5 Motherboard">
   <div class="signature-build-image-frame">
     <img
       src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Motherboards/gigabyte-b860m-aorus-elite-wifi6e-1.jpeg"
@@ -219,6 +219,57 @@
     return searchInput ? searchInput.value : "";
   }
 
+  function getSearchWords(value) {
+    return normalizeFilterValue(value)
+      .split(" ")
+      .map((word) => word.trim())
+      .filter(Boolean);
+  }
+
+  function getEditDistance(a, b) {
+    const matrix = Array.from({ length: a.length + 1 }, () => []);
+
+    for (let i = 0; i <= a.length; i += 1) {
+      matrix[i][0] = i;
+    }
+
+    for (let j = 0; j <= b.length; j += 1) {
+      matrix[0][j] = j;
+    }
+
+    for (let i = 1; i <= a.length; i += 1) {
+      for (let j = 1; j <= b.length; j += 1) {
+        const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+
+        matrix[i][j] = Math.min(
+          matrix[i - 1][j] + 1,
+          matrix[i][j - 1] + 1,
+          matrix[i - 1][j - 1] + cost
+        );
+      }
+    }
+
+    return matrix[a.length][b.length];
+  }
+
+  function wordsRoughlyMatch(searchWord, cardWord) {
+    if (!searchWord || !cardWord) {
+      return false;
+    }
+
+    if (cardWord.includes(searchWord) || searchWord.includes(cardWord)) {
+      return true;
+    }
+
+    if (searchWord.length < 4) {
+      return false;
+    }
+
+    const allowedMistakes = searchWord.length >= 5 ? 2 : 1;
+
+    return getEditDistance(searchWord, cardWord) <= allowedMistakes;
+  }
+
   function cardMatchesSearch(card, searchQuery) {
     const normalizedSearchQuery = normalizeFilterValue(searchQuery);
     const compactSearchQuery = compactFilterValue(searchQuery);
@@ -240,10 +291,21 @@
     const normalizedCardText = normalizeFilterValue(cardText);
     const compactCardText = compactFilterValue(cardText);
 
-    return (
+    if (
       normalizedCardText.includes(normalizedSearchQuery) ||
       compactCardText.includes(compactSearchQuery)
-    );
+    ) {
+      return true;
+    }
+
+    const searchWords = getSearchWords(searchQuery);
+    const cardWords = getSearchWords(cardText);
+
+    return searchWords.every((searchWord) => {
+      return cardWords.some((cardWord) => {
+        return wordsRoughlyMatch(searchWord, cardWord);
+      });
+    });
   }
 
   function getCheckboxLabelText(checkbox) {
