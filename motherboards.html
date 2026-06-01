@@ -530,53 +530,133 @@
 
 <script>
   const motherboardSearchInput = document.getElementById("component-search-input");
+  const motherboardSuggestionsBox = document.getElementById("component-search-suggestions");
 
-  if (motherboardSearchInput) {
-    const motherboardSearchSuggestions = [
-      "Search AORUS Z890 Master",
-      "Search AM5 motherboards",
-      "Search LGA 1851",
-      "Search ATX motherboards",
-      "Search B850 AORUS Elite"
+  if (motherboardSearchInput && motherboardSuggestionsBox) {
+    const motherboardPlaceholderSuggestions = [
+      "Search AORUS Master",
+      "Search Z890",
+      "Search AORUS Elite",
+      "Search AM5",
+      "Search LGA 1851"
     ];
 
-    let suggestionIndex = 0;
-    let characterIndex = 0;
-    let isDeletingSuggestion = false;
+    let placeholderSuggestionIndex = 0;
+    let placeholderCharacterIndex = 0;
+    let isDeletingPlaceholder = false;
 
-    function animateMotherboardSearchPlaceholder() {
-      if (!motherboardSearchInput) {
+    function normalizeMotherboardSearchText(value) {
+      return String(value || "")
+        .toLowerCase()
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function getMotherboardCardText(card) {
+      const title = card.querySelector("h3");
+      const specsLine = card.querySelector("p");
+      const extraTags = card.getAttribute("data-filter-tags") || "";
+
+      return [
+        title ? title.textContent : "",
+        specsLine ? specsLine.textContent : "",
+        extraTags
+      ].join(" ");
+    }
+
+    function motherboardQueryMatches(cardText, query) {
+      const normalizedCardText = normalizeMotherboardSearchText(cardText);
+      const queryWords = normalizeMotherboardSearchText(query).split(" ").filter(Boolean);
+
+      return queryWords.every((word) => normalizedCardText.includes(word));
+    }
+
+    function updateMotherboardSearchSuggestions() {
+      const query = motherboardSearchInput.value.trim();
+
+      if (!query) {
+        motherboardSuggestionsBox.innerHTML = "";
+        motherboardSuggestionsBox.classList.remove("active");
         return;
       }
 
-      const currentSuggestion = motherboardSearchSuggestions[suggestionIndex];
+      const matchingCards = Array.from(document.querySelectorAll(".signature-build-card"))
+        .filter((card) => motherboardQueryMatches(getMotherboardCardText(card), query))
+        .slice(0, 5);
 
-      if (motherboardSearchInput.value.trim().length === 0) {
-        motherboardSearchInput.placeholder = currentSuggestion.substring(0, characterIndex);
+      motherboardSuggestionsBox.innerHTML = "";
+
+      if (matchingCards.length === 0) {
+        motherboardSuggestionsBox.classList.remove("active");
+        return;
       }
 
-      if (!isDeletingSuggestion && characterIndex < currentSuggestion.length) {
-        characterIndex += 1;
+      matchingCards.forEach((card) => {
+        const title = card.querySelector("h3");
+        const specsLine = card.querySelector("p");
+        const href = card.getAttribute("href");
+
+        const suggestionButton = document.createElement("button");
+        suggestionButton.type = "button";
+        suggestionButton.className = "component-search-suggestion";
+
+        suggestionButton.innerHTML = `
+          <strong>${title ? title.textContent : "Motherboard"}</strong>
+          <span>${specsLine ? specsLine.textContent : ""}</span>
+        `;
+
+        suggestionButton.addEventListener("mousedown", (event) => {
+          event.preventDefault();
+
+          if (href) {
+            window.location.href = href;
+          }
+        });
+
+        motherboardSuggestionsBox.appendChild(suggestionButton);
+      });
+
+      motherboardSuggestionsBox.classList.add("active");
+    }
+
+    function animateMotherboardSearchPlaceholder() {
+      const currentSuggestion = motherboardPlaceholderSuggestions[placeholderSuggestionIndex];
+
+      if (motherboardSearchInput.value.trim().length === 0 && document.activeElement !== motherboardSearchInput) {
+        motherboardSearchInput.placeholder = currentSuggestion.substring(0, placeholderCharacterIndex);
+      }
+
+      if (!isDeletingPlaceholder && placeholderCharacterIndex < currentSuggestion.length) {
+        placeholderCharacterIndex += 1;
         setTimeout(animateMotherboardSearchPlaceholder, 70);
         return;
       }
 
-      if (!isDeletingSuggestion && characterIndex === currentSuggestion.length) {
-        isDeletingSuggestion = true;
+      if (!isDeletingPlaceholder && placeholderCharacterIndex === currentSuggestion.length) {
+        isDeletingPlaceholder = true;
         setTimeout(animateMotherboardSearchPlaceholder, 1200);
         return;
       }
 
-      if (isDeletingSuggestion && characterIndex > 0) {
-        characterIndex -= 1;
+      if (isDeletingPlaceholder && placeholderCharacterIndex > 0) {
+        placeholderCharacterIndex -= 1;
         setTimeout(animateMotherboardSearchPlaceholder, 35);
         return;
       }
 
-      isDeletingSuggestion = false;
-      suggestionIndex = (suggestionIndex + 1) % motherboardSearchSuggestions.length;
+      isDeletingPlaceholder = false;
+      placeholderSuggestionIndex = (placeholderSuggestionIndex + 1) % motherboardPlaceholderSuggestions.length;
       setTimeout(animateMotherboardSearchPlaceholder, 250);
     }
+
+    motherboardSearchInput.addEventListener("input", updateMotherboardSearchSuggestions);
+    motherboardSearchInput.addEventListener("focus", updateMotherboardSearchSuggestions);
+
+    document.addEventListener("click", (event) => {
+      if (!event.target.closest(".component-search-box")) {
+        motherboardSuggestionsBox.classList.remove("active");
+      }
+    });
 
     animateMotherboardSearchPlaceholder();
   }
