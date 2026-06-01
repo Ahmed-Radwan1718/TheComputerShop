@@ -212,7 +212,7 @@ body {
 .component-search-box {
   width: 100%;
   max-width: 520px;
-  margin-top: 22px;
+  margin: 22px auto 0;
 }
 
 .component-search-box input {
