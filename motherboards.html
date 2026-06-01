@@ -210,6 +210,42 @@
       .trim();
   }
 
+  function compactFilterValue(value) {
+    return normalizeFilterValue(value).replace(/[^a-z0-9]/g, "");
+  }
+
+  function getSearchQuery() {
+    const searchInput = document.getElementById("component-search-input");
+    return searchInput ? searchInput.value : "";
+  }
+
+  function cardMatchesSearch(card, searchQuery) {
+    const normalizedSearchQuery = normalizeFilterValue(searchQuery);
+    const compactSearchQuery = compactFilterValue(searchQuery);
+
+    if (!normalizedSearchQuery) {
+      return true;
+    }
+
+    const title = card.querySelector("h3");
+    const specsLine = card.querySelector("p");
+    const extraTags = card.getAttribute("data-filter-tags") || "";
+
+    const cardText = [
+      title ? title.textContent : "",
+      specsLine ? specsLine.textContent : "",
+      extraTags
+    ].join(" ");
+
+    const normalizedCardText = normalizeFilterValue(cardText);
+    const compactCardText = compactFilterValue(cardText);
+
+    return (
+      normalizedCardText.includes(normalizedSearchQuery) ||
+      compactCardText.includes(compactSearchQuery)
+    );
+  }
+
   function getCheckboxLabelText(checkbox) {
     const label = checkbox.closest("label");
     return label ? label.textContent.trim() : "";
@@ -369,13 +405,16 @@
 
   function updateComponentFilters() {
     const selectedGroups = getSelectedFilterGroups();
+    const searchQuery = getSearchQuery();
     updateSelectedFilterChips();
 
     const cards = Array.from(document.querySelectorAll(".signature-build-card"));
     let visibleCards = 0;
 
     cards.forEach((card) => {
-      const shouldShow = selectedGroups.length === 0 || cardMatchesFilters(card, selectedGroups);
+      const shouldShow =
+        (selectedGroups.length === 0 || cardMatchesFilters(card, selectedGroups)) &&
+        cardMatchesSearch(card, searchQuery);
 
       card.style.display = shouldShow ? "" : "none";
 
@@ -406,7 +445,10 @@
       grid.appendChild(emptyMessage);
     }
 
-    emptyMessage.style.display = visibleCards === 0 && selectedGroups.length > 0 ? "block" : "none";
+    emptyMessage.style.display =
+      visibleCards === 0 && (selectedGroups.length > 0 || searchQuery.trim().length > 0)
+        ? "block"
+        : "none";
   }
 
   document.querySelectorAll(".filter-toggle").forEach((button) => {
@@ -438,9 +480,23 @@
     }, 140);
   }
 
+  function runMotherboardSearchUpdate() {
+    if (typeof runFilterTransition === "function") {
+      runFilterTransition();
+    } else {
+      updateComponentFilters();
+    }
+  }
+
   document.querySelectorAll(".filter-content input[type='checkbox']").forEach((checkbox) => {
-    checkbox.addEventListener("change", runFilterTransition);
+    checkbox.addEventListener("change", runMotherboardSearchUpdate);
   });
+
+  const componentSearchInput = document.getElementById("component-search-input");
+
+  if (componentSearchInput) {
+    componentSearchInput.addEventListener("input", runMotherboardSearchUpdate);
+  }
 
   updateComponentFilters();
 
