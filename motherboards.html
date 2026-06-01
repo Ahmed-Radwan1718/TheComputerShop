@@ -525,5 +525,59 @@
   }
 </script>
 
+<script>
+  const motherboardSearchInput = document.getElementById("component-search-input");
+
+  if (motherboardSearchInput) {
+    const motherboardSearchSuggestions = [
+      "Search AORUS Z890 Master",
+      "Search AM5 motherboards",
+      "Search LGA 1851",
+      "Search ATX motherboards",
+      "Search B850 AORUS Elite"
+    ];
+
+    let suggestionIndex = 0;
+    let characterIndex = 0;
+    let isDeletingSuggestion = false;
+
+    function animateMotherboardSearchPlaceholder() {
+      if (!motherboardSearchInput) {
+        return;
+      }
+
+      const currentSuggestion = motherboardSearchSuggestions[suggestionIndex];
+
+      if (motherboardSearchInput.value.trim().length === 0) {
+        motherboardSearchInput.placeholder = currentSuggestion.substring(0, characterIndex);
+      }
+
+      if (!isDeletingSuggestion && characterIndex < currentSuggestion.length) {
+        characterIndex += 1;
+        setTimeout(animateMotherboardSearchPlaceholder, 70);
+        return;
+      }
+
+      if (!isDeletingSuggestion && characterIndex === currentSuggestion.length) {
+        isDeletingSuggestion = true;
+        setTimeout(animateMotherboardSearchPlaceholder, 1200);
+        return;
+      }
+
+      if (isDeletingSuggestion && characterIndex > 0) {
+        characterIndex -= 1;
+        setTimeout(animateMotherboardSearchPlaceholder, 35);
+        return;
+      }
+
+      isDeletingSuggestion = false;
+      suggestionIndex = (suggestionIndex + 1) % motherboardSearchSuggestions.length;
+      setTimeout(animateMotherboardSearchPlaceholder, 250);
+    }
+
+    animateMotherboardSearchPlaceholder();
+  }
+</script>
+
 </body>
 </html>
