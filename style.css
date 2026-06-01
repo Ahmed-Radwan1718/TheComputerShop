@@ -210,6 +210,7 @@ body {
 }
 
 .component-search-box {
+  position: relative;
   width: 100%;
   max-width: 520px;
   margin: 22px auto 0;
@@ -240,6 +241,64 @@ body {
   background: rgba(255, 255, 255, 0.095);
   border-color: rgba(255, 255, 255, 0.32);
   box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.055);
+}
+
+.component-search-suggestions {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 10px);
+  z-index: 90;
+  display: none;
+  padding: 8px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(34, 35, 34, 0.96);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.28);
+}
+
+.component-search-suggestions.active {
+  display: grid;
+  gap: 6px;
+}
+
+.component-search-suggestion {
+  width: 100%;
+  padding: 13px 15px;
+  border: none;
+  border-radius: 15px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.82);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.component-search-suggestion:hover {
+  background: rgba(255, 255, 255, 0.075);
+  color: white;
+  transform: translateX(2px);
+}
+
+.component-search-suggestion strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 14px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.component-search-suggestion span {
+  display: block;
+  color: rgba(255, 255, 255, 0.52);
+  font-size: 13px;
+  line-height: 1.45;
 }
 
 .selected-filter-chips {
