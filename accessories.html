@@ -75,14 +75,15 @@
 
       <div class="filter-item">
         <button class="filter-toggle" type="button"><span>Brand</span><span class="chevron">⌄</span></button>
-        <div class="filter-content">
-          <label><input type="checkbox"> ASUS</label>
-          <label><input type="checkbox"> Logitech</label>
-          <label><input type="checkbox"> Razer</label>
-          <label><input type="checkbox"> Corsair</label>
-          <label><input type="checkbox"> SteelSeries</label>
-          <label><input type="checkbox"> HyperX</label>
-        </div>
+<div class="filter-content">
+  <label><input type="checkbox"> ASUS</label>
+  <label><input type="checkbox"> Gigabyte</label>
+  <label><input type="checkbox"> Logitech</label>
+  <label><input type="checkbox"> Razer</label>
+  <label><input type="checkbox"> Corsair</label>
+  <label><input type="checkbox"> SteelSeries</label>
+  <label><input type="checkbox"> HyperX</label>
+</div>
       </div>
 
       <div class="filter-item">
@@ -95,10 +96,19 @@
     </aside>
 
     <section class="signature-products">
-      <div class="signature-builds-header">
-        <p class="signature-builds-eyebrow">Available Accessories</p>
-        <h2>Accessories</h2>
-      </div>
+<div class="signature-builds-header">
+  <p class="signature-builds-eyebrow">Available Accessories</p>
+  <h2>Accessories</h2>
+
+  <div class="component-search-box">
+    <input
+      id="component-search-input"
+      type="search"
+      placeholder="Search accessories..."
+      aria-label="Search accessories"
+    >
+  </div>
+</div>
 
 <div class="signature-builds-grid">
 <a href="product.html?product=razer-huntsman-v3-pro-mini" class="signature-build-card product-card-link" data-filter-tags="Razer Keyboard Wired RGB Mini 60% Gaming Keyboard">
@@ -176,6 +186,318 @@
 </main>
 
 <script>
+  function normalizeFilterValue(value) {
+    return String(value || "")
+      .toLowerCase()
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function compactFilterValue(value) {
+    return normalizeFilterValue(value).replace(/[^a-z0-9]/g, "");
+  }
+
+  function getSearchQuery() {
+    const searchInput = document.getElementById("component-search-input");
+    return searchInput ? searchInput.value : "";
+  }
+
+  function getSearchWords(value) {
+    return normalizeFilterValue(value)
+      .split(" ")
+      .map((word) => word.trim())
+      .filter(Boolean);
+  }
+
+  function getCheckboxLabelText(checkbox) {
+    const label = checkbox.closest("label");
+    return label ? label.textContent.trim() : "";
+  }
+
+  function getSelectedFilterGroups() {
+    return Array.from(document.querySelectorAll(".filter-item"))
+      .map((filterItem) => {
+        return Array.from(filterItem.querySelectorAll("input[type='checkbox']:checked"))
+          .map((checkbox) => getCheckboxLabelText(checkbox));
+      })
+      .filter((group) => group.length > 0);
+  }
+
+  function getSelectedFilterCheckboxes() {
+    return Array.from(document.querySelectorAll(".filter-content input[type='checkbox']:checked"));
+  }
+
+  function runFilterUpdateFromChip() {
+    if (typeof runFilterTransition === "function") {
+      runFilterTransition();
+    } else {
+      updateComponentFilters();
+    }
+  }
+
+  function updateSelectedFilterChips() {
+    const header = document.querySelector(".signature-builds-header");
+
+    if (!header) {
+      return;
+    }
+
+    let chipsRow = document.getElementById("selected-filter-chips");
+
+    if (!chipsRow) {
+      chipsRow = document.createElement("div");
+      chipsRow.id = "selected-filter-chips";
+      chipsRow.className = "selected-filter-chips";
+      header.insertAdjacentElement("afterend", chipsRow);
+    }
+
+    const selectedCheckboxes = getSelectedFilterCheckboxes();
+
+    if (selectedCheckboxes.length === 0) {
+      chipsRow.innerHTML = "";
+      chipsRow.style.display = "none";
+      return;
+    }
+
+    chipsRow.innerHTML = "";
+    chipsRow.style.display = "flex";
+
+    const label = document.createElement("span");
+    label.className = "selected-filter-label";
+    label.textContent = "Selected:";
+    chipsRow.appendChild(label);
+
+    selectedCheckboxes.forEach((checkbox) => {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "selected-filter-chip";
+
+      const chipText = document.createElement("span");
+      chipText.textContent = getCheckboxLabelText(checkbox);
+
+      const chipIcon = document.createElement("span");
+      chipIcon.textContent = "×";
+      chipIcon.setAttribute("aria-hidden", "true");
+
+      chip.appendChild(chipText);
+      chip.appendChild(chipIcon);
+
+      chip.addEventListener("click", () => {
+        checkbox.checked = false;
+        runFilterUpdateFromChip();
+      });
+
+      chipsRow.appendChild(chip);
+    });
+
+    const clearButton = document.createElement("button");
+    clearButton.type = "button";
+    clearButton.className = "selected-filter-clear";
+    clearButton.textContent = "Clear all";
+
+    clearButton.addEventListener("click", () => {
+      document.querySelectorAll(".filter-content input[type='checkbox']:checked").forEach((checkbox) => {
+        checkbox.checked = false;
+      });
+
+      runFilterUpdateFromChip();
+    });
+
+    chipsRow.appendChild(clearButton);
+  }
+
+  function getCardFilterText(card) {
+    const title = card.querySelector("h3");
+    const specsLine = card.querySelector("p");
+    const extraTags = card.getAttribute("data-filter-tags") || "";
+
+    return [
+      title ? title.textContent : "",
+      specsLine ? specsLine.textContent : "",
+      extraTags
+    ].join(" | ");
+  }
+
+  function cardMatchesFilters(card, selectedGroups) {
+    const cardFilterText = getCardFilterText(card);
+    const cardSearchText = normalizeFilterValue(cardFilterText);
+    const compactCardSearchText = compactFilterValue(cardFilterText);
+
+    return selectedGroups.every((group) => {
+      return group.some((selectedValue) => {
+        const normalizedSelectedValue = normalizeFilterValue(selectedValue);
+        const compactSelectedValue = compactFilterValue(selectedValue);
+
+        return (
+          cardSearchText.includes(normalizedSelectedValue) ||
+          compactCardSearchText.includes(compactSelectedValue)
+        );
+      });
+    });
+  }
+
+  function cardMatchesSearch(card, searchQuery) {
+    const normalizedSearchQuery = normalizeFilterValue(searchQuery);
+    const compactSearchQuery = compactFilterValue(searchQuery);
+
+    if (!normalizedSearchQuery) {
+      return true;
+    }
+
+    const cardFilterText = getCardFilterText(card);
+    const normalizedCardText = normalizeFilterValue(cardFilterText);
+    const compactCardText = compactFilterValue(cardFilterText);
+
+    if (
+      normalizedCardText.includes(normalizedSearchQuery) ||
+      compactCardText.includes(compactSearchQuery)
+    ) {
+      return true;
+    }
+
+    const searchWords = getSearchWords(searchQuery);
+
+    return searchWords.every((searchWord) => {
+      return normalizedCardText.includes(searchWord);
+    });
+  }
+
+  function updateComponentFilters() {
+    const selectedGroups = getSelectedFilterGroups();
+    const searchQuery = getSearchQuery();
+    updateSelectedFilterChips();
+
+    const cards = Array.from(document.querySelectorAll(".signature-build-card"));
+    let visibleCards = 0;
+
+    cards.forEach((card) => {
+      const shouldShow =
+        (selectedGroups.length === 0 || cardMatchesFilters(card, selectedGroups)) &&
+        cardMatchesSearch(card, searchQuery);
+
+      card.style.display = shouldShow ? "" : "none";
+
+      if (shouldShow) {
+        visibleCards += 1;
+      }
+    });
+
+    const grid = document.querySelector(".signature-builds-grid");
+
+    if (!grid) {
+      return;
+    }
+
+    let emptyMessage = document.getElementById("component-filter-empty");
+
+    if (!emptyMessage) {
+      emptyMessage = document.createElement("div");
+      emptyMessage.id = "component-filter-empty";
+      emptyMessage.textContent = "No accessories match the selected filters or search.";
+      emptyMessage.style.gridColumn = "1 / -1";
+      emptyMessage.style.padding = "28px";
+      emptyMessage.style.borderRadius = "18px";
+      emptyMessage.style.background = "rgba(255, 255, 255, 0.055)";
+      emptyMessage.style.color = "rgba(255, 255, 255, 0.72)";
+      emptyMessage.style.fontSize = "15px";
+      emptyMessage.style.lineHeight = "1.6";
+      grid.appendChild(emptyMessage);
+    }
+
+    emptyMessage.style.display =
+      visibleCards === 0 && (selectedGroups.length > 0 || searchQuery.trim().length > 0)
+        ? "block"
+        : "none";
+  }
+
+  let filterTransitionTimer;
+
+  function runFilterTransition() {
+    const grid = document.querySelector(".signature-builds-grid");
+
+    if (!grid) {
+      updateComponentFilters();
+      return;
+    }
+
+    grid.classList.add("filter-is-updating");
+
+    clearTimeout(filterTransitionTimer);
+
+    filterTransitionTimer = setTimeout(() => {
+      updateComponentFilters();
+
+      requestAnimationFrame(() => {
+        grid.classList.remove("filter-is-updating");
+      });
+    }, 140);
+  }
+
+  document.querySelectorAll(".filter-toggle").forEach((button) => {
+    button.addEventListener("click", () => {
+      button.closest(".filter-item").classList.toggle("open");
+    });
+  });
+
+  document.querySelectorAll(".filter-content input[type='checkbox']").forEach((checkbox) => {
+    checkbox.addEventListener("change", runFilterTransition);
+  });
+
+  const componentSearchInput = document.getElementById("component-search-input");
+
+  if (componentSearchInput) {
+    componentSearchInput.addEventListener("input", runFilterTransition);
+  }
+
+  const accessoriesSearchSuggestions = [
+    "Search Razer keyboard",
+    "Search Basilisk V3 Pro",
+    "Search Kraken headset",
+    "Search USB microphone",
+    "Search AORUS fan"
+  ];
+
+  let accessoriesSuggestionIndex = 0;
+  let accessoriesCharacterIndex = 0;
+  let isDeletingAccessoriesSuggestion = false;
+
+  function animateAccessoriesSearchPlaceholder() {
+    if (!componentSearchInput) {
+      return;
+    }
+
+    const currentSuggestion = accessoriesSearchSuggestions[accessoriesSuggestionIndex];
+
+    if (componentSearchInput.value.trim().length === 0) {
+      componentSearchInput.placeholder = currentSuggestion.substring(0, accessoriesCharacterIndex);
+    }
+
+    if (!isDeletingAccessoriesSuggestion && accessoriesCharacterIndex < currentSuggestion.length) {
+      accessoriesCharacterIndex += 1;
+      setTimeout(animateAccessoriesSearchPlaceholder, 70);
+      return;
+    }
+
+    if (!isDeletingAccessoriesSuggestion && accessoriesCharacterIndex === currentSuggestion.length) {
+      isDeletingAccessoriesSuggestion = true;
+      setTimeout(animateAccessoriesSearchPlaceholder, 1200);
+      return;
+    }
+
+    if (isDeletingAccessoriesSuggestion && accessoriesCharacterIndex > 0) {
+      accessoriesCharacterIndex -= 1;
+      setTimeout(animateAccessoriesSearchPlaceholder, 35);
+      return;
+    }
+
+    isDeletingAccessoriesSuggestion = false;
+    accessoriesSuggestionIndex = (accessoriesSuggestionIndex + 1) % accessoriesSearchSuggestions.length;
+    setTimeout(animateAccessoriesSearchPlaceholder, 250);
+  }
+
+  animateAccessoriesSearchPlaceholder();
+  updateComponentFilters();
+
   const menuButton = document.querySelector(".hamburger-toggle");
   const mainMenu = document.querySelector(".nav-menu-main");
   const componentsMenu = document.querySelector(".nav-menu-components");
@@ -199,12 +521,6 @@
       mainMenu.classList.add("active");
     });
   }
-
-  document.querySelectorAll(".filter-toggle").forEach((button) => {
-    button.addEventListener("click", () => {
-      button.closest(".filter-item").classList.toggle("open");
-    });
-  });
 </script>
 
 </body>
