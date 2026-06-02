@@ -609,10 +609,11 @@ body.nav-menu-open .nav-menu-panel.active {
 }
 
 .nav-menu-components .nav-menu-links {
-  width: min(720px, calc(100vw - 50px));
+  width: min(1040px, calc(100vw - 54px));
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
+  align-items: stretch;
 }
 
 .nav-menu-components .nav-menu-back {
@@ -623,31 +624,82 @@ body.nav-menu-open .nav-menu-panel.active {
 
 .nav-menu-components .nav-menu-link,
 .nav-menu-components .nav-menu-link:visited {
-  min-height: 68px;
+  --nav-tile-image: url("https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/site-assets/hero.png");
+  min-height: 104px;
   padding: 0 22px;
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.055);
+  background-image:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.74), rgba(0, 0, 0, 0.86)),
+    var(--nav-tile-image);
+  background-size: cover;
+  background-position: center;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 0.11em;
   text-align: center;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.82);
+  overflow: hidden;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.18);
   transition:
-    background 0.22s ease,
     border-color 0.22s ease,
     color 0.22s ease,
-    transform 0.22s ease;
+    transform 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.nav-menu-components .nav-menu-link:nth-of-type(1) {
+  --nav-tile-image: url("https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/CPU/intel-core-ultra-9-285k-1.jpeg");
+}
+
+.nav-menu-components .nav-menu-link:nth-of-type(2) {
+  --nav-tile-image: url("https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Coolers/rog-ryujin-iii-360-argb-extreme-1.jpeg");
+}
+
+.nav-menu-components .nav-menu-link:nth-of-type(3) {
+  --nav-tile-image: url("https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Motherboards/gigabyte-z890-aorus-master-1.jpeg");
+}
+
+.nav-menu-components .nav-menu-link:nth-of-type(4) {
+  --nav-tile-image: url("https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Ram/corsair-dominator-titanium-rgb-96gb-ddr5-7000-cl40-1.jpeg");
+}
+
+.nav-menu-components .nav-menu-link:nth-of-type(5) {
+  --nav-tile-image: url("https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Storage/samsung-9100-pro-1tb-1.jpeg");
+}
+
+.nav-menu-components .nav-menu-link:nth-of-type(6) {
+  --nav-tile-image: url("https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-1.jpeg");
+}
+
+.nav-menu-components .nav-menu-link:nth-of-type(7) {
+  --nav-tile-image: url("https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Cases/gigabyte-aorus-c500-glass-1.jpeg");
+}
+
+.nav-menu-components .nav-menu-link:nth-of-type(8) {
+  --nav-tile-image: url("https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Power%20supplies/gigabyte-ud1600pm-pg5-ai-top-1.jpeg");
+}
+
+.nav-menu-components .nav-menu-link:nth-of-type(9) {
+  --nav-tile-image: url("https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Monitors/gigabyte-gs27fa-gaming-monitor-1.jpeg");
+}
+
+.nav-menu-components .nav-menu-link:nth-of-type(10) {
+  --nav-tile-image: url("https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Accessories/razer-huntsman-v3-pro-tkl-keyboard-1.jpeg");
 }
 
 .nav-menu-components .nav-menu-link:hover {
-  background: rgba(255, 255, 255, 0.105);
-  border-color: rgba(255, 255, 255, 0.28);
+  background-image:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0.76)),
+    var(--nav-tile-image);
+  border-color: rgba(255, 255, 255, 0.32);
   color: white;
   transform: translateY(-2px);
+  box-shadow: 0 24px 58px rgba(0, 0, 0, 0.28);
 }
 
 body.nav-menu-open {
@@ -675,17 +727,17 @@ body.nav-menu-open {
   }
 
   .nav-menu-components .nav-menu-links {
-    width: min(420px, calc(100vw - 44px));
-    grid-template-columns: 1fr;
-    gap: 11px;
+    width: min(460px, calc(100vw - 34px));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
   }
 
   .nav-menu-components .nav-menu-link {
-    min-height: 54px;
-    padding: 0 18px;
+    min-height: 82px;
+    padding: 0 12px;
     border-radius: 15px;
-    font-size: 13px;
-    letter-spacing: 0.1em;
+    font-size: 11px;
+    letter-spacing: 0.08em;
   }
 }
 
