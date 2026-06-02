@@ -3620,7 +3620,7 @@ body.nav-menu-open {
   right: 60px;
   z-index: 1002;
   text-decoration: none;
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   opacity: 1;
@@ -3927,6 +3927,14 @@ body.nav-menu-open {
 
 .cart-checkout-button:active {
   transform: translateY(1px);
+}
+
+@media (max-width: 900px) {
+  .nav-cart-link {
+    display: flex;
+    top: 38px;
+    right: 60px;
+  }
 }
 
 @media (max-width: 700px) {
