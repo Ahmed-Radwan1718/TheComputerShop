@@ -175,8 +175,8 @@ body {
   letter-spacing: 0;
 }
 
-.home-page-body .hamburger-toggle,
-.home-page-body .nav-cart-link {
+.hamburger-toggle,
+.nav-cart-link {
   display: none;
 }
 
@@ -616,11 +616,11 @@ body {
     display: none;
   }
 
-  .home-page-body .hamburger-toggle {
+  .hamburger-toggle {
     display: block;
   }
 
-  .home-page-body .nav-cart-link {
+  .nav-cart-link {
     display: flex;
   }
 }
