@@ -2076,10 +2076,10 @@ body.nav-menu-open {
 }
 
 .consultation-form {
-  border: none;
-  padding: 0;
-  background: transparent;
-  border-radius: 0;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 34px;
+  background: rgba(255, 255, 255, 0.025);
+  border-radius: 24px;
 }
 
 .consultation-grid {
@@ -2339,7 +2339,7 @@ body.nav-menu-open {
   }
 
   .consultation-form {
-    padding: 0;
+    padding: 22px;
   }
 
   .consultation-grid {
