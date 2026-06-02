@@ -609,10 +609,10 @@ body.nav-menu-open .nav-menu-panel.active {
 }
 
 .nav-menu-components .nav-menu-links {
-  width: min(1040px, calc(100vw - 54px));
+  width: min(1340px, calc(100vw - 54px));
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 18px;
   align-items: stretch;
 }
 
@@ -625,8 +625,8 @@ body.nav-menu-open .nav-menu-panel.active {
 .nav-menu-components .nav-menu-link,
 .nav-menu-components .nav-menu-link:visited {
   --nav-tile-image: url("https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/site-assets/hero.png");
-  min-height: 104px;
-  padding: 0 22px;
+  min-height: 178px;
+  padding: 0 24px;
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 18px;
   background-image:
@@ -638,7 +638,7 @@ body.nav-menu-open .nav-menu-panel.active {
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 800;
   letter-spacing: 0.11em;
   text-align: center;
@@ -733,10 +733,10 @@ body.nav-menu-open {
   }
 
   .nav-menu-components .nav-menu-link {
-    min-height: 82px;
-    padding: 0 12px;
+    min-height: 124px;
+    padding: 0 14px;
     border-radius: 15px;
-    font-size: 11px;
+    font-size: 12px;
     letter-spacing: 0.08em;
   }
 }
