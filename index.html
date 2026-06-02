@@ -74,16 +74,22 @@
       <div class="featured-carousel">
         <div class="featured-carousel-window">
           <div class="featured-carousel-track">
-            <article class="featured-slide active">
-              <a href="signature-builds.html" class="featured-image-link">
-                <div class="featured-image-frame featured-image-empty">
-                  <div class="featured-image-placeholder">Build Image</div>
-                </div>
+            <article class="featured-slide active" id="featured-build-carousel">
+              <a href="product.html?product=the-asus-proart" class="featured-image-link" id="featured-build-carousel-link">
+                <div
+                  class="featured-image-frame featured-image-empty"
+                  id="featured-build-carousel-image"
+                  style="background-image: url('https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Cases/fractal-design-north-xl-charcoal-black-1.jpeg'); background-size: cover; background-position: center;"
+                ></div>
               </a>
 
-              <div class="featured-slide-info">
-                <h3>Signature Build</h3>
-                <p class="featured-slide-specs">CPU | GPU | RAM</p>
+              <div class="featured-slide-info" id="featured-build-carousel-info">
+                <h3 id="featured-build-carousel-title">The ASUS ProArt</h3>
+                <p class="featured-slide-specs" id="featured-build-carousel-specs">Core Ultra 9 | RTX 5080 | 192GB RAM</p>
+              </div>
+
+              <div class="featured-component-progress-track">
+                <div class="featured-component-progress-bar" id="featured-build-progress-bar"></div>
               </div>
             </article>
           </div>
@@ -281,6 +287,158 @@
 </footer>
 
 <script>
+  const featuredBuildSlides = [
+    {
+      title: "The ASUS ProArt",
+      specs: "Core Ultra 9 | RTX 5080 | 192GB RAM",
+      image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Cases/fractal-design-north-xl-charcoal-black-1.jpeg",
+      url: "product.html?product=the-asus-proart"
+    },
+    {
+      title: "The ROG Astral",
+      specs: "Core Ultra 9 | RTX 5090 | 96GB RAM",
+      image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Cases/rog-strix-helios-ii-1.jpeg",
+      url: "product.html?product=the-rog-astral"
+    },
+    {
+      title: "The AORUS Master",
+      specs: "Core Ultra 9 | RTX 5090 | 96GB RAM",
+      image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Cases/lian-li-o11-dynamic-evo-xl-black-1.jpeg",
+      url: "product.html?product=the-aorus-master"
+    }
+  ];
+
+  const featuredBuildCard = document.getElementById("featured-build-carousel");
+  const featuredBuildLink = document.getElementById("featured-build-carousel-link");
+  const featuredBuildImage = document.getElementById("featured-build-carousel-image");
+  const featuredBuildTitle = document.getElementById("featured-build-carousel-title");
+  const featuredBuildSpecs = document.getElementById("featured-build-carousel-specs");
+  const featuredBuildInfo = document.getElementById("featured-build-carousel-info");
+  const featuredBuildProgressBar = document.getElementById("featured-build-progress-bar");
+
+  let featuredBuildIndex = 0;
+  let featuredBuildInterval = null;
+
+  featuredBuildSlides.forEach((slide) => {
+    const preloadImage = new Image();
+    preloadImage.src = slide.image;
+  });
+
+  function buildFeaturedBuildTrack() {
+    if (!featuredBuildImage) {
+      return null;
+    }
+
+    featuredBuildImage.style.position = "relative";
+    featuredBuildImage.style.overflow = "hidden";
+    featuredBuildImage.style.backgroundImage = "none";
+
+    const track = document.createElement("div");
+    track.id = "featured-build-track";
+    track.style.position = "absolute";
+    track.style.inset = "0";
+    track.style.display = "flex";
+    track.style.width = "100%";
+    track.style.height = "100%";
+    track.style.transform = "translate3d(0, 0, 0)";
+    track.style.transition = "transform 950ms cubic-bezier(0.22, 1, 0.36, 1)";
+    track.style.willChange = "transform";
+
+    const slidesWithClone = [...featuredBuildSlides, featuredBuildSlides[0]];
+
+    slidesWithClone.forEach((slide) => {
+      const slideElement = document.createElement("div");
+      slideElement.style.flex = "0 0 100%";
+      slideElement.style.width = "100%";
+      slideElement.style.height = "100%";
+      slideElement.style.backgroundImage = `url('${slide.image}')`;
+      slideElement.style.backgroundSize = "cover";
+      slideElement.style.backgroundPosition = "center";
+      slideElement.style.transform = "translateZ(0)";
+
+      track.appendChild(slideElement);
+    });
+
+    featuredBuildImage.innerHTML = "";
+    featuredBuildImage.appendChild(track);
+
+    return track;
+  }
+
+  const featuredBuildTrack = buildFeaturedBuildTrack();
+
+  function restartFeaturedBuildProgress() {
+    if (!featuredBuildProgressBar) {
+      return;
+    }
+
+    featuredBuildProgressBar.style.animation = "none";
+    featuredBuildProgressBar.offsetHeight;
+    featuredBuildProgressBar.style.animation = "featuredComponentProgress 7s linear forwards";
+  }
+
+  function updateFeaturedBuildText(index) {
+    const slide = featuredBuildSlides[index];
+
+    if (featuredBuildLink) {
+      featuredBuildLink.href = slide.url;
+    }
+
+    if (featuredBuildInfo) {
+      featuredBuildInfo.style.transition = "opacity 350ms ease, transform 350ms ease";
+      featuredBuildInfo.style.opacity = "0";
+      featuredBuildInfo.style.transform = "translateX(-14px)";
+    }
+
+    setTimeout(() => {
+      if (featuredBuildTitle) {
+        featuredBuildTitle.textContent = slide.title;
+      }
+
+      if (featuredBuildSpecs) {
+        featuredBuildSpecs.textContent = slide.specs;
+      }
+
+      if (featuredBuildInfo) {
+        featuredBuildInfo.style.opacity = "1";
+        featuredBuildInfo.style.transform = "translateX(0)";
+      }
+    }, 220);
+  }
+
+  function moveFeaturedBuildCarousel() {
+    if (!featuredBuildTrack) {
+      return;
+    }
+
+    featuredBuildIndex += 1;
+
+    featuredBuildTrack.style.transition = "transform 950ms cubic-bezier(0.22, 1, 0.36, 1)";
+    featuredBuildTrack.style.transform = `translate3d(-${featuredBuildIndex * 100}%, 0, 0)`;
+
+    const realIndex = featuredBuildIndex % featuredBuildSlides.length;
+    updateFeaturedBuildText(realIndex);
+    restartFeaturedBuildProgress();
+
+    if (featuredBuildIndex === featuredBuildSlides.length) {
+      setTimeout(() => {
+        featuredBuildTrack.style.transition = "none";
+        featuredBuildTrack.style.transform = "translate3d(0, 0, 0)";
+        featuredBuildIndex = 0;
+
+        featuredBuildTrack.offsetHeight;
+        featuredBuildTrack.style.transition = "transform 950ms cubic-bezier(0.22, 1, 0.36, 1)";
+      }, 970);
+    }
+  }
+
+  if (featuredBuildCard && featuredBuildLink && featuredBuildImage && featuredBuildTitle && featuredBuildSpecs && featuredBuildTrack) {
+    updateFeaturedBuildText(0);
+    restartFeaturedBuildProgress();
+
+    featuredBuildInterval = setInterval(moveFeaturedBuildCarousel, 7000);
+  }
+
   const featuredComponentSlides = [
     {
       title: "RTX 5090 AORUS Master",
@@ -337,7 +495,7 @@
   const featuredComponentTitle = document.getElementById("featured-component-carousel-title");
   const featuredComponentSpecs = document.getElementById("featured-component-carousel-specs");
   const featuredComponentInfo = featuredComponentTitle ? featuredComponentTitle.closest(".component-wall-card-info") : null;
-  const featuredComponentProgressBar = document.querySelector(".featured-component-progress-bar");
+  const featuredComponentProgressBar = document.querySelector("#featured-component-carousel .featured-component-progress-bar");
 
   let featuredComponentIndex = 0;
   let featuredComponentInterval = null;
