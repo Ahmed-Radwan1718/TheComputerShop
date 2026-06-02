@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Accessories - The Computer Shop</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<button class="hamburger-toggle" type="button" aria-label="Open menu">
+  <span></span>
+  <span></span>
+  <span></span>
+</button>
+
+<a href="cart.html" class="nav-cart-link" aria-label="Cart">
+  <img src="cart-icon.png" alt="Cart">
+  <span class="nav-cart-count">0</span>
+</a>
+
+<div class="nav-menu-overlay">
+  <div class="nav-menu-panel nav-menu-main active">
+    <div class="nav-menu-links">
+      <a href="index.html" class="nav-menu-link">Home</a>
+      <a href="signature-builds.html" class="nav-menu-link">Signature Builds</a>
+      <button class="nav-menu-button" type="button" id="open-components-menu">Components</button>
+      <a href="consultation.html" class="nav-menu-link">Need a Custom PC?</a>
+    </div>
+  </div>
+
+  <div class="nav-menu-panel nav-menu-components">
+    <div class="nav-menu-links">
+      <button class="nav-menu-back" type="button" id="back-to-main-menu">Back</button>
+      <a href="cpus.html" class="nav-menu-link">CPU</a>
+      <a href="cpu-coolers.html" class="nav-menu-link">CPU Cooler</a>
+      <a href="motherboards.html" class="nav-menu-link">Motherboard</a>
+      <a href="memory.html" class="nav-menu-link">Memory</a>
+      <a href="storage.html" class="nav-menu-link">Storage</a>
+      <a href="graphics-cards.html" class="nav-menu-link">Graphics Card</a>
+      <a href="cases.html" class="nav-menu-link">Case</a>
+      <a href="power-supplies.html" class="nav-menu-link">Power Supply</a>
+      <a href="monitors.html" class="nav-menu-link">Monitor</a>
+      <a href="accessories.html" class="nav-menu-link">Accessories</a>
+    </div>
+  </div>
+</div>
+
+<main class="component-page">
+  <section class="component-hero">
+    <div class="component-hero-bg"></div>
+    <div class="component-hero-overlay"></div>
+
+    <div class="component-hero-content">
+      <p class="component-hero-eyebrow">Components</p>
+      <h1>Accessories</h1>
+      <p>Browse keyboards, mice, gaming headsets, and microphones selected to complete your setup.</p>
+    </div>
+  </section>
+
+  <section class="signature-layout">
+    <aside class="filters-panel">
+      <div class="filters-heading">Filter Accessories</div>
+
+      <div class="filter-item">
+        <button class="filter-toggle" type="button"><span>Accessory Type</span><span class="chevron">⌄</span></button>
+        <div class="filter-content">
+          <label><input type="checkbox"> Keyboard</label>
+          <label><input type="checkbox"> Mouse</label>
+          <label><input type="checkbox"> Controller</label>
+          <label><input type="checkbox"> Gaming Headset</label>
+<label><input type="checkbox"> Gaming Microphone</label>
+<label><input type="checkbox"> Case Fan</label>
+        </div>
+      </div>
+
+      <div class="filter-item">
+        <button class="filter-toggle" type="button"><span>Brand</span><span class="chevron">⌄</span></button>
+<div class="filter-content">
+  <label><input type="checkbox"> ASUS</label>
+  <label><input type="checkbox"> Gigabyte</label>
+  <label><input type="checkbox"> Logitech</label>
+  <label><input type="checkbox"> Razer</label>
+  <label><input type="checkbox"> Corsair</label>
+  <label><input type="checkbox"> SteelSeries</label>
+  <label><input type="checkbox"> HyperX</label>
+</div>
+      </div>
+
+      <div class="filter-item">
+        <button class="filter-toggle" type="button"><span>Connection</span><span class="chevron">⌄</span></button>
+        <div class="filter-content">
+          <label><input type="checkbox"> Wired</label>
+          <label><input type="checkbox"> Wireless</label>
+        </div>
+      </div>
+    </aside>
+
+    <section class="signature-products">
+<div class="signature-builds-header">
+  <p class="signature-builds-eyebrow">Available Accessories</p>
+  <h2>Accessories</h2>
+
+  <div class="component-search-box">
+    <input
+      id="component-search-input"
+      type="search"
+      placeholder="Search accessories..."
+      aria-label="Search accessories"
+    >
+  </div>
+</div>
+
+<div class="signature-builds-grid">
+<a href="product.html?product=razer-huntsman-v3-pro-tkl-keyboard" class="signature-build-card product-card-link" data-filter-tags="Razer Keyboard Wired RGB TKL Tenkeyless Gaming Keyboard Optical Analog Optical Snap Tap Rapid Trigger">
+  <div class="signature-build-image-frame">
+    <img
+      src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Accessories/razer-huntsman-v3-pro-tkl-keyboard-1.jpeg"
+      alt="Razer Huntsman V3 Pro TKL Keyboard"
+      class="signature-build-image"
+    >
+  </div>
+
+  <h3>Razer Huntsman V3 Pro TKL</h3>
+  <p>Razer | Keyboard | Wired</p>
+  <div class="signature-build-price">Price coming soon</div>
+</a>
+
+<a href="product.html?product=razer-huntsman-v3-pro-mini" class="signature-build-card product-card-link" data-filter-tags="Razer Keyboard Wired RGB Mini 60% Gaming Keyboard Optical Analog Optical Rapid Trigger Snap Tap">
+  <div class="signature-build-image-frame">
+    <img
+      src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Accessories/razer-huntsman-v3-pro-mini-rgb-wired-mini-keyboard-1.jpeg"
+      alt="Razer Huntsman V3 Pro Mini RGB Wired Mini Keyboard"
+      class="signature-build-image"
+    >
+  </div>
+
+  <h3>Razer Huntsman V3 Pro Mini</h3>
+  <p>Razer | Keyboard | Wired</p>
+  <div class="signature-build-price">Price coming soon</div>
+</a>
+
+<a href="product.html?product=razer-raiju-v3-pro-for-ps5" class="signature-build-card product-card-link" data-filter-tags="Razer Controller Wireless Wired PS5 PC PlayStation HyperSpeed TMR Thumbsticks Mecha-Tactile PBT Pro Controller">
+  <div class="signature-build-image-frame">
+    <img
+      src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Accessories/razer-raiju-v3-pro-for-ps5-1.jpeg"
+      alt="Razer Raiju V3 Pro for PS5"
+      class="signature-build-image"
+    >
+  </div>
+
+  <h3>Razer Raiju V3 Pro for PS5</h3>
+  <p>Razer | Controller | Wireless</p>
+  <div class="signature-build-price">Price coming soon</div>
+</a>
+
+<a href="product.html?product=razer-wolverine-v3-pro" class="signature-build-card product-card-link" data-filter-tags="Razer Controller Wireless Wired Xbox PC HyperSpeed Hall Effect Thumbsticks Mecha-Tactile Pro Controller Esports Controller">
+  <div class="signature-build-image-frame">
+    <img
+      src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Accessories/razer-wolverine-v3-pro-1.jpeg"
+      alt="Razer Wolverine V3 Pro"
+      class="signature-build-image"
+    >
+  </div>
+
+  <h3>Razer Wolverine V3 Pro</h3>
+  <p>Razer | Controller | Wireless</p>
+  <div class="signature-build-price">Price coming soon</div>
+</a>
+
+<a href="product.html?product=razer-seiren-v3-chroma-usb-mic" class="signature-build-card product-card-link" data-filter-tags="Razer Gaming Microphone Wired USB RGB Streaming Microphone">
+  <div class="signature-build-image-frame">
+    <img
+      src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Accessories/razer-seiren-v3-chroma-usb-mic-1.jpeg"
+      alt="Razer Seiren V3 Chroma USB Mic"
+      class="signature-build-image"
+    >
+  </div>
+
+  <h3>Razer Seiren V3 Chroma USB Mic</h3>
+  <p>Razer | Gaming Microphone | USB</p>
+  <div class="signature-build-price">Price coming soon</div>
+</a>
+
+<a href="product.html?product=razer-basilisk-v3-pro-wireless" class="signature-build-card product-card-link" data-filter-tags="Razer Mouse Wireless Bluetooth Wired RGB Gaming Mouse">
+  <div class="signature-build-image-frame">
+    <img
+      src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Accessories/razer-basilisk-v3-pro-1.jpeg"
+      alt="Razer Basilisk V3 Pro Wireless"
+      class="signature-build-image"
+    >
+  </div>
+
+  <h3>Razer Basilisk V3 Pro Wireless</h3>
+  <p>Razer | Mouse | Wireless</p>
+  <div class="signature-build-price">Price coming soon</div>
+</a>
+
+<a href="product.html?product=razer-kraken-v4-pro-wireless" class="signature-build-card product-card-link" data-filter-tags="Razer Gaming Headset Wireless Wired Bluetooth RGB Control Hub">
+  <div class="signature-build-image-frame">
+    <img
+      src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Accessories/razer-kraken-v4-pro-1.jpeg"
+      alt="Razer Kraken V4 Pro Wireless"
+      class="signature-build-image"
+    >
+  </div>
+
+  <h3>Razer Kraken V4 Pro Wireless</h3>
+  <p>Razer | Gaming Headset | Wireless</p>
+  <div class="signature-build-price">Price coming soon</div>
+</a>
+
+<a href="product.html?product=aorus-ez-chain-fan-120" class="signature-build-card product-card-link" data-filter-tags="Gigabyte AORUS Case Fan Wired ARGB 120mm Single Pack 3 Pack Cooling Fan">
+  <div class="signature-build-image-frame">
+    <img
+      src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Accessories/aorus-ez-chain-fan-120-3-pack-1.jpeg"
+      alt="AORUS EZ Chain Fan 120"
+      class="signature-build-image"
+    >
+  </div>
+
+  <h3>AORUS EZ Chain Fan 120</h3>
+  <p>Gigabyte | Case Fan | ARGB</p>
+  <div class="signature-build-price">Price coming soon</div>
+</a>
+</div>
+    </section>
+  </section>
+</main>
+
+<script>
+  function normalizeFilterValue(value) {
+    return String(value || "")
+      .toLowerCase()
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function compactFilterValue(value) {
+    return normalizeFilterValue(value).replace(/[^a-z0-9]/g, "");
+  }
+
+  function getSearchQuery() {
+    const searchInput = document.getElementById("component-search-input");
+    return searchInput ? searchInput.value : "";
+  }
+
+  function getSearchWords(value) {
+    return normalizeFilterValue(value)
+      .split(" ")
+      .map((word) => word.trim())
+      .filter(Boolean);
+  }
+
+  function getCheckboxLabelText(checkbox) {
+    const label = checkbox.closest("label");
+    return label ? label.textContent.trim() : "";
+  }
+
+  function getSelectedFilterGroups() {
+    return Array.from(document.querySelectorAll(".filter-item"))
+      .map((filterItem) => {
+        return Array.from(filterItem.querySelectorAll("input[type='checkbox']:checked"))
+          .map((checkbox) => getCheckboxLabelText(checkbox));
+      })
+      .filter((group) => group.length > 0);
+  }
+
+  function getSelectedFilterCheckboxes() {
+    return Array.from(document.querySelectorAll(".filter-content input[type='checkbox']:checked"));
+  }
+
+  function runFilterUpdateFromChip() {
+    if (typeof runFilterTransition === "function") {
+      runFilterTransition();
+    } else {
+      updateComponentFilters();
+    }
+  }
+
+  function updateSelectedFilterChips() {
+    const header = document.querySelector(".signature-builds-header");
+
+    if (!header) {
+      return;
+    }
+
+    let chipsRow = document.getElementById("selected-filter-chips");
+
+    if (!chipsRow) {
+      chipsRow = document.createElement("div");
+      chipsRow.id = "selected-filter-chips";
+      chipsRow.className = "selected-filter-chips";
+      header.insertAdjacentElement("afterend", chipsRow);
+    }
+
+    const selectedCheckboxes = getSelectedFilterCheckboxes();
+
+    if (selectedCheckboxes.length === 0) {
+      chipsRow.innerHTML = "";
+      chipsRow.style.display = "none";
+      return;
+    }
+
+    chipsRow.innerHTML = "";
+    chipsRow.style.display = "flex";
+
+    const label = document.createElement("span");
+    label.className = "selected-filter-label";
+    label.textContent = "Selected:";
+    chipsRow.appendChild(label);
+
+    selectedCheckboxes.forEach((checkbox) => {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "selected-filter-chip";
+
+      const chipText = document.createElement("span");
+      chipText.textContent = getCheckboxLabelText(checkbox);
+
+      const chipIcon = document.createElement("span");
+      chipIcon.textContent = "×";
+      chipIcon.setAttribute("aria-hidden", "true");
+
+      chip.appendChild(chipText);
+      chip.appendChild(chipIcon);
+
+      chip.addEventListener("click", () => {
+        checkbox.checked = false;
+        runFilterUpdateFromChip();
+      });
+
+      chipsRow.appendChild(chip);
+    });
+
+    const clearButton = document.createElement("button");
+    clearButton.type = "button";
+    clearButton.className = "selected-filter-clear";
+    clearButton.textContent = "Clear all";
+
+    clearButton.addEventListener("click", () => {
+      document.querySelectorAll(".filter-content input[type='checkbox']:checked").forEach((checkbox) => {
+        checkbox.checked = false;
+      });
+
+      runFilterUpdateFromChip();
+    });
+
+    chipsRow.appendChild(clearButton);
+  }
+
+  function getCardFilterText(card) {
+    const title = card.querySelector("h3");
+    const specsLine = card.querySelector("p");
+    const extraTags = card.getAttribute("data-filter-tags") || "";
+
+    return [
+      title ? title.textContent : "",
+      specsLine ? specsLine.textContent : "",
+      extraTags
+    ].join(" | ");
+  }
+
+  function cardMatchesFilters(card, selectedGroups) {
+    const cardFilterText = getCardFilterText(card);
+    const cardSearchText = normalizeFilterValue(cardFilterText);
+    const compactCardSearchText = compactFilterValue(cardFilterText);
+
+    return selectedGroups.every((group) => {
+      return group.some((selectedValue) => {
+        const normalizedSelectedValue = normalizeFilterValue(selectedValue);
+        const compactSelectedValue = compactFilterValue(selectedValue);
+
+        return (
+          cardSearchText.includes(normalizedSelectedValue) ||
+          compactCardSearchText.includes(compactSelectedValue)
+        );
+      });
+    });
+  }
+
+  function cardMatchesSearch(card, searchQuery) {
+    const normalizedSearchQuery = normalizeFilterValue(searchQuery);
+    const compactSearchQuery = compactFilterValue(searchQuery);
+
+    if (!normalizedSearchQuery) {
+      return true;
+    }
+
+    const cardFilterText = getCardFilterText(card);
+    const normalizedCardText = normalizeFilterValue(cardFilterText);
+    const compactCardText = compactFilterValue(cardFilterText);
+
+    if (
+      normalizedCardText.includes(normalizedSearchQuery) ||
+      compactCardText.includes(compactSearchQuery)
+    ) {
+      return true;
+    }
+
+    const searchWords = getSearchWords(searchQuery);
+
+    return searchWords.every((searchWord) => {
+      return normalizedCardText.includes(searchWord);
+    });
+  }
+
+  function updateComponentFilters() {
+    const selectedGroups = getSelectedFilterGroups();
+    const searchQuery = getSearchQuery();
+    updateSelectedFilterChips();
+
+    const cards = Array.from(document.querySelectorAll(".signature-build-card"));
+    let visibleCards = 0;
+
+    cards.forEach((card) => {
+      const shouldShow =
+        (selectedGroups.length === 0 || cardMatchesFilters(card, selectedGroups)) &&
+        cardMatchesSearch(card, searchQuery);
+
+      card.style.display = shouldShow ? "" : "none";
+
+      if (shouldShow) {
+        visibleCards += 1;
+      }
+    });
+
+    const grid = document.querySelector(".signature-builds-grid");
+
+    if (!grid) {
+      return;
+    }
+
+    let emptyMessage = document.getElementById("component-filter-empty");
+
+    if (!emptyMessage) {
+      emptyMessage = document.createElement("div");
+      emptyMessage.id = "component-filter-empty";
+      emptyMessage.textContent = "No accessories match the selected filters or search.";
+      emptyMessage.style.gridColumn = "1 / -1";
+      emptyMessage.style.padding = "28px";
+      emptyMessage.style.borderRadius = "18px";
+      emptyMessage.style.background = "rgba(255, 255, 255, 0.055)";
+      emptyMessage.style.color = "rgba(255, 255, 255, 0.72)";
+      emptyMessage.style.fontSize = "15px";
+      emptyMessage.style.lineHeight = "1.6";
+      grid.appendChild(emptyMessage);
+    }
+
+    emptyMessage.style.display =
+      visibleCards === 0 && (selectedGroups.length > 0 || searchQuery.trim().length > 0)
+        ? "block"
+        : "none";
+  }
+
+  let filterTransitionTimer;
+
+  function runFilterTransition() {
+    const grid = document.querySelector(".signature-builds-grid");
+
+    if (!grid) {
+      updateComponentFilters();
+      return;
+    }
+
+    grid.classList.add("filter-is-updating");
+
+    clearTimeout(filterTransitionTimer);
+
+    filterTransitionTimer = setTimeout(() => {
+      updateComponentFilters();
+
+      requestAnimationFrame(() => {
+        grid.classList.remove("filter-is-updating");
+      });
+    }, 140);
+  }
+
+  document.querySelectorAll(".filter-toggle").forEach((button) => {
+    button.addEventListener("click", () => {
+      button.closest(".filter-item").classList.toggle("open");
+    });
+  });
+
+  document.querySelectorAll(".filter-content input[type='checkbox']").forEach((checkbox) => {
+    checkbox.addEventListener("change", runFilterTransition);
+  });
+
+  const componentSearchInput = document.getElementById("component-search-input");
+
+  if (componentSearchInput) {
+    componentSearchInput.addEventListener("input", runFilterTransition);
+  }
+
+  const accessoriesSearchSuggestions = [
+    "Search Razer keyboard",
+    "Search Wolverine controller",
+    "Search Raiju controller",
+    "Search Basilisk V3 Pro",
+    "Search Kraken headset",
+    "Search USB microphone",
+    "Search AORUS fan"
+  ];
+
+  let accessoriesSuggestionIndex = 0;
+  let accessoriesCharacterIndex = 0;
+  let isDeletingAccessoriesSuggestion = false;
+
+  function animateAccessoriesSearchPlaceholder() {
+    if (!componentSearchInput) {
+      return;
+    }
+
+    const currentSuggestion = accessoriesSearchSuggestions[accessoriesSuggestionIndex];
+
+    if (componentSearchInput.value.trim().length === 0) {
+      componentSearchInput.placeholder = currentSuggestion.substring(0, accessoriesCharacterIndex);
+    }
+
+    if (!isDeletingAccessoriesSuggestion && accessoriesCharacterIndex < currentSuggestion.length) {
+      accessoriesCharacterIndex += 1;
+      setTimeout(animateAccessoriesSearchPlaceholder, 70);
+      return;
+    }
+
+    if (!isDeletingAccessoriesSuggestion && accessoriesCharacterIndex === currentSuggestion.length) {
+      isDeletingAccessoriesSuggestion = true;
+      setTimeout(animateAccessoriesSearchPlaceholder, 1200);
+      return;
+    }
+
+    if (isDeletingAccessoriesSuggestion && accessoriesCharacterIndex > 0) {
+      accessoriesCharacterIndex -= 1;
+      setTimeout(animateAccessoriesSearchPlaceholder, 35);
+      return;
+    }
+
+    isDeletingAccessoriesSuggestion = false;
+    accessoriesSuggestionIndex = (accessoriesSuggestionIndex + 1) % accessoriesSearchSuggestions.length;
+    setTimeout(animateAccessoriesSearchPlaceholder, 250);
+  }
+
+  animateAccessoriesSearchPlaceholder();
+  updateComponentFilters();
+
+  const menuButton = document.querySelector(".hamburger-toggle");
+  const mainMenu = document.querySelector(".nav-menu-main");
+  const componentsMenu = document.querySelector(".nav-menu-components");
+  const openComponentsButton = document.getElementById("open-components-menu");
+  const backButton = document.getElementById("back-to-main-menu");
+
+  if (menuButton && mainMenu && componentsMenu && openComponentsButton && backButton) {
+    menuButton.addEventListener("click", () => {
+      document.body.classList.toggle("nav-menu-open");
+      mainMenu.classList.add("active");
+      componentsMenu.classList.remove("active");
+    });
+
+    openComponentsButton.addEventListener("click", () => {
+      mainMenu.classList.remove("active");
+      componentsMenu.classList.add("active");
+    });
+
+    backButton.addEventListener("click", () => {
+      componentsMenu.classList.remove("active");
+      mainMenu.classList.add("active");
+    });
+  }
+</script>
+
+</body>
+</html>
