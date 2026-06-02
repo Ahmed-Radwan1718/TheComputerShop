@@ -3916,6 +3916,60 @@ return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/produc
   }
 
   let productData = buildProductData(currentProduct);
+  const visibleProductThumbnailLimit = 8;
+  let activeProductImageIndex = 0;
+  let visibleProductThumbnailStart = 0;
+
+  function getProductThumbnailWindowStart(activeIndex, totalImages) {
+    if (totalImages <= visibleProductThumbnailLimit) {
+      return 0;
+    }
+
+    const maxStart = totalImages - visibleProductThumbnailLimit;
+
+    if (activeIndex < visibleProductThumbnailStart) {
+      return activeIndex;
+    }
+
+    if (activeIndex >= visibleProductThumbnailStart + visibleProductThumbnailLimit) {
+      return Math.min(activeIndex - visibleProductThumbnailLimit + 1, maxStart);
+    }
+
+    return Math.min(visibleProductThumbnailStart, maxStart);
+  }
+
+  function renderProductThumbnails(product, activeIndex = 0) {
+    const thumbnailRow = document.querySelector(".product-thumbnail-row");
+    const productImages = getProductImages(product);
+    const selectedVariant = getSelectedVariant(product);
+
+    if (!thumbnailRow || !productImages.length) {
+      return;
+    }
+
+    activeProductImageIndex = Math.max(0, Math.min(activeIndex, productImages.length - 1));
+    visibleProductThumbnailStart = getProductThumbnailWindowStart(activeProductImageIndex, productImages.length);
+
+    const visibleProductImages = productImages.slice(
+      visibleProductThumbnailStart,
+      visibleProductThumbnailStart + visibleProductThumbnailLimit
+    );
+
+    thumbnailRow.innerHTML = visibleProductImages.map((image, visibleIndex) => {
+      const originalIndex = visibleProductThumbnailStart + visibleIndex;
+      const imageNumber = originalIndex + 1;
+      const activeClass = originalIndex === activeProductImageIndex ? " active" : "";
+      const variantText = selectedVariant ? ` ${selectedVariant.capacity}` : "";
+
+      return `
+        <button class="product-thumbnail${activeClass}" type="button" data-image="${image}" data-index="${originalIndex}">
+          <img src="${image}" alt="${product.name}${variantText} thumbnail ${imageNumber}">
+        </button>
+      `;
+    }).join("");
+
+    setupProductThumbnailClicks();
+  }
 
   function renderProductPage(product) {
     document.title = `${product.name} - The Computer Shop`;
@@ -3984,16 +4038,9 @@ return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/produc
     }
 
     if (thumbnailRow) {
-      thumbnailRow.innerHTML = productImages.map((image, index) => {
-        const imageNumber = index + 1;
-        const activeClass = index === 0 ? " active" : "";
-
-        return `
-          <button class="product-thumbnail${activeClass}" type="button" data-image="${image}">
-            <img src="${image}" alt="${product.name} thumbnail ${imageNumber}">
-          </button>
-        `;
-      }).join("");
+      activeProductImageIndex = 0;
+      visibleProductThumbnailStart = 0;
+      renderProductThumbnails(product, 0);
     }
 
     if (specificationsTable) {
@@ -4065,18 +4112,9 @@ return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/produc
         }
 
         if (thumbnailRow) {
-          thumbnailRow.innerHTML = productImages.map((image, index) => {
-            const imageNumber = index + 1;
-            const activeClass = index === 0 ? " active" : "";
-
-            return `
-              <button class="product-thumbnail${activeClass}" type="button" data-image="${image}">
-                <img src="${image}" alt="${currentProduct.name} ${selectedVariant.capacity} thumbnail ${imageNumber}">
-              </button>
-            `;
-          }).join("");
-
-          setupProductThumbnailClicks();
+          activeProductImageIndex = 0;
+          visibleProductThumbnailStart = 0;
+          renderProductThumbnails(currentProduct, 0);
         }
 
         if (specificationsTable) {
@@ -4174,49 +4212,39 @@ return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/produc
   }
 
   function getActiveProductThumbnailIndex() {
-    const thumbnails = Array.from(document.querySelectorAll(".product-thumbnail"));
-    return thumbnails.findIndex((thumbnail) => thumbnail.classList.contains("active"));
+    return activeProductImageIndex;
   }
 
-function showProductImageByIndex(index, direction) {
-  const thumbnails = Array.from(document.querySelectorAll(".product-thumbnail"));
+  function showProductImageByIndex(index, direction) {
+    const productImages = getProductImages(currentProduct);
 
-  if (!thumbnails.length) {
-    return;
+    if (!productImages.length) {
+      return;
+    }
+
+    const safeIndex = (index + productImages.length) % productImages.length;
+
+    activeProductImageIndex = safeIndex;
+    renderProductThumbnails(currentProduct, safeIndex);
+    slideProductMainImage(productImages[safeIndex], direction);
   }
-
-  const safeIndex = (index + thumbnails.length) % thumbnails.length;
-  const selectedThumbnail = thumbnails[safeIndex];
-
-  thumbnails.forEach((thumbnail) => {
-    thumbnail.classList.remove("active");
-  });
-
-  selectedThumbnail.classList.add("active");
-  selectedThumbnail.scrollIntoView({
-    behavior: "smooth",
-    inline: "center",
-    block: "nearest"
-  });
-
-  slideProductMainImage(selectedThumbnail.dataset.image, direction);
-}
 
   function setupProductThumbnailClicks() {
     const productThumbnails = Array.from(document.querySelectorAll(".product-thumbnail"));
 
     if (productThumbnails.length) {
-      productThumbnails.forEach((thumbnail, index) => {
+      productThumbnails.forEach((thumbnail) => {
         thumbnail.addEventListener("click", () => {
           const activeIndex = getActiveProductThumbnailIndex();
+          const thumbnailIndex = Number(thumbnail.dataset.index);
 
-          if (index === activeIndex) {
+          if (thumbnailIndex === activeIndex) {
             return;
           }
 
-          const direction = index > activeIndex ? "next" : "prev";
+          const direction = thumbnailIndex > activeIndex ? "next" : "prev";
 
-          showProductImageByIndex(index, direction);
+          showProductImageByIndex(thumbnailIndex, direction);
         });
       });
     }
