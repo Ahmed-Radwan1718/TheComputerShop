@@ -626,16 +626,14 @@ body.nav-menu-open .nav-menu-panel.active {
 .nav-menu-components .nav-menu-link:visited {
   --nav-tile-image: url("https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/site-assets/hero.png");
   min-height: 178px;
-  padding: 0 24px;
+  padding: 0 18px 18px;
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 18px;
-  background-image:
-    linear-gradient(180deg, rgba(0, 0, 0, 0.74), rgba(0, 0, 0, 0.86)),
-    var(--nav-tile-image);
-  background-size: cover;
-  background-position: center;
+  background: rgba(255, 255, 255, 0.055);
+  position: relative;
+  isolation: isolate;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   color: white;
   font-size: 16px;
@@ -650,6 +648,33 @@ body.nav-menu-open .nav-menu-panel.active {
     color 0.22s ease,
     transform 0.22s ease,
     box-shadow 0.22s ease;
+}
+
+.nav-menu-components .nav-menu-link::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 58px;
+  z-index: -2;
+  background-image: var(--nav-tile-image);
+  background-size: cover;
+  background-position: center;
+  opacity: 0.64;
+  transform: scale(1.02);
+  transition:
+    opacity 0.22s ease,
+    transform 0.22s ease;
+}
+
+.nav-menu-components .nav-menu-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 58px;
+  z-index: -1;
+  background: rgba(8, 8, 8, 0.94);
+  border-top: 1px solid rgba(255, 255, 255, 0.11);
 }
 
 .nav-menu-components .nav-menu-link:nth-of-type(1) {
@@ -693,13 +718,15 @@ body.nav-menu-open .nav-menu-panel.active {
 }
 
 .nav-menu-components .nav-menu-link:hover {
-  background-image:
-    linear-gradient(180deg, rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0.76)),
-    var(--nav-tile-image);
   border-color: rgba(255, 255, 255, 0.32);
   color: white;
   transform: translateY(-2px);
   box-shadow: 0 24px 58px rgba(0, 0, 0, 0.28);
+}
+
+.nav-menu-components .nav-menu-link:hover::before {
+  opacity: 0.88;
+  transform: scale(1.06);
 }
 
 body.nav-menu-open {
