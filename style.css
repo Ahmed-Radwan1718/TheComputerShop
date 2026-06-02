@@ -138,11 +138,12 @@ body {
   position: relative;
   min-height: 420px;
   margin: 0 60px;
-  border-radius: 34px;
-  overflow: hidden;
+  border-radius: 0;
+  overflow: visible;
   display: flex;
   align-items: center;
-  background: #202120;
+  background: transparent;
+  box-shadow: none;
 }
 
 .signature-hero-bg {
@@ -158,9 +159,7 @@ body {
 .signature-hero-overlay {
   position: absolute;
   inset: 0;
-  background:
-    linear-gradient(135deg, rgba(42, 43, 42, 0.98) 0%, rgba(32, 33, 32, 0.96) 100%),
-    rgba(0, 0, 0, 0.18);
+  background: none;
 }
 
 .signature-hero-content {
@@ -429,7 +428,7 @@ body {
   .signature-hero {
     min-height: 390px;
     margin: 0 25px;
-    border-radius: 26px;
+    border-radius: 0;
   }
 
   .signature-hero-content {
@@ -1927,11 +1926,12 @@ body.nav-menu-open {
   position: relative;
   min-height: 420px;
   margin: 0 60px;
-  border-radius: 34px;
-  overflow: hidden;
+  border-radius: 0;
+  overflow: visible;
   display: flex;
   align-items: center;
-  background: #202120;
+  background: transparent;
+  box-shadow: none;
 }
 
 .component-hero-bg {
@@ -1947,9 +1947,7 @@ body.nav-menu-open {
 .component-hero-overlay {
   position: absolute;
   inset: 0;
-  background:
-    linear-gradient(135deg, rgba(42, 43, 42, 0.98) 0%, rgba(32, 33, 32, 0.96) 100%),
-    rgba(0, 0, 0, 0.18);
+  background: none;
 }
 
 .component-hero-content {
@@ -1994,7 +1992,7 @@ body.nav-menu-open {
   .component-hero {
     min-height: 390px;
     margin: 0 25px;
-    border-radius: 26px;
+    border-radius: 0;
   }
 
   .component-hero-content {
