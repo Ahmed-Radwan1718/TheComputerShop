@@ -147,19 +147,11 @@ body {
 }
 
 .signature-hero-bg {
-  position: absolute;
-  inset: 0;
-  background-image: none !important;
-  background: #202120;
-  filter: none;
-  transform: none;
-  opacity: 1;
+  display: none;
 }
 
 .signature-hero-overlay {
-  position: absolute;
-  inset: 0;
-  background: none;
+  display: none;
 }
 
 .signature-hero-content {
@@ -1935,19 +1927,11 @@ body.nav-menu-open {
 }
 
 .component-hero-bg {
-  position: absolute;
-  inset: 0;
-  background-image: none !important;
-  background: #202120;
-  filter: none;
-  transform: none;
-  opacity: 1;
+  display: none;
 }
 
 .component-hero-overlay {
-  position: absolute;
-  inset: 0;
-  background: none;
+  display: none;
 }
 
 .component-hero-content {
