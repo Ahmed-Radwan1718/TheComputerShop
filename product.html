@@ -918,9 +918,9 @@
 
     "corsair-vengeance-rgb-48gb-ddr5-6000-c36": {
       id: "corsair-vengeance-rgb-48gb-ddr5-6000-c36",
-      name: "Corsair Vengeance RGB 48GB DDR5 6000 C36",
+      name: "Corsair Vengeance RGB DDR5",
       category: "Memory",
-      specsLine: "Corsair | 48GB 2×24GB | DDR5 6000MT/s CL36",
+      specsLine: "Corsair | DDR5 RGB | 48GB–128GB",
       priceText: "Insert price here",
       priceNumber: null,
       url: "product.html?product=corsair-vengeance-rgb-48gb-ddr5-6000-c36",
@@ -928,28 +928,75 @@
         const imageNumber = index + 1;
         return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Ram/corsair-vengeance-rgb-48gb-ddr5-6000-c36-${imageNumber}.jpeg`;
       }),
-      whoIsThisFor: "A high-performance DDR5 RGB memory kit for gaming, productivity, and creator builds that need 48GB capacity, 6000MT/s speed, Intel XMP support, clean black styling, and Corsair iCUE-compatible RGB lighting.",
+      defaultVariant: "48gb-6000-cl36",
+      variantSelectorLabel: "Choose Configuration",
+      variants: [
+        {
+          id: "48gb-6000-cl36",
+          capacity: "48GB 6000MT/s CL36",
+          priceText: "Insert price here",
+          priceNumber: null,
+          specs: [
+            ["Selected Configuration", "48GB CL36 6000MT/s 2×24GB"],
+            ["SKU", "CMH48GX5M2E6000C36"],
+            ["Memory Size", "48GB"],
+            ["Kit Configuration", "2×24GB"],
+            ["Memory Type", "DDR5"],
+            ["Tested Speed", "6000MT/s"],
+            ["Speed Rating", "PC5-48000 / DDR5-6000"],
+            ["Tested Latency", "36-44-44-96"],
+            ["Tested Voltage", "1.40V"],
+            ["Performance Profile", "Intel XMP 3.0"],
+            ["LED Lighting", "RGB"]
+          ]
+        },
+        {
+          id: "128gb-6000-cl40",
+          capacity: "128GB 6000MT/s CL40",
+          priceText: "Insert price here",
+          priceNumber: null,
+          specs: [
+            ["Selected Configuration", "128GB CL40 6000MT/s 2×64GB"],
+            ["SKU", "CMH128GX5M2D6000C40"],
+            ["Memory Size", "128GB"],
+            ["Kit Configuration", "2×64GB"],
+            ["Memory Type", "DDR5"],
+            ["Tested Speed", "6000MT/s"],
+            ["Speed Rating", "PC5-48000 / DDR5-6000"],
+            ["Tested Latency", "40-50-50-96"],
+            ["Tested Voltage", "1.35V"],
+            ["SPD Speed", "4800MHz"],
+            ["SPD Latency", "40-40-40-77"],
+            ["SPD Voltage", "1.1V"],
+            ["Performance Profile", "Intel XMP"],
+            ["Memory Format", "UDIMM"],
+            ["Compatibility", "Intel 700 Series, Intel 800 Series"],
+            ["LED Lighting", "RGB"],
+            ["Lighting Zones", "Ten-zone RGB"],
+            ["Heat Spreader", "Aluminum"],
+            ["Memory Color", "Black"],
+            ["Fan Included", "No"],
+            ["Weight", "0.15kg"]
+          ]
+        }
+      ],
+      whoIsThisFor: "A high-performance DDR5 RGB memory kit for gaming, productivity, creator, multitasking, and workstation builds that need selectable capacity, 6000MT/s speed, Intel XMP support, clean black styling, and Corsair iCUE-compatible RGB lighting.",
       specs: [
-        ["Product Name", "VENGEANCE RGB 48GB DDR5 6000MT/s CL36"],
-        ["SKU", "CMH48GX5M2E6000C36"],
-        ["Memory Size", "48GB"],
-        ["Kit Configuration", "2×24GB"],
+        ["Product Name", "Corsair Vengeance RGB DDR5"],
         ["Memory Type", "DDR5"],
-        ["Tested Speed", "6000MT/s"],
-        ["Speed Rating", "PC5-48000 / DDR5-6000"],
-        ["Tested Latency", "36-44-44-96"],
-        ["Tested Voltage", "1.40V"],
-        ["Performance Profile", "Intel XMP 3.0"],
+        ["Available Configurations", "48GB 6000MT/s CL36, 128GB 6000MT/s CL40"],
         ["Memory Format", "UDIMM"],
         ["LED Lighting", "RGB"],
         ["Lighting Zones", "Ten-zone RGB"],
         ["Heat Spreader", "Aluminum"],
-        ["Memory Color", "Black"]
+        ["Memory Color", "Black"],
+        ["Software", "Corsair iCUE"],
+        ["Use Case", "Gaming, productivity, content creation, multitasking, and workstation builds"]
       ],
       included: [
         {
           title: "Memory Kit",
-          text: "The Corsair Vengeance RGB 48GB DDR5 6000 C36 memory kit is included as the main component, inspected and prepared for the build or order."
+          text: "The Corsair Vengeance RGB DDR5 memory kit is included as the main component in the selected configuration, inspected and prepared for the build or order."
         },
         {
           title: "Original Packaging",
