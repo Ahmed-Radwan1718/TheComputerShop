@@ -12,10 +12,7 @@ body {
 
 .home-page {
   overflow: hidden;
-  background:
-    radial-gradient(circle at 18% 0%, rgba(255, 255, 255, 0.09), transparent 32%),
-    radial-gradient(circle at 88% 12%, rgba(255, 255, 255, 0.055), transparent 28%),
-    #090a09;
+  background: #2a2b2a;
 }
 
 .home-shell {
@@ -51,15 +48,7 @@ body {
 }
 
 .home-gateway-background {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
-  background-size: 54px 54px;
-  mask-image: linear-gradient(to bottom, black 0%, transparent 84%);
-  opacity: 0.34;
+  display: none;
 }
 
 .home-gateway-inner {
@@ -2506,9 +2495,8 @@ body.nav-menu-open {
 .home-product-explorer-section,
 .home-builds-section,
 .home-trust-section {
-  padding: 110px 0;
-  background: #101110;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 100px 0;
+  background: #2a2b2a;
 }
 
 .home-section-header {
@@ -2596,44 +2584,29 @@ body.nav-menu-open {
 .home-product-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 22px;
+  gap: 34px;
 }
 
 .home-product-card,
 .home-product-card:visited {
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.105);
-  border-radius: 28px;
   display: block;
   color: white;
   text-decoration: none;
-  background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.025)),
-    #151615;
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.24);
-  transition:
-    transform 0.24s ease,
-    border-color 0.24s ease,
-    background 0.24s ease;
-}
-
-.home-product-card:hover {
-  transform: translateY(-5px);
-  border-color: rgba(255, 255, 255, 0.22);
-  background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.035)),
-    #181918;
 }
 
 .home-product-image-frame {
-  height: 310px;
-  padding: 26px;
+  height: 360px;
+  padding: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 2px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background:
-    radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.15), transparent 48%),
-    rgba(255, 255, 255, 0.035);
+  background: rgba(0, 0, 0, 0.08);
+  transition:
+    border-color 0.22s ease,
+    transform 0.22s ease,
+    background 0.22s ease;
 }
 
 .home-product-image-frame img {
@@ -2642,43 +2615,48 @@ body.nav-menu-open {
   display: block;
   object-fit: contain;
   transition:
-    transform 0.26s ease,
-    opacity 0.26s ease;
+    transform 0.24s ease,
+    opacity 0.24s ease;
+}
+
+.home-product-card:hover .home-product-image-frame {
+  border-color: rgba(255, 255, 255, 0.34);
+  background: rgba(0, 0, 0, 0.14);
+  transform: translateY(-3px);
 }
 
 .home-product-card:hover .home-product-image-frame img {
-  transform: scale(1.035);
-  opacity: 0.9;
+  transform: scale(1.025);
+  opacity: 0.92;
 }
 
 .home-product-info {
-  padding: 24px 24px 28px;
+  padding: 18px 2px 0;
 }
 
 .home-product-info p {
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   color: rgba(255, 255, 255, 0.48);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
 .home-product-info h3 {
-  min-height: 50px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   color: white;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
-  line-height: 1.22;
-  letter-spacing: -0.015em;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
   text-transform: uppercase;
 }
 
 .home-product-info span {
-  color: rgba(255, 255, 255, 0.62);
-  font-size: 14px;
-  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 13px;
+  line-height: 1.5;
 }
 
 .home-builds-layout {
@@ -2783,9 +2761,7 @@ body.nav-menu-open {
 }
 
 .home-trust-section {
-  background:
-    radial-gradient(circle at 88% 0%, rgba(255, 255, 255, 0.08), transparent 32%),
-    #090a09;
+  background: #2a2b2a;
 }
 
 .home-trust-header {
