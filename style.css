@@ -331,285 +331,368 @@ body {
   }
 }
 
-.hamburger-toggle {
+.desktop-nav {
   position: fixed;
-  left: 60px;
-  top: 30px;
-  z-index: 1002;
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-}
-
-.hamburger-toggle span {
-  position: absolute;
-  left: 5px;
-  width: 34px;
-  height: 3px;
-  border-radius: 3px;
-  background: white;
-  transition:
-    top 0.28s ease,
-    transform 0.28s ease,
-    opacity 0.22s ease;
-}
-
-.hamburger-toggle span:nth-child(1) {
-  top: 9px;
-}
-
-.hamburger-toggle span:nth-child(2) {
-  top: 21px;
-}
-
-.hamburger-toggle span:nth-child(3) {
-  top: 33px;
-}
-
-body.nav-menu-open .hamburger-toggle span:nth-child(1) {
-  top: 21px;
-  transform: rotate(45deg);
-}
-
-body.nav-menu-open .hamburger-toggle span:nth-child(2) {
-  opacity: 0;
-}
-
-body.nav-menu-open .hamburger-toggle span:nth-child(3) {
-  top: 21px;
-  transform: rotate(-45deg);
-}
-
-.nav-menu-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  top: 28px;
+  left: 50%;
+  z-index: 1001;
+  transform: translateX(-50%);
+  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
   background: rgba(0, 0, 0, 0.34);
-  backdrop-filter: blur(22px);
-  -webkit-backdrop-filter: blur(22px);
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition:
-    opacity 0.28s ease,
-    visibility 0.28s ease;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
 }
 
-body.nav-menu-open .nav-menu-overlay {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-}
-
-.nav-menu-panel {
-  position: absolute;
-  inset: 0;
+.desktop-nav-links {
   display: flex;
   align-items: center;
-  justify-content: center;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(12px);
-  pointer-events: none;
-  transition:
-    opacity 0.28s ease,
-    visibility 0.28s ease,
-    transform 0.28s ease;
+  gap: 8px;
 }
 
-body.nav-menu-open .nav-menu-panel.active {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-
-.nav-menu-links {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 34px;
-  text-align: center;
-}
-
-.nav-menu-link,
-.nav-menu-link:visited,
-.nav-menu-button {
+.desktop-nav-link,
+.desktop-nav-link:visited,
+.desktop-components-button {
+  min-height: 38px;
+  padding: 0 18px;
   border: none;
+  border-radius: 999px;
   background: transparent;
   color: white;
   font-family: inherit;
-  font-size: 25px;
-  font-weight: 400;
-  line-height: 1.3;
-  letter-spacing: 0.14em;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.09em;
   text-transform: uppercase;
   text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   transition:
+    background 0.22s ease,
     color 0.22s ease,
     opacity 0.22s ease;
 }
 
-.nav-menu-link:hover,
-.nav-menu-button:hover {
-  color: rgba(255, 255, 255, 0.72);
-}
-
-.nav-menu-back {
-  margin-bottom: 12px;
-  border: none;
-  background: transparent;
-  color: rgba(255, 255, 255, 0.52);
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: color 0.22s ease;
-}
-
-.nav-menu-back:hover {
+.desktop-nav-link:hover,
+.desktop-components-button:hover,
+.desktop-components-dropdown:focus-within .desktop-components-button {
+  background: rgba(255, 255, 255, 0.1);
   color: white;
 }
 
-.nav-menu-components .nav-menu-links {
-  width: min(1340px, calc(100vw - 54px));
+.desktop-components-dropdown {
+  position: relative;
+}
+
+.desktop-components-menu {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 50%;
+  width: 520px;
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 22px;
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.34);
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 18px;
-  align-items: stretch;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translate(-50%, 8px);
+  transition:
+    opacity 0.22s ease,
+    visibility 0.22s ease,
+    transform 0.22s ease;
 }
 
-.nav-menu-components .nav-menu-back {
-  grid-column: 1 / -1;
-  justify-self: center;
-  margin-bottom: 18px;
+.desktop-components-dropdown:hover .desktop-components-menu,
+.desktop-components-dropdown:focus-within .desktop-components-menu {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translate(-50%, 0);
 }
 
-.nav-menu-components .nav-menu-link,
-.nav-menu-components .nav-menu-link:visited {
-  --nav-tile-image: url("https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/site-assets/hero.png");
-  min-height: 178px;
-  padding: 0 24px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 18px;
-  background-image:
-    linear-gradient(180deg, rgba(0, 0, 0, 0.74), rgba(0, 0, 0, 0.86)),
-    var(--nav-tile-image);
-  background-size: cover;
-  background-position: center;
+.desktop-components-menu a,
+.desktop-components-menu a:visited {
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: 14px;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
   display: flex;
   align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 16px;
-  font-weight: 800;
-  letter-spacing: 0.11em;
-  text-align: center;
-  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.82);
-  overflow: hidden;
-  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.18);
   transition:
-    border-color 0.22s ease,
-    color 0.22s ease,
-    transform 0.22s ease,
-    box-shadow 0.22s ease;
+    background 0.22s ease,
+    color 0.22s ease;
 }
 
-.nav-menu-components .nav-menu-link:nth-of-type(1) {
-  --nav-tile-image: url("https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/CPU/intel-core-ultra-9-285k-1.jpeg");
-}
-
-.nav-menu-components .nav-menu-link:nth-of-type(2) {
-  --nav-tile-image: url("https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Coolers/rog-ryujin-iii-360-argb-extreme-1.jpeg");
-}
-
-.nav-menu-components .nav-menu-link:nth-of-type(3) {
-  --nav-tile-image: url("https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Motherboards/gigabyte-z890-aorus-master-1.jpeg");
-}
-
-.nav-menu-components .nav-menu-link:nth-of-type(4) {
-  --nav-tile-image: url("https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Ram/corsair-dominator-titanium-rgb-96gb-ddr5-7000-cl40-1.jpeg");
-}
-
-.nav-menu-components .nav-menu-link:nth-of-type(5) {
-  --nav-tile-image: url("https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Storage/samsung-9100-pro-1tb-1.jpeg");
-}
-
-.nav-menu-components .nav-menu-link:nth-of-type(6) {
-  --nav-tile-image: url("https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-1.jpeg");
-}
-
-.nav-menu-components .nav-menu-link:nth-of-type(7) {
-  --nav-tile-image: url("https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Cases/gigabyte-aorus-c500-glass-1.jpeg");
-}
-
-.nav-menu-components .nav-menu-link:nth-of-type(8) {
-  --nav-tile-image: url("https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Power%20supplies/gigabyte-ud1600pm-pg5-ai-top-1.jpeg");
-}
-
-.nav-menu-components .nav-menu-link:nth-of-type(9) {
-  --nav-tile-image: url("https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Monitors/gigabyte-gs27fa-gaming-monitor-1.jpeg");
-}
-
-.nav-menu-components .nav-menu-link:nth-of-type(10) {
-  --nav-tile-image: url("https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Accessories/razer-huntsman-v3-pro-tkl-keyboard-1.jpeg");
-}
-
-.nav-menu-components .nav-menu-link:hover {
-  background-image:
-    linear-gradient(180deg, rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0.76)),
-    var(--nav-tile-image);
-  border-color: rgba(255, 255, 255, 0.32);
+.desktop-components-menu a:hover {
+  background: rgba(255, 255, 255, 0.1);
   color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 24px 58px rgba(0, 0, 0, 0.28);
-}
-
-body.nav-menu-open {
-  overflow: hidden;
 }
 
 @media (max-width: 700px) {
+  .desktop-nav {
+    display: none;
+  }
+
   .hamburger-toggle {
+    position: fixed;
     left: 25px;
     top: 20px;
+    z-index: 1002;
     width: 42px;
     height: 42px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
   }
 
   .hamburger-toggle span {
+    position: absolute;
     left: 6px;
     width: 30px;
     height: 2px;
+    border-radius: 3px;
+    background: white;
+    transition:
+      top 0.28s ease,
+      transform 0.28s ease,
+      opacity 0.22s ease;
+  }
+
+  .hamburger-toggle span:nth-child(1) {
+    top: 10px;
+  }
+
+  .hamburger-toggle span:nth-child(2) {
+    top: 21px;
+  }
+
+  .hamburger-toggle span:nth-child(3) {
+    top: 32px;
+  }
+
+  body.nav-menu-open .hamburger-toggle span:nth-child(1) {
+    top: 21px;
+    transform: rotate(45deg);
+  }
+
+  body.nav-menu-open .hamburger-toggle span:nth-child(2) {
+    opacity: 0;
+  }
+
+  body.nav-menu-open .hamburger-toggle span:nth-child(3) {
+    top: 21px;
+    transform: rotate(-45deg);
+  }
+
+  .nav-menu-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.34);
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+      opacity 0.28s ease,
+      visibility 0.28s ease;
+  }
+
+  body.nav-menu-open .nav-menu-overlay {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .nav-menu-panel {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(12px);
+    pointer-events: none;
+    transition:
+      opacity 0.28s ease,
+      visibility 0.28s ease,
+      transform 0.28s ease;
+  }
+
+  body.nav-menu-open .nav-menu-panel.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .nav-menu-links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 34px;
+    text-align: center;
   }
 
   .nav-menu-link,
+  .nav-menu-link:visited,
   .nav-menu-button {
+    border: none;
+    background: transparent;
+    color: white;
+    font-family: inherit;
     font-size: 20px;
+    font-weight: 400;
+    line-height: 1.3;
     letter-spacing: 0.11em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      color 0.22s ease,
+      opacity 0.22s ease;
+  }
+
+  .nav-menu-link:hover,
+  .nav-menu-button:hover {
+    color: rgba(255, 255, 255, 0.72);
+  }
+
+  .nav-menu-back {
+    margin-bottom: 12px;
+    border: none;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.52);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color 0.22s ease;
+  }
+
+  .nav-menu-back:hover {
+    color: white;
   }
 
   .nav-menu-components .nav-menu-links {
     width: min(460px, calc(100vw - 34px));
+    display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
+    align-items: stretch;
   }
 
-  .nav-menu-components .nav-menu-link {
+  .nav-menu-components .nav-menu-back {
+    grid-column: 1 / -1;
+    justify-self: center;
+    margin-bottom: 18px;
+  }
+
+  .nav-menu-components .nav-menu-link,
+  .nav-menu-components .nav-menu-link:visited {
+    --nav-tile-image: url("https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/site-assets/hero.png");
     min-height: 124px;
     padding: 0 14px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
     border-radius: 15px;
+    background-image:
+      linear-gradient(180deg, rgba(0, 0, 0, 0.74), rgba(0, 0, 0, 0.86)),
+      var(--nav-tile-image);
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
     font-size: 12px;
+    font-weight: 800;
     letter-spacing: 0.08em;
+    text-align: center;
+    text-shadow: 0 2px 18px rgba(0, 0, 0, 0.82);
+    overflow: hidden;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.18);
+    transition:
+      border-color 0.22s ease,
+      color 0.22s ease,
+      transform 0.22s ease,
+      box-shadow 0.22s ease;
+  }
+
+  .nav-menu-components .nav-menu-link:nth-of-type(1) {
+    --nav-tile-image: url("https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/CPU/intel-core-ultra-9-285k-1.jpeg");
+  }
+
+  .nav-menu-components .nav-menu-link:nth-of-type(2) {
+    --nav-tile-image: url("https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Coolers/rog-ryujin-iii-360-argb-extreme-1.jpeg");
+  }
+
+  .nav-menu-components .nav-menu-link:nth-of-type(3) {
+    --nav-tile-image: url("https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Motherboards/gigabyte-z890-aorus-master-1.jpeg");
+  }
+
+  .nav-menu-components .nav-menu-link:nth-of-type(4) {
+    --nav-tile-image: url("https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Ram/corsair-dominator-titanium-rgb-96gb-ddr5-7000-cl40-1.jpeg");
+  }
+
+  .nav-menu-components .nav-menu-link:nth-of-type(5) {
+    --nav-tile-image: url("https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Storage/samsung-9100-pro-1tb-1.jpeg");
+  }
+
+  .nav-menu-components .nav-menu-link:nth-of-type(6) {
+    --nav-tile-image: url("https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-1.jpeg");
+  }
+
+  .nav-menu-components .nav-menu-link:nth-of-type(7) {
+    --nav-tile-image: url("https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Cases/gigabyte-aorus-c500-glass-1.jpeg");
+  }
+
+  .nav-menu-components .nav-menu-link:nth-of-type(8) {
+    --nav-tile-image: url("https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Power%20supplies/gigabyte-ud1600pm-pg5-ai-top-1.jpeg");
+  }
+
+  .nav-menu-components .nav-menu-link:nth-of-type(9) {
+    --nav-tile-image: url("https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Monitors/gigabyte-gs27fa-gaming-monitor-1.jpeg");
+  }
+
+  .nav-menu-components .nav-menu-link:nth-of-type(10) {
+    --nav-tile-image: url("https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Accessories/razer-huntsman-v3-pro-tkl-keyboard-1.jpeg");
+  }
+
+  .nav-menu-components .nav-menu-link:hover {
+    background-image:
+      linear-gradient(180deg, rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0.76)),
+      var(--nav-tile-image);
+    border-color: rgba(255, 255, 255, 0.32);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 24px 58px rgba(0, 0, 0, 0.28);
+  }
+
+  body.nav-menu-open {
+    overflow: hidden;
   }
 }
 
