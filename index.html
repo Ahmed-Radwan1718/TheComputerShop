@@ -46,177 +46,155 @@
     </div>
   </div>
 
-  <main>
-    <section class="hero">
-      <div class="hero-overlay"></div>
+  <main class="home-page">
+    <section class="home-gateway-section">
+      <div class="home-gateway-background"></div>
 
-      <div class="hero-content">
-        <div class="hero-text">
-          <p class="hero-eyebrow">Welcome to The Computer Shop</p>
-          <h1>Performance Built Systems</h1>
+      <div class="home-shell home-gateway-inner">
+        <div class="home-top-bar">
+          <form class="home-search-form" id="home-search-form">
+            <label class="home-visually-hidden" for="home-search-input">Search products</label>
+            <input
+              id="home-search-input"
+              type="search"
+              placeholder="Search GPUs, CPUs, keyboards, monitors..."
+              autocomplete="off"
+            >
+            <button type="submit">Search</button>
+          </form>
 
-          <div class="hero-actions">
-            <a href="signature-builds.html" class="hero-button hero-button-primary">Signature Builds</a>
-            <a href="consultation.html" class="hero-button hero-button-secondary">Need a Custom PC?</a>
-          </div>
+          <a
+            href="https://api.whatsapp.com/send/?phone=201010206091&text&type=phone_number&app_absent=0"
+            class="home-whatsapp-button"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Contact on WhatsApp
+          </a>
+        </div>
+
+        <div class="home-gateway-copy">
+          <p class="home-eyebrow">Welcome to our shop</p>
+          <h1>Build, upgrade, or buy your next PC setup.</h1>
+          <p>
+            Explore ready-made PCs, curated components, premium peripherals, monitors,
+            and custom PC help for high-performance setups.
+          </p>
+        </div>
+
+        <div class="home-path-grid">
+          <a href="signature-builds.html" class="home-path-card">
+            <span>01</span>
+            <h2>Explore Ready-Made PCs</h2>
+            <p>Browse complete Signature Builds designed for gaming, creation, and extreme performance.</p>
+          </a>
+
+          <a href="graphics-cards.html" class="home-path-card">
+            <span>02</span>
+            <h2>Shop Components</h2>
+            <p>Find premium parts for upgrading, replacing, or planning your next PC build.</p>
+          </a>
+
+          <a href="consultation.html" class="home-path-card home-path-card-highlight">
+            <span>03</span>
+            <h2>Request a Custom PC</h2>
+            <p>Tell us your budget, use case, and preferred style. We help you choose the right setup.</p>
+          </a>
         </div>
       </div>
     </section>
 
-<section class="featured-builds featured-builds-split">
-  <div class="featured-builds-split-layout">
-    <div class="featured-builds-main">
-      <div class="featured-builds-header">
-        <p class="featured-builds-eyebrow">Pre-built Systems</p>
-        <h2>Featured Builds</h2>
-      </div>
+    <section class="home-product-explorer-section">
+      <div class="home-shell">
+        <div class="home-section-header">
+          <p class="home-eyebrow">Product Explorer</p>
+          <h2>Shop featured products by category.</h2>
+          <p>
+            Switch between featured categories and preview selected products without leaving the homepage.
+          </p>
+        </div>
 
-      <div class="featured-carousel">
-        <div class="featured-carousel-window">
-          <div class="featured-carousel-track">
-            <article class="featured-slide active" id="featured-build-carousel">
-              <a href="product.html?product=the-asus-proart" class="featured-image-link" id="featured-build-carousel-link">
-                <div
-                  class="featured-image-frame featured-image-empty"
-                  id="featured-build-carousel-image"
-                  style="background-image: url('https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Cases/fractal-design-north-xl-charcoal-black-1.jpeg'); background-size: cover; background-position: center;"
-                ></div>
-              </a>
-
-              <div class="featured-slide-info" id="featured-build-carousel-info">
-                <h3 id="featured-build-carousel-title">The ASUS ProArt</h3>
-                <p class="featured-slide-specs" id="featured-build-carousel-specs">Core Ultra 9 | RTX 5080 | 192GB RAM</p>
-              </div>
-
-              <div class="featured-component-progress-track">
-                <div class="featured-component-progress-bar" id="featured-build-progress-bar"></div>
-              </div>
-            </article>
+        <div class="home-product-controls">
+          <div class="home-product-tabs" role="tablist" aria-label="Featured product categories">
+            <button class="home-product-tab active" type="button" data-category="gpus">GPUs</button>
+            <button class="home-product-tab" type="button" data-category="cooling">CPU Coolers</button>
+            <button class="home-product-tab" type="button" data-category="peripherals">Peripherals</button>
+            <button class="home-product-tab" type="button" data-category="monitors">Monitors</button>
           </div>
-        </div>
-      </div>
-    </div>
 
-    <aside class="featured-builds-side">
-      <div class="featured-builds-prompt">
-        <h3>Need a system built around you?</h3>
-
-        <p>
-          If our Signature Builds are not exactly what you are looking for, request a custom PC and we will help you choose a system around your budget, performance goals, preferred look, and setup.
-        </p>
-
-        <a href="consultation.html" class="featured-consultation-button">Request a Custom PC</a>
-      </div>
-    </aside>
-  </div>
-</section>
-
-    <section class="featured-components-wall-section">
-      <div class="featured-components-wall-inner">
-        <div class="featured-components-copy">
-          <p class="featured-components-eyebrow">Featured Components</p>
-          <h2>High-performance components for ultimate productivity.</h2>
-
-          <a href="graphics-cards.html" class="featured-consultation-button">Explore All Components</a>
+          <a href="graphics-cards.html" class="home-view-all-link" id="home-product-view-all">View All</a>
         </div>
 
-<div class="component-wall-grid">
-<a href="product.html?product=rtx-5090-aorus-master" class="component-wall-card component-wall-card-large" id="featured-component-carousel">
-  <div
-    class="component-wall-placeholder"
-    id="featured-component-carousel-image"
-    style="background-image: url('https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-1.jpeg'); background-size: cover; background-position: center;"
-  ></div>
-
-  <div class="component-wall-card-info">
-    <h3 id="featured-component-carousel-title">RTX 5090 AORUS Master</h3>
-    <p id="featured-component-carousel-specs" hidden></p>
-  </div>
-
-  <div class="featured-component-progress-track">
-    <div class="featured-component-progress-bar"></div>
-  </div>
-</a>
-
-  <a href="graphics-cards.html" class="component-wall-card">
-    <div
-      class="component-wall-placeholder"
-      style="background-image: url('https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5060-ti-aorus-elite-1.jpeg'); background-size: cover; background-position: center;"
-    ></div>
-    <div class="component-wall-card-info">
-      <h3>Graphics Cards</h3>
-    </div>
-  </a>
-
-  <a href="motherboards.html" class="component-wall-card">
-    <div
-      class="component-wall-placeholder"
-      style="background-image: url('https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Motherboards/gigabyte-x870e-aorus-xtreme-x3d-ai-top-1.jpeg'); background-size: cover; background-position: center;"
-    ></div>
-    <div class="component-wall-card-info">
-      <h3>Motherboards</h3>
-    </div>
-  </a>
-
-  <a href="power-supplies.html" class="component-wall-card">
-    <div
-      class="component-wall-placeholder"
-      style="background-image: url('https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Power%20supplies/gigabyte-aorus-elite-p1000w-platinum-pg5-1.jpeg'); background-size: cover; background-position: center;"
-    ></div>
-    <div class="component-wall-card-info">
-      <h3>Power Supplies</h3>
-    </div>
-  </a>
-</div>
+        <div class="home-product-grid" id="home-product-grid"></div>
       </div>
     </section>
 
-    <section class="about-section">
-      <div class="about-section-inner">
-        <div class="about-section-header">
-          <p class="about-section-eyebrow">Why Buy From Us?</p>
-          <h2>Built for performance, reliability, and long-term support.</h2>
+    <section class="home-builds-section">
+      <div class="home-shell home-builds-layout">
+        <article class="home-build-carousel" id="home-build-carousel">
+          <div class="home-build-media">
+            <img
+              id="home-build-image"
+              src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Cases/fractal-design-north-xl-charcoal-black-1.jpeg"
+              alt="The ASUS ProArt"
+            >
+          </div>
+
+          <div class="home-build-content">
+            <p class="home-eyebrow">Featured Signature Build</p>
+            <h2 id="home-build-title">The ASUS ProArt</h2>
+            <p id="home-build-specs">Core Ultra 9 | RTX 5080 | 192GB RAM</p>
+
+            <a href="product.html?product=the-asus-proart" id="home-build-link" class="home-primary-button">
+              View Build
+            </a>
+
+            <div class="home-build-dots" id="home-build-dots" aria-label="Featured build controls"></div>
+          </div>
+        </article>
+
+        <aside class="home-custom-prompt">
+          <p class="home-eyebrow">Need something different?</p>
+          <h2>Get a PC tailored to your exact needs.</h2>
+          <p>
+            If a ready-made build is not the perfect fit, request a custom PC around your budget,
+            games, software, performance target, and visual style.
+          </p>
+          <a href="consultation.html" class="home-secondary-button">Request Custom PC</a>
+        </aside>
+      </div>
+    </section>
+
+    <section class="home-trust-section">
+      <div class="home-shell">
+        <div class="home-section-header home-trust-header">
+          <p class="home-eyebrow">Why Buy From Us?</p>
+          <h2>Built around quality, compatibility, and support.</h2>
         </div>
 
-        <div class="about-reasons-list">
-          <article class="about-reason">
-            <span class="about-reason-number">01</span>
-            <div>
-              <h3>Carefully Selected Parts</h3>
-              <p>
-                We choose parts that work well together for performance, cooling, reliability, and value.
-              </p>
-            </div>
+        <div class="home-trust-grid">
+          <article class="home-trust-card">
+            <span>01</span>
+            <h3>Curated Parts</h3>
+            <p>We focus on quality hardware from trusted brands instead of random low-end options.</p>
           </article>
 
-          <article class="about-reason">
-            <span class="about-reason-number">02</span>
-            <div>
-              <h3>Signature or Custom</h3>
-              <p>
-                Choose a ready Signature Build or request a custom PC tailored to your budget and needs.
-              </p>
-            </div>
+          <article class="home-trust-card">
+            <span>02</span>
+            <h3>Compatibility Focused</h3>
+            <p>Parts and builds are selected with performance, cooling, clearance, and power requirements in mind.</p>
           </article>
 
-          <article class="about-reason">
-            <span class="about-reason-number">03</span>
-            <div>
-              <h3>Guided Consultations</h3>
-              <p>
-                We help you choose parts based on your goals, budget, games, software, and setup.
-              </p>
-            </div>
+          <article class="home-trust-card">
+            <span>03</span>
+            <h3>Build Guidance</h3>
+            <p>We help customers choose the right setup for gaming, work, streaming, creation, or daily use.</p>
           </article>
 
-          <article class="about-reason">
-            <span class="about-reason-number">04</span>
-            <div>
-              <h3>Lifetime Troubleshooting</h3>
-              <p>
-                We offer free lifetime troubleshooting and diagnosis for products bought from our store.
-              </p>
-            </div>
+          <article class="home-trust-card">
+            <span>04</span>
+            <h3>After-Sale Support</h3>
+            <p>Purchases include store support, basic guidance, troubleshooting, and product help.</p>
           </article>
         </div>
       </div>
