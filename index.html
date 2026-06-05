@@ -265,7 +265,226 @@
 </footer>
 
 <script>
-  const featuredBuildSlides = [
+  const homeSearchForm = document.getElementById("home-search-form");
+  const homeSearchInput = document.getElementById("home-search-input");
+
+  const searchRoutes = [
+    {
+      terms: ["signature", "prebuilt", "pre-built", "ready made", "ready-made", "pc build", "build"],
+      url: "signature-builds.html"
+    },
+    {
+      terms: ["custom", "consultation", "help", "budget", "tailored"],
+      url: "consultation.html"
+    },
+    {
+      terms: ["gpu", "graphics", "graphics card", "rtx", "radeon", "5090", "5080", "5070"],
+      url: "graphics-cards.html"
+    },
+    {
+      terms: ["cpu", "processor", "intel", "amd", "core ultra", "ryzen"],
+      url: "cpus.html"
+    },
+    {
+      terms: ["cooler", "cooling", "aio", "liquid cooler", "waterforce", "ryujin"],
+      url: "cpu-coolers.html"
+    },
+    {
+      terms: ["motherboard", "board", "z890", "x870", "b850"],
+      url: "motherboards.html"
+    },
+    {
+      terms: ["ram", "memory", "ddr5"],
+      url: "memory.html"
+    },
+    {
+      terms: ["storage", "ssd", "nvme", "hard drive"],
+      url: "storage.html"
+    },
+    {
+      terms: ["case", "tower", "chassis"],
+      url: "cases.html"
+    },
+    {
+      terms: ["psu", "power", "power supply"],
+      url: "power-supplies.html"
+    },
+    {
+      terms: ["monitor", "screen", "display"],
+      url: "monitors.html"
+    },
+    {
+      terms: ["keyboard", "mouse", "headset", "microphone", "controller", "router", "peripheral", "accessory"],
+      url: "accessories.html"
+    }
+  ];
+
+  if (homeSearchForm && homeSearchInput) {
+    homeSearchForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const query = homeSearchInput.value.trim().toLowerCase();
+
+      if (!query) {
+        return;
+      }
+
+      const match = searchRoutes.find((route) => {
+        return route.terms.some((term) => query.includes(term));
+      });
+
+      window.location.href = match ? match.url : "graphics-cards.html";
+    });
+  }
+
+  const productExplorerData = {
+    gpus: {
+      viewAll: "graphics-cards.html",
+      products: [
+        {
+          name: "Aorus RTX 5090 Master 32GB",
+          category: "Graphics Card",
+          specs: "Gigabyte | RTX 5090 | AORUS Master",
+          url: "product.html?product=rtx-5090-aorus-master",
+          image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-1.jpeg"
+        },
+        {
+          name: "Gigabyte RTX 5080 Windforce OC SFF 16GB",
+          category: "Graphics Card",
+          specs: "Gigabyte | RTX 5080 | Windforce OC SFF",
+          url: "product.html?product=rtx-5080-windforce-oc-sff-16g",
+          image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5080-windforce-oc-sff-16g-1.jpeg"
+        },
+        {
+          name: "Gigabyte RX 9060 XT Gaming OC 16GB",
+          category: "Graphics Card",
+          specs: "Gigabyte | RX 9060 XT | Gaming OC",
+          url: "product.html?product=rx-9060-xt-gaming-oc-16g",
+          image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rx-9060-xt-gaming-oc-16g-1.jpeg"
+        }
+      ]
+    },
+    cooling: {
+      viewAll: "cpu-coolers.html",
+      products: [
+        {
+          name: "ROG Ryujin III 360 ARGB Extreme",
+          category: "CPU Cooler",
+          specs: "ASUS ROG | 360mm AIO | ARGB LCD",
+          url: "product.html?product=rog-ryujin-iii-360-argb-extreme",
+          image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Coolers/rog-ryujin-iii-360-argb-extreme-1.jpeg"
+        },
+        {
+          name: "AORUS WATERFORCE II 240",
+          category: "CPU Cooler",
+          specs: "Gigabyte | 240mm AIO | ARGB",
+          url: "product.html?product=aorus-waterforce-ii-240",
+          image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Coolers/aorus-waterforce-ii-240-1.jpeg"
+        },
+        {
+          name: "Corsair NAUTILUS 360 RS ARGB",
+          category: "CPU Cooler",
+          specs: "Corsair | 360mm AIO | ARGB",
+          url: "product.html?product=corsair-nautilus-360-rs-argb",
+          image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Coolers/corsair-nautilus-360-rs-argb-liquid-cpu-cooler-1.jpeg"
+        }
+      ]
+    },
+    peripherals: {
+      viewAll: "accessories.html",
+      products: [
+        {
+          name: "Razer BlackWidow V4 75% Keyboard",
+          category: "Keyboard",
+          specs: "Razer | 75% Keyboard | Hot-Swappable",
+          url: "product.html?product=razer-blackwidow-v4-75-keyboard-black",
+          image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Accessories/razer-blackwidow-v4-75-keyboard-black-1.jpeg"
+        },
+        {
+          name: "Razer BlackShark V3 Pro",
+          category: "Gaming Headset",
+          specs: "Razer | Wireless Headset | ANC",
+          url: "product.html?product=razer-blackshark-v3-pro",
+          image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Accessories/razer-blackshark-v3-pro-1.jpeg"
+        },
+        {
+          name: "Razer Cobra Pro Wireless Mouse",
+          category: "Mouse",
+          specs: "Razer | Wireless Mouse | Chroma RGB",
+          url: "product.html?product=razer-cobra-pro-lightweight-wireless-pc-gaming-mouse",
+          image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Accessories/razer-cobra-pro-lightweight-wireless-pc-gaming-mouse-1.jpeg"
+        }
+      ]
+    },
+    monitors: {
+      viewAll: "monitors.html",
+      products: [
+        {
+          name: "Gigabyte GS27U Gaming Monitor",
+          category: "Monitor",
+          specs: "Gigabyte | 4K | 160Hz | IPS",
+          url: "product.html?product=gigabyte-gs27u-gaming-monitor",
+          image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Monitors/gigabyte-gs27u-gaming-monitor-6.jpeg"
+        },
+        {
+          name: "Gigabyte GS27FA Gaming Monitor",
+          category: "Monitor",
+          specs: "Gigabyte | 1080p | 180Hz | IPS",
+          url: "product.html?product=gigabyte-gs27fa-gaming-monitor",
+          image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Monitors/gigabyte-gs27fa-gaming-monitor-1.jpeg"
+        },
+        {
+          name: "Gigabyte GS27U Gaming Monitor",
+          category: "Monitor",
+          specs: "27-inch | UHD | High Refresh Gaming",
+          url: "product.html?product=gigabyte-gs27u-gaming-monitor",
+          image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Monitors/gigabyte-gs27fa-gaming-monitor-2.jpeg"
+        }
+      ]
+    }
+  };
+
+  const productTabs = document.querySelectorAll(".home-product-tab");
+  const productGrid = document.getElementById("home-product-grid");
+  const productViewAll = document.getElementById("home-product-view-all");
+
+  function renderProductCategory(categoryKey) {
+    const category = productExplorerData[categoryKey];
+
+    if (!category || !productGrid || !productViewAll) {
+      return;
+    }
+
+    productGrid.innerHTML = category.products.map((product) => {
+      return `
+        <a href="${product.url}" class="home-product-card">
+          <div class="home-product-image-frame">
+            <img src="${product.image}" alt="${product.name}">
+          </div>
+
+          <div class="home-product-info">
+            <p>${product.category}</p>
+            <h3>${product.name}</h3>
+            <span>${product.specs}</span>
+          </div>
+        </a>
+      `;
+    }).join("");
+
+    productViewAll.href = category.viewAll;
+  }
+
+  productTabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      productTabs.forEach((item) => item.classList.remove("active"));
+      tab.classList.add("active");
+      renderProductCategory(tab.dataset.category);
+    });
+  });
+
+  renderProductCategory("gpus");
+
+  const homeBuildSlides = [
     {
       title: "The ASUS ProArt",
       specs: "Core Ultra 9 | RTX 5080 | 192GB RAM",
@@ -286,316 +505,71 @@
     }
   ];
 
-  const featuredBuildCard = document.getElementById("featured-build-carousel");
-  const featuredBuildLink = document.getElementById("featured-build-carousel-link");
-  const featuredBuildImage = document.getElementById("featured-build-carousel-image");
-  const featuredBuildTitle = document.getElementById("featured-build-carousel-title");
-  const featuredBuildSpecs = document.getElementById("featured-build-carousel-specs");
-  const featuredBuildInfo = document.getElementById("featured-build-carousel-info");
-  const featuredBuildProgressBar = document.getElementById("featured-build-progress-bar");
+  const buildImage = document.getElementById("home-build-image");
+  const buildTitle = document.getElementById("home-build-title");
+  const buildSpecs = document.getElementById("home-build-specs");
+  const buildLink = document.getElementById("home-build-link");
+  const buildDots = document.getElementById("home-build-dots");
 
-  let featuredBuildIndex = 0;
-  let featuredBuildInterval = null;
+  let currentBuildIndex = 0;
 
-  featuredBuildSlides.forEach((slide) => {
-    const preloadImage = new Image();
-    preloadImage.src = slide.image;
-  });
-
-  function buildFeaturedBuildTrack() {
-    if (!featuredBuildImage) {
-      return null;
-    }
-
-    featuredBuildImage.style.position = "relative";
-    featuredBuildImage.style.overflow = "hidden";
-    featuredBuildImage.style.backgroundImage = "none";
-
-    const track = document.createElement("div");
-    track.id = "featured-build-track";
-    track.style.position = "absolute";
-    track.style.inset = "0";
-    track.style.display = "flex";
-    track.style.width = "100%";
-    track.style.height = "100%";
-    track.style.transform = "translate3d(0, 0, 0)";
-    track.style.transition = "transform 950ms cubic-bezier(0.22, 1, 0.36, 1)";
-    track.style.willChange = "transform";
-
-    const slidesWithClone = [...featuredBuildSlides, featuredBuildSlides[0]];
-
-    slidesWithClone.forEach((slide) => {
-      const slideElement = document.createElement("div");
-      slideElement.style.flex = "0 0 100%";
-      slideElement.style.width = "100%";
-      slideElement.style.height = "100%";
-      slideElement.style.backgroundImage = `url('${slide.image}')`;
-      slideElement.style.backgroundSize = "cover";
-      slideElement.style.backgroundPosition = "center";
-      slideElement.style.transform = "translateZ(0)";
-
-      track.appendChild(slideElement);
-    });
-
-    featuredBuildImage.innerHTML = "";
-    featuredBuildImage.appendChild(track);
-
-    return track;
-  }
-
-  const featuredBuildTrack = buildFeaturedBuildTrack();
-
-  function restartFeaturedBuildProgress() {
-    if (!featuredBuildProgressBar) {
+  function renderBuildDots() {
+    if (!buildDots) {
       return;
     }
 
-    featuredBuildProgressBar.style.animation = "none";
-    featuredBuildProgressBar.offsetHeight;
-    featuredBuildProgressBar.style.animation = "featuredComponentProgress 7s linear forwards";
+    buildDots.innerHTML = homeBuildSlides.map((slide, index) => {
+      return `
+        <button
+          type="button"
+          class="home-build-dot${index === currentBuildIndex ? " active" : ""}"
+          aria-label="Show ${slide.title}"
+          data-index="${index}"
+        ></button>
+      `;
+    }).join("");
+
+    buildDots.querySelectorAll(".home-build-dot").forEach((dot) => {
+      dot.addEventListener("click", () => {
+        currentBuildIndex = Number(dot.dataset.index);
+        renderBuildSlide();
+      });
+    });
   }
 
-  function updateFeaturedBuildText(index) {
-    const slide = featuredBuildSlides[index];
+  function renderBuildSlide() {
+    const slide = homeBuildSlides[currentBuildIndex];
 
-    if (featuredBuildLink) {
-      featuredBuildLink.href = slide.url;
+    if (!buildImage || !buildTitle || !buildSpecs || !buildLink) {
+      return;
     }
 
-    if (featuredBuildInfo) {
-      featuredBuildInfo.style.transition = "opacity 350ms ease, transform 350ms ease";
-      featuredBuildInfo.style.opacity = "0";
-      featuredBuildInfo.style.transform = "translateX(-14px)";
-    }
+    buildImage.style.opacity = "0";
+    buildTitle.style.opacity = "0";
+    buildSpecs.style.opacity = "0";
 
     setTimeout(() => {
-      if (featuredBuildTitle) {
-        featuredBuildTitle.textContent = slide.title;
-      }
+      buildImage.src = slide.image;
+      buildImage.alt = slide.title;
+      buildTitle.textContent = slide.title;
+      buildSpecs.textContent = slide.specs;
+      buildLink.href = slide.url;
 
-      if (featuredBuildSpecs) {
-        featuredBuildSpecs.textContent = slide.specs;
-      }
+      buildImage.style.opacity = "1";
+      buildTitle.style.opacity = "1";
+      buildSpecs.style.opacity = "1";
 
-      if (featuredBuildInfo) {
-        featuredBuildInfo.style.opacity = "1";
-        featuredBuildInfo.style.transform = "translateX(0)";
-      }
-    }, 220);
+      renderBuildDots();
+    }, 180);
   }
 
-  function moveFeaturedBuildCarousel() {
-    if (!featuredBuildTrack) {
-      return;
-    }
+  if (buildImage && buildTitle && buildSpecs && buildLink) {
+    renderBuildDots();
 
-    featuredBuildIndex += 1;
-
-    featuredBuildTrack.style.transition = "transform 950ms cubic-bezier(0.22, 1, 0.36, 1)";
-    featuredBuildTrack.style.transform = `translate3d(-${featuredBuildIndex * 100}%, 0, 0)`;
-
-    const realIndex = featuredBuildIndex % featuredBuildSlides.length;
-    updateFeaturedBuildText(realIndex);
-    restartFeaturedBuildProgress();
-
-    if (featuredBuildIndex === featuredBuildSlides.length) {
-      setTimeout(() => {
-        featuredBuildTrack.style.transition = "none";
-        featuredBuildTrack.style.transform = "translate3d(0, 0, 0)";
-        featuredBuildIndex = 0;
-
-        featuredBuildTrack.offsetHeight;
-        featuredBuildTrack.style.transition = "transform 950ms cubic-bezier(0.22, 1, 0.36, 1)";
-      }, 970);
-    }
-  }
-
-  if (featuredBuildCard && featuredBuildLink && featuredBuildImage && featuredBuildTitle && featuredBuildSpecs && featuredBuildTrack) {
-    updateFeaturedBuildText(0);
-    restartFeaturedBuildProgress();
-
-    featuredBuildInterval = setInterval(moveFeaturedBuildCarousel, 7000);
-  }
-
-  const featuredComponentSlides = [
-    {
-      title: "RTX 5090 AORUS Master",
-      specs: "Gigabyte | RTX 5090 | AORUS Master",
-      image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-1.jpeg",
-      url: "product.html?product=rtx-5090-aorus-master"
-    },
-    {
-      title: "X870E AORUS XTREME X3D AI TOP",
-      specs: "Gigabyte | AMD X870E | WIFI7",
-      image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Motherboards/gigabyte-x870e-aorus-xtreme-x3d-ai-top-1.jpeg",
-      url: "product.html?product=x870e-aorus-xtreme-x3d-ai-top"
-    },
-    {
-      title: "Intel Core Ultra 9 285K",
-      specs: "Intel | Core Ultra 9 | 24 Cores",
-      image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/CPU/intel-core-ultra-9-285k-1.jpeg",
-      url: "product.html?product=intel-core-ultra-9-285k"
-    },
-    {
-      title: "AORUS WATERFORCE II 360",
-      specs: "Gigabyte | 360mm AIO | ARGB",
-      image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Coolers/gigabyte-aorus-waterforce-ii-360-1.jpeg",
-      url: "product.html?product=aorus-waterforce-ii-360"
-    },
-    {
-      title: "Corsair Dominator Titanium RGB 96GB DDR5 7000 CL40",
-      specs: "Corsair | 96GB 2×48GB | DDR5 7000MT/s CL40",
-      image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Ram/corsair-dominator-titanium-rgb-96gb-ddr5-7000-cl40-1.jpeg",
-      url: "product.html?product=corsair-dominator-titanium-rgb-96gb-ddr5-7000-cl40"
-    },
-    {
-      title: "Samsung 9100 PRO NVMe SSD",
-      specs: "Samsung | PCIe 5.0 NVMe | 1TB–8TB",
-      image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Storage/samsung-9100-pro-1tb-1.jpeg",
-      url: "product.html?product=samsung-9100-pro-nvme-ssd"
-    },
-    {
-      title: "UD1600PM PG5 AI TOP",
-      specs: "Gigabyte | 1600W | 80 Plus Platinum",
-      image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Power%20supplies/gigabyte-ud1600pm-pg5-ai-top-1.jpeg",
-      url: "product.html?product=ud1600pm-pg5-ai-top"
-    },
-    {
-      title: "AORUS C500 GLASS",
-      specs: "Gigabyte | Mid Tower | Tempered Glass",
-      image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Cases/gigabyte-aorus-c500-glass-1.jpeg",
-      url: "product.html?product=aorus-c500-glass"
-    }
-  ];
-
-  const featuredComponentCard = document.getElementById("featured-component-carousel");
-  const featuredComponentImage = document.getElementById("featured-component-carousel-image");
-  const featuredComponentTitle = document.getElementById("featured-component-carousel-title");
-  const featuredComponentSpecs = document.getElementById("featured-component-carousel-specs");
-  const featuredComponentInfo = featuredComponentTitle ? featuredComponentTitle.closest(".component-wall-card-info") : null;
-  const featuredComponentProgressBar = document.querySelector("#featured-component-carousel .featured-component-progress-bar");
-
-  let featuredComponentIndex = 0;
-  let featuredComponentInterval = null;
-
-  featuredComponentSlides.forEach((slide) => {
-    const preloadImage = new Image();
-    preloadImage.src = slide.image;
-  });
-
-  function buildFeaturedComponentTrack() {
-    if (!featuredComponentImage) {
-      return null;
-    }
-
-    featuredComponentImage.style.position = "relative";
-    featuredComponentImage.style.overflow = "hidden";
-    featuredComponentImage.style.backgroundImage = "none";
-
-    const track = document.createElement("div");
-    track.id = "featured-component-track";
-    track.style.position = "absolute";
-    track.style.inset = "0";
-    track.style.display = "flex";
-    track.style.width = "100%";
-    track.style.height = "100%";
-    track.style.transform = "translate3d(0, 0, 0)";
-    track.style.transition = "transform 950ms cubic-bezier(0.22, 1, 0.36, 1)";
-    track.style.willChange = "transform";
-
-    const slidesWithClone = [...featuredComponentSlides, featuredComponentSlides[0]];
-
-    slidesWithClone.forEach((slide) => {
-      const slideElement = document.createElement("div");
-      slideElement.style.flex = "0 0 100%";
-      slideElement.style.width = "100%";
-      slideElement.style.height = "100%";
-      slideElement.style.backgroundImage = `url('${slide.image}')`;
-      slideElement.style.backgroundSize = "cover";
-      slideElement.style.backgroundPosition = "center";
-      slideElement.style.transform = "translateZ(0)";
-
-      track.appendChild(slideElement);
-    });
-
-    featuredComponentImage.innerHTML = "";
-    featuredComponentImage.appendChild(track);
-
-    return track;
-  }
-
-  const featuredComponentTrack = buildFeaturedComponentTrack();
-
-  function restartFeaturedComponentProgress() {
-    if (!featuredComponentProgressBar) {
-      return;
-    }
-
-    featuredComponentProgressBar.style.animation = "none";
-    featuredComponentProgressBar.offsetHeight;
-    featuredComponentProgressBar.style.animation = "featuredComponentProgress 7s linear forwards";
-  }
-
-  function updateFeaturedComponentText(index) {
-    const slide = featuredComponentSlides[index];
-
-    if (featuredComponentCard) {
-      featuredComponentCard.href = slide.url;
-    }
-
-    if (featuredComponentInfo) {
-      featuredComponentInfo.style.transition = "opacity 350ms ease, transform 350ms ease";
-      featuredComponentInfo.style.opacity = "0";
-      featuredComponentInfo.style.transform = "translateX(-14px)";
-    }
-
-    setTimeout(() => {
-      if (featuredComponentTitle) {
-        featuredComponentTitle.textContent = slide.title;
-      }
-
-      if (featuredComponentSpecs) {
-        featuredComponentSpecs.textContent = slide.specs;
-      }
-
-      if (featuredComponentInfo) {
-        featuredComponentInfo.style.opacity = "1";
-        featuredComponentInfo.style.transform = "translateX(0)";
-      }
-    }, 220);
-  }
-
-  function moveFeaturedComponentCarousel() {
-    if (!featuredComponentTrack) {
-      return;
-    }
-
-    featuredComponentIndex += 1;
-
-    featuredComponentTrack.style.transition = "transform 950ms cubic-bezier(0.22, 1, 0.36, 1)";
-    featuredComponentTrack.style.transform = `translate3d(-${featuredComponentIndex * 100}%, 0, 0)`;
-
-    const realIndex = featuredComponentIndex % featuredComponentSlides.length;
-    updateFeaturedComponentText(realIndex);
-    restartFeaturedComponentProgress();
-
-    if (featuredComponentIndex === featuredComponentSlides.length) {
-      setTimeout(() => {
-        featuredComponentTrack.style.transition = "none";
-        featuredComponentTrack.style.transform = "translate3d(0, 0, 0)";
-        featuredComponentIndex = 0;
-
-        featuredComponentTrack.offsetHeight;
-        featuredComponentTrack.style.transition = "transform 950ms cubic-bezier(0.22, 1, 0.36, 1)";
-      }, 970);
-    }
-  }
-
-  if (featuredComponentCard && featuredComponentImage && featuredComponentTitle && featuredComponentSpecs && featuredComponentTrack) {
-    updateFeaturedComponentText(0);
-    restartFeaturedComponentProgress();
-
-    featuredComponentInterval = setInterval(moveFeaturedComponentCarousel, 7000);
+    setInterval(() => {
+      currentBuildIndex = (currentBuildIndex + 1) % homeBuildSlides.length;
+      renderBuildSlide();
+    }, 6500);
   }
 </script>
 
