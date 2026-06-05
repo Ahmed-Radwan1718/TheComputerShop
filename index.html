@@ -8,244 +8,221 @@
 </head>
 <body>
 
-<button class="hamburger-toggle" type="button" aria-label="Open menu">
-  <span></span>
-  <span></span>
-  <span></span>
-</button>
+<header class="site-header">
+  <a href="index.html" class="site-header-brand" aria-label="The Computer Shop home">
+    <span class="site-header-brand-mark">TCS</span>
+    <span class="site-header-brand-copy">
+      <strong>The Computer Shop</strong>
+      <span>Gaming & workflow PCs</span>
+    </span>
+  </a>
 
-<a href="cart.html" class="nav-cart-link" aria-label="Cart">
-  <img src="cart-icon.png" alt="Cart">
-  <span class="nav-cart-count">0</span>
-</a>
+  <nav class="site-header-nav" aria-label="Main navigation">
+    <a href="signature-builds.html">Signature Builds</a>
 
-  <div class="nav-menu-overlay">
-    <div class="nav-menu-panel nav-menu-main active">
-      <div class="nav-menu-links">
-        <a href="index.html" class="nav-menu-link">Home</a>
-<a href="signature-builds.html" class="nav-menu-link">Signature Builds</a>
-<button class="nav-menu-button" type="button" id="open-components-menu">Components</button>
-<a href="consultation.html" class="nav-menu-link">Need a Custom PC?</a>
+    <details class="site-header-components">
+      <summary>Components</summary>
+      <div class="site-header-dropdown">
+        <a href="cpus.html">CPUs</a>
+        <a href="cpu-coolers.html">CPU Coolers</a>
+        <a href="motherboards.html">Motherboards</a>
+        <a href="memory.html">Memory</a>
+        <a href="storage.html">Storage</a>
+        <a href="graphics-cards.html">Graphics Cards</a>
+        <a href="cases.html">Cases</a>
+        <a href="power-supplies.html">Power Supplies</a>
+        <a href="monitors.html">Monitors</a>
       </div>
-    </div>
+    </details>
 
-    <div class="nav-menu-panel nav-menu-components">
-      <div class="nav-menu-links">
-        <button class="nav-menu-back" type="button" id="back-to-main-menu">Back</button>
-<a href="cpus.html" class="nav-menu-link">CPU</a>
-<a href="cpu-coolers.html" class="nav-menu-link">CPU Cooler</a>
-<a href="motherboards.html" class="nav-menu-link">Motherboard</a>
-<a href="memory.html" class="nav-menu-link">Memory</a>
-<a href="storage.html" class="nav-menu-link">Storage</a>
-<a href="graphics-cards.html" class="nav-menu-link">Graphics Card</a>
-<a href="cases.html" class="nav-menu-link">Case</a>
-<a href="power-supplies.html" class="nav-menu-link">Power Supply</a>
-<a href="monitors.html" class="nav-menu-link">Monitor</a>
-<a href="accessories.html" class="nav-menu-link">Peripherals</a>
-      </div>
-    </div>
+    <a href="accessories.html">Peripherals</a>
+    <a href="consultation.html">Custom PC Consultation</a>
+  </nav>
+
+  <div class="site-header-actions">
+    <a href="https://api.whatsapp.com/send/?phone=201010206091&text&type=phone_number&app_absent=0" class="site-header-whatsapp" target="_blank" rel="noopener noreferrer">WhatsApp Us</a>
+    <a href="cart.html" class="nav-cart-link site-header-cart" aria-label="Cart">
+      <img src="cart-icon.png" alt="Cart">
+      <span class="nav-cart-count">0</span>
+    </a>
   </div>
+</header>
 
-  <main>
-    <section class="hero">
-      <div class="hero-overlay"></div>
+<main class="home-page">
+  <section class="home-hero">
+    <div class="home-hero-copy">
+      <p class="home-eyebrow">Custom PCs, components, and peripherals in Egypt</p>
+      <h1>Gaming and workflow PCs built around the way you actually use them.</h1>
+      <p class="home-hero-text">
+        The Computer Shop helps you choose the right parts, avoid bad pairings, and build a clean system for gaming, creation, engineering work, streaming, or daily productivity.
+      </p>
 
-      <div class="hero-content">
-        <div class="hero-text">
-          <p class="hero-eyebrow">Welcome to The Computer Shop</p>
-          <h1>Performance Built Systems</h1>
-
-          <div class="hero-actions">
-            <a href="signature-builds.html" class="hero-button hero-button-primary">Signature Builds</a>
-            <a href="consultation.html" class="hero-button hero-button-secondary">Need a Custom PC?</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-<section class="featured-builds featured-builds-split">
-  <div class="featured-builds-split-layout">
-    <div class="featured-builds-main">
-      <div class="featured-builds-header">
-        <p class="featured-builds-eyebrow">Pre-built Systems</p>
-        <h2>Featured Builds</h2>
-      </div>
-
-      <div class="featured-carousel">
-        <div class="featured-carousel-window">
-          <div class="featured-carousel-track">
-            <article class="featured-slide active" id="featured-build-carousel">
-              <a href="product.html?product=the-asus-proart" class="featured-image-link" id="featured-build-carousel-link">
-                <div
-                  class="featured-image-frame featured-image-empty"
-                  id="featured-build-carousel-image"
-                  style="background-image: url('https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Cases/fractal-design-north-xl-charcoal-black-1.jpeg'); background-size: cover; background-position: center;"
-                ></div>
-              </a>
-
-              <div class="featured-slide-info" id="featured-build-carousel-info">
-                <h3 id="featured-build-carousel-title">The ASUS ProArt</h3>
-                <p class="featured-slide-specs" id="featured-build-carousel-specs">Core Ultra 9 | RTX 5080 | 192GB RAM</p>
-              </div>
-
-              <div class="featured-component-progress-track">
-                <div class="featured-component-progress-bar" id="featured-build-progress-bar"></div>
-              </div>
-            </article>
-          </div>
-        </div>
+      <div class="home-hero-actions">
+        <a href="consultation.html" class="home-button home-button-primary">Request a Custom PC</a>
+        <a href="signature-builds.html" class="home-button home-button-secondary">Explore Signature Builds</a>
       </div>
     </div>
 
-    <aside class="featured-builds-side">
-      <div class="featured-builds-prompt">
-        <h3>Need a system built around you?</h3>
+    <div class="home-hero-visual" aria-label="Featured gaming PC components">
+      <div class="home-hero-image home-hero-image-main"></div>
+      <div class="home-hero-spec-card home-hero-spec-card-top">
+        <span>Selected parts</span>
+        <strong>Matched for performance, cooling, and reliability.</strong>
+      </div>
+      <div class="home-hero-spec-card home-hero-spec-card-bottom">
+        <span>Custom guidance</span>
+        <strong>Tell us your budget, games, software, and preferred look.</strong>
+      </div>
+    </div>
+  </section>
 
+  <section class="home-path-section">
+    <div class="home-section-heading">
+      <p class="home-eyebrow">Start in the right place</p>
+      <h2>Choose the path that matches what you need.</h2>
+    </div>
+
+    <div class="home-path-grid">
+      <a href="signature-builds.html" class="home-path-card">
+        <span>01</span>
+        <h3>I want a ready PC</h3>
+        <p>Browse Signature Builds: pre-configured PCs made for gaming, creators, and workstation use.</p>
+      </a>
+
+      <a href="consultation.html" class="home-path-card">
+        <span>02</span>
+        <h3>I want help choosing parts</h3>
+        <p>Submit your budget, use case, games, software, and aesthetic direction so we can guide the build.</p>
+      </a>
+
+      <a href="graphics-cards.html" class="home-path-card">
+        <span>03</span>
+        <h3>I want components or peripherals</h3>
+        <p>Shop selected GPUs, motherboards, storage, monitors, keyboards, mice, headsets, routers, and more.</p>
+      </a>
+    </div>
+  </section>
+
+  <section class="home-signature-section">
+    <div class="home-section-heading home-section-heading-wide">
+      <p class="home-eyebrow">Signature Builds</p>
+      <h2>Ready-built systems with clear part direction.</h2>
+      <p>
+        Signature Builds are pre-configured systems designed around real performance needs: high-FPS gaming, creators, rendering, and workstation-focused setups.
+      </p>
+    </div>
+
+    <div class="home-featured-grid">
+      <a href="product.html?product=the-asus-proart" class="home-featured-card home-featured-card-large">
+        <div class="home-featured-image" style="background-image: url('https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Cases/fractal-design-north-xl-charcoal-black-1.jpeg');"></div>
+        <div class="home-featured-content">
+          <span>Creator / workstation</span>
+          <h3>The ASUS ProArt</h3>
+          <p>Core Ultra 9 | RTX 5080 | 192GB RAM</p>
+        </div>
+      </a>
+
+      <a href="product.html?product=the-rog-astral" class="home-featured-card">
+        <div class="home-featured-image" style="background-image: url('https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Cases/rog-strix-helios-ii-1.jpeg');"></div>
+        <div class="home-featured-content">
+          <span>Flagship gaming</span>
+          <h3>The ROG Astral</h3>
+          <p>Core Ultra 9 | RTX 5090 | 96GB RAM</p>
+        </div>
+      </a>
+
+      <a href="product.html?product=the-aorus-master" class="home-featured-card">
+        <div class="home-featured-image" style="background-image: url('https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Cases/lian-li-o11-dynamic-evo-xl-black-1.jpeg');"></div>
+        <div class="home-featured-content">
+          <span>High-end performance</span>
+          <h3>The AORUS Master</h3>
+          <p>Core Ultra 9 | RTX 5090 | 96GB RAM</p>
+        </div>
+      </a>
+    </div>
+
+    <div class="home-centered-action">
+      <a href="signature-builds.html" class="home-button home-button-secondary">View All Signature Builds</a>
+    </div>
+  </section>
+
+  <section class="home-consultation-section">
+    <div class="home-consultation-panel">
+      <div>
+        <p class="home-eyebrow">Custom PC Consultation</p>
+        <h2>Not sure what parts make sense together?</h2>
+      </div>
+
+      <div>
         <p>
-          If our Signature Builds are not exactly what you are looking for, request a custom PC and we will help you choose a system around your budget, performance goals, preferred look, and setup.
+          Tell us your budget, games, software, preferred look, monitor resolution, and performance goals. We help you choose compatible parts, avoid overspending in the wrong areas, and build a system that makes sense long-term.
         </p>
-
-        <a href="consultation.html" class="featured-consultation-button">Request a Custom PC</a>
+        <a href="consultation.html" class="home-button home-button-primary">Request a Custom PC</a>
       </div>
-    </aside>
-  </div>
-</section>
-
-    <section class="featured-components-wall-section">
-      <div class="featured-components-wall-inner">
-        <div class="featured-components-copy">
-          <p class="featured-components-eyebrow">Featured Components</p>
-          <h2>High-performance components for ultimate productivity.</h2>
-
-          <a href="graphics-cards.html" class="featured-consultation-button">Explore All Components</a>
-        </div>
-
-<div class="component-wall-grid">
-<a href="product.html?product=rtx-5090-aorus-master" class="component-wall-card component-wall-card-large" id="featured-component-carousel">
-  <div
-    class="component-wall-placeholder"
-    id="featured-component-carousel-image"
-    style="background-image: url('https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-1.jpeg'); background-size: cover; background-position: center;"
-  ></div>
-
-  <div class="component-wall-card-info">
-    <h3 id="featured-component-carousel-title">RTX 5090 AORUS Master</h3>
-    <p id="featured-component-carousel-specs" hidden></p>
-  </div>
-
-  <div class="featured-component-progress-track">
-    <div class="featured-component-progress-bar"></div>
-  </div>
-</a>
-
-  <a href="graphics-cards.html" class="component-wall-card">
-    <div
-      class="component-wall-placeholder"
-      style="background-image: url('https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5060-ti-aorus-elite-1.jpeg'); background-size: cover; background-position: center;"
-    ></div>
-    <div class="component-wall-card-info">
-      <h3>Graphics Cards</h3>
     </div>
-  </a>
+  </section>
 
-  <a href="motherboards.html" class="component-wall-card">
-    <div
-      class="component-wall-placeholder"
-      style="background-image: url('https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Motherboards/gigabyte-x870e-aorus-xtreme-x3d-ai-top-1.jpeg'); background-size: cover; background-position: center;"
-    ></div>
-    <div class="component-wall-card-info">
-      <h3>Motherboards</h3>
+  <section class="home-shop-section">
+    <div class="home-section-heading home-section-heading-wide">
+      <p class="home-eyebrow">Components & peripherals</p>
+      <h2>Selected hardware for clean, reliable PC builds.</h2>
+      <p>
+        Browse the categories customers usually need when building or upgrading a system.
+      </p>
     </div>
-  </a>
 
-  <a href="power-supplies.html" class="component-wall-card">
-    <div
-      class="component-wall-placeholder"
-      style="background-image: url('https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Power%20supplies/gigabyte-aorus-elite-p1000w-platinum-pg5-1.jpeg'); background-size: cover; background-position: center;"
-    ></div>
-    <div class="component-wall-card-info">
-      <h3>Power Supplies</h3>
+    <div class="home-category-grid">
+      <a href="graphics-cards.html" class="home-category-card">Graphics Cards</a>
+      <a href="motherboards.html" class="home-category-card">Motherboards</a>
+      <a href="cpus.html" class="home-category-card">CPUs</a>
+      <a href="memory.html" class="home-category-card">Memory</a>
+      <a href="storage.html" class="home-category-card">Storage</a>
+      <a href="power-supplies.html" class="home-category-card">Power Supplies</a>
+      <a href="monitors.html" class="home-category-card">Monitors</a>
+      <a href="accessories.html" class="home-category-card">Peripherals</a>
     </div>
-  </a>
-</div>
-      </div>
-    </section>
+  </section>
 
-    <section class="about-section">
-      <div class="about-section-inner">
-        <div class="about-section-header">
-          <p class="about-section-eyebrow">Why Buy From Us?</p>
-          <h2>Built for performance, reliability, and long-term support.</h2>
-        </div>
+  <section class="home-trust-section">
+    <div class="home-section-heading">
+      <p class="home-eyebrow">Why buy from us?</p>
+      <h2>Guidance before the sale. Support after it.</h2>
+    </div>
 
-        <div class="about-reasons-list">
-          <article class="about-reason">
-            <span class="about-reason-number">01</span>
-            <div>
-              <h3>Carefully Selected Parts</h3>
-              <p>
-                We choose parts that work well together for performance, cooling, reliability, and value.
-              </p>
-            </div>
-          </article>
+    <div class="home-trust-list">
+      <article>
+        <span>01</span>
+        <h3>Carefully selected parts</h3>
+        <p>We focus on components that make sense for performance, cooling, reliability, and value.</p>
+      </article>
 
-          <article class="about-reason">
-            <span class="about-reason-number">02</span>
-            <div>
-              <h3>Signature or Custom</h3>
-              <p>
-                Choose a ready Signature Build or request a custom PC tailored to your budget and needs.
-              </p>
-            </div>
-          </article>
+      <article>
+        <span>02</span>
+        <h3>Gaming and workflow guidance</h3>
+        <p>Recommendations are based on what you actually use: games, software, resolution, and workload.</p>
+      </article>
 
-          <article class="about-reason">
-            <span class="about-reason-number">03</span>
-            <div>
-              <h3>Guided Consultations</h3>
-              <p>
-                We help you choose parts based on your goals, budget, games, software, and setup.
-              </p>
-            </div>
-          </article>
+      <article>
+        <span>03</span>
+        <h3>Compatibility-focused choices</h3>
+        <p>We help avoid weak power supplies, poor airflow, mismatched parts, and unnecessary overspending.</p>
+      </article>
 
-          <article class="about-reason">
-            <span class="about-reason-number">04</span>
-            <div>
-              <h3>Lifetime Troubleshooting</h3>
-              <p>
-                We offer free lifetime troubleshooting and diagnosis for products bought from our store.
-              </p>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
-  </main>
+      <article>
+        <span>04</span>
+        <h3>Long-term troubleshooting</h3>
+        <p>Products bought from The Computer Shop include free lifetime troubleshooting and diagnosis.</p>
+      </article>
+    </div>
+  </section>
 
-  <script>
-    const menuButton = document.querySelector(".hamburger-toggle");
-    const mainMenu = document.querySelector(".nav-menu-main");
-    const componentsMenu = document.querySelector(".nav-menu-components");
-    const openComponentsButton = document.getElementById("open-components-menu");
-    const backButton = document.getElementById("back-to-main-menu");
-
-    menuButton.addEventListener("click", () => {
-      document.body.classList.toggle("nav-menu-open");
-      mainMenu.classList.add("active");
-      componentsMenu.classList.remove("active");
-    });
-
-    openComponentsButton.addEventListener("click", () => {
-      mainMenu.classList.remove("active");
-      componentsMenu.classList.add("active");
-    });
-
-    backButton.addEventListener("click", () => {
-      componentsMenu.classList.remove("active");
-      mainMenu.classList.add("active");
-    });
-</script>
+  <section class="home-final-cta">
+    <p class="home-eyebrow">Still deciding?</p>
+    <h2>Tell us your budget and what you want the PC to do.</h2>
+    <p>We will help you move from “I am not sure what to buy” to a clear, compatible parts list or complete build direction.</p>
+    <a href="consultation.html" class="home-button home-button-primary">Request a Custom PC</a>
+  </section>
+</main>
 
 <footer class="site-footer">
   <div class="site-footer-inner">
@@ -285,341 +262,6 @@
     </div>
   </div>
 </footer>
-
-<script>
-  const featuredBuildSlides = [
-    {
-      title: "The ASUS ProArt",
-      specs: "Core Ultra 9 | RTX 5080 | 192GB RAM",
-      image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Cases/fractal-design-north-xl-charcoal-black-1.jpeg",
-      url: "product.html?product=the-asus-proart"
-    },
-    {
-      title: "The ROG Astral",
-      specs: "Core Ultra 9 | RTX 5090 | 96GB RAM",
-      image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Cases/rog-strix-helios-ii-1.jpeg",
-      url: "product.html?product=the-rog-astral"
-    },
-    {
-      title: "The AORUS Master",
-      specs: "Core Ultra 9 | RTX 5090 | 96GB RAM",
-      image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Cases/lian-li-o11-dynamic-evo-xl-black-1.jpeg",
-      url: "product.html?product=the-aorus-master"
-    }
-  ];
-
-  const featuredBuildCard = document.getElementById("featured-build-carousel");
-  const featuredBuildLink = document.getElementById("featured-build-carousel-link");
-  const featuredBuildImage = document.getElementById("featured-build-carousel-image");
-  const featuredBuildTitle = document.getElementById("featured-build-carousel-title");
-  const featuredBuildSpecs = document.getElementById("featured-build-carousel-specs");
-  const featuredBuildInfo = document.getElementById("featured-build-carousel-info");
-  const featuredBuildProgressBar = document.getElementById("featured-build-progress-bar");
-
-  let featuredBuildIndex = 0;
-  let featuredBuildInterval = null;
-
-  featuredBuildSlides.forEach((slide) => {
-    const preloadImage = new Image();
-    preloadImage.src = slide.image;
-  });
-
-  function buildFeaturedBuildTrack() {
-    if (!featuredBuildImage) {
-      return null;
-    }
-
-    featuredBuildImage.style.position = "relative";
-    featuredBuildImage.style.overflow = "hidden";
-    featuredBuildImage.style.backgroundImage = "none";
-
-    const track = document.createElement("div");
-    track.id = "featured-build-track";
-    track.style.position = "absolute";
-    track.style.inset = "0";
-    track.style.display = "flex";
-    track.style.width = "100%";
-    track.style.height = "100%";
-    track.style.transform = "translate3d(0, 0, 0)";
-    track.style.transition = "transform 950ms cubic-bezier(0.22, 1, 0.36, 1)";
-    track.style.willChange = "transform";
-
-    const slidesWithClone = [...featuredBuildSlides, featuredBuildSlides[0]];
-
-    slidesWithClone.forEach((slide) => {
-      const slideElement = document.createElement("div");
-      slideElement.style.flex = "0 0 100%";
-      slideElement.style.width = "100%";
-      slideElement.style.height = "100%";
-      slideElement.style.backgroundImage = `url('${slide.image}')`;
-      slideElement.style.backgroundSize = "cover";
-      slideElement.style.backgroundPosition = "center";
-      slideElement.style.transform = "translateZ(0)";
-
-      track.appendChild(slideElement);
-    });
-
-    featuredBuildImage.innerHTML = "";
-    featuredBuildImage.appendChild(track);
-
-    return track;
-  }
-
-  const featuredBuildTrack = buildFeaturedBuildTrack();
-
-  function restartFeaturedBuildProgress() {
-    if (!featuredBuildProgressBar) {
-      return;
-    }
-
-    featuredBuildProgressBar.style.animation = "none";
-    featuredBuildProgressBar.offsetHeight;
-    featuredBuildProgressBar.style.animation = "featuredComponentProgress 7s linear forwards";
-  }
-
-  function updateFeaturedBuildText(index) {
-    const slide = featuredBuildSlides[index];
-
-    if (featuredBuildLink) {
-      featuredBuildLink.href = slide.url;
-    }
-
-    if (featuredBuildInfo) {
-      featuredBuildInfo.style.transition = "opacity 350ms ease, transform 350ms ease";
-      featuredBuildInfo.style.opacity = "0";
-      featuredBuildInfo.style.transform = "translateX(-14px)";
-    }
-
-    setTimeout(() => {
-      if (featuredBuildTitle) {
-        featuredBuildTitle.textContent = slide.title;
-      }
-
-      if (featuredBuildSpecs) {
-        featuredBuildSpecs.textContent = slide.specs;
-      }
-
-      if (featuredBuildInfo) {
-        featuredBuildInfo.style.opacity = "1";
-        featuredBuildInfo.style.transform = "translateX(0)";
-      }
-    }, 220);
-  }
-
-  function moveFeaturedBuildCarousel() {
-    if (!featuredBuildTrack) {
-      return;
-    }
-
-    featuredBuildIndex += 1;
-
-    featuredBuildTrack.style.transition = "transform 950ms cubic-bezier(0.22, 1, 0.36, 1)";
-    featuredBuildTrack.style.transform = `translate3d(-${featuredBuildIndex * 100}%, 0, 0)`;
-
-    const realIndex = featuredBuildIndex % featuredBuildSlides.length;
-    updateFeaturedBuildText(realIndex);
-    restartFeaturedBuildProgress();
-
-    if (featuredBuildIndex === featuredBuildSlides.length) {
-      setTimeout(() => {
-        featuredBuildTrack.style.transition = "none";
-        featuredBuildTrack.style.transform = "translate3d(0, 0, 0)";
-        featuredBuildIndex = 0;
-
-        featuredBuildTrack.offsetHeight;
-        featuredBuildTrack.style.transition = "transform 950ms cubic-bezier(0.22, 1, 0.36, 1)";
-      }, 970);
-    }
-  }
-
-  if (featuredBuildCard && featuredBuildLink && featuredBuildImage && featuredBuildTitle && featuredBuildSpecs && featuredBuildTrack) {
-    updateFeaturedBuildText(0);
-    restartFeaturedBuildProgress();
-
-    featuredBuildInterval = setInterval(moveFeaturedBuildCarousel, 7000);
-  }
-
-  const featuredComponentSlides = [
-    {
-      title: "RTX 5090 AORUS Master",
-      specs: "Gigabyte | RTX 5090 | AORUS Master",
-      image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-1.jpeg",
-      url: "product.html?product=rtx-5090-aorus-master"
-    },
-    {
-      title: "X870E AORUS XTREME X3D AI TOP",
-      specs: "Gigabyte | AMD X870E | WIFI7",
-      image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Motherboards/gigabyte-x870e-aorus-xtreme-x3d-ai-top-1.jpeg",
-      url: "product.html?product=x870e-aorus-xtreme-x3d-ai-top"
-    },
-    {
-      title: "Intel Core Ultra 9 285K",
-      specs: "Intel | Core Ultra 9 | 24 Cores",
-      image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/CPU/intel-core-ultra-9-285k-1.jpeg",
-      url: "product.html?product=intel-core-ultra-9-285k"
-    },
-    {
-      title: "AORUS WATERFORCE II 360",
-      specs: "Gigabyte | 360mm AIO | ARGB",
-      image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Coolers/gigabyte-aorus-waterforce-ii-360-1.jpeg",
-      url: "product.html?product=aorus-waterforce-ii-360"
-    },
-    {
-      title: "Corsair Dominator Titanium RGB 96GB DDR5 7000 CL40",
-      specs: "Corsair | 96GB 2×48GB | DDR5 7000MT/s CL40",
-      image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Ram/corsair-dominator-titanium-rgb-96gb-ddr5-7000-cl40-1.jpeg",
-      url: "product.html?product=corsair-dominator-titanium-rgb-96gb-ddr5-7000-cl40"
-    },
-    {
-      title: "Samsung 9100 PRO NVMe SSD",
-      specs: "Samsung | PCIe 5.0 NVMe | 1TB–8TB",
-      image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Storage/samsung-9100-pro-1tb-1.jpeg",
-      url: "product.html?product=samsung-9100-pro-nvme-ssd"
-    },
-    {
-      title: "UD1600PM PG5 AI TOP",
-      specs: "Gigabyte | 1600W | 80 Plus Platinum",
-      image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Power%20supplies/gigabyte-ud1600pm-pg5-ai-top-1.jpeg",
-      url: "product.html?product=ud1600pm-pg5-ai-top"
-    },
-    {
-      title: "AORUS C500 GLASS",
-      specs: "Gigabyte | Mid Tower | Tempered Glass",
-      image: "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Cases/gigabyte-aorus-c500-glass-1.jpeg",
-      url: "product.html?product=aorus-c500-glass"
-    }
-  ];
-
-  const featuredComponentCard = document.getElementById("featured-component-carousel");
-  const featuredComponentImage = document.getElementById("featured-component-carousel-image");
-  const featuredComponentTitle = document.getElementById("featured-component-carousel-title");
-  const featuredComponentSpecs = document.getElementById("featured-component-carousel-specs");
-  const featuredComponentInfo = featuredComponentTitle ? featuredComponentTitle.closest(".component-wall-card-info") : null;
-  const featuredComponentProgressBar = document.querySelector("#featured-component-carousel .featured-component-progress-bar");
-
-  let featuredComponentIndex = 0;
-  let featuredComponentInterval = null;
-
-  featuredComponentSlides.forEach((slide) => {
-    const preloadImage = new Image();
-    preloadImage.src = slide.image;
-  });
-
-  function buildFeaturedComponentTrack() {
-    if (!featuredComponentImage) {
-      return null;
-    }
-
-    featuredComponentImage.style.position = "relative";
-    featuredComponentImage.style.overflow = "hidden";
-    featuredComponentImage.style.backgroundImage = "none";
-
-    const track = document.createElement("div");
-    track.id = "featured-component-track";
-    track.style.position = "absolute";
-    track.style.inset = "0";
-    track.style.display = "flex";
-    track.style.width = "100%";
-    track.style.height = "100%";
-    track.style.transform = "translate3d(0, 0, 0)";
-    track.style.transition = "transform 950ms cubic-bezier(0.22, 1, 0.36, 1)";
-    track.style.willChange = "transform";
-
-    const slidesWithClone = [...featuredComponentSlides, featuredComponentSlides[0]];
-
-    slidesWithClone.forEach((slide) => {
-      const slideElement = document.createElement("div");
-      slideElement.style.flex = "0 0 100%";
-      slideElement.style.width = "100%";
-      slideElement.style.height = "100%";
-      slideElement.style.backgroundImage = `url('${slide.image}')`;
-      slideElement.style.backgroundSize = "cover";
-      slideElement.style.backgroundPosition = "center";
-      slideElement.style.transform = "translateZ(0)";
-
-      track.appendChild(slideElement);
-    });
-
-    featuredComponentImage.innerHTML = "";
-    featuredComponentImage.appendChild(track);
-
-    return track;
-  }
-
-  const featuredComponentTrack = buildFeaturedComponentTrack();
-
-  function restartFeaturedComponentProgress() {
-    if (!featuredComponentProgressBar) {
-      return;
-    }
-
-    featuredComponentProgressBar.style.animation = "none";
-    featuredComponentProgressBar.offsetHeight;
-    featuredComponentProgressBar.style.animation = "featuredComponentProgress 7s linear forwards";
-  }
-
-  function updateFeaturedComponentText(index) {
-    const slide = featuredComponentSlides[index];
-
-    if (featuredComponentCard) {
-      featuredComponentCard.href = slide.url;
-    }
-
-    if (featuredComponentInfo) {
-      featuredComponentInfo.style.transition = "opacity 350ms ease, transform 350ms ease";
-      featuredComponentInfo.style.opacity = "0";
-      featuredComponentInfo.style.transform = "translateX(-14px)";
-    }
-
-    setTimeout(() => {
-      if (featuredComponentTitle) {
-        featuredComponentTitle.textContent = slide.title;
-      }
-
-      if (featuredComponentSpecs) {
-        featuredComponentSpecs.textContent = slide.specs;
-      }
-
-      if (featuredComponentInfo) {
-        featuredComponentInfo.style.opacity = "1";
-        featuredComponentInfo.style.transform = "translateX(0)";
-      }
-    }, 220);
-  }
-
-  function moveFeaturedComponentCarousel() {
-    if (!featuredComponentTrack) {
-      return;
-    }
-
-    featuredComponentIndex += 1;
-
-    featuredComponentTrack.style.transition = "transform 950ms cubic-bezier(0.22, 1, 0.36, 1)";
-    featuredComponentTrack.style.transform = `translate3d(-${featuredComponentIndex * 100}%, 0, 0)`;
-
-    const realIndex = featuredComponentIndex % featuredComponentSlides.length;
-    updateFeaturedComponentText(realIndex);
-    restartFeaturedComponentProgress();
-
-    if (featuredComponentIndex === featuredComponentSlides.length) {
-      setTimeout(() => {
-        featuredComponentTrack.style.transition = "none";
-        featuredComponentTrack.style.transform = "translate3d(0, 0, 0)";
-        featuredComponentIndex = 0;
-
-        featuredComponentTrack.offsetHeight;
-        featuredComponentTrack.style.transition = "transform 950ms cubic-bezier(0.22, 1, 0.36, 1)";
-      }, 970);
-    }
-  }
-
-  if (featuredComponentCard && featuredComponentImage && featuredComponentTitle && featuredComponentSpecs && featuredComponentTrack) {
-    updateFeaturedComponentText(0);
-    restartFeaturedComponentProgress();
-
-    featuredComponentInterval = setInterval(moveFeaturedComponentCarousel, 7000);
-  }
-</script>
 
 </body>
 </html>
