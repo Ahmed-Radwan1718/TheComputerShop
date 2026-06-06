@@ -94,15 +94,10 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(24, 25, 24, 0.98);
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.36);
-  transform: translateX(-50%) translateY(14px) scale(0.98);
-  transform-origin: top center;
+  transform: translateX(-50%) translateY(8px);
   opacity: 0;
-  visibility: hidden;
   pointer-events: none;
-  transition:
-    opacity 0.26s ease,
-    transform 0.26s ease,
-    visibility 0.26s ease;
+  transition: opacity 0.18s ease, transform 0.18s ease;
 }
 
 .site-header-dropdown:hover .site-header-dropdown-menu,
