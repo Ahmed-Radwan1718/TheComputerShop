@@ -32,12 +32,12 @@ body {
 
 .components-page-grid {
   width: 100%;
-  max-width: 1420px;
+  max-width: 1480px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  column-gap: 26px;
-  row-gap: 34px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: 32px;
+  row-gap: 42px;
 }
 
 .components-page-grid-card,
@@ -58,21 +58,18 @@ body {
 .components-page-grid-card::before {
   content: "";
   width: 100%;
-  min-height: 178px;
+  min-height: 230px;
   border-radius: 22px;
-  border: 1px solid rgba(255, 255, 255, 0.13);
   background-image:
-    linear-gradient(180deg, rgba(0, 0, 0, 0.34), rgba(0, 0, 0, 0.52)),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.24), rgba(0, 0, 0, 0.38)),
     var(--component-card-image);
-  background-size: cover;
+  background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
-  background-color: rgba(255, 255, 255, 0.035);
-  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.18);
+  background-color: #2a2b2a;
   transition:
-    border-color 0.22s ease,
-    background-color 0.22s ease,
-    box-shadow 0.22s ease;
+    opacity 0.22s ease,
+    transform 0.22s ease;
 }
 
 .components-page-grid-card:hover {
