@@ -154,18 +154,19 @@ body {
   height: 38px;
   border: 0;
   background: transparent;
-  color: white;
-  font-size: 34px;
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 30px;
+  font-weight: 300;
   line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition: color 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
 }
 
 .home-featured-components-arrow:hover {
-  opacity: 0.7;
+  color: rgba(255, 255, 255, 0.78);
 }
 
 .home-featured-components-arrow:active {
