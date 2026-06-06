@@ -71,10 +71,8 @@ body {
 
 .components-hub-card,
 .components-hub-card:visited {
-  padding: 0 0 18px;
   border-radius: 24px;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.045);
   color: white;
   text-decoration: none;
   display: block;
@@ -82,7 +80,7 @@ body {
 }
 
 .components-hub-card:hover {
-  opacity: 0.82;
+  opacity: 0.84;
 }
 
 .components-hub-card:active {
@@ -90,14 +88,22 @@ body {
 }
 
 .components-hub-image-frame {
+  position: relative;
   width: 100%;
-  aspect-ratio: 1 / 0.78;
-  margin-bottom: 18px;
+  aspect-ratio: 1 / 0.92;
   background: rgba(255, 255, 255, 0.035);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+}
+
+.components-hub-image-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0.18));
+  z-index: 1;
 }
 
 .components-hub-image-frame img {
@@ -108,19 +114,15 @@ body {
 }
 
 .components-hub-card h3 {
-  padding: 0 18px;
-  margin-bottom: 8px;
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 16px;
+  z-index: 2;
   color: white;
   font-size: 18px;
   font-weight: 700;
-  line-height: 1.25;
-}
-
-.components-hub-card p {
-  padding: 0 18px;
-  color: rgba(255, 255, 255, 0.58);
-  font-size: 13px;
-  line-height: 1.55;
+  line-height: 1.2;
 }
 
 .site-header {
