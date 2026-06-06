@@ -107,9 +107,9 @@ body {
 }
 
 .components-hub-image-frame img {
-  width: 112%;
-  height: 112%;
-  object-fit: cover;
+  width: 92%;
+  height: 92%;
+  object-fit: contain;
   display: block;
 }
 
