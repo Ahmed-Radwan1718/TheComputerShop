@@ -59,9 +59,9 @@ body {
   content: "";
   width: 100%;
   min-height: 230px;
-  border-radius: 28px;
+  border-radius: 18px;
   background-image: var(--component-card-image);
-  background-size: contain;
+  background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-color: transparent;
