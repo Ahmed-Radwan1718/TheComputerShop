@@ -320,5 +320,27 @@
   }
 </script>
 
+<script>
+  const customProcessSection = document.querySelector(".home-custom-process-section");
+  const customProcessSteps = document.querySelectorAll(".home-custom-process-step");
+
+  function updateCustomProcessSteps() {
+    if (!customProcessSection || !customProcessSteps.length) return;
+
+    const sectionTop = customProcessSection.offsetTop;
+    const sectionHeight = customProcessSection.offsetHeight - window.innerHeight;
+    const progress = Math.min(Math.max((window.scrollY - sectionTop) / sectionHeight, 0), 1);
+    const activeIndex = Math.min(customProcessSteps.length - 1, Math.floor(progress * customProcessSteps.length));
+
+    customProcessSteps.forEach((step, index) => {
+      step.classList.toggle("active", index === activeIndex);
+    });
+  }
+
+  window.addEventListener("scroll", updateCustomProcessSteps);
+  window.addEventListener("resize", updateCustomProcessSteps);
+  updateCustomProcessSteps();
+</script>
+
 </body>
 </html>
