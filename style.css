@@ -171,8 +171,9 @@ body {
   height: 210px;
   object-fit: contain;
   display: block;
-  border-radius: 18px;
+  border-radius: 22px;
   opacity: 0.86;
+  overflow: hidden;
 }
 
 .home-featured-component-item span {
