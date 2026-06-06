@@ -106,6 +106,7 @@ body {
 
 .home-featured-components-section {
   padding: 42px 44px 96px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .home-featured-components-inner {
