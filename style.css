@@ -253,6 +253,112 @@ body {
   color: white;
 }
 
+.home-custom-process-section {
+  min-height: 320vh;
+  padding: 0 44px;
+}
+
+.home-custom-process-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.home-custom-process-sticky {
+  min-height: 100vh;
+  position: sticky;
+  top: 0;
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 70px;
+  align-items: center;
+  padding-top: 104px;
+}
+
+.home-custom-process-eyebrow {
+  margin-bottom: 14px;
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.home-custom-process-left h2 {
+  max-width: 440px;
+  color: white;
+  font-size: 42px;
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+}
+
+.home-custom-process-link,
+.home-custom-process-link:visited {
+  width: fit-content;
+  margin-top: 28px;
+  color: rgba(255, 255, 255, 0.62);
+  display: inline-flex;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.home-custom-process-link:hover {
+  color: white;
+}
+
+.home-custom-process-steps {
+  position: relative;
+  min-height: 360px;
+}
+
+.home-custom-process-step {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0.94) translateY(24px);
+  transition:
+    opacity 0.55s ease,
+    transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.home-custom-process-step.active {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  pointer-events: auto;
+}
+
+.home-custom-process-step span {
+  margin-bottom: 24px;
+  color: rgba(255, 255, 255, 0.34);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+.home-custom-process-step h3 {
+  max-width: 620px;
+  margin-bottom: 18px;
+  color: white;
+  font-size: 52px;
+  font-weight: 700;
+  line-height: 1.04;
+  letter-spacing: -0.045em;
+}
+
+.home-custom-process-step p {
+  max-width: 520px;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 17px;
+  line-height: 1.7;
+}
+
 .components-hub-page {
   min-height: 100vh;
   background: #2a2b2a;
