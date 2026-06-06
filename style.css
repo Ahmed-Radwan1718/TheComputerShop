@@ -16,25 +16,30 @@ body {
   padding-top: 104px;
 }
 
-.home-components-section {
-  min-height: calc(100vh - 104px);
-  padding: 72px 60px 96px;
-  scroll-margin-top: 104px;
+.components-hub-page {
+  min-height: 100vh;
+  background: #2a2b2a;
+  padding-top: 104px;
 }
 
-.home-components-inner {
+.components-hub-section {
+  min-height: calc(100vh - 104px);
+  padding: 72px 60px 96px;
+}
+
+.components-hub-inner {
   width: 100%;
   max-width: 1220px;
   margin: 0 auto;
 }
 
-.home-components-header {
+.components-hub-header {
   max-width: 660px;
   margin: 0 auto 38px;
   text-align: center;
 }
 
-.home-components-eyebrow {
+.components-hub-eyebrow {
   margin-bottom: 14px;
   color: rgba(255, 255, 255, 0.58);
   font-size: 12px;
@@ -43,7 +48,7 @@ body {
   text-transform: uppercase;
 }
 
-.home-components-header h1 {
+.components-hub-header h1 {
   margin-bottom: 14px;
   color: white;
   font-size: 36px;
@@ -52,53 +57,67 @@ body {
   letter-spacing: -0.03em;
 }
 
-.home-components-header p {
+.components-hub-header p {
   color: rgba(255, 255, 255, 0.64);
   font-size: 15px;
   line-height: 1.7;
 }
 
-.home-components-grid {
+.components-hub-grid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 14px;
 }
 
-.home-component-card,
-.home-component-card:visited {
-  min-height: 148px;
-  padding: 20px;
-  border-radius: 22px;
+.components-hub-card,
+.components-hub-card:visited {
+  position: relative;
+  min-height: 178px;
+  padding: 18px;
+  border-radius: 24px;
+  overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.11);
-  background: rgba(255, 255, 255, 0.045);
+  background-size: cover;
+  background-position: center;
   color: white;
   text-decoration: none;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  align-items: flex-end;
+  transition: border-color 0.2s ease, transform 0.2s ease;
 }
 
-.home-component-card:hover {
-  background: rgba(255, 255, 255, 0.07);
-  border-color: rgba(255, 255, 255, 0.22);
+.components-hub-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to top, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.18)),
+    rgba(0, 0, 0, 0.14);
+  z-index: 1;
+  transition: background 0.2s ease;
 }
 
-.home-component-card:active {
+.components-hub-card:hover {
+  border-color: rgba(255, 255, 255, 0.24);
+}
+
+.components-hub-card:hover::before {
+  background:
+    linear-gradient(to top, rgba(0, 0, 0, 0.64), rgba(0, 0, 0, 0.1)),
+    rgba(0, 0, 0, 0.06);
+}
+
+.components-hub-card:active {
   transform: translateY(1px);
 }
 
-.home-component-card strong {
+.components-hub-card span {
+  position: relative;
+  z-index: 2;
   color: white;
   font-size: 16px;
   font-weight: 700;
   line-height: 1.25;
-}
-
-.home-component-card span {
-  color: rgba(255, 255, 255, 0.58);
-  font-size: 13px;
-  line-height: 1.55;
 }
 
 .site-header {
@@ -200,23 +219,23 @@ body {
 }
 
 @media (max-width: 1100px) {
-  .home-components-grid {
+  .components-hub-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 900px) {
-  .home-page {
+  .home-page,
+  .components-hub-page {
     padding-top: 88px;
   }
 
-  .home-components-section {
+  .components-hub-section {
     min-height: calc(100vh - 88px);
     padding: 56px 22px 72px;
-    scroll-margin-top: 88px;
   }
 
-  .home-components-grid {
+  .components-hub-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -254,16 +273,16 @@ body {
 }
 
 @media (max-width: 620px) {
-  .home-components-header h1 {
+  .components-hub-header h1 {
     font-size: 29px;
   }
 
-  .home-components-grid {
+  .components-hub-grid {
     grid-template-columns: 1fr;
   }
 
-  .home-component-card {
-    min-height: 120px;
+  .components-hub-card {
+    min-height: 150px;
   }
 }
 
