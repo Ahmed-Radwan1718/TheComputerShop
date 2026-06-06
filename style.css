@@ -35,8 +35,8 @@ body {
 
 .components-hub-header {
   max-width: 660px;
-  margin: 0 auto 38px;
-  text-align: center;
+  margin: 0 0 38px;
+  text-align: left;
 }
 
 .components-hub-eyebrow {
@@ -66,58 +66,61 @@ body {
 .components-hub-grid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 14px;
+  gap: 22px;
 }
 
 .components-hub-card,
 .components-hub-card:visited {
-  position: relative;
-  min-height: 178px;
-  padding: 18px;
+  padding: 0 0 18px;
   border-radius: 24px;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.11);
-  background-size: cover;
-  background-position: center;
+  background: rgba(255, 255, 255, 0.045);
   color: white;
   text-decoration: none;
-  display: flex;
-  align-items: flex-end;
-  transition: border-color 0.2s ease, transform 0.2s ease;
-}
-
-.components-hub-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(to top, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.18)),
-    rgba(0, 0, 0, 0.14);
-  z-index: 1;
-  transition: background 0.2s ease;
+  display: block;
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .components-hub-card:hover {
-  border-color: rgba(255, 255, 255, 0.24);
-}
-
-.components-hub-card:hover::before {
-  background:
-    linear-gradient(to top, rgba(0, 0, 0, 0.64), rgba(0, 0, 0, 0.1)),
-    rgba(0, 0, 0, 0.06);
+  opacity: 0.82;
 }
 
 .components-hub-card:active {
   transform: translateY(1px);
 }
 
-.components-hub-card span {
-  position: relative;
-  z-index: 2;
+.components-hub-image-frame {
+  width: 100%;
+  aspect-ratio: 1 / 0.78;
+  margin-bottom: 18px;
+  background: rgba(255, 255, 255, 0.035);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.components-hub-image-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.components-hub-card h3 {
+  padding: 0 18px;
+  margin-bottom: 8px;
   color: white;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
   line-height: 1.25;
+}
+
+.components-hub-card p {
+  padding: 0 18px;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 13px;
+  line-height: 1.55;
 }
 
 .site-header {
