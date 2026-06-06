@@ -87,6 +87,39 @@
       </div>
     </div>
   </section>
+
+  <section class="home-featured-components-section">
+    <div class="home-featured-components-inner">
+      <div class="home-featured-components-header">
+        <p class="home-featured-components-eyebrow">Selected Components</p>
+        <h2 id="featured-components-title">Featured Graphics Cards</h2>
+      </div>
+
+      <div class="home-featured-components-row" id="featured-components-row">
+        <a href="graphics-cards.html" class="home-featured-component-item">
+          <img src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-1.jpeg" alt="RTX 5090 AORUS Master">
+          <span>RTX 5090 AORUS Master</span>
+        </a>
+
+        <a href="graphics-cards.html" class="home-featured-component-item">
+          <img src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/rog-strix-rtx5070ti-o16g-gaming-1.jpeg" alt="ROG Strix RTX 5070 Ti">
+          <span>ROG Strix RTX 5070 Ti</span>
+        </a>
+
+        <a href="graphics-cards.html" class="home-featured-component-item">
+          <img src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5080-windforce-3x-oc-1.jpeg" alt="RTX 5080 WINDFORCE OC">
+          <span>RTX 5080 WINDFORCE OC</span>
+        </a>
+
+        <a href="graphics-cards.html" class="home-featured-component-item">
+          <img src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rx-7600-xt-gaming-oc-16g-1.jpeg" alt="RX 7600 XT Gaming OC">
+          <span>RX 7600 XT Gaming OC</span>
+        </a>
+      </div>
+
+      <a href="components.html" class="home-featured-components-link">View all components</a>
+    </div>
+  </section>
 </main>
 
 <script>
@@ -111,6 +144,88 @@
     backButton.addEventListener("click", () => {
       componentsMenu.classList.remove("active");
       mainMenu.classList.add("active");
+    });
+  }
+</script>
+
+<script>
+  const featuredComponentTitle = document.getElementById("featured-components-title");
+  const featuredComponentRow = document.getElementById("featured-components-row");
+
+  const featuredComponentGroups = [
+    {
+      title: "Featured Graphics Cards",
+      link: "graphics-cards.html",
+      items: [
+        ["RTX 5090 AORUS Master", "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-1.jpeg"],
+        ["ROG Strix RTX 5070 Ti", "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/rog-strix-rtx5070ti-o16g-gaming-1.jpeg"],
+        ["RTX 5080 WINDFORCE OC", "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5080-windforce-3x-oc-1.jpeg"],
+        ["RX 7600 XT Gaming OC", "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rx-7600-xt-gaming-oc-16g-1.jpeg"]
+      ]
+    },
+    {
+      title: "Featured Motherboards",
+      link: "motherboards.html",
+      items: [
+        ["ROG Maximus Z890 Extreme", "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Motherboards/rog-maximus-z890-extreme-motherboard-1.jpeg"],
+        ["Z890 AORUS Master", "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Motherboards/gigabyte-z890-aorus-master-1.jpeg"],
+        ["ROG Strix Z890-E Gaming", "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Motherboards/rog-strix-z890-e-gaming-wifi-motherboard-1.jpeg"],
+        ["TUF Gaming Z890-Plus", "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Motherboards/tuf-gaming-z890-plus-wifi-motherboard-1.jpeg"]
+      ]
+    },
+    {
+      title: "Featured Storage",
+      link: "storage.html",
+      items: [
+        ["Samsung 9100 Pro", "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Storage/samsung-9100-pro-1tb-1.jpeg"],
+        ["WD Black SN850X", "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Storage/wd-black-sn850x-nvme-ssd-1.jpeg"],
+        ["WD Blue SN5100", "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Storage/wd-blue-sn5100-nvme-ssd-1.jpeg"],
+        ["Samsung 990 Pro", "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Storage/samsung-990-pro-1tb-1.jpeg"]
+      ]
+    },
+    {
+      title: "Featured Monitors",
+      link: "monitors.html",
+      items: [
+        ["ROG Strix OLED XG27AQDNG", "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Monitors/rog-strix-oled-xg27aqdng-1.jpeg"],
+        ["ROG Strix OLED XG27AQDPG", "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Monitors/rog-strix-oled-xg27aqdng-2.jpeg"],
+        ["Gigabyte GS27U", "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Monitors/gigabyte-gs27u-gaming-monitor-1.jpeg"],
+        ["Gigabyte GS27FA", "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Monitors/gigabyte-gs27fa-gaming-monitor-1.jpeg"]
+      ]
+    }
+  ];
+
+  let featuredComponentIndex = 0;
+  let featuredComponentTimer;
+
+  function renderFeaturedComponents() {
+    const group = featuredComponentGroups[featuredComponentIndex];
+
+    featuredComponentTitle.textContent = group.title;
+    featuredComponentRow.innerHTML = group.items.map(([name, image]) => `
+      <a href="${group.link}" class="home-featured-component-item">
+        <img src="${image}" alt="${name}">
+        <span>${name}</span>
+      </a>
+    `).join("");
+  }
+
+  function startFeaturedComponentsCycle() {
+    featuredComponentTimer = setInterval(() => {
+      featuredComponentIndex = (featuredComponentIndex + 1) % featuredComponentGroups.length;
+      renderFeaturedComponents();
+    }, 7000);
+  }
+
+  if (featuredComponentTitle && featuredComponentRow) {
+    startFeaturedComponentsCycle();
+
+    featuredComponentRow.addEventListener("mouseenter", () => {
+      clearInterval(featuredComponentTimer);
+    });
+
+    featuredComponentRow.addEventListener("mouseleave", () => {
+      startFeaturedComponentsCycle();
     });
   }
 </script>
