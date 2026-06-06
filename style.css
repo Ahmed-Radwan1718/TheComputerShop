@@ -23,11 +23,17 @@ body {
 }
 
 .components-page-grid-section {
-  padding: 58px 44px 90px;
+  min-height: calc(100vh - 104px);
+  padding: 0 44px 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .components-page-grid {
   width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 24px;
