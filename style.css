@@ -135,6 +135,7 @@ body {
   width: 18px;
   height: 18px;
   object-fit: contain;
+  filter: invert(1);
 }
 
 .site-header-cart-count {
