@@ -687,6 +687,49 @@ body {
     height: 165px;
   }
 
+  .home-custom-process-section {
+    min-height: auto;
+    padding: 72px 22px;
+  }
+
+  .home-custom-process-sticky {
+    min-height: auto;
+    position: static;
+    display: block;
+    padding-top: 0;
+  }
+
+  .home-custom-process-left {
+    margin-bottom: 40px;
+  }
+
+  .home-custom-process-left h2 {
+    font-size: 34px;
+  }
+
+  .home-custom-process-steps {
+    min-height: auto;
+    display: grid;
+    gap: 18px;
+  }
+
+  .home-custom-process-step {
+    position: static;
+    opacity: 1;
+    transform: none;
+    padding: 24px;
+    border-radius: 22px;
+    background: rgba(24, 25, 24, 0.56);
+  }
+
+  .home-custom-process-step h3 {
+    font-size: 28px;
+  }
+
+  .home-custom-process-step p {
+    font-size: 15px;
+  }
+
   .components-page-grid-section {
     padding: 46px 20px 72px;
   }
