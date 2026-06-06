@@ -22,6 +22,55 @@ body {
   padding-top: 104px;
 }
 
+.components-page-grid-section {
+  padding: 58px 44px 90px;
+}
+
+.components-page-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.components-page-grid-card,
+.components-page-grid-card:visited {
+  min-height: 178px;
+  padding: 0 24px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 18px;
+  background-image:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.74), rgba(0, 0, 0, 0.86)),
+    var(--component-card-image);
+  background-size: cover;
+  background-position: center;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.11em;
+  text-align: center;
+  text-transform: uppercase;
+  text-decoration: none;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.82);
+  overflow: hidden;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.18);
+  transition:
+    border-color 0.22s ease,
+    color 0.22s ease,
+    transform 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.components-page-grid-card:hover {
+  border-color: rgba(255, 255, 255, 0.32);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 24px 58px rgba(0, 0, 0, 0.28);
+}
+
 .components-hub-section {
   min-height: calc(100vh - 104px);
   padding: 72px 60px 96px;
@@ -224,7 +273,7 @@ body {
 }
 
 @media (max-width: 1100px) {
-  .components-hub-grid {
+  .components-page-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
@@ -235,13 +284,21 @@ body {
     padding-top: 88px;
   }
 
-  .components-hub-section {
-    min-height: calc(100vh - 88px);
-    padding: 56px 22px 72px;
+  .components-page-grid-section {
+    padding: 46px 20px 72px;
   }
 
-  .components-hub-grid {
+  .components-page-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .components-page-grid-card {
+    min-height: 124px;
+    padding: 0 14px;
+    border-radius: 15px;
+    font-size: 12px;
+    letter-spacing: 0.08em;
   }
 
   .site-header {
@@ -278,16 +335,8 @@ body {
 }
 
 @media (max-width: 620px) {
-  .components-hub-header h1 {
-    font-size: 29px;
-  }
-
-  .components-hub-grid {
+  .components-page-grid {
     grid-template-columns: 1fr;
-  }
-
-  .components-hub-card {
-    min-height: 150px;
   }
 }
 
