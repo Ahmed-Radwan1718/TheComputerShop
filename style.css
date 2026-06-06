@@ -316,8 +316,8 @@ body {
   }
 
   .components-page-grid-card::before {
+    min-height: 124px;
     border-radius: 16px;
-    aspect-ratio: 1 / 0.78;
   }
 
   .site-header {
