@@ -120,39 +120,40 @@ body {
 .site-header-cart,
 .site-header-cart:visited {
   position: relative;
-  width: 38px;
-  height: 38px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.13);
-  background: rgba(255, 255, 255, 0.045);
+  text-decoration: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  text-decoration: none;
+  opacity: 1;
+  transition: opacity 0.2s ease;
 }
 
 .site-header-cart img {
-  width: 18px;
-  height: 18px;
+  width: 26px;
+  height: 26px;
+  display: block;
   object-fit: contain;
-  filter: invert(1);
+}
+
+.site-header-cart:hover {
+  opacity: 0.72;
 }
 
 .site-header-cart-count {
   position: absolute;
-  top: -5px;
-  right: -6px;
+  top: -10px;
+  right: -12px;
   min-width: 18px;
   height: 18px;
   padding: 0 5px;
   border-radius: 999px;
-  background: white;
-  color: #111;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: #ffffff;
+  color: #1f1f1f;
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+  display: none;
 }
 
 .site-header .hamburger-toggle {
