@@ -16,6 +16,91 @@ body {
   padding-top: 104px;
 }
 
+.home-components-section {
+  min-height: calc(100vh - 104px);
+  padding: 72px 60px 96px;
+  scroll-margin-top: 104px;
+}
+
+.home-components-inner {
+  width: 100%;
+  max-width: 1220px;
+  margin: 0 auto;
+}
+
+.home-components-header {
+  max-width: 660px;
+  margin: 0 auto 38px;
+  text-align: center;
+}
+
+.home-components-eyebrow {
+  margin-bottom: 14px;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.home-components-header h1 {
+  margin-bottom: 14px;
+  color: white;
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+}
+
+.home-components-header p {
+  color: rgba(255, 255, 255, 0.64);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.home-components-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.home-component-card,
+.home-component-card:visited {
+  min-height: 148px;
+  padding: 20px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  background: rgba(255, 255, 255, 0.045);
+  color: white;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.home-component-card:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.home-component-card:active {
+  transform: translateY(1px);
+}
+
+.home-component-card strong {
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.home-component-card span {
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
 .site-header {
   position: fixed;
   top: 22px;
@@ -71,63 +156,6 @@ body {
   color: white;
 }
 
-.site-header-dropdown {
-  position: relative;
-}
-
-.site-header-dropdown::after {
-  content: "";
-  position: absolute;
-  left: -22px;
-  right: -22px;
-  top: 100%;
-  height: 18px;
-}
-
-.site-header-dropdown-menu {
-  position: absolute;
-  top: calc(100% + 15px);
-  left: 50%;
-  width: 230px;
-  padding: 12px;
-  border-radius: 18px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(24, 25, 24, 0.98);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.36);
-  transform: translateX(-50%) translateY(12px) scale(0.98);
-  opacity: 0;
-  pointer-events: none;
-  transition:
-    opacity 0.28s ease,
-    transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.site-header-dropdown:hover .site-header-dropdown-menu,
-.site-header-dropdown:focus-within .site-header-dropdown-menu {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateX(-50%) translateY(0) scale(1);
-}
-
-.site-header-dropdown-menu a,
-.site-header-dropdown-menu a:visited {
-  min-height: 38px;
-  padding: 0 12px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  color: rgba(255, 255, 255, 0.68);
-  font-size: 13px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: background 0.2s ease, color 0.2s ease;
-}
-
-.site-header-dropdown-menu a:hover {
-  background: rgba(255, 255, 255, 0.07);
-  color: white;
-}
-
 .site-header-cart,
 .site-header-cart:visited {
   position: relative;
@@ -171,9 +199,25 @@ body {
   display: none;
 }
 
+@media (max-width: 1100px) {
+  .home-components-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 900px) {
   .home-page {
     padding-top: 88px;
+  }
+
+  .home-components-section {
+    min-height: calc(100vh - 88px);
+    padding: 56px 22px 72px;
+    scroll-margin-top: 88px;
+  }
+
+  .home-components-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .site-header {
@@ -206,6 +250,20 @@ body {
     border-radius: 999px;
     display: flex;
     background: rgba(255, 255, 255, 0.045);
+  }
+}
+
+@media (max-width: 620px) {
+  .home-components-header h1 {
+    font-size: 29px;
+  }
+
+  .home-components-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .home-component-card {
+    min-height: 120px;
   }
 }
 
