@@ -144,6 +144,16 @@ body {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 26px;
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 0.28s ease,
+    transform 0.28s ease;
+}
+
+.home-featured-components-row.is-switching {
+  opacity: 0;
+  transform: translateY(8px);
 }
 
 .home-featured-components-arrow {
