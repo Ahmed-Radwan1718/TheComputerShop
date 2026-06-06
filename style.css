@@ -65,8 +65,8 @@ body {
 
 .components-hub-grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 22px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
 }
 
 .components-hub-card,
@@ -90,7 +90,7 @@ body {
 .components-hub-image-frame {
   position: relative;
   width: 100%;
-  aspect-ratio: 1 / 0.92;
+  aspect-ratio: 1 / 1;
   background: rgba(255, 255, 255, 0.035);
   display: flex;
   align-items: center;
@@ -107,8 +107,8 @@ body {
 }
 
 .components-hub-image-frame img {
-  width: 100%;
-  height: 100%;
+  width: 112%;
+  height: 112%;
   object-fit: cover;
   display: block;
 }
