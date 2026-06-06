@@ -209,17 +209,35 @@
 
   let featuredComponentIndex = 0;
   let featuredComponentTimer;
+  let featuredComponentIsAnimating = false;
 
-  function renderFeaturedComponents() {
+  function renderFeaturedComponents(instant = false) {
     const group = featuredComponentGroups[featuredComponentIndex];
 
-    featuredComponentTitle.textContent = group.title;
-    featuredComponentRow.innerHTML = group.items.map(([name, image]) => `
+    const markup = group.items.map(([name, image]) => `
       <a href="${group.link}" class="home-featured-component-item">
         <img src="${image}" alt="${name}">
         <span>${name}</span>
       </a>
     `).join("");
+
+    if (instant) {
+      featuredComponentTitle.textContent = group.title;
+      featuredComponentRow.innerHTML = markup;
+      return;
+    }
+
+    if (featuredComponentIsAnimating) return;
+
+    featuredComponentIsAnimating = true;
+    featuredComponentRow.classList.add("is-switching");
+
+    setTimeout(() => {
+      featuredComponentTitle.textContent = group.title;
+      featuredComponentRow.innerHTML = markup;
+      featuredComponentRow.classList.remove("is-switching");
+      featuredComponentIsAnimating = false;
+    }, 280);
   }
 
   function startFeaturedComponentsCycle() {
@@ -235,7 +253,7 @@
   }
 
   if (featuredComponentTitle && featuredComponentRow) {
-    renderFeaturedComponents();
+    renderFeaturedComponents(true);
     startFeaturedComponentsCycle();
 
     featuredComponentRow.addEventListener("mouseenter", () => {
