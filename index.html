@@ -100,27 +100,7 @@
           ‹
         </button>
 
-        <div class="home-featured-components-row" id="featured-components-row">
-        <a href="graphics-cards.html" class="home-featured-component-item">
-          <img src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5090-aorus-master-1.jpeg" alt="RTX 5090 AORUS Master">
-          <span>RTX 5090 AORUS Master</span>
-        </a>
-
-        <a href="graphics-cards.html" class="home-featured-component-item">
-          <img src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/rog-strix-rtx5070ti-o16g-gaming-1.jpeg" alt="ROG Strix RTX 5070 Ti">
-          <span>ROG Strix RTX 5070 Ti</span>
-        </a>
-
-        <a href="graphics-cards.html" class="home-featured-component-item">
-          <img src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rtx-5080-windforce-3x-oc-1.jpeg" alt="RTX 5080 WINDFORCE OC">
-          <span>RTX 5080 WINDFORCE OC</span>
-        </a>
-
-        <a href="graphics-cards.html" class="home-featured-component-item">
-          <img src="https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/graphics-cards/gigabyte-rx-7600-xt-gaming-oc-16g-1.jpeg" alt="RX 7600 XT Gaming OC">
-          <span>RX 7600 XT Gaming OC</span>
-        </a>
-        </div>
+        <div class="home-featured-components-row" id="featured-components-row"></div>
 
         <button class="home-featured-components-arrow home-featured-components-arrow-right" type="button" id="featured-components-next" aria-label="Next components">
           ›
@@ -255,6 +235,7 @@
   }
 
   if (featuredComponentTitle && featuredComponentRow) {
+    renderFeaturedComponents();
     startFeaturedComponentsCycle();
 
     featuredComponentRow.addEventListener("mouseenter", () => {
