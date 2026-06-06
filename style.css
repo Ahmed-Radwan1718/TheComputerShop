@@ -136,6 +136,8 @@ body {
 
 .home-featured-components-carousel {
   position: relative;
+  padding: 0 58px;
+  margin: 0 -58px;
 }
 
 .home-featured-components-row {
@@ -172,11 +174,11 @@ body {
 }
 
 .home-featured-components-arrow-left {
-  left: -19px;
+  left: 0;
 }
 
 .home-featured-components-arrow-right {
-  right: -19px;
+  right: 0;
 }
 
 .home-featured-component-item,
