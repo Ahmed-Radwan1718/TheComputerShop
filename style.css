@@ -222,7 +222,7 @@ body {
   height: 210px;
   object-fit: contain;
   display: block;
-  border-radius: 22px;
+  border-radius: 18px;
   opacity: 0.86;
   overflow: hidden;
 }
