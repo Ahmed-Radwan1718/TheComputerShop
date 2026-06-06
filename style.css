@@ -10,6 +10,123 @@ body {
   color: white;
 }
 
+.home-page {
+  min-height: 100vh;
+  background: #000;
+}
+
+.home-intro-section {
+  width: 100%;
+  padding: 86px 60px 72px;
+}
+
+.home-intro-inner {
+  max-width: 980px;
+}
+
+.home-intro-eyebrow {
+  margin-bottom: 14px;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.home-intro-inner h1 {
+  max-width: 820px;
+  margin-bottom: 18px;
+  color: white;
+  font-size: 42px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+}
+
+.home-intro-text {
+  max-width: 720px;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 17px;
+  line-height: 1.7;
+}
+
+.home-intro-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 30px;
+  flex-wrap: wrap;
+}
+
+.home-intro-button,
+.home-intro-button:visited {
+  min-height: 48px;
+  padding: 0 20px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: opacity 0.2s ease, transform 0.2s ease, background 0.2s ease;
+}
+
+.home-intro-button-primary {
+  background: #242624;
+  border: 1px solid #242624;
+  color: #e2e0dc;
+}
+
+.home-intro-button-secondary {
+  background: rgba(36, 38, 36, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.26);
+  color: #f0eeee;
+}
+
+.home-intro-button:hover {
+  opacity: 0.82;
+}
+
+.home-intro-button:active {
+  transform: translateY(1px);
+}
+
+.home-intro-support {
+  max-width: 720px;
+  margin-top: 24px;
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+@media (max-width: 700px) {
+  .home-intro-section {
+    padding: 62px 24px 54px;
+  }
+
+  .home-intro-inner h1 {
+    font-size: 30px;
+  }
+
+  .home-intro-text {
+    font-size: 15px;
+  }
+
+  .home-intro-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .home-intro-button {
+    width: 100%;
+  }
+}
+
 .hero {
   position: relative;
   width: 100%;
