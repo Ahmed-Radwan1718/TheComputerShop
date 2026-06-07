@@ -2875,15 +2875,7 @@ body.nav-menu-open {
 }
 
 .component-hero {
-  position: relative;
-  min-height: 420px;
-  margin: 0 60px;
-  border-radius: 0;
-  overflow: visible;
-  display: flex;
-  align-items: center;
-  background: transparent;
-  box-shadow: none;
+  display: none;
 }
 
 .component-hero-bg {
