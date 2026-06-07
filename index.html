@@ -320,5 +320,25 @@
   }
 </script>
 
+<script>
+  const customProcessSteps = document.querySelectorAll(".home-custom-process-step");
+
+  if (customProcessSteps.length) {
+    const customProcessObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+        }
+      });
+    }, {
+      threshold: 0.35
+    });
+
+    customProcessSteps.forEach((step) => {
+      customProcessObserver.observe(step);
+    });
+  }
+</script>
+
 </body>
 </html>
