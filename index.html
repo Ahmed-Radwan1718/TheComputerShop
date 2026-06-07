@@ -327,17 +327,18 @@
     setTimeout(() => {
       featuredComponentTitle.textContent = group.title;
       featuredComponentRow.innerHTML = markup;
+
       featuredComponentRow.classList.remove(`is-switching-out-${direction}`);
       featuredComponentRow.classList.add(`is-switching-in-${direction}`);
 
-      requestAnimationFrame(() => {
-        featuredComponentRow.classList.remove(`is-switching-in-${direction}`);
-      });
+      featuredComponentRow.offsetHeight;
+
+      featuredComponentRow.classList.remove(`is-switching-in-${direction}`);
 
       setTimeout(() => {
         featuredComponentIsAnimating = false;
-      }, 420);
-    }, 260);
+      }, 560);
+    }, 550);
   }
 
   function startFeaturedComponentsCycle() {
