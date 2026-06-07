@@ -1973,14 +1973,11 @@ body.nav-menu-open {
 }
 
 .faq-answer a,
-.faq-answer a:visited {
-  color: rgba(255, 255, 255, 0.82);
-  font-weight: 700;
-  text-decoration: none;
-}
-
+.faq-answer a:visited,
 .faq-answer a:hover {
-  color: white;
+  color: rgba(255, 255, 255, 0.68);
+  font-weight: 400;
+  text-decoration: none;
 }
 
 @media (max-width: 700px) {
