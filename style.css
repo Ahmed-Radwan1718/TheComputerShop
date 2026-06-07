@@ -318,10 +318,10 @@ body {
   padding: 0 0 48px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.09);
   opacity: 0;
-  transform: translateY(-120vh) scale(0.96);
+  transform: translateY(34px) scale(0.98);
   transition:
-    opacity 0.45s ease,
-    transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity 0.65s ease,
+    transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .home-custom-process-step:nth-child(even) {
@@ -331,18 +331,6 @@ body {
 .home-custom-process-step.is-visible {
   opacity: 1;
   transform: translateY(0) scale(1);
-}
-
-.home-custom-process-step:nth-child(2) {
-  transition-delay: 0.08s;
-}
-
-.home-custom-process-step:nth-child(3) {
-  transition-delay: 0.16s;
-}
-
-.home-custom-process-step:nth-child(4) {
-  transition-delay: 0.24s;
 }
 
 .home-custom-process-step span {
