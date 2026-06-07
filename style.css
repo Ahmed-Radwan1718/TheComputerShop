@@ -255,8 +255,8 @@ body {
 }
 
 .home-custom-process-section {
-  min-height: 320vh;
-  padding: 0 44px;
+  padding: 96px 44px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .home-custom-process-inner {
@@ -265,14 +265,10 @@ body {
 }
 
 .home-custom-process-sticky {
-  min-height: 100vh;
-  position: sticky;
-  top: 0;
   display: grid;
-  grid-template-columns: 0.9fr 1.1fr;
+  grid-template-columns: 0.85fr 1.15fr;
   gap: 70px;
-  align-items: center;
-  padding-top: 104px;
+  align-items: start;
 }
 
 .home-custom-process-eyebrow {
@@ -311,53 +307,40 @@ body {
 }
 
 .home-custom-process-steps {
-  position: relative;
-  min-height: 360px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
 }
 
 .home-custom-process-step {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  opacity: 0;
-  transform: scale(0.94) translateY(24px);
-  transition:
-    opacity 0.55s ease,
-    transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
-  pointer-events: none;
-}
-
-.home-custom-process-step.active {
-  opacity: 1;
-  transform: scale(1) translateY(0);
-  pointer-events: auto;
+  padding: 26px;
+  border-radius: 26px;
+  background: rgba(24, 25, 24, 0.56);
+  border: 1px solid rgba(255, 255, 255, 0.11);
 }
 
 .home-custom-process-step span {
-  margin-bottom: 24px;
+  margin-bottom: 22px;
   color: rgba(255, 255, 255, 0.34);
-  font-size: 13px;
+  display: block;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.14em;
 }
 
 .home-custom-process-step h3 {
-  max-width: 620px;
-  margin-bottom: 18px;
+  margin-bottom: 14px;
   color: white;
-  font-size: 52px;
+  font-size: 24px;
   font-weight: 700;
-  line-height: 1.04;
-  letter-spacing: -0.045em;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
 }
 
 .home-custom-process-step p {
-  max-width: 520px;
   color: rgba(255, 255, 255, 0.58);
-  font-size: 17px;
-  line-height: 1.7;
+  font-size: 14px;
+  line-height: 1.65;
 }
 
 .components-hub-page {
