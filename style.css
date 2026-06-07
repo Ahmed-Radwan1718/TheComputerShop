@@ -475,6 +475,18 @@ body {
   margin: 0 auto;
 }
 
+.home-support-header {
+  margin-bottom: 34px;
+}
+
+.home-support-header h2 {
+  color: white;
+  font-size: 38px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+}
+
 .home-support-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
