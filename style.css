@@ -454,6 +454,56 @@ body {
   text-transform: uppercase;
 }
 
+.home-support-section {
+  padding: 92px 44px 104px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.home-support-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.home-support-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.home-support-item {
+  min-height: 210px;
+  padding: 28px;
+  border-radius: 26px;
+  background: rgba(24, 25, 24, 0.56);
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.home-support-item span {
+  color: rgba(255, 255, 255, 0.34);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+.home-support-item h2 {
+  max-width: 320px;
+  color: white;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.14;
+  letter-spacing: -0.025em;
+}
+
+.home-support-item p {
+  max-width: 340px;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
 .components-hub-page {
   min-height: 100vh;
   background: #2a2b2a;
@@ -833,6 +883,18 @@ body {
 
   .home-signature-preview-card img {
     height: 260px;
+  }
+
+  .home-support-section {
+    padding: 72px 22px;
+  }
+
+  .home-support-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .home-support-item {
+    min-height: 170px;
   }
 
   .components-page-grid-section {
