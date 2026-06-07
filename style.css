@@ -146,15 +146,32 @@ body {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 26px;
   opacity: 1;
-  transform: translateY(0);
+  transform: translateX(0);
   transition:
-    opacity 0.28s ease,
-    transform 0.28s ease;
+    opacity 0.32s ease,
+    transform 0.42s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.home-featured-components-row.is-switching {
+.home-featured-components-row.is-switching-out-next {
   opacity: 0;
-  transform: translateY(8px);
+  transform: translateX(-42px);
+}
+
+.home-featured-components-row.is-switching-out-prev {
+  opacity: 0;
+  transform: translateX(42px);
+}
+
+.home-featured-components-row.is-switching-in-next {
+  opacity: 0;
+  transform: translateX(42px);
+  transition: none;
+}
+
+.home-featured-components-row.is-switching-in-prev {
+  opacity: 0;
+  transform: translateX(-42px);
+  transition: none;
 }
 
 .home-featured-components-arrow {
