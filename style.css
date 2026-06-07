@@ -255,20 +255,22 @@ body {
 }
 
 .home-custom-process-section {
-  padding: 96px 44px;
+  padding: 110px 44px 120px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .home-custom-process-inner {
-  max-width: 1280px;
+  max-width: 1180px;
   margin: 0 auto;
 }
 
 .home-custom-process-sticky {
-  display: grid;
-  grid-template-columns: 0.85fr 1.15fr;
-  gap: 70px;
-  align-items: start;
+  display: block;
+}
+
+.home-custom-process-left {
+  max-width: 620px;
+  margin-bottom: 72px;
 }
 
 .home-custom-process-eyebrow {
@@ -281,7 +283,7 @@ body {
 }
 
 .home-custom-process-left h2 {
-  max-width: 440px;
+  max-width: 620px;
   color: white;
   font-size: 42px;
   font-weight: 700;
@@ -308,15 +310,27 @@ body {
 
 .home-custom-process-steps {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
+  gap: 34px;
 }
 
 .home-custom-process-step {
-  padding: 26px;
-  border-radius: 26px;
-  background: rgba(24, 25, 24, 0.56);
-  border: 1px solid rgba(255, 255, 255, 0.11);
+  max-width: 760px;
+  padding: 0 0 48px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+  opacity: 0;
+  transform: translateY(34px) scale(0.98);
+  transition:
+    opacity 0.65s ease,
+    transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.home-custom-process-step:nth-child(even) {
+  margin-left: auto;
+}
+
+.home-custom-process-step.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
 }
 
 .home-custom-process-step span {
@@ -329,18 +343,19 @@ body {
 }
 
 .home-custom-process-step h3 {
-  margin-bottom: 14px;
+  margin-bottom: 16px;
   color: white;
-  font-size: 24px;
+  font-size: 40px;
   font-weight: 700;
-  line-height: 1.15;
-  letter-spacing: -0.025em;
+  line-height: 1.08;
+  letter-spacing: -0.035em;
 }
 
 .home-custom-process-step p {
+  max-width: 520px;
   color: rgba(255, 255, 255, 0.58);
-  font-size: 14px;
-  line-height: 1.65;
+  font-size: 16px;
+  line-height: 1.7;
 }
 
 .components-hub-page {
@@ -672,19 +687,11 @@ body {
   }
 
   .home-custom-process-section {
-    min-height: auto;
     padding: 72px 22px;
   }
 
-  .home-custom-process-sticky {
-    min-height: auto;
-    position: static;
-    display: block;
-    padding-top: 0;
-  }
-
   .home-custom-process-left {
-    margin-bottom: 40px;
+    margin-bottom: 48px;
   }
 
   .home-custom-process-left h2 {
@@ -692,22 +699,18 @@ body {
   }
 
   .home-custom-process-steps {
-    min-height: auto;
-    display: grid;
-    gap: 18px;
+    gap: 28px;
   }
 
-  .home-custom-process-step {
-    position: static;
-    opacity: 1;
-    transform: none;
-    padding: 24px;
-    border-radius: 22px;
-    background: rgba(24, 25, 24, 0.56);
+  .home-custom-process-step,
+  .home-custom-process-step:nth-child(even) {
+    max-width: none;
+    margin-left: 0;
+    padding-bottom: 34px;
   }
 
   .home-custom-process-step h3 {
-    font-size: 28px;
+    font-size: 30px;
   }
 
   .home-custom-process-step p {
