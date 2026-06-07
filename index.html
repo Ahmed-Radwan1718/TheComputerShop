@@ -303,7 +303,7 @@
   let featuredComponentTimer;
   let featuredComponentIsAnimating = false;
 
-  function renderFeaturedComponents(instant = false) {
+  function renderFeaturedComponents(instant = false, direction = "next") {
     const group = featuredComponentGroups[featuredComponentIndex];
 
     const markup = group.items.map(([name, image]) => `
@@ -322,20 +322,28 @@
     if (featuredComponentIsAnimating) return;
 
     featuredComponentIsAnimating = true;
-    featuredComponentRow.classList.add("is-switching");
+    featuredComponentRow.classList.add(`is-switching-out-${direction}`);
 
     setTimeout(() => {
       featuredComponentTitle.textContent = group.title;
       featuredComponentRow.innerHTML = markup;
-      featuredComponentRow.classList.remove("is-switching");
-      featuredComponentIsAnimating = false;
-    }, 280);
+      featuredComponentRow.classList.remove(`is-switching-out-${direction}`);
+      featuredComponentRow.classList.add(`is-switching-in-${direction}`);
+
+      requestAnimationFrame(() => {
+        featuredComponentRow.classList.remove(`is-switching-in-${direction}`);
+      });
+
+      setTimeout(() => {
+        featuredComponentIsAnimating = false;
+      }, 420);
+    }, 260);
   }
 
   function startFeaturedComponentsCycle() {
     featuredComponentTimer = setInterval(() => {
       featuredComponentIndex = (featuredComponentIndex + 1) % featuredComponentGroups.length;
-      renderFeaturedComponents();
+      renderFeaturedComponents(false, "next");
     }, 7000);
   }
 
@@ -359,7 +367,7 @@
     if (featuredComponentPrev) {
       featuredComponentPrev.addEventListener("click", () => {
         featuredComponentIndex = (featuredComponentIndex - 1 + featuredComponentGroups.length) % featuredComponentGroups.length;
-        renderFeaturedComponents();
+        renderFeaturedComponents(false, "prev");
         resetFeaturedComponentsCycle();
       });
     }
@@ -367,7 +375,7 @@
     if (featuredComponentNext) {
       featuredComponentNext.addEventListener("click", () => {
         featuredComponentIndex = (featuredComponentIndex + 1) % featuredComponentGroups.length;
-        renderFeaturedComponents();
+        renderFeaturedComponents(false, "next");
         resetFeaturedComponentsCycle();
       });
     }
