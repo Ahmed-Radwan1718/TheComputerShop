@@ -2590,6 +2590,14 @@ body.nav-menu-open {
   text-align: right;
 }
 
+.product-detail-note {
+  margin: 0 0 20px;
+  color: rgba(255, 255, 255, 0.46);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
 .product-capacity-selector {
   margin-top: 18px;
   margin-bottom: 20px;
