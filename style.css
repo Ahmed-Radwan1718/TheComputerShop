@@ -2388,6 +2388,16 @@ body.nav-menu-open {
   transform: translateY(1px);
 }
 
+.product-image-note {
+  max-width: 720px;
+  margin: 14px auto 0;
+  color: rgba(255, 255, 255, 0.46);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.6;
+  text-align: center;
+}
+
 .product-purchase-area {
   min-height: 520px;
 }
