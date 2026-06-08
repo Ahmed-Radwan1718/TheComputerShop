@@ -6308,6 +6308,17 @@ return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/produc
   let activeProductImageIndex = 0;
   let visibleProductThumbnailStart = 0;
 
+  function updateProductCarouselCounter(product) {
+    const counter = document.getElementById("product-carousel-counter");
+    const productImages = getProductImages(product);
+
+    if (!counter || !productImages.length) {
+      return;
+    }
+
+    counter.textContent = `${activeProductImageIndex + 1}/${productImages.length}`;
+  }
+
   function getProductThumbnailWindowStart(activeIndex, totalImages) {
     if (totalImages <= visibleProductThumbnailLimit) {
       return 0;
@@ -6429,6 +6440,7 @@ return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/produc
       activeProductImageIndex = 0;
       visibleProductThumbnailStart = 0;
       renderProductThumbnails(product, 0);
+      updateProductCarouselCounter(product);
     }
 
     if (specificationsTable) {
@@ -6503,6 +6515,7 @@ return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/produc
           activeProductImageIndex = 0;
           visibleProductThumbnailStart = 0;
           renderProductThumbnails(currentProduct, 0);
+          updateProductCarouselCounter(currentProduct);
         }
 
         if (specificationsTable) {
@@ -6614,6 +6627,7 @@ return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/produc
 
     activeProductImageIndex = safeIndex;
     renderProductThumbnails(currentProduct, safeIndex);
+    updateProductCarouselCounter(currentProduct);
     slideProductMainImage(productImages[safeIndex], direction);
   }
 
