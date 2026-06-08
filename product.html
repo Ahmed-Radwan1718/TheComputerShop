@@ -1291,7 +1291,7 @@
 
     "intel-core-ultra-5-245k": {
       id: "intel-core-ultra-5-245k",
-      name: "Intel Core Ultra 5 245K",
+      name: "Intel Core Ultra 5",
       category: "CPU",
       specsLine: "Intel | Core Ultra 5 | 14 Cores",
       priceText: "Insert price here",
@@ -1301,10 +1301,62 @@ images: Array.from({ length: 4 }, (_, index) => {
   const imageNumber = index + 1;
   return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/CPU/intel-core-ultra-5-245k-${imageNumber}.jpeg`;
 }),
-      whoIsThisFor: "An unlocked Intel Core Ultra 5 processor for modern gaming, productivity, multitasking, AI-assisted applications, and LGA1851 desktop builds that need strong performance, DDR5 support, PCIe 5.0 readiness, and efficient 14-core hybrid architecture.",
+      defaultVariant: "245kf",
+      variantSelectorLabel: "Choose Processor",
+      variants: [
+        {
+          id: "245kf",
+          capacity: "Intel Core Ultra 5 245KF",
+          priceText: "Insert price here",
+          priceNumber: null,
+          specs: [
+            ["Selected Processor", "Intel Core Ultra 5 245KF"],
+            ["Processor Number", "245KF"],
+            ["Packaging", "Boxed"],
+            ["Integrated Graphics", "No"]
+          ]
+        },
+        {
+          id: "245k",
+          capacity: "Intel Core Ultra 5 245K",
+          priceText: "Insert price here",
+          priceNumber: null,
+          specs: [
+            ["Selected Processor", "Intel Core Ultra 5 245K"],
+            ["Processor Number", "245K"],
+            ["Packaging", "Boxed"],
+            ["Integrated Graphics", "Intel Graphics"]
+          ]
+        },
+        {
+          id: "245k-tray",
+          capacity: "Intel Core Ultra 5 245K Tray",
+          priceText: "Insert price here",
+          priceNumber: null,
+          specs: [
+            ["Selected Processor", "Intel Core Ultra 5 245K Tray"],
+            ["Processor Number", "245K"],
+            ["Packaging", "Tray"],
+            ["Integrated Graphics", "Intel Graphics"]
+          ]
+        },
+        {
+          id: "245kf-tray",
+          capacity: "Intel Core Ultra 5 245KF Tray",
+          priceText: "Insert price here",
+          priceNumber: null,
+          specs: [
+            ["Selected Processor", "Intel Core Ultra 5 245KF Tray"],
+            ["Processor Number", "245KF"],
+            ["Packaging", "Tray"],
+            ["Integrated Graphics", "No"]
+          ]
+        }
+      ],
+      whoIsThisFor:
       specs: [
-        ["Product Name", "Intel Core Ultra 5 Processor 245K"],
-        ["Processor Number", "245K"],
+        ["Product Name", "Intel Core Ultra 5"],
+        ["Available Variants", "245KF, 245K, 245K Tray, 245KF Tray"],
         ["Product Collection", "Intel Core Ultra Processors Series 2"],
         ["Code Name", "Arrow Lake"],
         ["Vertical Segment", "Desktop"],
@@ -1336,7 +1388,7 @@ images: Array.from({ length: 4 }, (_, index) => {
       included: [
         {
           title: "Processor",
-          text: "The Intel Core Ultra 5 245K processor is included as the main component, inspected and prepared for the build or order."
+          text: "The selected Intel Core Ultra 5 processor variant is included as the main component, inspected and prepared for the build or order."
         },
         {
           title: "Original Packaging",
@@ -1355,7 +1407,7 @@ images: Array.from({ length: 4 }, (_, index) => {
 
     "intel-core-ultra-7-265k": {
       id: "intel-core-ultra-7-265k",
-      name: "Intel Core Ultra 7 265K",
+      name: "Intel Core Ultra 7",
       category: "CPU",
       specsLine: "Intel | Core Ultra 7 | 20 Cores",
       priceText: "Insert price here",
@@ -1365,10 +1417,62 @@ images: Array.from({ length: 4 }, (_, index) => {
         const imageNumber = index + 1;
         return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/CPU/intel-core-ultra-7-265k-${imageNumber}.jpeg`;
       }),
-      whoIsThisFor: "A high-performance unlocked Intel Core Ultra processor for modern gaming, productivity, creator workloads, multitasking, AI-assisted applications, and premium LGA1851 desktop builds that need strong single-core speed, 20-core hybrid performance, DDR5 support, and PCIe 5.0 readiness.",
+      defaultVariant: "265kf-tray",
+      variantSelectorLabel: "Choose Processor",
+      variants: [
+        {
+          id: "265kf-tray",
+          capacity: "Intel Core Ultra 7 265KF Tray",
+          priceText: "Insert price here",
+          priceNumber: null,
+          specs: [
+            ["Selected Processor", "Intel Core Ultra 7 265KF Tray"],
+            ["Processor Number", "265KF"],
+            ["Packaging", "Tray"],
+            ["Integrated Graphics", "No"]
+          ]
+        },
+        {
+          id: "265k",
+          capacity: "Intel Core Ultra 7 265K",
+          priceText: "Insert price here",
+          priceNumber: null,
+          specs: [
+            ["Selected Processor", "Intel Core Ultra 7 265K"],
+            ["Processor Number", "265K"],
+            ["Packaging", "Boxed"],
+            ["Integrated Graphics", "Intel Graphics"]
+          ]
+        },
+        {
+          id: "265kf",
+          capacity: "Intel Core Ultra 7 265KF",
+          priceText: "Insert price here",
+          priceNumber: null,
+          specs: [
+            ["Selected Processor", "Intel Core Ultra 7 265KF"],
+            ["Processor Number", "265KF"],
+            ["Packaging", "Boxed"],
+            ["Integrated Graphics", "No"]
+          ]
+        },
+        {
+          id: "265k-tray",
+          capacity: "Intel Core Ultra 7 265K Tray",
+          priceText: "Insert price here",
+          priceNumber: null,
+          specs: [
+            ["Selected Processor", "Intel Core Ultra 7 265K Tray"],
+            ["Processor Number", "265K"],
+            ["Packaging", "Tray"],
+            ["Integrated Graphics", "Intel Graphics"]
+          ]
+        }
+      ],
+      whoIsThisFor:
       specs: [
-        ["Product Name", "Intel Core Ultra 7 Processor 265K"],
-        ["Processor Number", "265K"],
+        ["Product Name", "Intel Core Ultra 7"],
+        ["Available Variants", "265KF Tray, 265K, 265KF, 265K Tray"],
         ["Product Collection", "Intel Core Ultra Processors Series 2"],
         ["Code Name", "Arrow Lake"],
         ["Vertical Segment", "Desktop"],
@@ -1399,7 +1503,7 @@ images: Array.from({ length: 4 }, (_, index) => {
       included: [
         {
           title: "Processor",
-          text: "The Intel Core Ultra 7 265K processor is included as the main component, inspected and prepared for the build or order."
+          text: "The selected Intel Core Ultra 7 processor variant is included as the main component, inspected and prepared for the build or order."
         },
         {
           title: "Original Packaging",
