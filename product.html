@@ -6,7 +6,7 @@
   <title>Product - The Computer Shop</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
+<body oncontextmenu="return false;">
 
 <div class="cart-transition-overlay" aria-hidden="true">
   <div class="cart-loading-spinner"></div>
@@ -6760,6 +6760,20 @@ return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/produc
     </div>
   </div>
 </footer>
+
+<script>
+  document.addEventListener("keydown", function (event) {
+    if (
+      event.key === "F12" ||
+      (event.ctrlKey && event.shiftKey && ["I", "J", "C"].includes(event.key.toUpperCase())) ||
+      (event.ctrlKey && event.key.toUpperCase() === "U") ||
+      (event.metaKey && event.altKey && ["I", "J", "C"].includes(event.key.toUpperCase()))
+    ) {
+      event.preventDefault();
+      return false;
+    }
+  });
+</script>
 
 </body>
 </html>
