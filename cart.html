@@ -250,5 +250,19 @@
   updateCartCount();
   renderCart();
 </script>
+<script>
+  document.addEventListener("keydown", function (event) {
+    if (
+      event.key === "F12" ||
+      (event.ctrlKey && event.shiftKey && ["I", "J", "C"].includes(event.key.toUpperCase())) ||
+      (event.ctrlKey && event.key.toUpperCase() === "U") ||
+      (event.metaKey && event.altKey && ["I", "J", "C"].includes(event.key.toUpperCase()))
+    ) {
+      event.preventDefault();
+      return false;
+    }
+  });
+</script>
+
 </body>
 </html>
