@@ -7099,6 +7099,7 @@ return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/produc
 
   let selectedVariantKey = currentProduct.defaultVariant || null;
   let selectedHeatsinkKey = currentProduct.defaultHeatsinkOption || null;
+  let selectedCoolingKey = currentProduct.defaultCoolingOption || null;
 
   function getSelectedVariant(product) {
     if (!product.variants) {
@@ -7107,11 +7108,22 @@ return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/produc
 
     if (product.splitVariantSelectors) {
       const selectedCapacity = selectedVariantKey || product.defaultVariant || product.variants[0].capacityOption;
-      const selectedHeatsink = selectedHeatsinkKey || product.defaultHeatsinkOption || product.variants[0].heatsinkOption;
 
-      return product.variants.find((variant) => {
-        return variant.capacityOption === selectedCapacity && variant.heatsinkOption === selectedHeatsink;
-      }) || product.variants[0];
+      if (product.heatsinkOptions) {
+        const selectedHeatsink = selectedHeatsinkKey || product.defaultHeatsinkOption || product.variants[0].heatsinkOption;
+
+        return product.variants.find((variant) => {
+          return variant.capacityOption === selectedCapacity && variant.heatsinkOption === selectedHeatsink;
+        }) || product.variants.find((variant) => variant.capacityOption === selectedCapacity) || product.variants[0];
+      }
+
+      if (product.coolingOptions) {
+        const selectedCooling = selectedCoolingKey || product.defaultCoolingOption || product.variants[0].coolingOption;
+
+        return product.variants.find((variant) => {
+          return variant.capacityOption === selectedCapacity && variant.coolingOption === selectedCooling;
+        }) || product.variants.find((variant) => variant.capacityOption === selectedCapacity) || product.variants[0];
+      }
     }
 
     return product.variants.find((variant) => variant.id === selectedVariantKey) || product.variants[0];
@@ -7333,18 +7345,40 @@ return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/produc
               }).join("")}
             </div>
 
-            <p class="product-capacity-label">Choose Heatsink</p>
-            <div class="product-capacity-options">
-              ${product.heatsinkOptions.map((option) => {
-                const activeClass = option.id === selectedHeatsink ? " active" : "";
+            ${product.heatsinkOptions ? `
+              <p class="product-capacity-label">Choose Heatsink</p>
+              <div class="product-capacity-options">
+                ${product.heatsinkOptions.map((option) => {
+                  const activeClass = option.id === selectedHeatsink ? " active" : "";
 
-                return `
-                  <button class="product-capacity-button${activeClass}" type="button" data-heatsink="${option.id}">
-                    ${option.label}
-                  </button>
-                `;
-              }).join("")}
-            </div>
+                  return `
+                    <button class="product-capacity-button${activeClass}" type="button" data-heatsink="${option.id}">
+                      ${option.label}
+                    </button>
+                  `;
+                }).join("")}
+              </div>
+            ` : ""}
+
+            ${product.coolingOptions ? `
+              <p class="product-capacity-label">Choose Cooling</p>
+              <div class="product-capacity-options">
+                ${product.coolingOptions.map((option) => {
+                  const selectedCooling = selectedVariant.coolingOption;
+                  const activeClass = option.id === selectedCooling ? " active" : "";
+                  const disabledClass = !product.variants.some((variant) => {
+                    return variant.capacityOption === selectedCapacity && variant.coolingOption === option.id;
+                  }) ? " disabled" : "";
+                  const disabledAttribute = disabledClass ? " disabled" : "";
+
+                  return `
+                    <button class="product-capacity-button${activeClass}${disabledClass}" type="button" data-cooling="${option.id}"${disabledAttribute}>
+                      ${option.label}
+                    </button>
+                  `;
+                }).join("")}
+              </div>
+            ` : ""}
           `;
         } else {
           capacitySelector.innerHTML = `
@@ -7432,6 +7466,32 @@ return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/produc
 
         selectedHeatsinkKey = button.dataset.heatsink;
       }
+
+      if (button.dataset.cooling) {
+        if (button.dataset.cooling === selectedCoolingKey) {
+          return;
+        }
+
+        selectedCoolingKey = button.dataset.cooling;
+      }
+
+      if (currentProduct.coolingOptions) {
+        const capacityToCheck = selectedVariantKey || currentProduct.defaultVariant;
+        const coolingToCheck = selectedCoolingKey || currentProduct.defaultCoolingOption;
+        const hasSelectedCombination = currentProduct.variants.some((variant) => {
+          return variant.capacityOption === capacityToCheck && variant.coolingOption === coolingToCheck;
+        });
+
+        if (!hasSelectedCombination) {
+          const firstMatchingVariant = currentProduct.variants.find((variant) => {
+            return variant.capacityOption === capacityToCheck;
+          });
+
+          if (firstMatchingVariant) {
+            selectedCoolingKey = firstMatchingVariant.coolingOption;
+          }
+        }
+      }
     } else {
       if (button.dataset.capacity === selectedVariantKey) {
         return;
@@ -7458,6 +7518,16 @@ return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/produc
 
         if (capacityButton.dataset.heatsink) {
           capacityButton.classList.toggle("active", capacityButton.dataset.heatsink === selectedVariant.heatsinkOption);
+        }
+
+        if (capacityButton.dataset.cooling) {
+          const isAvailable = currentProduct.variants.some((variant) => {
+            return variant.capacityOption === selectedVariant.capacityOption && variant.coolingOption === capacityButton.dataset.cooling;
+          });
+
+          capacityButton.classList.toggle("active", capacityButton.dataset.cooling === selectedVariant.coolingOption);
+          capacityButton.classList.toggle("disabled", !isAvailable);
+          capacityButton.disabled = !isAvailable;
         }
 
         return;
