@@ -2756,37 +2756,100 @@ images: Array.from({ length: 4 }, (_, index) => {
       ]
     },
 
-    "aorus-gen5-14000-ssd-1tb": {
-      id: "aorus-gen5-14000-ssd-1tb",
-      name: "AORUS Gen5 14000 SSD 1TB",
+    "aorus-gen5-14000-ssd": {
+      id: "aorus-gen5-14000-ssd",
+      name: "AORUS Gen5 14000 SSD",
       category: "Storage",
-      specsLine: "Gigabyte AORUS | PCIe 5.0 NVMe | 1TB",
+      specsLine: "Gigabyte AORUS | PCIe 5.0 NVMe | 1TB–4TB",
       priceText: "Insert price here",
       priceNumber: null,
-      url: "product.html?product=aorus-gen5-14000-ssd-1tb",
+      url: "product.html?product=aorus-gen5-14000-ssd",
       images: Array.from({ length: 6 }, (_, index) => {
         const imageNumber = index + 1;
         return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Storage/aorus-gen5-14000-ssd-1tb-${imageNumber}.jpeg`;
       }),
-      whoIsThisFor: "A high-speed PCIe Gen 5 NVMe SSD for gaming, rendering, large file transfers, creator work, and high-end builds that need very fast 1TB storage.",
+      defaultVariant: "1tb",
+      variants: [
+        {
+          id: "1tb",
+          capacity: "1TB",
+          modelNumber: "AG514K1TB",
+          priceText: "Insert price here",
+          priceNumber: null,
+          sequentialRead: "Up to 13,600MB/s",
+          sequentialWrite: "Up to 10,200MB/s",
+          cacheMemory: "LPDDR4 2GB",
+          endurance: "700 TBW",
+          specs: [
+            ["Selected Capacity", "1TB"],
+            ["Model Number", "AG514K1TB"],
+            ["Total Capacity", "1000GB"],
+            ["External DDR Cache", "LPDDR4 2GB"],
+            ["Sequential Read Speed", "Up to 13,600MB/s"],
+            ["Sequential Write Speed", "Up to 10,200MB/s"],
+            ["Warranty", "Limited 5 years or 700TBW"]
+          ]
+        },
+        {
+          id: "2tb",
+          capacity: "2TB",
+          modelNumber: "AG514K2TB",
+          priceText: "Insert price here",
+          priceNumber: null,
+          sequentialRead: "Up to 14,500MB/s",
+          sequentialWrite: "Up to 12,700MB/s",
+          cacheMemory: "LPDDR4 4GB",
+          endurance: "1,400 TBW",
+          specs: [
+            ["Selected Capacity", "2TB"],
+            ["Model Number", "AG514K2TB"],
+            ["Total Capacity", "2000GB"],
+            ["External DDR Cache", "LPDDR4 4GB"],
+            ["Sequential Read Speed", "Up to 14,500MB/s"],
+            ["Sequential Write Speed", "Up to 12,700MB/s"],
+            ["Warranty", "Limited 5 years or 1400TBW"]
+          ]
+        },
+        {
+          id: "4tb",
+          capacity: "4TB",
+          modelNumber: "AG514K4TB",
+          priceText: "Insert price here",
+          priceNumber: null,
+          sequentialRead: "Up to 14,100MB/s",
+          sequentialWrite: "Up to 12,600MB/s",
+          cacheMemory: "LPDDR4 8GB",
+          endurance: "3,000 TBW",
+          specs: [
+            ["Selected Capacity", "4TB"],
+            ["Model Number", "AG514K4TB"],
+            ["Total Capacity", "4000GB"],
+            ["External DDR Cache", "LPDDR4 8GB"],
+            ["Sequential Read Speed", "Up to 14,100MB/s"],
+            ["Sequential Write Speed", "Up to 12,600MB/s"],
+            ["Warranty", "Limited 5 years or 3000TBW"]
+          ]
+        }
+      ],
+      whoIsThisFor: "A high-speed PCIe Gen 5 NVMe SSD for gaming, rendering, large file transfers, creator work, and high-end builds that need selectable 1TB, 2TB, or 4TB storage.",
       specs: [
-        ["Product Name", "AORUS Gen5 14000 SSD 1TB"],
+        ["Product Name", "AORUS Gen5 14000 SSD"],
         ["Form Factor", "M.2 2280"],
         ["Interface", "PCIe 5.0 x4, NVMe 2.0"],
-        ["Total Capacity", "1000GB"],
         ["NAND", "3D TLC NAND Flash"],
-        ["External DDR Cache", "LPDDR4 2GB"],
-        ["Sequential Read Speed", "Up to 13,600MB/s"],
-        ["Sequential Write Speed", "Up to 10,200MB/s"],
+        ["Controller", "Phison PS5026-E26"],
         ["Dimensions", "80 × 22 × 3.5mm"],
         ["MTBF", "1.6 million hours"],
+        ["Max Operating Power", "Read: 11.5W; Write: 11.5W"],
+        ["Idle Power", "PS3 < 144mW, PS4/L1.2 < 85mW"],
         ["Operating Temperature", "0°C to 70°C"],
-        ["Warranty", "Limited 5 years or 700TBW"]
+        ["Available Capacities", "1TB, 2TB, 4TB"],
+        ["Heatsink Requirement", "Must be used with motherboard heatsink"]
       ],
       included: [
         {
           title: "Storage Drive",
-          text: "The AORUS Gen5 14000 SSD 1TB is included as the main component, inspected and prepared for the build or order."
+          text: "The AORUS Gen5 14000 SSD is included as the main component in the selected capacity, inspected and prepared for the build or order."
         },
         {
           title: "Original Packaging",
