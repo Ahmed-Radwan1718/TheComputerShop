@@ -2591,12 +2591,12 @@ body.nav-menu-open {
 }
 
 .product-capacity-selector {
-  margin-top: 18px;
-  margin-bottom: 20px;
+  margin-top: 22px;
+  margin-bottom: 28px;
 }
 
 .product-capacity-label {
-  margin-bottom: 10px;
+  margin: 18px 0 12px;
   color: rgba(255, 255, 255, 0.72);
   font-size: 13px;
   font-weight: 700;
@@ -2604,10 +2604,18 @@ body.nav-menu-open {
   text-transform: uppercase;
 }
 
+.product-capacity-label:first-child {
+  margin-top: 0;
+}
+
 .product-capacity-options {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.product-capacity-options + .product-capacity-label {
+  margin-top: 24px;
 }
 
 .product-capacity-button {
