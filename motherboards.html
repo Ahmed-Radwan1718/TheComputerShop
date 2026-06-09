@@ -482,6 +482,37 @@
     chipsRow.appendChild(clearButton);
   }
 
+  const motherboardColorFilterTags = {
+    "z890-aorus-elite-wifi7": ["black"],
+    "z890-aorus-master": ["black"],
+    "z890-aorus-master-ai-top": ["black"],
+    "x870-aorus-elite-wifi7": ["black"],
+    "x870-aorus-stealth": ["black"],
+    "z890-aorus-elite-duo-x": ["black"],
+    "b850-aorus-stealth-ice": ["white"],
+    "b850-aorus-elite-wifi7-ice": ["white"],
+    "x870e-aorus-xtreme-x3d-ai-top": ["black"],
+    "x870e-aorus-elite-x3d": ["black"],
+    "b850-aorus-elite-wifi7": ["black"],
+    "b860m-aorus-elite-wifi6e": ["black"],
+    "rog-maximus-z890-extreme-motherboard": ["black"]
+  };
+
+  function getProductKeyFromCard(card) {
+    const href = card.getAttribute("href") || "";
+
+    try {
+      return new URL(href, window.location.href).searchParams.get("product") || "";
+    } catch (error) {
+      return "";
+    }
+  }
+
+  function getMotherboardColorFilterTags(card) {
+    const productKey = getProductKeyFromCard(card);
+    return motherboardColorFilterTags[productKey] || [];
+  }
+
   function getCardFilterTags(card) {
     const title = card.querySelector("h3");
     const specsLine = card.querySelector("p");
@@ -490,16 +521,21 @@
     return [
       title ? title.textContent : "",
       specsLine ? specsLine.textContent : "",
-      extraTags
+      extraTags,
+      ...getMotherboardColorFilterTags(card)
     ]
       .join(" | ")
       .split("|")
       .map((tag) => normalizeFilterValue(tag));
   }
 
-  function cardMatchesSelectedValue(cardTags, selectedValue) {
+  function cardMatchesSelectedValue(card, cardTags, selectedValue) {
     const normalizedSelectedValue = normalizeFilterValue(selectedValue);
     const cardSearchText = cardTags.join(" ");
+
+    if (normalizedSelectedValue === "black" || normalizedSelectedValue === "white") {
+      return getMotherboardColorFilterTags(card).includes(normalizedSelectedValue);
+    }
 
     if (normalizedSelectedValue === "intel") {
       return (
@@ -539,7 +575,7 @@
 
     return selectedGroups.every((group) => {
       return group.some((selectedValue) => {
-        return cardMatchesSelectedValue(cardTags, selectedValue);
+        return cardMatchesSelectedValue(card, cardTags, selectedValue);
       });
     });
   }
