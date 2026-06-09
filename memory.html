@@ -114,6 +114,38 @@
           <label><input type="checkbox"> Non-RGB</label>
         </div>
       </div>
+
+      <div class="filter-item">
+        <button class="filter-toggle" type="button"><span>Latency</span><span class="chevron">⌄</span></button>
+        <div class="filter-content">
+          <label><input type="checkbox"> CL28</label>
+          <label><input type="checkbox"> CL30</label>
+          <label><input type="checkbox"> CL32</label>
+          <label><input type="checkbox"> CL34</label>
+          <label><input type="checkbox"> CL36</label>
+          <label><input type="checkbox"> CL40</label>
+          <label><input type="checkbox"> CL42</label>
+        </div>
+      </div>
+
+      <div class="filter-item">
+        <button class="filter-toggle" type="button"><span>Kit Configuration</span><span class="chevron">⌄</span></button>
+        <div class="filter-content">
+          <label><input type="checkbox"> 2x16GB</label>
+          <label><input type="checkbox"> 2x24GB</label>
+          <label><input type="checkbox"> 2x32GB</label>
+          <label><input type="checkbox"> 2x48GB</label>
+          <label><input type="checkbox"> 2x64GB</label>
+        </div>
+      </div>
+
+      <div class="filter-item">
+        <button class="filter-toggle" type="button"><span>Color</span><span class="chevron">⌄</span></button>
+        <div class="filter-content">
+          <label><input type="checkbox"> Black</label>
+          <label><input type="checkbox"> White</label>
+        </div>
+      </div>
     </aside>
 
     <section class="signature-products">
@@ -339,6 +371,28 @@
     chipsRow.appendChild(clearButton);
   }
 
+  const memoryExtraFilterTags = {
+    "corsair-dominator-titanium-rgb-96gb-ddr5-7000-cl40": "Black 2x48GB CL40",
+    "corsair-vengeance-rgb-48gb-ddr5-6000-c36": "Black 2x24GB 2x48GB 2x64GB CL30 CL36 CL40 CL42 6000MT/s 6400MT/s",
+    "klevv-cras-v-rgb-ddr5": "Black White 2x16GB 2x24GB 2x32GB CL28 CL30 CL32 CL34",
+    "gskill-trident-z5-rgb-ddr5": "Black 2x32GB 2x48GB CL32"
+  };
+
+  function getProductKeyFromCard(card) {
+    const href = card.getAttribute("href") || "";
+
+    try {
+      return new URL(href, window.location.href).searchParams.get("product") || "";
+    } catch (error) {
+      return "";
+    }
+  }
+
+  function getMemoryExtraFilterTags(card) {
+    const productKey = getProductKeyFromCard(card);
+    return memoryExtraFilterTags[productKey] || "";
+  }
+
   function getCardFilterText(card) {
     const title = card.querySelector("h3");
     const specsLine = card.querySelector("p");
@@ -347,7 +401,8 @@
     return [
       title ? title.textContent : "",
       specsLine ? specsLine.textContent : "",
-      extraTags
+      extraTags,
+      getMemoryExtraFilterTags(card)
     ].join(" | ");
   }
 
