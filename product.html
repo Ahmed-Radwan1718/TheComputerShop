@@ -3056,6 +3056,137 @@ images: Array.from({ length: 4 }, (_, index) => {
       ]
     },
 
+    "corsair-mp700-pro-se": {
+      id: "corsair-mp700-pro-se",
+      name: "Corsair MP700 PRO SE",
+      category: "Storage",
+      specsLine: "Corsair | PCIe 5.0 NVMe | 2TB–4TB",
+      priceText: "Insert price here",
+      priceNumber: null,
+      url: "product.html?product=corsair-mp700-pro-se",
+      images: Array.from({ length: 3 }, (_, index) => {
+        const imageNumber = index + 1;
+        return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Storage/corsair-mp700-pro-se-4tb-${imageNumber}.jpeg`;
+      }),
+      splitVariantSelectors: true,
+      defaultVariant: "4tb",
+      defaultCoolingOption: "not-aircooled",
+      capacityOptions: [
+        { id: "2tb", label: "2TB" },
+        { id: "4tb", label: "4TB" }
+      ],
+      coolingOptions: [
+        { id: "aircooled", label: "Aircooled" },
+        { id: "not-aircooled", label: "Not Aircooled" }
+      ],
+      variants: [
+        {
+          id: "2tb-aircooled",
+          capacity: "2TB",
+          capacityOption: "2tb",
+          coolingOption: "aircooled",
+          modelNumber: "CSSD-F2000GBMP700PROS",
+          priceText: "Insert price here",
+          priceNumber: null,
+          images: Array.from({ length: 3 }, (_, index) => {
+            const imageNumber = index + 1;
+            return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Storage/corsair-mp700-pro-se-air-cooler-${imageNumber}.jpeg`;
+          }),
+          specs: [
+            ["Selected Capacity", "2TB"],
+            ["Cooling", "Aircooled"],
+            ["Model Number", "CSSD-F2000GBMP700PROS"],
+            ["Form Factor", "M.2 2280"],
+            ["Interface", "PCIe 5.0 x4, NVMe 2.0"],
+            ["Sequential Read", "Up to 14,000MB/s"],
+            ["Sequential Write", "Up to 12,000MB/s"],
+            ["NAND", "High-density 3D TLC NAND"],
+            ["Warranty", "5-year limited warranty"]
+          ]
+        },
+        {
+          id: "4tb-aircooled",
+          capacity: "4TB",
+          capacityOption: "4tb",
+          coolingOption: "aircooled",
+          modelNumber: "CSSD-F4000GBMP700PROS",
+          priceText: "Insert price here",
+          priceNumber: null,
+          images: Array.from({ length: 3 }, (_, index) => {
+            const imageNumber = index + 1;
+            return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Storage/corsair-mp700-pro-se-air-cooler-${imageNumber}.jpeg`;
+          }),
+          specs: [
+            ["Selected Capacity", "4TB"],
+            ["Cooling", "Aircooled"],
+            ["Model Number", "CSSD-F4000GBMP700PROS"],
+            ["Form Factor", "M.2 2280"],
+            ["Interface", "PCIe 5.0 x4, NVMe 2.0"],
+            ["Sequential Read", "Up to 14,000MB/s"],
+            ["Sequential Write", "Up to 12,000MB/s"],
+            ["NAND", "High-density 3D TLC NAND"],
+            ["Warranty", "5-year limited warranty"]
+          ]
+        },
+        {
+          id: "4tb-not-aircooled",
+          capacity: "4TB",
+          capacityOption: "4tb",
+          coolingOption: "not-aircooled",
+          modelNumber: "CSSD-F4000GBMP700PNHS",
+          priceText: "Insert price here",
+          priceNumber: null,
+          images: Array.from({ length: 3 }, (_, index) => {
+            const imageNumber = index + 1;
+            return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Storage/corsair-mp700-pro-se-4tb-${imageNumber}.jpeg`;
+          }),
+          specs: [
+            ["Selected Capacity", "4TB"],
+            ["Cooling", "Not Aircooled"],
+            ["Model Number", "CSSD-F4000GBMP700PNHS"],
+            ["Form Factor", "M.2 2280"],
+            ["Interface", "PCIe 5.0 x4, NVMe 2.0"],
+            ["Sequential Read", "Up to 14,000MB/s"],
+            ["Sequential Write", "Up to 12,000MB/s"],
+            ["NAND", "High-density 3D TLC NAND"],
+            ["Cooling Requirement", "SSD cooling required"],
+            ["Warranty", "5-year limited warranty"]
+          ]
+        }
+      ],
+      whoIsThisFor: "A premium PCIe Gen 5 NVMe SSD for high-end gaming, large file transfers, creator work, rendering, and users who want 2TB or 4TB storage with an aircooled option.",
+      specs: [
+        ["Product Name", "Corsair MP700 PRO SE"],
+        ["Form Factor", "M.2 2280"],
+        ["Interface", "PCIe 5.0 x4, NVMe 2.0"],
+        ["NAND", "High-density 3D TLC NAND"],
+        ["Available Capacities", "2TB, 4TB"],
+        ["Cooling Options", "Aircooled or Not Aircooled"],
+        ["Not Aircooled Availability", "4TB only"],
+        ["Sequential Read", "Up to 14,000MB/s"],
+        ["Sequential Write", "Up to 12,000MB/s"],
+        ["Warranty", "5-year limited warranty"]
+      ],
+      included: [
+        {
+          title: "Storage Drive",
+          text: "The Corsair MP700 PRO SE SSD is included as the main component in the selected capacity and cooling option, inspected and prepared for the build or order."
+        },
+        {
+          title: "Original Packaging",
+          text: "The product comes with its original box and packaging where available. Customers should keep the packaging for warranty and support purposes."
+        },
+        {
+          title: "Cooling Requirement",
+          text: "The non-aircooled version requires compatible SSD cooling from the motherboard or another cooling solution."
+        },
+        {
+          title: "Store Support",
+          text: "Purchases include store support, basic guidance, and free lifetime troubleshooting and diagnosis for products bought from The Computer Shop."
+        }
+      ]
+    },
+
     "wd-black-sn8100-nvme-ssd": {
       id: "wd-black-sn8100-nvme-ssd",
       name: "Western Digital Black SN8100 NVMe",
