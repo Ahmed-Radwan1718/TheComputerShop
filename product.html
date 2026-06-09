@@ -2877,103 +2877,150 @@ images: Array.from({ length: 4 }, (_, index) => {
       images: [
         "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Storage/crucial-t705-1tb-1.jpeg"
       ],
+      splitVariantSelectors: true,
       defaultVariant: "1tb",
+      defaultHeatsinkOption: "non-heatsink",
+      capacityOptions: [
+        { id: "1tb", label: "1TB" },
+        { id: "2tb", label: "2TB" },
+        { id: "4tb", label: "4TB" }
+      ],
+      heatsinkOptions: [
+        { id: "heatsink", label: "Heatsink" },
+        { id: "non-heatsink", label: "Non Heatsink" }
+      ],
       variants: [
         {
-          id: "1tb",
+          id: "1tb-non-heatsink",
           capacity: "1TB",
+          capacityOption: "1tb",
+          heatsinkOption: "non-heatsink",
           modelNumber: "CT1000T705SSD3",
           priceText: "Insert price here",
           priceNumber: null,
           images: [
             "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Storage/crucial-t705-1tb-1.jpeg"
           ],
-          sequentialRead: "Up to 13,600MB/s",
-          sequentialWrite: "Up to 10,200MB/s",
-          randomRead: "Up to 1,400K IOPS",
-          randomWrite: "Up to 1,750K IOPS",
-          endurance: "600 TBW",
-          heatsink: "No"
+          specs: [
+            ["Selected Capacity", "1TB"],
+            ["Heatsink", "Non Heatsink"],
+            ["Model Number", "CT1000T705SSD3"],
+            ["Sequential Read", "Up to 13,600MB/s"],
+            ["Sequential Write", "Up to 10,200MB/s"],
+            ["Random Read", "Up to 1,400K IOPS"],
+            ["Random Write", "Up to 1,750K IOPS"],
+            ["Endurance", "600 TBW"]
+          ]
         },
         {
           id: "1tb-heatsink",
-          capacity: "1TB Heatsink",
+          capacity: "1TB",
+          capacityOption: "1tb",
+          heatsinkOption: "heatsink",
           modelNumber: "CT1000T705SSD5",
           priceText: "Insert price here",
           priceNumber: null,
           images: [
             "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Storage/crucial-t705-1tb-heatsink-1.jpeg"
           ],
-          sequentialRead: "Up to 13,600MB/s",
-          sequentialWrite: "Up to 10,200MB/s",
-          randomRead: "Up to 1,400K IOPS",
-          randomWrite: "Up to 1,750K IOPS",
-          endurance: "600 TBW",
-          heatsink: "Yes"
+          specs: [
+            ["Selected Capacity", "1TB"],
+            ["Heatsink", "Included"],
+            ["Model Number", "CT1000T705SSD5"],
+            ["Sequential Read", "Up to 13,600MB/s"],
+            ["Sequential Write", "Up to 10,200MB/s"],
+            ["Random Read", "Up to 1,400K IOPS"],
+            ["Random Write", "Up to 1,750K IOPS"],
+            ["Endurance", "600 TBW"]
+          ]
         },
         {
-          id: "2tb",
+          id: "2tb-non-heatsink",
           capacity: "2TB",
+          capacityOption: "2tb",
+          heatsinkOption: "non-heatsink",
           modelNumber: "CT2000T705SSD3",
           priceText: "Insert price here",
           priceNumber: null,
           images: [
             "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Storage/crucial-t705-1tb-1.jpeg"
           ],
-          sequentialRead: "Up to 14,500MB/s",
-          sequentialWrite: "Up to 12,700MB/s",
-          randomRead: "Up to 1,550K IOPS",
-          randomWrite: "Up to 1,800K IOPS",
-          endurance: "1,200 TBW",
-          heatsink: "No"
+          specs: [
+            ["Selected Capacity", "2TB"],
+            ["Heatsink", "Non Heatsink"],
+            ["Model Number", "CT2000T705SSD3"],
+            ["Sequential Read", "Up to 14,500MB/s"],
+            ["Sequential Write", "Up to 12,700MB/s"],
+            ["Random Read", "Up to 1,550K IOPS"],
+            ["Random Write", "Up to 1,800K IOPS"],
+            ["Endurance", "1,200 TBW"]
+          ]
         },
         {
           id: "2tb-heatsink",
-          capacity: "2TB Heatsink",
+          capacity: "2TB",
+          capacityOption: "2tb",
+          heatsinkOption: "heatsink",
           modelNumber: "CT2000T705SSD5",
           priceText: "Insert price here",
           priceNumber: null,
           images: [
             "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Storage/crucial-t705-1tb-heatsink-1.jpeg"
           ],
-          sequentialRead: "Up to 14,500MB/s",
-          sequentialWrite: "Up to 12,700MB/s",
-          randomRead: "Up to 1,550K IOPS",
-          randomWrite: "Up to 1,800K IOPS",
-          endurance: "1,200 TBW",
-          heatsink: "Yes"
+          specs: [
+            ["Selected Capacity", "2TB"],
+            ["Heatsink", "Included"],
+            ["Model Number", "CT2000T705SSD5"],
+            ["Sequential Read", "Up to 14,500MB/s"],
+            ["Sequential Write", "Up to 12,700MB/s"],
+            ["Random Read", "Up to 1,550K IOPS"],
+            ["Random Write", "Up to 1,800K IOPS"],
+            ["Endurance", "1,200 TBW"]
+          ]
         },
         {
-          id: "4tb",
+          id: "4tb-non-heatsink",
           capacity: "4TB",
+          capacityOption: "4tb",
+          heatsinkOption: "non-heatsink",
           modelNumber: "CT4000T705SSD3",
           priceText: "Insert price here",
           priceNumber: null,
           images: [
             "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Storage/crucial-t705-1tb-1.jpeg"
           ],
-          sequentialRead: "Up to 14,100MB/s",
-          sequentialWrite: "Up to 12,600MB/s",
-          randomRead: "Up to 1,500K IOPS",
-          randomWrite: "Up to 1,800K IOPS",
-          endurance: "2,400 TBW",
-          heatsink: "No"
+          specs: [
+            ["Selected Capacity", "4TB"],
+            ["Heatsink", "Non Heatsink"],
+            ["Model Number", "CT4000T705SSD3"],
+            ["Sequential Read", "Up to 14,100MB/s"],
+            ["Sequential Write", "Up to 12,600MB/s"],
+            ["Random Read", "Up to 1,500K IOPS"],
+            ["Random Write", "Up to 1,800K IOPS"],
+            ["Endurance", "2,400 TBW"]
+          ]
         },
         {
           id: "4tb-heatsink",
-          capacity: "4TB Heatsink",
+          capacity: "4TB",
+          capacityOption: "4tb",
+          heatsinkOption: "heatsink",
           modelNumber: "CT4000T705SSD5",
           priceText: "Insert price here",
           priceNumber: null,
           images: [
             "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Storage/crucial-t705-1tb-heatsink-1.jpeg"
           ],
-          sequentialRead: "Up to 14,100MB/s",
-          sequentialWrite: "Up to 12,600MB/s",
-          randomRead: "Up to 1,500K IOPS",
-          randomWrite: "Up to 1,800K IOPS",
-          endurance: "2,400 TBW",
-          heatsink: "Yes"
+          specs: [
+            ["Selected Capacity", "4TB"],
+            ["Heatsink", "Included"],
+            ["Model Number", "CT4000T705SSD5"],
+            ["Sequential Read", "Up to 14,100MB/s"],
+            ["Sequential Write", "Up to 12,600MB/s"],
+            ["Random Read", "Up to 1,500K IOPS"],
+            ["Random Write", "Up to 1,800K IOPS"],
+            ["Endurance", "2,400 TBW"]
+          ]
         }
       ],
       whoIsThisFor: "A premium PCIe Gen 5 NVMe SSD for high-end gaming, creator work, video editing, 3D rendering, heavy workloads, and users who want selectable 1TB, 2TB, or 4TB capacity options with or without a heatsink.",
@@ -2983,7 +3030,7 @@ images: Array.from({ length: 4 }, (_, index) => {
         ["Interface", "PCIe 5.0 x4, NVMe"],
         ["NAND", "Micron 232-layer TLC NAND"],
         ["Available Capacities", "1TB, 2TB, 4TB"],
-        ["Heatsink Options", "With heatsink or without heatsink"],
+        ["Heatsink Options", "Heatsink or Non Heatsink"],
         ["Security", "TCG Opal 2.01"],
         ["Compatibility", "Backward compatible with PCIe Gen 3 and Gen 4 systems"],
         ["Non-Heatsink Requirement", "Must be installed with a motherboard or alternate heatsink for optimal performance"],
@@ -6920,10 +6967,20 @@ return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/produc
   const currentProduct = products[productKey] || products["rtx-5090-aorus-master"];
 
   let selectedVariantKey = currentProduct.defaultVariant || null;
+  let selectedHeatsinkKey = currentProduct.defaultHeatsinkOption || null;
 
   function getSelectedVariant(product) {
     if (!product.variants) {
       return null;
+    }
+
+    if (product.splitVariantSelectors) {
+      const selectedCapacity = selectedVariantKey || product.defaultVariant || product.variants[0].capacityOption;
+      const selectedHeatsink = selectedHeatsinkKey || product.defaultHeatsinkOption || product.variants[0].heatsinkOption;
+
+      return product.variants.find((variant) => {
+        return variant.capacityOption === selectedCapacity && variant.heatsinkOption === selectedHeatsink;
+      }) || product.variants[0];
     }
 
     return product.variants.find((variant) => variant.id === selectedVariantKey) || product.variants[0];
@@ -7126,20 +7183,54 @@ return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/produc
       if (product.variants) {
         const capacitySelector = document.createElement("div");
         capacitySelector.className = "product-capacity-selector";
-        capacitySelector.innerHTML = `
-          <p class="product-capacity-label">${product.variantSelectorLabel || "Choose Capacity"}</p>
-          <div class="product-capacity-options">
-            ${product.variants.map((variant) => {
-              const activeClass = variant.id === selectedVariant.id ? " active" : "";
 
-              return `
-                <button class="product-capacity-button${activeClass}" type="button" data-capacity="${variant.id}">
-                  ${variant.capacity}
-                </button>
-              `;
-            }).join("")}
-          </div>
-        `;
+        if (product.splitVariantSelectors) {
+          const selectedCapacity = selectedVariant.capacityOption;
+          const selectedHeatsink = selectedVariant.heatsinkOption;
+
+          capacitySelector.innerHTML = `
+            <p class="product-capacity-label">Choose Capacity</p>
+            <div class="product-capacity-options">
+              ${product.capacityOptions.map((option) => {
+                const activeClass = option.id === selectedCapacity ? " active" : "";
+
+                return `
+                  <button class="product-capacity-button${activeClass}" type="button" data-capacity="${option.id}">
+                    ${option.label}
+                  </button>
+                `;
+              }).join("")}
+            </div>
+
+            <p class="product-capacity-label">Choose Heatsink</p>
+            <div class="product-capacity-options">
+              ${product.heatsinkOptions.map((option) => {
+                const activeClass = option.id === selectedHeatsink ? " active" : "";
+
+                return `
+                  <button class="product-capacity-button${activeClass}" type="button" data-heatsink="${option.id}">
+                    ${option.label}
+                  </button>
+                `;
+              }).join("")}
+            </div>
+          `;
+        } else {
+          capacitySelector.innerHTML = `
+            <p class="product-capacity-label">${product.variantSelectorLabel || "Choose Capacity"}</p>
+            <div class="product-capacity-options">
+              ${product.variants.map((variant) => {
+                const activeClass = variant.id === selectedVariant.id ? " active" : "";
+
+                return `
+                  <button class="product-capacity-button${activeClass}" type="button" data-capacity="${variant.id}">
+                    ${variant.capacity}
+                  </button>
+                `;
+              }).join("")}
+            </div>
+          `;
+        }
 
         productPrice.closest(".product-price-row").insertAdjacentElement("afterend", capacitySelector);
       }
@@ -7187,75 +7278,110 @@ return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/produc
 
   renderProductPage(currentProduct);
 
-  document.querySelectorAll(".product-capacity-button").forEach((button) => {
-    button.addEventListener("click", () => {
+  document.addEventListener("click", (event) => {
+    const button = event.target.closest(".product-capacity-button");
+
+    if (!button) {
+      return;
+    }
+
+    if (currentProduct.splitVariantSelectors) {
+      if (button.dataset.capacity) {
+        if (button.dataset.capacity === selectedVariantKey) {
+          return;
+        }
+
+        selectedVariantKey = button.dataset.capacity;
+      }
+
+      if (button.dataset.heatsink) {
+        if (button.dataset.heatsink === selectedHeatsinkKey) {
+          return;
+        }
+
+        selectedHeatsinkKey = button.dataset.heatsink;
+      }
+    } else {
       if (button.dataset.capacity === selectedVariantKey) {
         return;
       }
 
       selectedVariantKey = button.dataset.capacity;
-      productData = buildProductData(currentProduct);
+    }
 
-      const selectedVariant = getSelectedVariant(currentProduct);
-      const productImages = getProductImages(currentProduct);
-      const productTitle = document.querySelector(".product-title-block h1");
-      const productPrice = document.querySelector(".product-price-row strong");
-      const productMainImage = document.getElementById("product-main-image");
-      const thumbnailRow = document.querySelector(".product-thumbnail-row");
-      const specificationsTable = document.querySelector(".product-specifications-table");
+    productData = buildProductData(currentProduct);
 
-      document.querySelectorAll(".product-capacity-button").forEach((capacityButton) => {
-        capacityButton.classList.toggle("active", capacityButton.dataset.capacity === selectedVariantKey);
-      });
+    const selectedVariant = getSelectedVariant(currentProduct);
+    const productImages = getProductImages(currentProduct);
+    const productTitle = document.querySelector(".product-title-block h1");
+    const productPrice = document.querySelector(".product-price-row strong");
+    const productMainImage = document.getElementById("product-main-image");
+    const thumbnailRow = document.querySelector(".product-thumbnail-row");
+    const specificationsTable = document.querySelector(".product-specifications-table");
+
+    document.querySelectorAll(".product-capacity-button").forEach((capacityButton) => {
+      if (currentProduct.splitVariantSelectors) {
+        if (capacityButton.dataset.capacity) {
+          capacityButton.classList.toggle("active", capacityButton.dataset.capacity === selectedVariant.capacityOption);
+        }
+
+        if (capacityButton.dataset.heatsink) {
+          capacityButton.classList.toggle("active", capacityButton.dataset.heatsink === selectedVariant.heatsinkOption);
+        }
+
+        return;
+      }
+
+      capacityButton.classList.toggle("active", capacityButton.dataset.capacity === selectedVariantKey);
+    });
+
+    [productTitle, productPrice, specificationsTable, thumbnailRow].forEach((element) => {
+      if (element) {
+        element.style.transition = "opacity 0.28s ease, transform 0.28s ease";
+        element.style.opacity = "0";
+        element.style.transform = "translateY(8px)";
+      }
+    });
+
+    setTimeout(() => {
+      if (productTitle) {
+        productTitle.textContent = `${currentProduct.name} ${selectedVariant.capacity}`;
+      }
+
+      if (productPrice) {
+        productPrice.textContent = selectedVariant.priceText;
+      }
+
+      if (thumbnailRow) {
+        activeProductImageIndex = 0;
+        visibleProductThumbnailStart = 0;
+        renderProductThumbnails(currentProduct, 0);
+        updateProductCarouselCounter(currentProduct);
+      }
+
+      if (specificationsTable) {
+        specificationsTable.innerHTML = getProductSpecs(currentProduct).map((spec) => {
+          return `
+            <div class="product-spec-row">
+              <span>${spec[0]}</span>
+              <strong>${spec[1]}</strong>
+            </div>
+          `;
+        }).join("");
+      }
+
+      if (productMainImage && productImages[0] && productMainImage.src !== productImages[0]) {
+        slideProductMainImage(productImages[0], "next");
+        productMainImage.alt = `${currentProduct.name} ${selectedVariant.capacity}`;
+      }
 
       [productTitle, productPrice, specificationsTable, thumbnailRow].forEach((element) => {
         if (element) {
-          element.style.transition = "opacity 0.28s ease, transform 0.28s ease";
-          element.style.opacity = "0";
-          element.style.transform = "translateY(8px)";
+          element.style.opacity = "1";
+          element.style.transform = "translateY(0)";
         }
       });
-
-      setTimeout(() => {
-        if (productTitle) {
-          productTitle.textContent = `${currentProduct.name} ${selectedVariant.capacity}`;
-        }
-
-        if (productPrice) {
-          productPrice.textContent = selectedVariant.priceText;
-        }
-
-        if (thumbnailRow) {
-          activeProductImageIndex = 0;
-          visibleProductThumbnailStart = 0;
-          renderProductThumbnails(currentProduct, 0);
-          updateProductCarouselCounter(currentProduct);
-        }
-
-        if (specificationsTable) {
-          specificationsTable.innerHTML = getProductSpecs(currentProduct).map((spec) => {
-            return `
-              <div class="product-spec-row">
-                <span>${spec[0]}</span>
-                <strong>${spec[1]}</strong>
-              </div>
-            `;
-          }).join("");
-        }
-
-        if (productMainImage && productImages[0] && productMainImage.src !== productImages[0]) {
-          slideProductMainImage(productImages[0], "next");
-          productMainImage.alt = `${currentProduct.name} ${selectedVariant.capacity}`;
-        }
-
-        [productTitle, productPrice, specificationsTable, thumbnailRow].forEach((element) => {
-          if (element) {
-            element.style.opacity = "1";
-            element.style.transform = "translateY(0)";
-          }
-        });
-      }, 280);
-    });
+    }, 280);
   });
 
   let productCarouselSlideTimer;
