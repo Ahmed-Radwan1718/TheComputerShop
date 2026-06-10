@@ -2485,14 +2485,14 @@ images: Array.from({ length: 4 }, (_, index) => {
       ]
     },
 
-    "rog-thor-platinum-iii": {
-      id: "rog-thor-platinum-iii",
-      name: "ROG Thor Platinum III",
+    "rog-thor-iii": {
+      id: "rog-thor-iii",
+      name: "ROG Thor III",
       category: "Power Supply",
-      specsLine: "ASUS ROG | 1000W / 1200W | 80 Plus Platinum",
+      specsLine: "ASUS ROG | 1000W / 1200W / 1600W | Platinum / Titanium",
       priceText: "Insert price here",
       priceNumber: null,
-      url: "product.html?product=rog-thor-platinum-iii",
+      url: "product.html?product=rog-thor-iii",
       images: Array.from({ length: 8 }, (_, index) => {
         const imageNumber = index + 1;
         return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Power%20supplies/rog-thor-1000w-platinum-iii-${imageNumber}.jpeg`;
@@ -2502,7 +2502,7 @@ images: Array.from({ length: 4 }, (_, index) => {
       variants: [
         {
           id: "1000w",
-          capacity: "1000W",
+          capacity: "1000W Platinum III",
           priceText: "Insert price here",
           priceNumber: null,
           images: Array.from({ length: 8 }, (_, index) => {
@@ -2513,14 +2513,16 @@ images: Array.from({ length: 4 }, (_, index) => {
             ["Selected Wattage", "1000W"],
             ["Product Name", "ROG Thor 1000W Platinum III"],
             ["Output Capacity", "1000W"],
+            ["Efficiency", "80 Plus Platinum"],
             ["Maximum Load", "30A, 25A, 83.33A, 0.3A, 3A"],
             ["Combined Load", "125W, 125W, 1000W, 3.6W, 15W"],
+            ["Dimensions", "190 × 150 × 86mm"],
             ["Weight", "2.37kg"]
           ]
         },
         {
           id: "1200w",
-          capacity: "1200W",
+          capacity: "1200W Platinum III",
           priceText: "Insert price here",
           priceNumber: null,
           images: Array.from({ length: 8 }, (_, index) => {
@@ -2536,33 +2538,56 @@ images: Array.from({ length: 4 }, (_, index) => {
             ["Selected Wattage", "1200W"],
             ["Product Name", "ROG Thor 1200W Platinum III"],
             ["Output Capacity", "1200W"],
+            ["Efficiency", "80 Plus Platinum"],
             ["Maximum Load", "30A, 25A, 100A, 0.3A, 3A"],
             ["Combined Load", "125W, 125W, 1200W, 3.6W, 15W"],
+            ["Dimensions", "190 × 150 × 86mm"],
             ["Weight", "2.37kg"]
+          ]
+        },
+        {
+          id: "1600w",
+          capacity: "1600W Titanium III",
+          priceText: "Insert price here",
+          priceNumber: null,
+          images: Array.from({ length: 8 }, (_, index) => {
+            const imageNumber = index + 1;
+            return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Power%20supplies/rog-thor-1600w-platinum-iii-${imageNumber}.jpeg`;
+          }),
+          specs: [
+            ["Selected Wattage", "1600W"],
+            ["Product Name", "ROG Thor 1600W Titanium III"],
+            ["Output Capacity", "1600W"],
+            ["Efficiency", "80 Plus Titanium"],
+            ["Cybenetics Certification", "Titanium / Lambda A+"],
+            ["ATX Standard", "ATX 3.1"],
+            ["Dimensions", "200 × 150 × 86mm"],
+            ["Special Features", "GaN MOSFET, GPU-First voltage sensing, magnetic OLED display, Turbo Mode"]
           ]
         }
       ],
       whoIsThisFor: "A premium ASUS ROG power supply family for high-end gaming PCs, RTX-class builds, overclocking setups, workstation systems, and showcase builds that need ATX 3.1 support, 80 Plus Platinum efficiency, PCIe Gen 5.1 cabling, ARGB lighting, 0dB fan technology, and a magnetic OLED power display.",
       specs: [
+        ["Available Wattages", "1000W Platinum III, 1200W Platinum III, 1600W Titanium III"],
         ["Brand", "ASUS ROG"],
         ["PFC Type", "Active PFC"],
         ["ATX Standard", "ATX 3.1"],
-        ["Efficiency", "80 Plus Platinum"],
+        ["Efficiency", "80 Plus Platinum / 80 Plus Titanium"],
         ["MTBF", ">120,000 hours at 25°C"],
         ["Protection Features", "OPP / OVP / UVP / SCP / OCP / OTP"],
         ["AC Input Range", "100–240Vac"],
         ["DC Output Voltage", "+3.3V, +5V, +12V, -12V, +5Vsb"],
         ["Cable Connectors", "MB 24/20-pin × 1, CPU 4+4-pin × 2, PCI-E Gen 5.1 16-pin × 1, PCI-E 6+2-pin × 4, SATA × 7, Peripheral × 6"],
-        ["Cybenetics Noise Level Certification", "A++"],
+        ["Cybenetics Noise Level Certification", "A+ / A++ depending on wattage"],
         ["0dB Technology", "Supported"],
         ["0dB Fan Button", "Yes"],
         ["Aura Sync", "ARGB"],
-        ["Dimensions", "190 × 150 × 86mm"]
+        ["Dimensions", "190 × 150 × 86mm for 1000W / 1200W, 200 × 150 × 86mm for 1600W"]
       ],
       included: [
         {
           title: "Power Supply",
-          text: "The selected ROG Thor Platinum III power supply wattage is included as the main component, inspected and prepared for the build or order."
+          text: "The selected ROG Thor III power supply wattage is included as the main component, inspected and prepared for the build or order."
         },
         {
           title: "Original Packaging",
