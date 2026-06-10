@@ -2539,6 +2539,65 @@ images: Array.from({ length: 4 }, (_, index) => {
       ]
     },
 
+    "rog-thor-1200w-platinum-iii": {
+      id: "rog-thor-1200w-platinum-iii",
+      name: "ROG Thor 1200W Platinum III",
+      category: "Power Supply",
+      specsLine: "ASUS ROG | 1200W | 80 Plus Platinum",
+      priceText: "Insert price here",
+      priceNumber: null,
+      url: "product.html?product=rog-thor-1200w-platinum-iii",
+      images: Array.from({ length: 8 }, (_, index) => {
+        const imageNumber = index + 1;
+        const unique1200Images = [1, 2, 5, 7];
+        const productImageName = unique1200Images.includes(imageNumber)
+          ? "rog-thor-1200w-platinum-iii"
+          : "rog-thor-1000w-platinum-iii";
+
+        return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Power%20supplies/${productImageName}-${imageNumber}.jpeg`;
+      }),
+      whoIsThisFor: "A premium 1200W ASUS ROG power supply for high-end gaming PCs, RTX-class builds, overclocking setups, workstation systems, and showcase builds that need ATX 3.1 support, 80 Plus Platinum efficiency, PCIe Gen 5.1 cabling, ARGB lighting, 0dB fan technology, and a magnetic OLED power display.",
+      specs: [
+        ["Product Name", "ROG Thor 1200W Platinum III"],
+        ["Brand", "ASUS ROG"],
+        ["PFC Type", "Active PFC"],
+        ["ATX Standard", "ATX 3.1"],
+        ["Output Capacity", "1200W"],
+        ["Efficiency", "80 Plus Platinum"],
+        ["MTBF", ">120,000 hours at 25°C"],
+        ["Protection Features", "OPP / OVP / UVP / SCP / OCP / OTP"],
+        ["AC Input Range", "100–240Vac"],
+        ["DC Output Voltage", "+3.3V, +5V, +12V, -12V, +5Vsb"],
+        ["Maximum Load", "30A, 25A, 100A, 0.3A, 3A"],
+        ["Combined Load", "125W, 125W, 1200W, 3.6W, 15W"],
+        ["Cable Connectors", "MB 24/20-pin × 1, CPU 4+4-pin × 2, PCI-E Gen 5.1 16-pin × 1, PCI-E 6+2-pin × 4, SATA × 7, Peripheral × 6"],
+        ["Cybenetics Noise Level Certification", "A++"],
+        ["0dB Technology", "Supported"],
+        ["0dB Fan Button", "Yes"],
+        ["Aura Sync", "ARGB"],
+        ["Dimensions", "190 × 150 × 86mm"],
+        ["Weight", "2.37kg"]
+      ],
+      included: [
+        {
+          title: "Power Supply",
+          text: "The ROG Thor 1200W Platinum III power supply is included as the main component, inspected and prepared for the build or order."
+        },
+        {
+          title: "Original Packaging",
+          text: "The product comes with its original box and packaging where available. Customers should keep the packaging for warranty and support purposes."
+        },
+        {
+          title: "Included Accessories",
+          text: "The official package contents include the power cord, motherboard power cable, CPU cables, PCI-E Gen 5.1 16-pin cable, PCI-E cables, SATA cables, peripheral cables, addressable RGB cable, ROG sticker, ROG cable ties, chassis screws package, cable ties, and user manual."
+        },
+        {
+          title: "Store Support",
+          text: "Purchases include store support, basic guidance, and free lifetime troubleshooting and diagnosis for products bought from The Computer Shop."
+        }
+      ]
+    },
+
     "rog-strix-1000g-aura-gaming": {
       id: "rog-strix-1000g-aura-gaming",
       name: "ROG Strix 1000G Aura Gaming",
