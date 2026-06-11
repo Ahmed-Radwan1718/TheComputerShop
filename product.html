@@ -2066,25 +2066,59 @@ images: Array.from({ length: 4 }, (_, index) => {
       ]
     },
 
-    "arctic-liquid-freezer-iii-pro-360-a-rgb-black": {
-      id: "arctic-liquid-freezer-iii-pro-360-a-rgb-black",
+    "arctic-liquid-freezer-iii-pro-360-a-rgb": {
+      id: "arctic-liquid-freezer-iii-pro-360-a-rgb",
       name: "ARCTIC Liquid Freezer III Pro 360 A-RGB",
       category: "CPU Cooler",
       specsLine: "ARCTIC | 360mm AIO | A-RGB",
       priceText: "Insert price here",
       priceNumber: null,
-      url: "product.html?product=arctic-liquid-freezer-iii-pro-360-a-rgb-black",
+      url: "product.html?product=arctic-liquid-freezer-iii-pro-360-a-rgb",
       images: Array.from({ length: 5 }, (_, index) => {
         const imageNumber = index + 1;
         return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Coolers/arctic-liquid-freezer-iii-pro-360-a-rgb-black-${imageNumber}.jpeg`;
       }),
+      defaultVariant: "black",
+      variantSelectorLabel: "Choose Color",
+      variants: [
+        {
+          id: "black",
+          capacity: "Black",
+          priceText: "Insert price here",
+          priceNumber: null,
+          images: Array.from({ length: 5 }, (_, index) => {
+            const imageNumber = index + 1;
+            return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Coolers/arctic-liquid-freezer-iii-pro-360-a-rgb-black-${imageNumber}.jpeg`;
+          }),
+          specs: [
+            ["Selected Color", "Black"],
+            ["Product Name", "ARCTIC Liquid Freezer III Pro 360 A-RGB Black"],
+            ["Color", "Black"]
+          ]
+        },
+        {
+          id: "white",
+          capacity: "White",
+          priceText: "Insert price here",
+          priceNumber: null,
+          images: Array.from({ length: 5 }, (_, index) => {
+            const imageNumber = index + 1;
+            return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Coolers/arctic-liquid-freezer-iii-pro-360-a-rgb-white-${imageNumber}.jpeg`;
+          }),
+          specs: [
+            ["Selected Color", "White"],
+            ["Product Name", "ARCTIC Liquid Freezer III Pro 360 A-RGB White"],
+            ["Color", "White"]
+          ]
+        }
+      ],
       whoIsThisFor: "A high-performance 360mm liquid CPU cooler for demanding gaming PCs, creator systems, Ryzen 9000 builds, Intel Core Ultra builds, and users who want strong cooling, A-RGB lighting, a VRM fan, high-pressure P12 Pro fans, and modern AM5 / LGA1851 compatibility.",
       specs: [
+        ["Available Colors", "Black, White"],
         ["Product Name", "ARCTIC Liquid Freezer III Pro 360 A-RGB"],
         ["Model", "ACFRE00184A"],
         ["Brand", "ARCTIC"],
         ["Cooler Type", "AIO Liquid Cooler"],
-        ["Color", "Black"],
         ["Radiator Size", "360mm"],
         ["Fan Configuration", "3× P12 Pro A-RGB"],
         ["Fan Speed", "600–3000 RPM"],
@@ -2105,7 +2139,7 @@ images: Array.from({ length: 4 }, (_, index) => {
       included: [
         {
           title: "CPU Cooler",
-          text: "The ARCTIC Liquid Freezer III Pro 360 A-RGB liquid CPU cooler is included as the main component, inspected and prepared for the build or order."
+          text: "The selected ARCTIC Liquid Freezer III Pro 360 A-RGB color variant is included as the main component, inspected and prepared for the build or order."
         },
         {
           title: "Original Packaging",
