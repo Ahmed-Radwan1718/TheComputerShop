@@ -2819,7 +2819,16 @@ images: Array.from({ length: 4 }, (_, index) => {
           priceNumber: null,
 images: Array.from({ length: 8 }, (_, index) => {
             const imageNumber = index + 1;
-            return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781348906/rog-thor-1200w-platinum-iii-${imageNumber}.jpg`;
+            const unique1200Images = [1, 2, 5, 7];
+            const isUnique1200Image = unique1200Images.includes(imageNumber);
+            const productImageName = isUnique1200Image
+              ? "rog-thor-1200w-platinum-iii"
+              : "rog-thor-1000w-platinum-iii";
+            const cloudinaryVersion = isUnique1200Image
+              ? "v1781348906"
+              : "v1781348920";
+
+            return `https://res.cloudinary.com/dhtamisqn/image/upload/${cloudinaryVersion}/${productImageName}-${imageNumber}.jpg`;
           }),
           specs: [
             ["Selected Wattage", "1200W"],
