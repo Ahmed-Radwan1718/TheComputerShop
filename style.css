@@ -776,6 +776,134 @@ body {
   opacity: 0.72;
 }
 
+.floating-account {
+  position: fixed;
+  top: 28px;
+  right: 34px;
+  z-index: 1200;
+}
+
+.floating-account-button {
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 999px;
+  background: rgba(24, 25, 24, 0.88);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.floating-account-button:hover {
+  opacity: 0.82;
+  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.floating-account-button img {
+  width: 23px;
+  height: 23px;
+  display: block;
+  object-fit: contain;
+  filter: invert(1);
+}
+
+.floating-account-menu {
+  position: absolute;
+  top: 52px;
+  right: 0;
+  width: 190px;
+  padding: 8px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(24, 25, 24, 0.98);
+  box-shadow: 0 22px 52px rgba(0, 0, 0, 0.34);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  pointer-events: none;
+  transition:
+    opacity 0.18s ease,
+    visibility 0.18s ease,
+    transform 0.18s ease;
+}
+
+.floating-account.open .floating-account-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.floating-account-menu a,
+.floating-account-menu button {
+  width: 100%;
+  padding: 12px 13px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.72);
+  display: block;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  text-align: left;
+  text-decoration: none;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease;
+}
+
+.floating-account-menu a:hover,
+.floating-account-menu button:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+}
+
+.account-menu-authenticated {
+  display: none;
+}
+
+body.user-is-logged-in .account-menu-guest {
+  display: none;
+}
+
+body.user-is-logged-in .account-menu-authenticated {
+  display: block;
+}
+
+@media (max-width: 900px) {
+  .floating-account {
+    top: 22px;
+    right: 18px;
+  }
+
+  .floating-account-button {
+    width: 38px;
+    height: 38px;
+  }
+
+  .floating-account-button img {
+    width: 21px;
+    height: 21px;
+  }
+}
+
 .site-header-cart-count {
   position: absolute;
   top: -10px;
