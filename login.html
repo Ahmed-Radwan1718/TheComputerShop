@@ -29,38 +29,40 @@
   </button>
 </header>
 
-<main style="min-height: 100vh; padding: 150px 24px 80px; background: #000; color: white;">
-  <section style="width: 100%; max-width: 440px; margin: 0 auto; padding: 34px; border-radius: 24px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);">
-    <p style="margin-bottom: 14px; color: rgba(255,255,255,0.58); font-size: 13px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;">Account</p>
-    <h1 style="margin-bottom: 12px; font-size: 34px; line-height: 1.1;">Log In</h1>
-    <p style="margin-bottom: 28px; color: rgba(255,255,255,0.68); line-height: 1.7;">Log in to manage your account and future orders.</p>
+<main class="auth-page">
+  <section class="auth-shell">
+    <div class="auth-card">
+      <p class="auth-eyebrow">Account</p>
+      <h1 class="auth-title">Log In</h1>
+      <p class="auth-subtitle">Log in to manage your account and future orders.</p>
 
-    <form id="login-form">
-      <label style="display: block; margin-bottom: 16px;">
-        <span style="display: block; margin-bottom: 8px; color: rgba(255,255,255,0.75); font-size: 14px;">Email</span>
-        <input id="login-email" type="email" required autocomplete="email" style="width: 100%; padding: 14px 16px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.16); background: rgba(0,0,0,0.45); color: white; font-size: 15px;">
-      </label>
+      <form id="login-form" class="auth-form">
+        <label class="auth-field">
+          <span class="auth-label">Email</span>
+          <input id="login-email" class="auth-input" type="email" required autocomplete="email">
+        </label>
 
-      <label style="display: block; margin-bottom: 12px;">
-        <span style="display: block; margin-bottom: 8px; color: rgba(255,255,255,0.75); font-size: 14px;">Password</span>
-        <input id="login-password" type="password" required autocomplete="current-password" style="width: 100%; padding: 14px 16px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.16); background: rgba(0,0,0,0.45); color: white; font-size: 15px;">
-      </label>
+        <label class="auth-field">
+          <span class="auth-label">Password</span>
+          <input id="login-password" class="auth-input" type="password" required autocomplete="current-password">
+        </label>
 
-      <div style="margin-bottom: 20px; text-align: right;">
-        <a href="forgot-password.html" style="color: rgba(255,255,255,0.76); font-size: 14px;">Forgot password?</a>
-      </div>
+        <div class="auth-link-row">
+          <a href="forgot-password.html">Forgot password?</a>
+        </div>
 
-      <button id="login-button" type="submit" style="width: 100%; padding: 15px 18px; border: 0; border-radius: 999px; background: white; color: black; font-size: 15px; font-weight: 800; cursor: pointer;">
-        Log In
-      </button>
+        <button id="login-button" class="auth-button" type="submit">
+          Log In
+        </button>
 
-      <p id="login-message" style="min-height: 24px; margin-top: 18px; color: rgba(255,255,255,0.72); font-size: 14px; line-height: 1.6;"></p>
-    </form>
+        <p id="login-message" class="auth-message"></p>
+      </form>
 
-    <p style="margin-top: 22px; color: rgba(255,255,255,0.62); font-size: 14px;">
-      Don’t have an account?
-      <a href="signup.html" style="color: white;">Create account</a>
-    </p>
+      <p class="auth-switch">
+        Don’t have an account?
+        <a href="signup.html">Create account</a>
+      </p>
+    </div>
   </section>
 </main>
 
