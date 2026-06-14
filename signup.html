@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Account - The Computer Shop</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body oncontextmenu="return false;">
+
+<header class="site-header">
+  <a href="index.html" class="site-header-logo">The Computer Shop</a>
+
+  <nav class="site-header-nav" aria-label="Main navigation">
+    <a href="signature-builds.html">Signature Builds</a>
+    <a href="components.html">Components</a>
+    <a href="consultation.html">Need a Custom PC?</a>
+  </nav>
+
+  <a href="cart.html" class="site-header-cart" aria-label="Cart">
+    <img src="cart-icon.png" alt="Cart">
+    <span class="nav-cart-count">0</span>
+  </a>
+
+  <button class="hamburger-toggle" type="button" aria-label="Open menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+</header>
+
+<main style="min-height: 100vh; padding: 150px 24px 80px; background: #000; color: white;">
+  <section style="width: 100%; max-width: 440px; margin: 0 auto; padding: 34px; border-radius: 24px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);">
+    <p style="margin-bottom: 14px; color: rgba(255,255,255,0.58); font-size: 13px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;">Account</p>
+    <h1 style="margin-bottom: 12px; font-size: 34px; line-height: 1.1;">Create Account</h1>
+    <p style="margin-bottom: 28px; color: rgba(255,255,255,0.68); line-height: 1.7;">Create an account to manage your details and future orders.</p>
+
+    <form id="signup-form">
+      <label style="display: block; margin-bottom: 16px;">
+        <span style="display: block; margin-bottom: 8px; color: rgba(255,255,255,0.75); font-size: 14px;">Full name</span>
+        <input id="signup-name" type="text" required style="width: 100%; padding: 14px 16px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.16); background: rgba(0,0,0,0.45); color: white; font-size: 15px;">
+      </label>
+
+      <label style="display: block; margin-bottom: 16px;">
+        <span style="display: block; margin-bottom: 8px; color: rgba(255,255,255,0.75); font-size: 14px;">Email</span>
+        <input id="signup-email" type="email" required autocomplete="email" style="width: 100%; padding: 14px 16px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.16); background: rgba(0,0,0,0.45); color: white; font-size: 15px;">
+      </label>
+
+      <label style="display: block; margin-bottom: 18px;">
+        <span style="display: block; margin-bottom: 8px; color: rgba(255,255,255,0.75); font-size: 14px;">Password</span>
+        <input id="signup-password" type="password" required autocomplete="new-password" style="width: 100%; padding: 14px 16px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.16); background: rgba(0,0,0,0.45); color: white; font-size: 15px;">
+      </label>
+
+      <button id="signup-button" type="submit" style="width: 100%; padding: 15px 18px; border: 0; border-radius: 999px; background: white; color: black; font-size: 15px; font-weight: 800; cursor: pointer;">
+        Create Account
+      </button>
+
+      <p id="signup-message" style="min-height: 24px; margin-top: 18px; color: rgba(255,255,255,0.72); font-size: 14px; line-height: 1.6;"></p>
+    </form>
+
+    <p style="margin-top: 22px; color: rgba(255,255,255,0.62); font-size: 14px;">
+      Already have an account?
+      <a href="login.html" style="color: white;">Log in</a>
+    </p>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
+
+<script>
+  const signupForm = document.getElementById("signup-form");
+  const signupButton = document.getElementById("signup-button");
+  const signupMessage = document.getElementById("signup-message");
+
+  signupForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const fullName = document.getElementById("signup-name").value.trim();
+    const email = document.getElementById("signup-email").value.trim();
+    const password = document.getElementById("signup-password").value;
+
+    signupButton.disabled = true;
+    signupButton.textContent = "Creating account...";
+    signupMessage.textContent = "";
+
+    const { error } = await supabaseClient.auth.signUp({
+      email: email,
+      password: password,
+      options: {
+        emailRedirectTo: "https://the-computer-shop.vercel.app/auth-callback.html",
+        data: {
+          full_name: fullName
+        }
+      }
+    });
+
+    if (error) {
+      signupMessage.textContent = error.message;
+      signupButton.disabled = false;
+      signupButton.textContent = "Create Account";
+      return;
+    }
+
+    signupMessage.textContent = "Account created. Check your email to verify your account before logging in.";
+    signupForm.reset();
+    signupButton.disabled = false;
+    signupButton.textContent = "Create Account";
+  });
+</script>
+
+</body>
+</html>
