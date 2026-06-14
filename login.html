@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Log In - The Computer Shop</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body oncontextmenu="return false;">
+
+<header class="site-header">
+  <a href="index.html" class="site-header-logo">The Computer Shop</a>
+
+  <nav class="site-header-nav" aria-label="Main navigation">
+    <a href="signature-builds.html">Signature Builds</a>
+    <a href="components.html">Components</a>
+    <a href="consultation.html">Need a Custom PC?</a>
+  </nav>
+
+  <a href="cart.html" class="site-header-cart" aria-label="Cart">
+    <img src="cart-icon.png" alt="Cart">
+    <span class="nav-cart-count">0</span>
+  </a>
+
+  <button class="hamburger-toggle" type="button" aria-label="Open menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+</header>
+
+<main style="min-height: 100vh; padding: 150px 24px 80px; background: #000; color: white;">
+  <section style="width: 100%; max-width: 440px; margin: 0 auto; padding: 34px; border-radius: 24px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);">
+    <p style="margin-bottom: 14px; color: rgba(255,255,255,0.58); font-size: 13px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;">Account</p>
+    <h1 style="margin-bottom: 12px; font-size: 34px; line-height: 1.1;">Log In</h1>
+    <p style="margin-bottom: 28px; color: rgba(255,255,255,0.68); line-height: 1.7;">Log in to manage your account and future orders.</p>
+
+    <form id="login-form">
+      <label style="display: block; margin-bottom: 16px;">
+        <span style="display: block; margin-bottom: 8px; color: rgba(255,255,255,0.75); font-size: 14px;">Email</span>
+        <input id="login-email" type="email" required autocomplete="email" style="width: 100%; padding: 14px 16px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.16); background: rgba(0,0,0,0.45); color: white; font-size: 15px;">
+      </label>
+
+      <label style="display: block; margin-bottom: 12px;">
+        <span style="display: block; margin-bottom: 8px; color: rgba(255,255,255,0.75); font-size: 14px;">Password</span>
+        <input id="login-password" type="password" required autocomplete="current-password" style="width: 100%; padding: 14px 16px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.16); background: rgba(0,0,0,0.45); color: white; font-size: 15px;">
+      </label>
+
+      <div style="margin-bottom: 20px; text-align: right;">
+        <a href="forgot-password.html" style="color: rgba(255,255,255,0.76); font-size: 14px;">Forgot password?</a>
+      </div>
+
+      <button id="login-button" type="submit" style="width: 100%; padding: 15px 18px; border: 0; border-radius: 999px; background: white; color: black; font-size: 15px; font-weight: 800; cursor: pointer;">
+        Log In
+      </button>
+
+      <p id="login-message" style="min-height: 24px; margin-top: 18px; color: rgba(255,255,255,0.72); font-size: 14px; line-height: 1.6;"></p>
+    </form>
+
+    <p style="margin-top: 22px; color: rgba(255,255,255,0.62); font-size: 14px;">
+      Don’t have an account?
+      <a href="signup.html" style="color: white;">Create account</a>
+    </p>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
+
+<script>
+  const loginForm = document.getElementById("login-form");
+  const loginButton = document.getElementById("login-button");
+  const loginMessage = document.getElementById("login-message");
+
+  loginForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const email = document.getElementById("login-email").value.trim();
+    const password = document.getElementById("login-password").value;
+
+    loginButton.disabled = true;
+    loginButton.textContent = "Logging in...";
+    loginMessage.textContent = "";
+
+    const { error } = await supabaseClient.auth.signInWithPassword({
+      email: email,
+      password: password
+    });
+
+    if (error) {
+      loginMessage.textContent = error.message;
+      loginButton.disabled = false;
+      loginButton.textContent = "Log In";
+      return;
+    }
+
+    window.location.href = "account.html";
+  });
+</script>
+
+</body>
+</html>
