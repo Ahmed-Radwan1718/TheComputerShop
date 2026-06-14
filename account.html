@@ -755,20 +755,30 @@
     await loadMfaStatus();
   }
 
+  function getProfileValue(field) {
+    return field ? field.value.trim() : "";
+  }
+
   async function saveProfile() {
     if (!currentUser) {
+      if (profileSaveMessage) {
+        profileSaveMessage.textContent = "You need to be logged in to save details.";
+      }
       return;
+    }
+
+    if (profileSaveMessage) {
+      profileSaveMessage.textContent = "";
     }
 
     saveProfileButton.disabled = true;
     saveProfileButton.textContent = "Saving...";
-    profileSaveMessage.textContent = "";
 
     const addressPayload = {
       address_type: selectedAddressType,
-      address_area: profileAddressArea.value,
-      address_city: profileAddressCity.value.trim(),
-      google_plus_code: profileGooglePlusCode.value.trim(),
+      address_area: getProfileValue(profileAddressArea),
+      address_city: getProfileValue(profileAddressCity),
+      google_plus_code: getProfileValue(profileGooglePlusCode),
       apartment_number: null,
       floor_number: null,
       street_name: null,
@@ -781,115 +791,60 @@
     };
 
     if (selectedAddressType === "apartment") {
-      addressPayload.apartment_number = profileApartmentNumber.value.trim();
-      addressPayload.floor_number = profileApartmentFloor.value.trim();
-      addressPayload.street_name = profileSharedStreet.value.trim();
-      addressPayload.address_additional_info = profileSharedInfo.value.trim();
+      addressPayload.apartment_number = getProfileValue(profileApartmentNumber);
+      addressPayload.floor_number = getProfileValue(profileApartmentFloor);
+      addressPayload.street_name = getProfileValue(profileSharedStreet);
+      addressPayload.address_additional_info = getProfileValue(profileSharedInfo);
     }
 
     if (selectedAddressType === "house") {
-      addressPayload.house_number = profileHouseNumber.value.trim();
-      addressPayload.compound_landmark = profileHouseLandmark.value.trim();
-      addressPayload.street_name = profileSharedStreet.value.trim();
-      addressPayload.address_additional_info = profileSharedInfo.value.trim();
+      addressPayload.house_number = getProfileValue(profileHouseNumber);
+      addressPayload.compound_landmark = getProfileValue(profileHouseLandmark);
+      addressPayload.street_name = getProfileValue(profileSharedStreet);
+      addressPayload.address_additional_info = getProfileValue(profileSharedInfo);
     }
 
     if (selectedAddressType === "office") {
-      addressPayload.office_name = profileOfficeName.value.trim();
-      addressPayload.building_name = profileOfficeBuilding.value.trim();
-      addressPayload.office_number = profileOfficeNumber.value.trim();
-      addressPayload.floor_number = profileOfficeFloor.value.trim();
-      addressPayload.street_name = profileOfficeStreet.value.trim();
-      addressPayload.address_additional_info = profileOfficeInfo.value.trim();
+      addressPayload.office_name = getProfileValue(profileOfficeName);
+      addressPayload.building_name = getProfileValue(profileOfficeBuilding);
+      addressPayload.office_number = getProfileValue(profileOfficeNumber);
+      addressPayload.floor_number = getProfileValue(profileOfficeFloor);
+      addressPayload.street_name = getProfileValue(profileOfficeStreet);
+      addressPayload.address_additional_info = getProfileValue(profileOfficeInfo);
     }
 
     const profilePayload = {
       id: currentUser.id,
-      phone: profilePhone.value.trim(),
+      phone: getProfileValue(profilePhone),
       ...addressPayload,
-      preferred_contact_method: profileContactMethod.value,
-      best_contact_time: profileBestContactTime.value.trim(),
+      preferred_contact_method: getProfileValue(profileContactMethod),
+      best_contact_time: getProfileValue(profileBestContactTime),
       updated_at: new Date().toISOString()
     };
 
-    const { error: profileError } = await supabaseClient
+    const { error } = await supabaseClient
       .from("profiles")
       .upsert(profilePayload, {
         onConflict: "id"
       });
 
-    if (profileError) {
-      profileSaveMessage.textContent = profileError.message;
+    if (error) {
+      if (profileSaveMessage) {
+        profileSaveMessage.textContent = error.message;
+      }
+
       saveProfileButton.disabled = false;
       saveProfileButton.textContent = "Save Changes";
       return;
     }
 
-    profileSaveMessage.textContent = "Account details saved.";
+    if (profileSaveMessage) {
+      profileSaveMessage.textContent = "Account details saved.";
+    }
+
     saveProfileButton.disabled = false;
     saveProfileButton.textContent = "Save Changes";
   }
-
-  accountSidebarButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      switchAccountPanel(button.dataset.accountPanel);
-    });
-  });
-
-  addressTypeButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      setAddressType(button.dataset.addressType);
-    });
-  });
-
-  profileAddressAreaButton.addEventListener("click", (event) => {
-    event.stopPropagation();
-    profileAddressAreaDropdown.classList.toggle("open");
-    profileAddressAreaButton.setAttribute(
-      "aria-expanded",
-      profileAddressAreaDropdown.classList.contains("open") ? "true" : "false"
-    );
-  });
-
-  profileAddressAreaOptions.forEach((option) => {
-    option.addEventListener("click", () => {
-      setAddressArea(option.dataset.areaValue);
-      closeAddressAreaDropdown();
-    });
-  });
-
-  profileContactMethodButton.addEventListener("click", (event) => {
-    event.stopPropagation();
-    profileContactMethodDropdown.classList.toggle("open");
-    profileContactMethodButton.setAttribute(
-      "aria-expanded",
-      profileContactMethodDropdown.classList.contains("open") ? "true" : "false"
-    );
-  });
-
-  profileContactMethodOptions.forEach((option) => {
-    option.addEventListener("click", () => {
-      setContactMethod(option.dataset.contactValue);
-      closeContactMethodDropdown();
-    });
-  });
-
-  document.addEventListener("click", (event) => {
-    if (!profileAddressAreaDropdown.contains(event.target)) {
-      closeAddressAreaDropdown();
-    }
-
-    if (!profileContactMethodDropdown.contains(event.target)) {
-      closeContactMethodDropdown();
-    }
-  });
-
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      closeAddressAreaDropdown();
-      closeContactMethodDropdown();
-    }
-  });
 
   async function loadMfaStatus() {
     const { data, error } = await supabaseClient.auth.mfa.listFactors();
@@ -1032,7 +987,9 @@
     await loadMfaStatus();
   }
 
-  saveProfileButton.addEventListener("click", saveProfile);
+  if (saveProfileButton) {
+    saveProfileButton.addEventListener("click", saveProfile);
+  }
 
   if (enable2faButton) {
     enable2faButton.addEventListener("click", startMfaEnrollment);
