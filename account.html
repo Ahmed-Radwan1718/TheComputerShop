@@ -94,19 +94,25 @@
           <p>Your account information is used to keep your requests, saved items, and support history connected to you.</p>
 
           <div class="account-field-grid">
-            <div class="account-field-card">
-              <span class="account-field-label">Full Name</span>
-              <input id="profile-full-name" class="account-profile-input" type="text" placeholder="Add your name">
+            <div class="account-field-group">
+              <label class="account-field-label" for="profile-full-name">Full Name</label>
+              <div class="account-field-card">
+                <input id="profile-full-name" class="account-profile-input" type="text" placeholder="Add your name">
+              </div>
             </div>
 
-            <div class="account-field-card">
-              <span class="account-field-label">Email</span>
-              <input id="account-email" class="account-profile-input" type="email" readonly>
+            <div class="account-field-group">
+              <label class="account-field-label" for="account-email">Email</label>
+              <div class="account-field-card">
+                <input id="account-email" class="account-profile-input" type="email" readonly>
+              </div>
             </div>
 
-            <div class="account-field-card">
-              <span class="account-field-label">Phone Number</span>
-              <input id="profile-phone" class="account-profile-input" type="tel" placeholder="Add your phone number">
+            <div class="account-field-group">
+              <label class="account-field-label" for="profile-phone">Phone Number</label>
+              <div class="account-field-card">
+                <input id="profile-phone" class="account-profile-input" type="tel" placeholder="Add your phone number">
+              </div>
             </div>
           </div>
         </div>
@@ -116,19 +122,25 @@
           <p>Save your delivery details so future cart requests and support forms are faster to complete.</p>
 
           <div class="account-field-grid">
-            <div class="account-field-card">
-              <span class="account-field-label">Default Delivery Address</span>
-              <textarea id="profile-default-address" class="account-profile-textarea" placeholder="Add your default address"></textarea>
+            <div class="account-field-group">
+              <label class="account-field-label" for="profile-default-address">Default Delivery Address</label>
+              <div class="account-field-card account-field-card-textarea">
+                <textarea id="profile-default-address" class="account-profile-textarea" placeholder="Add your default address"></textarea>
+              </div>
             </div>
 
-            <div class="account-field-card">
-              <span class="account-field-label">City / Area</span>
-              <input id="profile-city-area" class="account-profile-input" type="text" placeholder="Add your city or area">
+            <div class="account-field-group">
+              <label class="account-field-label" for="profile-city-area">City / Area</label>
+              <div class="account-field-card">
+                <input id="profile-city-area" class="account-profile-input" type="text" placeholder="Add your city or area">
+              </div>
             </div>
 
-            <div class="account-field-card">
-              <span class="account-field-label">Delivery Notes</span>
-              <textarea id="profile-delivery-notes" class="account-profile-textarea" placeholder="Apartment, floor, landmark, or delivery notes"></textarea>
+            <div class="account-field-group">
+              <label class="account-field-label" for="profile-delivery-notes">Delivery Notes</label>
+              <div class="account-field-card account-field-card-textarea">
+                <textarea id="profile-delivery-notes" class="account-profile-textarea" placeholder="Apartment, floor, landmark, or delivery notes"></textarea>
+              </div>
             </div>
           </div>
         </div>
@@ -138,19 +150,23 @@
           <p>Choose how and when you prefer to be contacted about requests, quotes, and support.</p>
 
           <div class="account-field-grid">
-            <div class="account-field-card">
-              <span class="account-field-label">Preferred Contact Method</span>
-              <select id="profile-contact-method" class="account-profile-select">
-                <option value="">No preference</option>
-                <option value="WhatsApp">WhatsApp</option>
-                <option value="Email">Email</option>
-                <option value="Phone Call">Phone Call</option>
-              </select>
+            <div class="account-field-group">
+              <label class="account-field-label" for="profile-contact-method">Preferred Contact Method</label>
+              <div class="account-field-card">
+                <select id="profile-contact-method" class="account-profile-select">
+                  <option value="">No preference</option>
+                  <option value="WhatsApp">WhatsApp</option>
+                  <option value="Email">Email</option>
+                  <option value="Phone Call">Phone Call</option>
+                </select>
+              </div>
             </div>
 
-            <div class="account-field-card">
-              <span class="account-field-label">Best Time To Contact</span>
-              <input id="profile-best-contact-time" class="account-profile-input" type="text" placeholder="Example: 6 PM - 10 PM">
+            <div class="account-field-group">
+              <label class="account-field-label" for="profile-best-contact-time">Best Time To Contact</label>
+              <div class="account-field-card">
+                <input id="profile-best-contact-time" class="account-profile-input" type="text" placeholder="Example: 6 PM - 10 PM">
+              </div>
             </div>
           </div>
         </div>
@@ -160,14 +176,18 @@
           <p>Basic account status information from your login profile.</p>
 
           <div class="account-field-grid">
-            <div class="account-field-card">
+            <div class="account-field-group">
               <span class="account-field-label">Email Verified</span>
-              <strong id="profile-email-verified" class="account-field-value">—</strong>
+              <div class="account-field-card">
+                <strong id="profile-email-verified" class="account-field-value">—</strong>
+              </div>
             </div>
 
-            <div class="account-field-card">
+            <div class="account-field-group">
               <span class="account-field-label">Account Created</span>
-              <strong id="profile-created-at" class="account-field-value">—</strong>
+              <div class="account-field-card">
+                <strong id="profile-created-at" class="account-field-value">—</strong>
+              </div>
             </div>
           </div>
 
