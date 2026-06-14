@@ -364,17 +364,18 @@
           </div>
 
           <div id="password-change-form" class="security-inline-form">
-            <div class="account-action-row">
-              <button id="send-password-code-button" class="account-action-button secondary" type="button">
-                Send Verification Code
-              </button>
-            </div>
-
             <div class="account-field-grid">
+              <div class="account-field-group">
+                <label class="account-field-label" for="password-change-old">Current Password</label>
+                <div class="account-field-card">
+                  <input id="password-change-old" class="account-profile-input" type="password" autocomplete="current-password" placeholder="Current password">
+                </div>
+              </div>
+
               <div class="account-field-group">
                 <label class="account-field-label" for="password-change-code">Verification Code</label>
                 <div class="account-field-card">
-                  <input id="password-change-code" class="account-profile-input" type="text" inputmode="numeric" placeholder="Enter code">
+                  <input id="password-change-code" class="account-profile-input" type="text" inputmode="numeric" placeholder="Enter email code">
                 </div>
               </div>
 
@@ -394,6 +395,10 @@
             </div>
 
             <div class="account-action-row">
+              <button id="send-password-code-button" class="account-action-button secondary" type="button">
+                Send Verification Code
+              </button>
+
               <button id="confirm-password-change-button" class="account-action-button" type="button">
                 Update Password
               </button>
@@ -548,10 +553,13 @@
   const passwordChangeForm = document.getElementById("password-change-form");
   const sendPasswordCodeButton = document.getElementById("send-password-code-button");
   const confirmPasswordChangeButton = document.getElementById("confirm-password-change-button");
+  const passwordChangeOld = document.getElementById("password-change-old");
   const passwordChangeCode = document.getElementById("password-change-code");
   const passwordChangeNew = document.getElementById("password-change-new");
   const passwordChangeConfirm = document.getElementById("password-change-confirm");
   const passwordChangeMessage = document.getElementById("password-change-message");
+
+  let passwordChangeOldVerified = false;
 
   const mfaStatusTitle = document.getElementById("mfa-status-title");
   const enable2faButton = document.getElementById("enable-2fa-button");
@@ -1036,9 +1044,38 @@
 
   if (sendPasswordCodeButton) {
     sendPasswordCodeButton.addEventListener("click", async () => {
-      sendPasswordCodeButton.disabled = true;
-      sendPasswordCodeButton.textContent = "Sending Code...";
+      const currentPassword = passwordChangeOld.value;
+
       passwordChangeMessage.textContent = "";
+      passwordChangeOldVerified = false;
+
+      if (!currentPassword) {
+        passwordChangeMessage.textContent = "Enter your current password first.";
+        return;
+      }
+
+      if (!currentUser || !currentUser.email) {
+        passwordChangeMessage.textContent = "Could not confirm your account email. Refresh and try again.";
+        return;
+      }
+
+      sendPasswordCodeButton.disabled = true;
+      sendPasswordCodeButton.textContent = "Checking Password...";
+
+      const passwordCheck = await supabaseClient.auth.signInWithPassword({
+        email: currentUser.email,
+        password: currentPassword
+      });
+
+      if (passwordCheck.error) {
+        passwordChangeMessage.textContent = "Current password is incorrect.";
+        sendPasswordCodeButton.disabled = false;
+        sendPasswordCodeButton.textContent = "Send Verification Code";
+        return;
+      }
+
+      passwordChangeOldVerified = true;
+      sendPasswordCodeButton.textContent = "Sending Code...";
 
       const { error } = await supabaseClient.auth.reauthenticate();
 
@@ -1049,7 +1086,7 @@
         return;
       }
 
-      passwordChangeMessage.textContent = "Verification code sent to your email.";
+      passwordChangeMessage.textContent = "Current password confirmed. Verification code sent to your email.";
       sendPasswordCodeButton.disabled = false;
       sendPasswordCodeButton.textContent = "Resend Verification Code";
     });
@@ -1057,11 +1094,22 @@
 
   if (confirmPasswordChangeButton) {
     confirmPasswordChangeButton.addEventListener("click", async () => {
+      const currentPassword = passwordChangeOld.value;
       const code = passwordChangeCode.value.trim();
       const newPassword = passwordChangeNew.value;
       const confirmPassword = passwordChangeConfirm.value;
 
       passwordChangeMessage.textContent = "";
+
+      if (!currentPassword) {
+        passwordChangeMessage.textContent = "Enter your current password.";
+        return;
+      }
+
+      if (!passwordChangeOldVerified) {
+        passwordChangeMessage.textContent = "Confirm your current password by sending the verification code first.";
+        return;
+      }
 
       if (!code) {
         passwordChangeMessage.textContent = "Enter the verification code sent to your email.";
@@ -1075,6 +1123,11 @@
 
       if (newPassword !== confirmPassword) {
         passwordChangeMessage.textContent = "Passwords do not match.";
+        return;
+      }
+
+      if (newPassword === currentPassword) {
+        passwordChangeMessage.textContent = "New password must be different from your current password.";
         return;
       }
 
@@ -1093,13 +1146,24 @@
         return;
       }
 
+      passwordChangeOld.value = "";
       passwordChangeCode.value = "";
       passwordChangeNew.value = "";
       passwordChangeConfirm.value = "";
+      passwordChangeOldVerified = false;
       passwordChangeMessage.textContent = "Password updated successfully.";
 
       confirmPasswordChangeButton.disabled = false;
       confirmPasswordChangeButton.textContent = "Update Password";
+      sendPasswordCodeButton.textContent = "Send Verification Code";
+    });
+  }
+
+  if (passwordChangeOld) {
+    passwordChangeOld.addEventListener("input", () => {
+      passwordChangeOldVerified = false;
+      passwordChangeCode.value = "";
+      sendPasswordCodeButton.textContent = "Send Verification Code";
     });
   }
 
