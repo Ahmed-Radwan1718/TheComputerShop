@@ -357,6 +357,16 @@
         <div class="account-section">
           <h2>Password</h2>
 
+          <div class="account-field-grid">
+            <div class="account-field-group">
+              <span class="account-field-label">Password Change</span>
+              <div class="account-field-card account-field-card-stack">
+                <strong class="account-field-value">Email verification required</strong>
+                <span class="account-field-help">A verification code will be sent to your account email before changing your password.</span>
+              </div>
+            </div>
+          </div>
+
           <div class="account-action-row">
             <button id="start-password-change-button" class="account-action-button" type="button">
               Change Password
@@ -364,11 +374,6 @@
           </div>
 
           <div id="password-change-form" class="security-inline-form">
-            <div class="account-placeholder-card">
-              <h3>Email verification required</h3>
-              <p>We will send a verification code to your account email before changing your password.</p>
-            </div>
-
             <div class="account-action-row">
               <button id="send-password-code-button" class="account-action-button secondary" type="button">
                 Send Verification Code
@@ -411,9 +416,14 @@
         <div class="account-section">
           <h2>Two-Factor Authentication</h2>
 
-          <div class="account-placeholder-card">
-            <h3 id="mfa-status-title">Checking 2FA status...</h3>
-            <p id="mfa-status-text">Please wait while we check your account security status.</p>
+          <div class="account-field-grid">
+            <div class="account-field-group">
+              <span class="account-field-label">Authenticator App</span>
+              <div class="account-field-card account-field-card-stack">
+                <strong id="mfa-status-title" class="account-field-value">Checking 2FA status...</strong>
+                <span id="mfa-status-text" class="account-field-help">Please wait while we check your account security status.</span>
+              </div>
+            </div>
           </div>
 
           <div class="account-action-row">
@@ -427,18 +437,21 @@
           </div>
 
           <div id="mfa-setup-box" class="mfa-setup-box">
-            <div class="account-placeholder-card">
-              <h3>Set up your authenticator app</h3>
-              <p>Scan the QR code using Google Authenticator, Microsoft Authenticator, Authy, 1Password, or another authenticator app. Then enter the 6-digit code below.</p>
+            <div class="account-field-grid">
+              <div class="account-field-group">
+                <span class="account-field-label">QR Code</span>
+                <div class="account-field-card account-field-card-stack">
+                  <strong class="account-field-value">Set up your authenticator app</strong>
+                  <span class="account-field-help">Scan this QR code, then enter the 6-digit code from your authenticator app.</span>
 
-              <div class="mfa-qr-box">
-                <img id="mfa-qr-image" alt="2FA QR code">
+                  <div class="mfa-qr-box">
+                    <img id="mfa-qr-image" alt="2FA QR code">
+                  </div>
+
+                  <div id="mfa-secret-box" class="mfa-secret-box"></div>
+                </div>
               </div>
 
-              <div id="mfa-secret-box" class="mfa-secret-box"></div>
-            </div>
-
-            <div class="security-form-grid">
               <div class="account-field-group">
                 <label class="account-field-label" for="mfa-verification-code">Authenticator Code</label>
                 <div class="account-field-card">
@@ -464,9 +477,14 @@
         <div class="account-section">
           <h2>Sessions</h2>
 
-          <div class="account-placeholder-card">
-            <h3>Sign out everywhere</h3>
-            <p>This signs your account out from all active devices and browsers.</p>
+          <div class="account-field-grid">
+            <div class="account-field-group">
+              <span class="account-field-label">Active Sessions</span>
+              <div class="account-field-card account-field-card-stack">
+                <strong class="account-field-value">Sign out everywhere</strong>
+                <span class="account-field-help">This signs your account out from all active devices and browsers.</span>
+              </div>
+            </div>
           </div>
 
           <div class="account-action-row">
