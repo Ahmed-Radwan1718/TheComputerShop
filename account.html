@@ -95,15 +95,89 @@
 
           <div class="account-field-grid">
             <div class="account-field-card">
-              <span class="account-field-label">Name</span>
-              <strong id="account-name" class="account-field-value">—</strong>
+              <span class="account-field-label">Full Name</span>
+              <input id="profile-full-name" class="account-profile-input" type="text" placeholder="Add your name">
             </div>
 
             <div class="account-field-card">
               <span class="account-field-label">Email</span>
-              <strong id="account-email" class="account-field-value">—</strong>
+              <input id="account-email" class="account-profile-input" type="email" readonly>
+            </div>
+
+            <div class="account-field-card">
+              <span class="account-field-label">Phone Number</span>
+              <input id="profile-phone" class="account-profile-input" type="tel" placeholder="Add your phone number">
             </div>
           </div>
+        </div>
+
+        <div class="account-section">
+          <h2>Saved Address</h2>
+          <p>Save your delivery details so future cart requests and support forms are faster to complete.</p>
+
+          <div class="account-field-grid">
+            <div class="account-field-card">
+              <span class="account-field-label">Default Delivery Address</span>
+              <textarea id="profile-default-address" class="account-profile-textarea" placeholder="Add your default address"></textarea>
+            </div>
+
+            <div class="account-field-card">
+              <span class="account-field-label">City / Area</span>
+              <input id="profile-city-area" class="account-profile-input" type="text" placeholder="Add your city or area">
+            </div>
+
+            <div class="account-field-card">
+              <span class="account-field-label">Delivery Notes</span>
+              <textarea id="profile-delivery-notes" class="account-profile-textarea" placeholder="Apartment, floor, landmark, or delivery notes"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="account-section">
+          <h2>Communication</h2>
+          <p>Choose how and when you prefer to be contacted about requests, quotes, and support.</p>
+
+          <div class="account-field-grid">
+            <div class="account-field-card">
+              <span class="account-field-label">Preferred Contact Method</span>
+              <select id="profile-contact-method" class="account-profile-select">
+                <option value="">No preference</option>
+                <option value="WhatsApp">WhatsApp</option>
+                <option value="Email">Email</option>
+                <option value="Phone Call">Phone Call</option>
+              </select>
+            </div>
+
+            <div class="account-field-card">
+              <span class="account-field-label">Best Time To Contact</span>
+              <input id="profile-best-contact-time" class="account-profile-input" type="text" placeholder="Example: 6 PM - 10 PM">
+            </div>
+          </div>
+        </div>
+
+        <div class="account-section">
+          <h2>Account Status</h2>
+          <p>Basic account status information from your login profile.</p>
+
+          <div class="account-field-grid">
+            <div class="account-field-card">
+              <span class="account-field-label">Email Verified</span>
+              <strong id="profile-email-verified" class="account-field-value">—</strong>
+            </div>
+
+            <div class="account-field-card">
+              <span class="account-field-label">Account Created</span>
+              <strong id="profile-created-at" class="account-field-value">—</strong>
+            </div>
+          </div>
+
+          <div class="account-action-row">
+            <button id="save-profile-button" class="account-action-button" type="button">
+              Save Changes
+            </button>
+          </div>
+
+          <p id="profile-save-message" class="account-save-message"></p>
         </div>
       </div>
 
@@ -179,11 +253,24 @@
 
 <script>
   const accountMessage = document.getElementById("account-message");
-  const accountName = document.getElementById("account-name");
   const accountEmail = document.getElementById("account-email");
   const logoutButton = document.getElementById("logout-button");
   const accountSidebarButtons = document.querySelectorAll("[data-account-panel]");
   const accountPanels = document.querySelectorAll("[data-account-panel-content]");
+
+  const profileFullName = document.getElementById("profile-full-name");
+  const profilePhone = document.getElementById("profile-phone");
+  const profileDefaultAddress = document.getElementById("profile-default-address");
+  const profileCityArea = document.getElementById("profile-city-area");
+  const profileDeliveryNotes = document.getElementById("profile-delivery-notes");
+  const profileContactMethod = document.getElementById("profile-contact-method");
+  const profileBestContactTime = document.getElementById("profile-best-contact-time");
+  const profileEmailVerified = document.getElementById("profile-email-verified");
+  const profileCreatedAt = document.getElementById("profile-created-at");
+  const saveProfileButton = document.getElementById("save-profile-button");
+  const profileSaveMessage = document.getElementById("profile-save-message");
+
+  let currentUser = null;
 
   function switchAccountPanel(panelName) {
     accountSidebarButtons.forEach((button) => {
@@ -195,11 +282,50 @@
     });
   }
 
-  accountSidebarButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      switchAccountPanel(button.dataset.accountPanel);
-    });
-  });
+  function formatAccountDate(value) {
+    if (!value) {
+      return "—";
+    }
+
+    return new Intl.DateTimeFormat("en", {
+      year: "numeric",
+      month: "short",
+      day: "numeric"
+    }).format(new Date(value));
+  }
+
+  function setProfileForm(profile, user) {
+    const metadataName = user.user_metadata && user.user_metadata.full_name
+      ? user.user_metadata.full_name
+      : "";
+
+    profileFullName.value = profile && profile.full_name ? profile.full_name : metadataName;
+    accountEmail.value = user.email || "";
+    profilePhone.value = profile && profile.phone ? profile.phone : "";
+    profileDefaultAddress.value = profile && profile.default_address ? profile.default_address : "";
+    profileCityArea.value = profile && profile.city_area ? profile.city_area : "";
+    profileDeliveryNotes.value = profile && profile.delivery_notes ? profile.delivery_notes : "";
+    profileContactMethod.value = profile && profile.preferred_contact_method ? profile.preferred_contact_method : "";
+    profileBestContactTime.value = profile && profile.best_contact_time ? profile.best_contact_time : "";
+    profileEmailVerified.textContent = user.email_confirmed_at ? "Yes" : "No";
+    profileCreatedAt.textContent = formatAccountDate(user.created_at);
+  }
+
+  async function loadProfile(user) {
+    const { data, error } = await supabaseClient
+      .from("profiles")
+      .select("*")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    if (error) {
+      console.error("Could not load profile:", error.message);
+      profileSaveMessage.textContent = "Could not load saved profile details.";
+      return null;
+    }
+
+    return data;
+  }
 
   async function loadAccount() {
     const { data, error } = await supabaseClient.auth.getUser();
@@ -209,15 +335,73 @@
       return;
     }
 
-    const user = data.user;
-    const fullName = user.user_metadata && user.user_metadata.full_name
-      ? user.user_metadata.full_name
-      : "No name added";
+    currentUser = data.user;
 
-    accountName.textContent = fullName;
-    accountEmail.textContent = user.email;
-    accountMessage.textContent = "Manage your saved items, requests, security, and account information.";
+    const profile = await loadProfile(currentUser);
+
+    setProfileForm(profile, currentUser);
+    accountMessage.textContent = "Manage your account details, saved address, communication preferences, and account status.";
   }
+
+  async function saveProfile() {
+    if (!currentUser) {
+      return;
+    }
+
+    saveProfileButton.disabled = true;
+    saveProfileButton.textContent = "Saving...";
+    profileSaveMessage.textContent = "";
+
+    const profilePayload = {
+      id: currentUser.id,
+      full_name: profileFullName.value.trim(),
+      phone: profilePhone.value.trim(),
+      default_address: profileDefaultAddress.value.trim(),
+      city_area: profileCityArea.value.trim(),
+      delivery_notes: profileDeliveryNotes.value.trim(),
+      preferred_contact_method: profileContactMethod.value,
+      best_contact_time: profileBestContactTime.value.trim(),
+      updated_at: new Date().toISOString()
+    };
+
+    const { error: profileError } = await supabaseClient
+      .from("profiles")
+      .upsert(profilePayload, {
+        onConflict: "id"
+      });
+
+    if (profileError) {
+      profileSaveMessage.textContent = profileError.message;
+      saveProfileButton.disabled = false;
+      saveProfileButton.textContent = "Save Changes";
+      return;
+    }
+
+    const { error: userError } = await supabaseClient.auth.updateUser({
+      data: {
+        full_name: profilePayload.full_name
+      }
+    });
+
+    if (userError) {
+      profileSaveMessage.textContent = "Profile saved, but account name metadata could not be updated.";
+      saveProfileButton.disabled = false;
+      saveProfileButton.textContent = "Save Changes";
+      return;
+    }
+
+    profileSaveMessage.textContent = "Account details saved.";
+    saveProfileButton.disabled = false;
+    saveProfileButton.textContent = "Save Changes";
+  }
+
+  accountSidebarButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      switchAccountPanel(button.dataset.accountPanel);
+    });
+  });
+
+  saveProfileButton.addEventListener("click", saveProfile);
 
   logoutButton.addEventListener("click", async () => {
     logoutButton.disabled = true;
