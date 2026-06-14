@@ -412,14 +412,52 @@
           <h2>Two-Factor Authentication</h2>
 
           <div class="account-placeholder-card">
-            <h3>2FA is not enabled yet</h3>
-            <p>Add an authenticator app to protect your account with a second login step.</p>
+            <h3 id="mfa-status-title">Checking 2FA status...</h3>
+            <p id="mfa-status-text">Please wait while we check your account security status.</p>
           </div>
 
           <div class="account-action-row">
             <button id="enable-2fa-button" class="account-action-button secondary" type="button">
               Enable 2FA
             </button>
+
+            <button id="disable-2fa-button" class="account-action-button secondary" type="button" style="display: none;">
+              Disable 2FA
+            </button>
+          </div>
+
+          <div id="mfa-setup-box" class="mfa-setup-box">
+            <div class="account-placeholder-card">
+              <h3>Set up your authenticator app</h3>
+              <p>Scan the QR code using Google Authenticator, Microsoft Authenticator, Authy, 1Password, or another authenticator app. Then enter the 6-digit code below.</p>
+
+              <div class="mfa-qr-box">
+                <img id="mfa-qr-image" alt="2FA QR code">
+              </div>
+
+              <div id="mfa-secret-box" class="mfa-secret-box"></div>
+            </div>
+
+            <div class="security-form-grid">
+              <div class="account-field-group">
+                <label class="account-field-label" for="mfa-verification-code">Authenticator Code</label>
+                <div class="account-field-card">
+                  <input id="mfa-verification-code" class="account-profile-input" type="text" inputmode="numeric" placeholder="Enter 6-digit code">
+                </div>
+              </div>
+            </div>
+
+            <div class="account-action-row">
+              <button id="verify-2fa-button" class="account-action-button" type="button">
+                Verify and Enable 2FA
+              </button>
+
+              <button id="cancel-2fa-button" class="account-action-button secondary" type="button">
+                Cancel
+              </button>
+            </div>
+
+            <p id="mfa-message" class="account-save-message"></p>
           </div>
         </div>
 
@@ -514,6 +552,21 @@
   const passwordChangeNew = document.getElementById("password-change-new");
   const passwordChangeConfirm = document.getElementById("password-change-confirm");
   const passwordChangeMessage = document.getElementById("password-change-message");
+
+  const mfaStatusTitle = document.getElementById("mfa-status-title");
+  const mfaStatusText = document.getElementById("mfa-status-text");
+  const enable2faButton = document.getElementById("enable-2fa-button");
+  const disable2faButton = document.getElementById("disable-2fa-button");
+  const mfaSetupBox = document.getElementById("mfa-setup-box");
+  const mfaQrImage = document.getElementById("mfa-qr-image");
+  const mfaSecretBox = document.getElementById("mfa-secret-box");
+  const mfaVerificationCode = document.getElementById("mfa-verification-code");
+  const verify2faButton = document.getElementById("verify-2fa-button");
+  const cancel2faButton = document.getElementById("cancel-2fa-button");
+  const mfaMessage = document.getElementById("mfa-message");
+
+  let pendingMfaFactorId = null;
+  let verifiedMfaFactorId = null;
   const profileSaveMessage = document.getElementById("profile-save-message");
 
   let currentUser = null;
@@ -674,6 +727,7 @@
 
     setProfileForm(profile, currentUser);
     accountMessage.textContent = "Manage your account details, saved address, communication preferences, and account status.";
+    await loadMfaStatus();
   }
 
   async function saveProfile() {
@@ -812,7 +866,162 @@
     }
   });
 
+  async function loadMfaStatus() {
+    const { data, error } = await supabaseClient.auth.mfa.listFactors();
+
+    if (error) {
+      mfaStatusTitle.textContent = "Could not check 2FA status";
+      mfaStatusText.textContent = error.message;
+      return;
+    }
+
+    const verifiedTotpFactor = data.totp.find((factor) => factor.status === "verified");
+
+    if (verifiedTotpFactor) {
+      verifiedMfaFactorId = verifiedTotpFactor.id;
+      mfaStatusTitle.textContent = "2FA is enabled";
+      mfaStatusText.textContent = "Your account is protected with an authenticator app.";
+      enable2faButton.style.display = "none";
+      disable2faButton.style.display = "inline-flex";
+      mfaSetupBox.classList.remove("active");
+      return;
+    }
+
+    verifiedMfaFactorId = null;
+    mfaStatusTitle.textContent = "2FA is not enabled";
+    mfaStatusText.textContent = "Add an authenticator app to protect your account with a second login step.";
+    enable2faButton.style.display = "inline-flex";
+    disable2faButton.style.display = "none";
+  }
+
+  async function startMfaEnrollment() {
+    enable2faButton.disabled = true;
+    enable2faButton.textContent = "Preparing...";
+    mfaMessage.textContent = "";
+
+    const { data, error } = await supabaseClient.auth.mfa.enroll({
+      factorType: "totp",
+      friendlyName: "The Computer Shop"
+    });
+
+    if (error) {
+      mfaMessage.textContent = error.message;
+      enable2faButton.disabled = false;
+      enable2faButton.textContent = "Enable 2FA";
+      return;
+    }
+
+    pendingMfaFactorId = data.id;
+
+    const qrCodeSvg = data.totp.qr_code;
+    mfaQrImage.src = `data:image/svg+xml;utf8,${encodeURIComponent(qrCodeSvg)}`;
+    mfaSecretBox.textContent = `Manual setup key: ${data.totp.secret}`;
+
+    mfaSetupBox.classList.add("active");
+    enable2faButton.disabled = false;
+    enable2faButton.textContent = "Restart 2FA Setup";
+  }
+
+  async function verifyMfaEnrollment() {
+    const code = mfaVerificationCode.value.trim();
+
+    if (!pendingMfaFactorId) {
+      mfaMessage.textContent = "Start 2FA setup first.";
+      return;
+    }
+
+    if (!code) {
+      mfaMessage.textContent = "Enter the 6-digit code from your authenticator app.";
+      return;
+    }
+
+    verify2faButton.disabled = true;
+    verify2faButton.textContent = "Verifying...";
+    mfaMessage.textContent = "";
+
+    const challenge = await supabaseClient.auth.mfa.challenge({
+      factorId: pendingMfaFactorId
+    });
+
+    if (challenge.error) {
+      mfaMessage.textContent = challenge.error.message;
+      verify2faButton.disabled = false;
+      verify2faButton.textContent = "Verify and Enable 2FA";
+      return;
+    }
+
+    const verify = await supabaseClient.auth.mfa.verify({
+      factorId: pendingMfaFactorId,
+      challengeId: challenge.data.id,
+      code: code
+    });
+
+    if (verify.error) {
+      mfaMessage.textContent = verify.error.message;
+      verify2faButton.disabled = false;
+      verify2faButton.textContent = "Verify and Enable 2FA";
+      return;
+    }
+
+    pendingMfaFactorId = null;
+    mfaVerificationCode.value = "";
+    mfaMessage.textContent = "2FA enabled successfully.";
+
+    verify2faButton.disabled = false;
+    verify2faButton.textContent = "Verify and Enable 2FA";
+
+    await loadMfaStatus();
+  }
+
+  async function disableMfa() {
+    if (!verifiedMfaFactorId) {
+      mfaMessage.textContent = "No verified 2FA factor found.";
+      return;
+    }
+
+    disable2faButton.disabled = true;
+    disable2faButton.textContent = "Disabling...";
+    mfaMessage.textContent = "";
+
+    const { error } = await supabaseClient.auth.mfa.unenroll({
+      factorId: verifiedMfaFactorId
+    });
+
+    if (error) {
+      mfaMessage.textContent = error.message;
+      disable2faButton.disabled = false;
+      disable2faButton.textContent = "Disable 2FA";
+      return;
+    }
+
+    disable2faButton.disabled = false;
+    disable2faButton.textContent = "Disable 2FA";
+    mfaMessage.textContent = "2FA disabled.";
+
+    await loadMfaStatus();
+  }
+
   saveProfileButton.addEventListener("click", saveProfile);
+
+  if (enable2faButton) {
+    enable2faButton.addEventListener("click", startMfaEnrollment);
+  }
+
+  if (verify2faButton) {
+    verify2faButton.addEventListener("click", verifyMfaEnrollment);
+  }
+
+  if (cancel2faButton) {
+    cancel2faButton.addEventListener("click", () => {
+      mfaSetupBox.classList.remove("active");
+      mfaMessage.textContent = "";
+      mfaVerificationCode.value = "";
+    });
+  }
+
+  if (disable2faButton) {
+    disable2faButton.addEventListener("click", disableMfa);
+  }
 
   if (startPasswordChangeButton) {
     startPasswordChangeButton.addEventListener("click", () => {
