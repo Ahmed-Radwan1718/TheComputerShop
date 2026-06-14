@@ -1254,6 +1254,12 @@ body.user-is-logged-in .account-menu-authenticated {
   align-items: flex-start;
 }
 
+.account-field-card-compact {
+  min-height: 54px;
+  padding: 0 16px;
+  align-items: center;
+}
+
 .account-field-label {
   color: rgba(255, 255, 255, 0.52);
   display: block;
