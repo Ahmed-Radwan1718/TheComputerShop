@@ -1311,6 +1311,53 @@ body.user-is-logged-in .account-menu-authenticated {
   resize: vertical;
 }
 
+.address-type-grid {
+  margin-top: 24px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.address-type-button {
+  min-height: 48px;
+  padding: 0 16px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.18);
+  color: rgba(255, 255, 255, 0.68);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.address-type-button:hover {
+  border-color: rgba(255, 255, 255, 0.24);
+  color: white;
+}
+
+.address-type-button.active {
+  background: white;
+  border-color: white;
+  color: #1f1f1f;
+}
+
+.address-fields-group {
+  display: none;
+  margin-top: 22px;
+}
+
+.address-fields-group.active {
+  display: block;
+}
+
 .account-save-message {
   min-height: 22px;
   margin-top: 16px;
@@ -1318,6 +1365,12 @@ body.user-is-logged-in .account-menu-authenticated {
   font-size: 14px;
   font-weight: 400;
   line-height: 1.6;
+}
+
+@media (max-width: 620px) {
+  .address-type-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .account-placeholder-card {
