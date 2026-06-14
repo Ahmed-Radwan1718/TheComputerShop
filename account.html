@@ -196,20 +196,6 @@
                   <input id="profile-apartment-floor" class="account-profile-input" type="text" placeholder="Floor number">
                 </div>
               </div>
-
-              <div class="account-field-group">
-                <label class="account-field-label" for="profile-apartment-street">Street Name</label>
-                <div class="account-field-card">
-                  <input id="profile-apartment-street" class="account-profile-input" type="text" placeholder="Street name">
-                </div>
-              </div>
-
-              <div class="account-field-group">
-                <label class="account-field-label" for="profile-apartment-info">Additional Info</label>
-                <div class="account-field-card account-field-card-textarea">
-                  <textarea id="profile-apartment-info" class="account-profile-textarea" placeholder="Building name, landmark, gate, or delivery notes"></textarea>
-                </div>
-              </div>
             </div>
           </div>
 
@@ -223,23 +209,27 @@
               </div>
 
               <div class="account-field-group">
-                <label class="account-field-label" for="profile-house-street">Street Name</label>
-                <div class="account-field-card">
-                  <input id="profile-house-street" class="account-profile-input" type="text" placeholder="Street name">
-                </div>
-              </div>
-
-              <div class="account-field-group">
                 <label class="account-field-label" for="profile-house-landmark">Compound / Landmark</label>
                 <div class="account-field-card">
                   <input id="profile-house-landmark" class="account-profile-input" type="text" placeholder="Compound, gate, or nearby landmark">
                 </div>
               </div>
+            </div>
+          </div>
+
+          <div class="address-fields-group active" data-shared-address-fields="apartment-house">
+            <div class="account-field-grid">
+              <div class="account-field-group">
+                <label class="account-field-label" for="profile-shared-street">Street Name</label>
+                <div class="account-field-card">
+                  <input id="profile-shared-street" class="account-profile-input" type="text" placeholder="Street name">
+                </div>
+              </div>
 
               <div class="account-field-group">
-                <label class="account-field-label" for="profile-house-info">Additional Info</label>
+                <label class="account-field-label" for="profile-shared-info">Additional Info</label>
                 <div class="account-field-card account-field-card-textarea">
-                  <textarea id="profile-house-info" class="account-profile-textarea" placeholder="Any extra delivery instructions"></textarea>
+                  <textarea id="profile-shared-info" class="account-profile-textarea" placeholder="Building name, landmark, gate, or delivery notes"></textarea>
                 </div>
               </div>
             </div>
@@ -425,13 +415,11 @@
 
   const profileApartmentNumber = document.getElementById("profile-apartment-number");
   const profileApartmentFloor = document.getElementById("profile-apartment-floor");
-  const profileApartmentStreet = document.getElementById("profile-apartment-street");
-  const profileApartmentInfo = document.getElementById("profile-apartment-info");
+  const profileSharedStreet = document.getElementById("profile-shared-street");
+  const profileSharedInfo = document.getElementById("profile-shared-info");
 
   const profileHouseNumber = document.getElementById("profile-house-number");
-  const profileHouseStreet = document.getElementById("profile-house-street");
   const profileHouseLandmark = document.getElementById("profile-house-landmark");
-  const profileHouseInfo = document.getElementById("profile-house-info");
 
   const profileOfficeName = document.getElementById("profile-office-name");
   const profileOfficeBuilding = document.getElementById("profile-office-building");
@@ -517,13 +505,11 @@
   function clearAddressTypeFields() {
     profileApartmentNumber.value = "";
     profileApartmentFloor.value = "";
-    profileApartmentStreet.value = "";
-    profileApartmentInfo.value = "";
+    profileSharedStreet.value = "";
+    profileSharedInfo.value = "";
 
     profileHouseNumber.value = "";
-    profileHouseStreet.value = "";
     profileHouseLandmark.value = "";
-    profileHouseInfo.value = "";
 
     profileOfficeName.value = "";
     profileOfficeBuilding.value = "";
@@ -556,15 +542,15 @@
     if (selectedAddressType === "apartment") {
       profileApartmentNumber.value = profile && profile.apartment_number ? profile.apartment_number : "";
       profileApartmentFloor.value = profile && profile.floor_number ? profile.floor_number : "";
-      profileApartmentStreet.value = profile && profile.street_name ? profile.street_name : "";
-      profileApartmentInfo.value = profile && profile.address_additional_info ? profile.address_additional_info : "";
+      profileSharedStreet.value = profile && profile.street_name ? profile.street_name : "";
+      profileSharedInfo.value = profile && profile.address_additional_info ? profile.address_additional_info : "";
     }
 
     if (selectedAddressType === "house") {
       profileHouseNumber.value = profile && profile.house_number ? profile.house_number : "";
-      profileHouseStreet.value = profile && profile.street_name ? profile.street_name : "";
       profileHouseLandmark.value = profile && profile.compound_landmark ? profile.compound_landmark : "";
-      profileHouseInfo.value = profile && profile.address_additional_info ? profile.address_additional_info : "";
+      profileSharedStreet.value = profile && profile.street_name ? profile.street_name : "";
+      profileSharedInfo.value = profile && profile.address_additional_info ? profile.address_additional_info : "";
     }
 
     if (selectedAddressType === "office") {
@@ -640,15 +626,15 @@
     if (selectedAddressType === "apartment") {
       addressPayload.apartment_number = profileApartmentNumber.value.trim();
       addressPayload.floor_number = profileApartmentFloor.value.trim();
-      addressPayload.street_name = profileApartmentStreet.value.trim();
-      addressPayload.address_additional_info = profileApartmentInfo.value.trim();
+      addressPayload.street_name = profileSharedStreet.value.trim();
+      addressPayload.address_additional_info = profileSharedInfo.value.trim();
     }
 
     if (selectedAddressType === "house") {
       addressPayload.house_number = profileHouseNumber.value.trim();
-      addressPayload.street_name = profileHouseStreet.value.trim();
       addressPayload.compound_landmark = profileHouseLandmark.value.trim();
-      addressPayload.address_additional_info = profileHouseInfo.value.trim();
+      addressPayload.street_name = profileSharedStreet.value.trim();
+      addressPayload.address_additional_info = profileSharedInfo.value.trim();
     }
 
     if (selectedAddressType === "office") {
