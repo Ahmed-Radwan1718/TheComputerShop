@@ -1525,19 +1525,8 @@ body.user-is-logged-in .account-menu-authenticated {
   word-break: break-all;
 }
 
-.account-field-card-stack {
-  min-height: auto;
-  padding: 16px;
-  align-items: flex-start;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.account-field-help {
-  color: rgba(255, 255, 255, 0.58);
-  font-size: 13px;
-  font-weight: 400;
-  line-height: 1.6;
+.security-status-card {
+  min-height: 54px;
 }
 
 @media (max-width: 620px) {
