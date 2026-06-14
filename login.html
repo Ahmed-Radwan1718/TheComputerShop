@@ -74,11 +74,101 @@
   const loginButton = document.getElementById("login-button");
   const loginMessage = document.getElementById("login-message");
 
+  const LOGIN_RATE_LIMIT_KEY = "computerShopLoginRateLimit";
+  const MAX_LOGIN_ATTEMPTS = 5;
+  const LOGIN_WINDOW_MS = 30 * 60 * 1000;
+
+  function getLoginRateLimit() {
+    try {
+      return JSON.parse(localStorage.getItem(LOGIN_RATE_LIMIT_KEY)) || {
+        attempts: 0,
+        firstAttemptAt: null,
+        lockedUntil: null
+      };
+    } catch (error) {
+      return {
+        attempts: 0,
+        firstAttemptAt: null,
+        lockedUntil: null
+      };
+    }
+  }
+
+  function saveLoginRateLimit(rateLimit) {
+    localStorage.setItem(LOGIN_RATE_LIMIT_KEY, JSON.stringify(rateLimit));
+  }
+
+  function clearLoginRateLimit() {
+    localStorage.removeItem(LOGIN_RATE_LIMIT_KEY);
+  }
+
+  function getRemainingLockMinutes(lockedUntil) {
+    const remainingMs = lockedUntil - Date.now();
+    return Math.max(1, Math.ceil(remainingMs / 60000));
+  }
+
+  function isLoginLocked() {
+    const rateLimit = getLoginRateLimit();
+
+    if (!rateLimit.lockedUntil) {
+      return false;
+    }
+
+    if (Date.now() >= rateLimit.lockedUntil) {
+      clearLoginRateLimit();
+      return false;
+    }
+
+    return true;
+  }
+
+  function recordLoginAttempt() {
+    const now = Date.now();
+    const rateLimit = getLoginRateLimit();
+
+    if (!rateLimit.firstAttemptAt || now - rateLimit.firstAttemptAt > LOGIN_WINDOW_MS) {
+      const freshRateLimit = {
+        attempts: 1,
+        firstAttemptAt: now,
+        lockedUntil: null
+      };
+
+      saveLoginRateLimit(freshRateLimit);
+      return freshRateLimit;
+    }
+
+    const updatedRateLimit = {
+      ...rateLimit,
+      attempts: Number(rateLimit.attempts || 0) + 1
+    };
+
+    if (updatedRateLimit.attempts >= MAX_LOGIN_ATTEMPTS) {
+      updatedRateLimit.lockedUntil = now + LOGIN_WINDOW_MS;
+    }
+
+    saveLoginRateLimit(updatedRateLimit);
+    return updatedRateLimit;
+  }
+
   loginForm.addEventListener("submit", async (event) => {
     event.preventDefault();
 
+    if (isLoginLocked()) {
+      const rateLimit = getLoginRateLimit();
+      const minutesLeft = getRemainingLockMinutes(rateLimit.lockedUntil);
+      loginMessage.textContent = `Too many login attempts. Please try again in ${minutesLeft} minute(s).`;
+      return;
+    }
+
     const email = document.getElementById("login-email").value.trim();
     const password = document.getElementById("login-password").value;
+
+    const rateLimit = recordLoginAttempt();
+
+    if (rateLimit.lockedUntil) {
+      loginMessage.textContent = "Too many login attempts. Please try again in 30 minutes.";
+      return;
+    }
 
     loginButton.disabled = true;
     loginButton.textContent = "Logging in...";
@@ -96,6 +186,7 @@
       return;
     }
 
+    clearLoginRateLimit();
     window.location.href = "index.html";
   });
 </script>
