@@ -97,7 +97,7 @@
             <div class="account-field-group">
               <label class="account-field-label" for="profile-full-name">Full Name</label>
               <div class="account-field-card">
-                <input id="profile-full-name" class="account-profile-input" type="text" placeholder="Add your name">
+                <input id="profile-full-name" class="account-profile-input" type="text" readonly>
               </div>
             </div>
 
@@ -374,7 +374,6 @@
 
     const profilePayload = {
       id: currentUser.id,
-      full_name: profileFullName.value.trim(),
       phone: profilePhone.value.trim(),
       default_address: profileDefaultAddress.value.trim(),
       city_area: profileCityArea.value.trim(),
@@ -392,19 +391,6 @@
 
     if (profileError) {
       profileSaveMessage.textContent = profileError.message;
-      saveProfileButton.disabled = false;
-      saveProfileButton.textContent = "Save Changes";
-      return;
-    }
-
-    const { error: userError } = await supabaseClient.auth.updateUser({
-      data: {
-        full_name: profilePayload.full_name
-      }
-    });
-
-    if (userError) {
-      profileSaveMessage.textContent = "Profile saved, but account name metadata could not be updated.";
       saveProfileButton.disabled = false;
       saveProfileButton.textContent = "Save Changes";
       return;
