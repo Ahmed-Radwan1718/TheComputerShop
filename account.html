@@ -355,13 +355,43 @@
         <h1 class="account-panel-title">Security</h1>
 
         <div class="account-section">
-          <h2>Login Security</h2>
-          <p>Your account is protected by email verification and Supabase authentication. Password reset and 2FA controls can be added here next.</p>
+          <h2>Password</h2>
 
           <div class="account-action-row">
             <a href="forgot-password.html" class="account-action-button">Change Password</a>
-            <button class="account-action-button secondary" type="button" disabled>2FA Coming Soon</button>
           </div>
+        </div>
+
+        <div class="account-section">
+          <h2>Two-Factor Authentication</h2>
+
+          <div class="account-placeholder-card">
+            <h3>2FA is not enabled yet</h3>
+            <p>Add an authenticator app to protect your account with a second login step.</p>
+          </div>
+
+          <div class="account-action-row">
+            <button id="enable-2fa-button" class="account-action-button secondary" type="button">
+              Enable 2FA
+            </button>
+          </div>
+        </div>
+
+        <div class="account-section">
+          <h2>Sessions</h2>
+
+          <div class="account-placeholder-card">
+            <h3>Sign out everywhere</h3>
+            <p>This signs your account out from all active devices and browsers.</p>
+          </div>
+
+          <div class="account-action-row">
+            <button id="sign-out-everywhere-button" class="account-action-button secondary" type="button">
+              Sign Out Everywhere
+            </button>
+          </div>
+
+          <p id="security-message" class="account-save-message"></p>
         </div>
       </div>
 
@@ -427,6 +457,8 @@
   const profileContactMethodOptions = document.querySelectorAll("[data-contact-value]");
   const profileBestContactTime = document.getElementById("profile-best-contact-time");
   const saveProfileButton = document.getElementById("save-profile-button");
+  const signOutEverywhereButton = document.getElementById("sign-out-everywhere-button");
+  const securityMessage = document.getElementById("security-message");
   const profileSaveMessage = document.getElementById("profile-save-message");
 
   let currentUser = null;
@@ -726,6 +758,27 @@
   });
 
   saveProfileButton.addEventListener("click", saveProfile);
+
+  if (signOutEverywhereButton) {
+    signOutEverywhereButton.addEventListener("click", async () => {
+      signOutEverywhereButton.disabled = true;
+      signOutEverywhereButton.textContent = "Signing Out...";
+      securityMessage.textContent = "";
+
+      const { error } = await supabaseClient.auth.signOut({
+        scope: "global"
+      });
+
+      if (error) {
+        securityMessage.textContent = error.message;
+        signOutEverywhereButton.disabled = false;
+        signOutEverywhereButton.textContent = "Sign Out Everywhere";
+        return;
+      }
+
+      window.location.href = "login.html";
+    });
+  }
 
   logoutButton.addEventListener("click", async () => {
     logoutButton.disabled = true;
