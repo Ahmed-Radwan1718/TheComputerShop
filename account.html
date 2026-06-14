@@ -425,6 +425,8 @@
             </button>
           </div>
 
+          <p id="mfa-message" class="account-save-message"></p>
+
           <div id="mfa-setup-box" class="mfa-setup-box">
             <div class="account-field-grid">
               <div class="account-field-group">
@@ -461,7 +463,6 @@
               </button>
             </div>
 
-            <p id="mfa-message" class="account-save-message"></p>
           </div>
         </div>
 
@@ -553,7 +554,6 @@
   const passwordChangeMessage = document.getElementById("password-change-message");
 
   const mfaStatusTitle = document.getElementById("mfa-status-title");
-  const mfaStatusText = document.getElementById("mfa-status-text");
   const enable2faButton = document.getElementById("enable-2fa-button");
   const disable2faButton = document.getElementById("disable-2fa-button");
   const mfaSetupBox = document.getElementById("mfa-setup-box");
@@ -870,7 +870,9 @@
 
     if (error) {
       mfaStatusTitle.textContent = "Could not check 2FA status";
-      mfaStatusText.textContent = error.message;
+      if (mfaMessage) {
+        mfaMessage.textContent = error.message;
+      }
       return;
     }
 
@@ -879,7 +881,6 @@
     if (verifiedTotpFactor) {
       verifiedMfaFactorId = verifiedTotpFactor.id;
       mfaStatusTitle.textContent = "2FA is enabled";
-      mfaStatusText.textContent = "Your account is protected with an authenticator app.";
       enable2faButton.style.display = "none";
       disable2faButton.style.display = "inline-flex";
       mfaSetupBox.classList.remove("active");
@@ -888,7 +889,6 @@
 
     verifiedMfaFactorId = null;
     mfaStatusTitle.textContent = "2FA is not enabled";
-    mfaStatusText.textContent = "Add an authenticator app to protect your account with a second login step.";
     enable2faButton.style.display = "inline-flex";
     disable2faButton.style.display = "none";
   }
@@ -913,7 +913,13 @@
     pendingMfaFactorId = data.id;
 
     const qrCodeSvg = data.totp.qr_code;
-    mfaQrImage.src = `data:image/svg+xml;utf8,${encodeURIComponent(qrCodeSvg)}`;
+
+    if (qrCodeSvg.startsWith("data:image")) {
+      mfaQrImage.src = qrCodeSvg;
+    } else {
+      mfaQrImage.src = `data:image/svg+xml;utf8,${encodeURIComponent(qrCodeSvg)}`;
+    }
+
     mfaSecretBox.textContent = `Manual setup key: ${data.totp.secret}`;
 
     mfaSetupBox.classList.add("active");
