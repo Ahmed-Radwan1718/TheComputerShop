@@ -300,14 +300,22 @@
 
           <div class="account-field-grid">
             <div class="account-field-group">
-              <label class="account-field-label" for="profile-contact-method">Preferred Contact Method</label>
-              <div class="account-field-card">
-                <select id="profile-contact-method" class="account-profile-select">
-                  <option value="">No preference</option>
-                  <option value="WhatsApp">WhatsApp</option>
-                  <option value="Email">Email</option>
-                  <option value="Phone Call">Phone Call</option>
-                </select>
+              <label class="account-field-label" for="profile-contact-method-button">Preferred Contact Method</label>
+
+              <div class="account-custom-select" id="profile-contact-method-dropdown">
+                <input id="profile-contact-method" type="hidden" value="">
+
+                <button id="profile-contact-method-button" class="account-custom-select-button" type="button" aria-expanded="false">
+                  <span id="profile-contact-method-label">No preference</span>
+                  <span class="account-custom-select-chevron" aria-hidden="true"></span>
+                </button>
+
+                <div class="account-custom-select-menu">
+                  <button class="account-custom-select-option" type="button" data-contact-value="">No preference</button>
+                  <button class="account-custom-select-option" type="button" data-contact-value="WhatsApp">WhatsApp</button>
+                  <button class="account-custom-select-option" type="button" data-contact-value="Email">Email</button>
+                  <button class="account-custom-select-option" type="button" data-contact-value="Phone Call">Phone Call</button>
+                </div>
               </div>
             </div>
 
@@ -458,6 +466,10 @@
 
   let selectedAddressType = "apartment";
   const profileContactMethod = document.getElementById("profile-contact-method");
+  const profileContactMethodDropdown = document.getElementById("profile-contact-method-dropdown");
+  const profileContactMethodButton = document.getElementById("profile-contact-method-button");
+  const profileContactMethodLabel = document.getElementById("profile-contact-method-label");
+  const profileContactMethodOptions = document.querySelectorAll("[data-contact-value]");
   const profileBestContactTime = document.getElementById("profile-best-contact-time");
   const profileEmailVerified = document.getElementById("profile-email-verified");
   const profileCreatedAt = document.getElementById("profile-created-at");
@@ -500,6 +512,20 @@
   function closeAddressAreaDropdown() {
     profileAddressAreaDropdown.classList.remove("open");
     profileAddressAreaButton.setAttribute("aria-expanded", "false");
+  }
+
+  function setContactMethod(contactValue) {
+    profileContactMethod.value = contactValue || "";
+    profileContactMethodLabel.textContent = contactValue || "No preference";
+
+    profileContactMethodOptions.forEach((option) => {
+      option.classList.toggle("active", option.dataset.contactValue === contactValue);
+    });
+  }
+
+  function closeContactMethodDropdown() {
+    profileContactMethodDropdown.classList.remove("open");
+    profileContactMethodButton.setAttribute("aria-expanded", "false");
   }
 
   function setAddressType(addressType) {
@@ -576,7 +602,7 @@
       profileOfficeInfo.value = profile && profile.address_additional_info ? profile.address_additional_info : "";
     }
 
-    profileContactMethod.value = profile && profile.preferred_contact_method ? profile.preferred_contact_method : "";
+    setContactMethod(profile && profile.preferred_contact_method ? profile.preferred_contact_method : "");
     profileBestContactTime.value = profile && profile.best_contact_time ? profile.best_contact_time : "";
     profileEmailVerified.textContent = user.email_confirmed_at ? "Yes" : "No";
     profileCreatedAt.textContent = formatAccountDate(user.created_at);
@@ -717,15 +743,36 @@
     });
   });
 
+  profileContactMethodButton.addEventListener("click", (event) => {
+    event.stopPropagation();
+    profileContactMethodDropdown.classList.toggle("open");
+    profileContactMethodButton.setAttribute(
+      "aria-expanded",
+      profileContactMethodDropdown.classList.contains("open") ? "true" : "false"
+    );
+  });
+
+  profileContactMethodOptions.forEach((option) => {
+    option.addEventListener("click", () => {
+      setContactMethod(option.dataset.contactValue);
+      closeContactMethodDropdown();
+    });
+  });
+
   document.addEventListener("click", (event) => {
     if (!profileAddressAreaDropdown.contains(event.target)) {
       closeAddressAreaDropdown();
+    }
+
+    if (!profileContactMethodDropdown.contains(event.target)) {
+      closeContactMethodDropdown();
     }
   });
 
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
       closeAddressAreaDropdown();
+      closeContactMethodDropdown();
     }
   });
 
