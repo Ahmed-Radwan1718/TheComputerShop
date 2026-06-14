@@ -118,28 +118,170 @@
         </div>
 
         <div class="account-section">
-          <h2>Saved Address</h2>
+          <h2>Delivery Address</h2>
           <p>Save your delivery details so future cart requests and support forms are faster to complete.</p>
 
           <div class="account-field-grid">
             <div class="account-field-group">
-              <label class="account-field-label" for="profile-default-address">Default Delivery Address</label>
-              <div class="account-field-card account-field-card-textarea">
-                <textarea id="profile-default-address" class="account-profile-textarea" placeholder="Add your default address"></textarea>
-              </div>
-            </div>
-
-            <div class="account-field-group">
-              <label class="account-field-label" for="profile-city-area">City / Area</label>
+              <label class="account-field-label" for="profile-address-area">Area / District</label>
               <div class="account-field-card">
-                <input id="profile-city-area" class="account-profile-input" type="text" placeholder="Add your city or area">
+                <select id="profile-address-area" class="account-profile-select">
+                  <option value="">Select area</option>
+                  <option value="New Cairo">New Cairo</option>
+                  <option value="Nasr City">Nasr City</option>
+                  <option value="Heliopolis">Heliopolis</option>
+                  <option value="Maadi">Maadi</option>
+                  <option value="Zamalek">Zamalek</option>
+                  <option value="Downtown Cairo">Downtown Cairo</option>
+                  <option value="Garden City">Garden City</option>
+                  <option value="Mokattam">Mokattam</option>
+                  <option value="Rehab">Rehab</option>
+                  <option value="Madinaty">Madinaty</option>
+                  <option value="Shorouk">Shorouk</option>
+                  <option value="Obour">Obour</option>
+                  <option value="6th of October">6th of October</option>
+                  <option value="Sheikh Zayed">Sheikh Zayed</option>
+                  <option value="Dokki">Dokki</option>
+                  <option value="Mohandessin">Mohandessin</option>
+                  <option value="Haram / Faisal">Haram / Faisal</option>
+                  <option value="Giza">Giza</option>
+                  <option value="Manial">Manial</option>
+                  <option value="Abbasiya">Abbasiya</option>
+                  <option value="Ain Shams">Ain Shams</option>
+                  <option value="Shubra">Shubra</option>
+                  <option value="Helwan">Helwan</option>
+                  <option value="Other">Other</option>
+                </select>
               </div>
             </div>
 
             <div class="account-field-group">
-              <label class="account-field-label" for="profile-delivery-notes">Delivery Notes</label>
-              <div class="account-field-card account-field-card-textarea">
-                <textarea id="profile-delivery-notes" class="account-profile-textarea" placeholder="Apartment, floor, landmark, or delivery notes"></textarea>
+              <label class="account-field-label" for="profile-address-city">City / Neighborhood</label>
+              <div class="account-field-card">
+                <input id="profile-address-city" class="account-profile-input" type="text" placeholder="Type your city or neighborhood">
+              </div>
+            </div>
+
+            <div class="account-field-group">
+              <label class="account-field-label" for="profile-google-plus-code">Google Plus Code</label>
+              <div class="account-field-card">
+                <input id="profile-google-plus-code" class="account-profile-input" type="text" placeholder="Example: 2C5X+7Q">
+              </div>
+            </div>
+          </div>
+
+          <div class="address-type-grid">
+            <button class="address-type-button active" type="button" data-address-type="apartment">Apartment</button>
+            <button class="address-type-button" type="button" data-address-type="house">House / Villa</button>
+            <button class="address-type-button" type="button" data-address-type="office">Office</button>
+          </div>
+
+          <div class="address-fields-group active" data-address-fields="apartment">
+            <div class="account-field-grid">
+              <div class="account-field-group">
+                <label class="account-field-label" for="profile-apartment-number">Apartment Number</label>
+                <div class="account-field-card">
+                  <input id="profile-apartment-number" class="account-profile-input" type="text" placeholder="Apartment number">
+                </div>
+              </div>
+
+              <div class="account-field-group">
+                <label class="account-field-label" for="profile-apartment-floor">Floor Number</label>
+                <div class="account-field-card">
+                  <input id="profile-apartment-floor" class="account-profile-input" type="text" placeholder="Floor number">
+                </div>
+              </div>
+
+              <div class="account-field-group">
+                <label class="account-field-label" for="profile-apartment-street">Street Name</label>
+                <div class="account-field-card">
+                  <input id="profile-apartment-street" class="account-profile-input" type="text" placeholder="Street name">
+                </div>
+              </div>
+
+              <div class="account-field-group">
+                <label class="account-field-label" for="profile-apartment-info">Additional Info</label>
+                <div class="account-field-card account-field-card-textarea">
+                  <textarea id="profile-apartment-info" class="account-profile-textarea" placeholder="Building name, landmark, gate, or delivery notes"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="address-fields-group" data-address-fields="house">
+            <div class="account-field-grid">
+              <div class="account-field-group">
+                <label class="account-field-label" for="profile-house-number">House / Villa Number</label>
+                <div class="account-field-card">
+                  <input id="profile-house-number" class="account-profile-input" type="text" placeholder="House or villa number">
+                </div>
+              </div>
+
+              <div class="account-field-group">
+                <label class="account-field-label" for="profile-house-street">Street Name</label>
+                <div class="account-field-card">
+                  <input id="profile-house-street" class="account-profile-input" type="text" placeholder="Street name">
+                </div>
+              </div>
+
+              <div class="account-field-group">
+                <label class="account-field-label" for="profile-house-landmark">Compound / Landmark</label>
+                <div class="account-field-card">
+                  <input id="profile-house-landmark" class="account-profile-input" type="text" placeholder="Compound, gate, or nearby landmark">
+                </div>
+              </div>
+
+              <div class="account-field-group">
+                <label class="account-field-label" for="profile-house-info">Additional Info</label>
+                <div class="account-field-card account-field-card-textarea">
+                  <textarea id="profile-house-info" class="account-profile-textarea" placeholder="Any extra delivery instructions"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="address-fields-group" data-address-fields="office">
+            <div class="account-field-grid">
+              <div class="account-field-group">
+                <label class="account-field-label" for="profile-office-name">Office / Company Name</label>
+                <div class="account-field-card">
+                  <input id="profile-office-name" class="account-profile-input" type="text" placeholder="Office or company name">
+                </div>
+              </div>
+
+              <div class="account-field-group">
+                <label class="account-field-label" for="profile-office-building">Building Name / Number</label>
+                <div class="account-field-card">
+                  <input id="profile-office-building" class="account-profile-input" type="text" placeholder="Building name or number">
+                </div>
+              </div>
+
+              <div class="account-field-group">
+                <label class="account-field-label" for="profile-office-number">Office Number</label>
+                <div class="account-field-card">
+                  <input id="profile-office-number" class="account-profile-input" type="text" placeholder="Office number">
+                </div>
+              </div>
+
+              <div class="account-field-group">
+                <label class="account-field-label" for="profile-office-floor">Floor Number</label>
+                <div class="account-field-card">
+                  <input id="profile-office-floor" class="account-profile-input" type="text" placeholder="Floor number">
+                </div>
+              </div>
+
+              <div class="account-field-group">
+                <label class="account-field-label" for="profile-office-street">Street Name</label>
+                <div class="account-field-card">
+                  <input id="profile-office-street" class="account-profile-input" type="text" placeholder="Street name">
+                </div>
+              </div>
+
+              <div class="account-field-group">
+                <label class="account-field-label" for="profile-office-info">Additional Info</label>
+                <div class="account-field-card account-field-card-textarea">
+                  <textarea id="profile-office-info" class="account-profile-textarea" placeholder="Reception instructions, landmark, or delivery notes"></textarea>
+                </div>
               </div>
             </div>
           </div>
@@ -280,9 +422,30 @@
 
   const profileFullName = document.getElementById("profile-full-name");
   const profilePhone = document.getElementById("profile-phone");
-  const profileDefaultAddress = document.getElementById("profile-default-address");
-  const profileCityArea = document.getElementById("profile-city-area");
-  const profileDeliveryNotes = document.getElementById("profile-delivery-notes");
+  const profileAddressArea = document.getElementById("profile-address-area");
+  const profileAddressCity = document.getElementById("profile-address-city");
+  const profileGooglePlusCode = document.getElementById("profile-google-plus-code");
+  const addressTypeButtons = document.querySelectorAll("[data-address-type]");
+  const addressFieldsGroups = document.querySelectorAll("[data-address-fields]");
+
+  const profileApartmentNumber = document.getElementById("profile-apartment-number");
+  const profileApartmentFloor = document.getElementById("profile-apartment-floor");
+  const profileApartmentStreet = document.getElementById("profile-apartment-street");
+  const profileApartmentInfo = document.getElementById("profile-apartment-info");
+
+  const profileHouseNumber = document.getElementById("profile-house-number");
+  const profileHouseStreet = document.getElementById("profile-house-street");
+  const profileHouseLandmark = document.getElementById("profile-house-landmark");
+  const profileHouseInfo = document.getElementById("profile-house-info");
+
+  const profileOfficeName = document.getElementById("profile-office-name");
+  const profileOfficeBuilding = document.getElementById("profile-office-building");
+  const profileOfficeNumber = document.getElementById("profile-office-number");
+  const profileOfficeFloor = document.getElementById("profile-office-floor");
+  const profileOfficeStreet = document.getElementById("profile-office-street");
+  const profileOfficeInfo = document.getElementById("profile-office-info");
+
+  let selectedAddressType = "apartment";
   const profileContactMethod = document.getElementById("profile-contact-method");
   const profileBestContactTime = document.getElementById("profile-best-contact-time");
   const profileEmailVerified = document.getElementById("profile-email-verified");
@@ -314,6 +477,37 @@
     }).format(new Date(value));
   }
 
+  function setAddressType(addressType) {
+    selectedAddressType = addressType || "apartment";
+
+    addressTypeButtons.forEach((button) => {
+      button.classList.toggle("active", button.dataset.addressType === selectedAddressType);
+    });
+
+    addressFieldsGroups.forEach((group) => {
+      group.classList.toggle("active", group.dataset.addressFields === selectedAddressType);
+    });
+  }
+
+  function clearAddressTypeFields() {
+    profileApartmentNumber.value = "";
+    profileApartmentFloor.value = "";
+    profileApartmentStreet.value = "";
+    profileApartmentInfo.value = "";
+
+    profileHouseNumber.value = "";
+    profileHouseStreet.value = "";
+    profileHouseLandmark.value = "";
+    profileHouseInfo.value = "";
+
+    profileOfficeName.value = "";
+    profileOfficeBuilding.value = "";
+    profileOfficeNumber.value = "";
+    profileOfficeFloor.value = "";
+    profileOfficeStreet.value = "";
+    profileOfficeInfo.value = "";
+  }
+
   function setProfileForm(profile, user) {
     const metadataName = user.user_metadata && user.user_metadata.full_name
       ? user.user_metadata.full_name
@@ -326,9 +520,37 @@
       : user.user_metadata && user.user_metadata.phone
         ? user.user_metadata.phone
         : "";
-    profileDefaultAddress.value = profile && profile.default_address ? profile.default_address : "";
-    profileCityArea.value = profile && profile.city_area ? profile.city_area : "";
-    profileDeliveryNotes.value = profile && profile.delivery_notes ? profile.delivery_notes : "";
+
+    profileAddressArea.value = profile && profile.address_area ? profile.address_area : "";
+    profileAddressCity.value = profile && profile.address_city ? profile.address_city : "";
+    profileGooglePlusCode.value = profile && profile.google_plus_code ? profile.google_plus_code : "";
+
+    clearAddressTypeFields();
+    setAddressType(profile && profile.address_type ? profile.address_type : "apartment");
+
+    if (selectedAddressType === "apartment") {
+      profileApartmentNumber.value = profile && profile.apartment_number ? profile.apartment_number : "";
+      profileApartmentFloor.value = profile && profile.floor_number ? profile.floor_number : "";
+      profileApartmentStreet.value = profile && profile.street_name ? profile.street_name : "";
+      profileApartmentInfo.value = profile && profile.address_additional_info ? profile.address_additional_info : "";
+    }
+
+    if (selectedAddressType === "house") {
+      profileHouseNumber.value = profile && profile.house_number ? profile.house_number : "";
+      profileHouseStreet.value = profile && profile.street_name ? profile.street_name : "";
+      profileHouseLandmark.value = profile && profile.compound_landmark ? profile.compound_landmark : "";
+      profileHouseInfo.value = profile && profile.address_additional_info ? profile.address_additional_info : "";
+    }
+
+    if (selectedAddressType === "office") {
+      profileOfficeName.value = profile && profile.office_name ? profile.office_name : "";
+      profileOfficeBuilding.value = profile && profile.building_name ? profile.building_name : "";
+      profileOfficeNumber.value = profile && profile.office_number ? profile.office_number : "";
+      profileOfficeFloor.value = profile && profile.floor_number ? profile.floor_number : "";
+      profileOfficeStreet.value = profile && profile.street_name ? profile.street_name : "";
+      profileOfficeInfo.value = profile && profile.address_additional_info ? profile.address_additional_info : "";
+    }
+
     profileContactMethod.value = profile && profile.preferred_contact_method ? profile.preferred_contact_method : "";
     profileBestContactTime.value = profile && profile.best_contact_time ? profile.best_contact_time : "";
     profileEmailVerified.textContent = user.email_confirmed_at ? "Yes" : "No";
@@ -376,12 +598,49 @@
     saveProfileButton.textContent = "Saving...";
     profileSaveMessage.textContent = "";
 
+    const addressPayload = {
+      address_type: selectedAddressType,
+      address_area: profileAddressArea.value,
+      address_city: profileAddressCity.value.trim(),
+      google_plus_code: profileGooglePlusCode.value.trim(),
+      apartment_number: null,
+      floor_number: null,
+      street_name: null,
+      address_additional_info: null,
+      house_number: null,
+      compound_landmark: null,
+      office_name: null,
+      office_number: null,
+      building_name: null
+    };
+
+    if (selectedAddressType === "apartment") {
+      addressPayload.apartment_number = profileApartmentNumber.value.trim();
+      addressPayload.floor_number = profileApartmentFloor.value.trim();
+      addressPayload.street_name = profileApartmentStreet.value.trim();
+      addressPayload.address_additional_info = profileApartmentInfo.value.trim();
+    }
+
+    if (selectedAddressType === "house") {
+      addressPayload.house_number = profileHouseNumber.value.trim();
+      addressPayload.street_name = profileHouseStreet.value.trim();
+      addressPayload.compound_landmark = profileHouseLandmark.value.trim();
+      addressPayload.address_additional_info = profileHouseInfo.value.trim();
+    }
+
+    if (selectedAddressType === "office") {
+      addressPayload.office_name = profileOfficeName.value.trim();
+      addressPayload.building_name = profileOfficeBuilding.value.trim();
+      addressPayload.office_number = profileOfficeNumber.value.trim();
+      addressPayload.floor_number = profileOfficeFloor.value.trim();
+      addressPayload.street_name = profileOfficeStreet.value.trim();
+      addressPayload.address_additional_info = profileOfficeInfo.value.trim();
+    }
+
     const profilePayload = {
       id: currentUser.id,
       phone: profilePhone.value.trim(),
-      default_address: profileDefaultAddress.value.trim(),
-      city_area: profileCityArea.value.trim(),
-      delivery_notes: profileDeliveryNotes.value.trim(),
+      ...addressPayload,
       preferred_contact_method: profileContactMethod.value,
       best_contact_time: profileBestContactTime.value.trim(),
       updated_at: new Date().toISOString()
@@ -408,6 +667,12 @@
   accountSidebarButtons.forEach((button) => {
     button.addEventListener("click", () => {
       switchAccountPanel(button.dataset.accountPanel);
+    });
+  });
+
+  addressTypeButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      setAddressType(button.dataset.addressType);
     });
   });
 
