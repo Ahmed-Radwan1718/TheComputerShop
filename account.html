@@ -29,27 +29,136 @@
   </button>
 </header>
 
-<main style="min-height: 100vh; padding: 150px 24px 80px; background: #000; color: white;">
-  <section style="width: 100%; max-width: 520px; margin: 0 auto; padding: 34px; border-radius: 24px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);">
-    <p style="margin-bottom: 14px; color: rgba(255,255,255,0.58); font-size: 13px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;">Account</p>
-    <h1 style="margin-bottom: 12px; font-size: 34px; line-height: 1.1;">My Account</h1>
-    <p id="account-message" style="margin-bottom: 26px; color: rgba(255,255,255,0.68); line-height: 1.7;">Loading your account...</p>
+<main class="account-dashboard-page">
+  <section class="account-dashboard-shell">
+    <aside class="account-sidebar">
+      <h2 class="account-sidebar-title">Account</h2>
 
-    <div id="account-details" style="display: none;">
-      <div style="padding: 18px; border-radius: 18px; background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.1); margin-bottom: 18px;">
-        <p style="margin-bottom: 8px; color: rgba(255,255,255,0.52); font-size: 13px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;">Name</p>
-        <strong id="account-name" style="font-size: 18px;">—</strong>
+      <div class="account-sidebar-group">
+        <button class="account-sidebar-button active" type="button" data-account-panel="details">
+          <span class="account-sidebar-icon">◎</span>
+          <span>Account Details</span>
+        </button>
+
+        <button class="account-sidebar-button" type="button" data-account-panel="saved">
+          <span class="account-sidebar-icon">◇</span>
+          <span>Saved for Later</span>
+        </button>
+
+        <button class="account-sidebar-button" type="button" data-account-panel="requests">
+          <span class="account-sidebar-icon">□</span>
+          <span>Requests</span>
+        </button>
+
+        <button class="account-sidebar-button" type="button" data-account-panel="security">
+          <span class="account-sidebar-icon">◌</span>
+          <span>Security</span>
+        </button>
+
+        <button class="account-sidebar-button" type="button" data-account-panel="support">
+          <span class="account-sidebar-icon">△</span>
+          <span>Support History</span>
+        </button>
       </div>
 
-      <div style="padding: 18px; border-radius: 18px; background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.1); margin-bottom: 24px;">
-        <p style="margin-bottom: 8px; color: rgba(255,255,255,0.52); font-size: 13px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;">Email</p>
-        <strong id="account-email" style="font-size: 18px;">—</strong>
+      <div class="account-sidebar-divider"></div>
+
+      <div class="account-sidebar-group">
+        <button id="logout-button" class="account-sidebar-button" type="button">
+          <span class="account-sidebar-icon">×</span>
+          <span>Log Out</span>
+        </button>
+      </div>
+    </aside>
+
+    <section class="account-panel-area">
+      <div class="account-panel active" data-account-panel-content="details">
+        <p class="account-panel-kicker">Account</p>
+        <h1 class="account-panel-title">Account Details</h1>
+        <p id="account-message" class="account-panel-subtitle">Loading your account...</p>
+
+        <div class="account-section">
+          <h2>Account Information</h2>
+          <p>Your account information is used to keep your requests, saved items, and support history connected to you.</p>
+
+          <div class="account-field-grid">
+            <div class="account-field-card">
+              <span class="account-field-label">Name</span>
+              <strong id="account-name" class="account-field-value">—</strong>
+            </div>
+
+            <div class="account-field-card">
+              <span class="account-field-label">Email</span>
+              <strong id="account-email" class="account-field-value">—</strong>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <button id="logout-button" type="button" style="width: 100%; padding: 15px 18px; border: 0; border-radius: 999px; background: white; color: black; font-size: 15px; font-weight: 800; cursor: pointer;">
-        Log Out
-      </button>
-    </div>
+      <div class="account-panel" data-account-panel-content="saved">
+        <p class="account-panel-kicker">Saved Items</p>
+        <h1 class="account-panel-title">Saved for Later</h1>
+        <p class="account-panel-subtitle">Keep products here when you are interested in them but not ready to add them to your cart.</p>
+
+        <div class="account-section">
+          <h2>Saved for Later</h2>
+          <p>We will connect this section to saved products next. For now, this panel is ready for the feature.</p>
+
+          <div class="account-placeholder-card">
+            <h3>No saved items yet</h3>
+            <p>Products you save for later will appear here.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="account-panel" data-account-panel-content="requests">
+        <p class="account-panel-kicker">Requests</p>
+        <h1 class="account-panel-title">Requests</h1>
+        <p class="account-panel-subtitle">Track custom PC requests, cart submissions, and quote requests from your account.</p>
+
+        <div class="account-section">
+          <h2>Request History</h2>
+          <p>When you submit a custom PC request or a cart request, it will appear here with its status.</p>
+
+          <div class="account-placeholder-card">
+            <h3>No requests yet</h3>
+            <p>Your request history will appear here once the request system is connected.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="account-panel" data-account-panel-content="security">
+        <p class="account-panel-kicker">Security</p>
+        <h1 class="account-panel-title">Security</h1>
+        <p class="account-panel-subtitle">Manage account protection, password access, and future two-factor authentication settings.</p>
+
+        <div class="account-section">
+          <h2>Login Security</h2>
+          <p>Your account is protected by email verification and Supabase authentication. Password reset and 2FA controls can be added here next.</p>
+
+          <div class="account-action-row">
+            <a href="forgot-password.html" class="account-action-button">Change Password</a>
+            <button class="account-action-button secondary" type="button" disabled>2FA Coming Soon</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="account-panel" data-account-panel-content="support">
+        <p class="account-panel-kicker">Support</p>
+        <h1 class="account-panel-title">Support History</h1>
+        <p class="account-panel-subtitle">Keep support and troubleshooting history connected to your account.</p>
+
+        <div class="account-section">
+          <h2>Support History</h2>
+          <p>Support records for products bought from The Computer Shop can appear here later.</p>
+
+          <div class="account-placeholder-card">
+            <h3>No support history yet</h3>
+            <p>Support and troubleshooting records will appear here once this feature is connected.</p>
+          </div>
+        </div>
+      </div>
+    </section>
   </section>
 </main>
 
@@ -58,10 +167,27 @@
 
 <script>
   const accountMessage = document.getElementById("account-message");
-  const accountDetails = document.getElementById("account-details");
   const accountName = document.getElementById("account-name");
   const accountEmail = document.getElementById("account-email");
   const logoutButton = document.getElementById("logout-button");
+  const accountSidebarButtons = document.querySelectorAll("[data-account-panel]");
+  const accountPanels = document.querySelectorAll("[data-account-panel-content]");
+
+  function switchAccountPanel(panelName) {
+    accountSidebarButtons.forEach((button) => {
+      button.classList.toggle("active", button.dataset.accountPanel === panelName);
+    });
+
+    accountPanels.forEach((panel) => {
+      panel.classList.toggle("active", panel.dataset.accountPanelContent === panelName);
+    });
+  }
+
+  accountSidebarButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      switchAccountPanel(button.dataset.accountPanel);
+    });
+  });
 
   async function loadAccount() {
     const { data, error } = await supabaseClient.auth.getUser();
@@ -78,13 +204,12 @@
 
     accountName.textContent = fullName;
     accountEmail.textContent = user.email;
-    accountMessage.textContent = "You are logged in.";
-    accountDetails.style.display = "block";
+    accountMessage.textContent = "Manage your saved items, requests, security, and account information.";
   }
 
   logoutButton.addEventListener("click", async () => {
     logoutButton.disabled = true;
-    logoutButton.textContent = "Logging out...";
+    logoutButton.querySelector("span:last-child").textContent = "Logging Out...";
 
     await supabaseClient.auth.signOut();
 
