@@ -91,7 +91,6 @@
 
         <div class="account-section">
           <h2>Account Information</h2>
-          <p>Your account information is used to keep your requests, saved items, and support history connected to you.</p>
 
           <div class="account-field-grid">
             <div class="account-field-group">
@@ -119,7 +118,6 @@
 
         <div class="account-section">
           <h2>Delivery Address</h2>
-          <p>Save your delivery details so future cart requests and support forms are faster to complete.</p>
 
           <div class="account-field-grid">
             <div class="account-field-group">
@@ -296,7 +294,6 @@
 
         <div class="account-section">
           <h2>Communication</h2>
-          <p>Choose how and when you prefer to be contacted about requests, quotes, and support.</p>
 
           <div class="account-field-grid">
             <div class="account-field-group">
@@ -328,34 +325,13 @@
           </div>
         </div>
 
-        <div class="account-section">
-          <h2>Account Status</h2>
-          <p>Basic account status information from your login profile.</p>
-
-          <div class="account-field-grid">
-            <div class="account-field-group">
-              <span class="account-field-label">Email Verified</span>
-              <div class="account-field-card">
-                <strong id="profile-email-verified" class="account-field-value">—</strong>
-              </div>
-            </div>
-
-            <div class="account-field-group">
-              <span class="account-field-label">Account Created</span>
-              <div class="account-field-card">
-                <strong id="profile-created-at" class="account-field-value">—</strong>
-              </div>
-            </div>
-          </div>
-
-          <div class="account-action-row">
-            <button id="save-profile-button" class="account-action-button" type="button">
-              Save Changes
-            </button>
-          </div>
-
-          <p id="profile-save-message" class="account-save-message"></p>
+        <div class="account-action-row">
+          <button id="save-profile-button" class="account-action-button" type="button">
+            Save Changes
+          </button>
         </div>
+
+        <p id="profile-save-message" class="account-save-message"></p>
       </div>
 
       <div class="account-panel" data-account-panel-content="saved">
@@ -471,8 +447,6 @@
   const profileContactMethodLabel = document.getElementById("profile-contact-method-label");
   const profileContactMethodOptions = document.querySelectorAll("[data-contact-value]");
   const profileBestContactTime = document.getElementById("profile-best-contact-time");
-  const profileEmailVerified = document.getElementById("profile-email-verified");
-  const profileCreatedAt = document.getElementById("profile-created-at");
   const saveProfileButton = document.getElementById("save-profile-button");
   const profileSaveMessage = document.getElementById("profile-save-message");
 
@@ -604,8 +578,6 @@
 
     setContactMethod(profile && profile.preferred_contact_method ? profile.preferred_contact_method : "");
     profileBestContactTime.value = profile && profile.best_contact_time ? profile.best_contact_time : "";
-    profileEmailVerified.textContent = user.email_confirmed_at ? "Yes" : "No";
-    profileCreatedAt.textContent = formatAccountDate(user.created_at);
   }
 
   async function loadProfile(user) {
