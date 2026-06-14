@@ -83,11 +83,119 @@ async function updateAccountMenuState() {
   }
 }
 
+const CART_STORAGE_KEY = "computerShopCart";
+
+function getLocalCartItems() {
+  try {
+    return JSON.parse(localStorage.getItem(CART_STORAGE_KEY)) || [];
+  } catch (error) {
+    return [];
+  }
+}
+
+function saveLocalCartItems(cartItems) {
+  localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartItems));
+}
+
+async function getLoggedInUser() {
+  const { data, error } = await supabaseClient.auth.getUser();
+
+  if (error || !data.user) {
+    return null;
+  }
+
+  return data.user;
+}
+
+async function loadSavedCartFromSupabase(userId) {
+  const { data, error } = await supabaseClient
+    .from("user_carts")
+    .select("cart_items")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (error) {
+    console.error("Could not load saved cart:", error.message);
+    return null;
+  }
+
+  return data ? data.cart_items : null;
+}
+
+async function saveCartToSupabase(cartItems) {
+  const user = await getLoggedInUser();
+
+  if (!user) {
+    return;
+  }
+
+  const { error } = await supabaseClient
+    .from("user_carts")
+    .upsert({
+      user_id: user.id,
+      cart_items: cartItems,
+      updated_at: new Date().toISOString()
+    });
+
+  if (error) {
+    console.error("Could not save cart:", error.message);
+  }
+}
+
+function mergeCartItems(localCart, savedCart) {
+  const mergedMap = new Map();
+
+  [...savedCart, ...localCart].forEach((item) => {
+    if (!item || !item.id) {
+      return;
+    }
+
+    const existingItem = mergedMap.get(item.id);
+
+    if (existingItem) {
+      existingItem.quantity = Math.max(
+        Number(existingItem.quantity || 1),
+        Number(item.quantity || 1)
+      );
+    } else {
+      mergedMap.set(item.id, {
+        ...item,
+        quantity: Number(item.quantity || 1)
+      });
+    }
+  });
+
+  return Array.from(mergedMap.values());
+}
+
+async function syncCartAfterLogin() {
+  const user = await getLoggedInUser();
+
+  if (!user) {
+    return;
+  }
+
+  const localCart = getLocalCartItems();
+  const savedCart = await loadSavedCartFromSupabase(user.id);
+
+  if (!savedCart) {
+    await saveCartToSupabase(localCart);
+    return;
+  }
+
+  const mergedCart = mergeCartItems(localCart, savedCart);
+
+  saveLocalCartItems(mergedCart);
+  await saveCartToSupabase(mergedCart);
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
   createFloatingAccountMenu();
   await updateAccountMenuState();
+  await syncCartAfterLogin();
 
-  supabaseClient.auth.onAuthStateChange(() => {
-    updateAccountMenuState();
+  supabaseClient.auth.onAuthStateChange(async () => {
+    await updateAccountMenuState();
+    await syncCartAfterLogin();
   });
 });
