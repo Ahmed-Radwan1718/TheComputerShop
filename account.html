@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Account - The Computer Shop</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body oncontextmenu="return false;">
+
+<header class="site-header">
+  <a href="index.html" class="site-header-logo">The Computer Shop</a>
+
+  <nav class="site-header-nav" aria-label="Main navigation">
+    <a href="signature-builds.html">Signature Builds</a>
+    <a href="components.html">Components</a>
+    <a href="consultation.html">Need a Custom PC?</a>
+  </nav>
+
+  <a href="cart.html" class="site-header-cart" aria-label="Cart">
+    <img src="cart-icon.png" alt="Cart">
+    <span class="nav-cart-count">0</span>
+  </a>
+
+  <button class="hamburger-toggle" type="button" aria-label="Open menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+</header>
+
+<main style="min-height: 100vh; padding: 150px 24px 80px; background: #000; color: white;">
+  <section style="width: 100%; max-width: 520px; margin: 0 auto; padding: 34px; border-radius: 24px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);">
+    <p style="margin-bottom: 14px; color: rgba(255,255,255,0.58); font-size: 13px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;">Account</p>
+    <h1 style="margin-bottom: 12px; font-size: 34px; line-height: 1.1;">My Account</h1>
+    <p id="account-message" style="margin-bottom: 26px; color: rgba(255,255,255,0.68); line-height: 1.7;">Loading your account...</p>
+
+    <div id="account-details" style="display: none;">
+      <div style="padding: 18px; border-radius: 18px; background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.1); margin-bottom: 18px;">
+        <p style="margin-bottom: 8px; color: rgba(255,255,255,0.52); font-size: 13px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;">Name</p>
+        <strong id="account-name" style="font-size: 18px;">—</strong>
+      </div>
+
+      <div style="padding: 18px; border-radius: 18px; background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.1); margin-bottom: 24px;">
+        <p style="margin-bottom: 8px; color: rgba(255,255,255,0.52); font-size: 13px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;">Email</p>
+        <strong id="account-email" style="font-size: 18px;">—</strong>
+      </div>
+
+      <button id="logout-button" type="button" style="width: 100%; padding: 15px 18px; border: 0; border-radius: 999px; background: white; color: black; font-size: 15px; font-weight: 800; cursor: pointer;">
+        Log Out
+      </button>
+    </div>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
+
+<script>
+  const accountMessage = document.getElementById("account-message");
+  const accountDetails = document.getElementById("account-details");
+  const accountName = document.getElementById("account-name");
+  const accountEmail = document.getElementById("account-email");
+  const logoutButton = document.getElementById("logout-button");
+
+  async function loadAccount() {
+    const { data, error } = await supabaseClient.auth.getUser();
+
+    if (error || !data.user) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    const user = data.user;
+    const fullName = user.user_metadata && user.user_metadata.full_name
+      ? user.user_metadata.full_name
+      : "No name added";
+
+    accountName.textContent = fullName;
+    accountEmail.textContent = user.email;
+    accountMessage.textContent = "You are logged in.";
+    accountDetails.style.display = "block";
+  }
+
+  logoutButton.addEventListener("click", async () => {
+    logoutButton.disabled = true;
+    logoutButton.textContent = "Logging out...";
+
+    await supabaseClient.auth.signOut();
+
+    window.location.href = "login.html";
+  });
+
+  loadAccount();
+</script>
+
+</body>
+</html>
