@@ -321,7 +321,11 @@
 
     profileFullName.value = profile && profile.full_name ? profile.full_name : metadataName;
     accountEmail.value = user.email || "";
-    profilePhone.value = profile && profile.phone ? profile.phone : "";
+    profilePhone.value = profile && profile.phone
+      ? profile.phone
+      : user.user_metadata && user.user_metadata.phone
+        ? user.user_metadata.phone
+        : "";
     profileDefaultAddress.value = profile && profile.default_address ? profile.default_address : "";
     profileCityArea.value = profile && profile.city_area ? profile.city_area : "";
     profileDeliveryNotes.value = profile && profile.delivery_notes ? profile.delivery_notes : "";
