@@ -1017,6 +1017,23 @@ body.user-is-logged-in .account-menu-authenticated {
   line-height: 1.6;
 }
 
+.auth-link-row {
+  margin-top: -4px;
+  text-align: right;
+}
+
+.auth-link-row a,
+.auth-link-row a:visited {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.auth-link-row a:hover {
+  color: white;
+}
+
 .auth-switch {
   margin-top: 22px;
   color: rgba(255, 255, 255, 0.62);
