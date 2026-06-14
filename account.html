@@ -600,6 +600,24 @@
     }).format(new Date(value));
   }
 
+  function maskEmail(email) {
+    if (!email || !email.includes("@")) {
+      return "—";
+    }
+
+    const [localPart, domainPart] = email.split("@");
+
+    if (localPart.length <= 1) {
+      return `${localPart}***@${domainPart}`;
+    }
+
+    if (localPart.length === 2) {
+      return `${localPart[0]}***@${domainPart}`;
+    }
+
+    return `${localPart[0]}***${localPart[localPart.length - 1]}@${domainPart}`;
+  }
+
   function setAddressArea(areaValue) {
     profileAddressArea.value = areaValue || "";
     profileAddressAreaLabel.textContent = areaValue || "Select area";
@@ -663,7 +681,7 @@
       : "";
 
     profileFullName.value = profile && profile.full_name ? profile.full_name : metadataName;
-    accountEmail.value = user.email || "";
+    accountEmail.value = maskEmail(user.email || "");
     profilePhone.value = profile && profile.phone
       ? profile.phone
       : user.user_metadata && user.user_metadata.phone
