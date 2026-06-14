@@ -1133,15 +1133,31 @@ body.user-is-logged-in .account-menu-authenticated {
 
 .account-sidebar-icon {
   width: 24px;
-  color: rgba(255, 255, 255, 0.48);
+  height: 24px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
+  flex: 0 0 24px;
 }
 
-.account-sidebar-button.active .account-sidebar-icon {
-  color: white;
+.account-sidebar-icon img {
+  width: 19px;
+  height: 19px;
+  display: block;
+  object-fit: contain;
+  filter: invert(1);
+  opacity: 0.48;
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
+}
+
+.account-sidebar-button:hover .account-sidebar-icon img {
+  opacity: 0.78;
+}
+
+.account-sidebar-button.active .account-sidebar-icon img {
+  opacity: 1;
 }
 
 .account-panel-area {
