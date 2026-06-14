@@ -180,6 +180,11 @@ async function syncCartAfterLogin() {
 
   if (!savedCart) {
     await saveCartToSupabase(localCart);
+
+    if (typeof updateCartCount === "function") {
+      updateCartCount();
+    }
+
     return;
   }
 
@@ -187,6 +192,14 @@ async function syncCartAfterLogin() {
 
   saveLocalCartItems(mergedCart);
   await saveCartToSupabase(mergedCart);
+
+  if (typeof updateCartCount === "function") {
+    updateCartCount();
+  }
+
+  if (typeof renderCart === "function") {
+    renderCart();
+  }
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
