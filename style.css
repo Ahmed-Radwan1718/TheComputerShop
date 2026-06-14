@@ -1519,14 +1519,25 @@ body.user-is-logged-in .account-menu-authenticated {
 }
 
 .mfa-secret-box {
-  margin-top: 16px;
-  padding: 14px 16px;
-  border-radius: 15px;
-  background: rgba(0, 0, 0, 0.18);
-  color: rgba(255, 255, 255, 0.78);
+  color: rgba(255, 255, 255, 0.74);
   font-size: 13px;
   line-height: 1.7;
   word-break: break-all;
+}
+
+.account-field-card-stack {
+  min-height: auto;
+  padding: 16px;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.account-field-help {
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.6;
 }
 
 @media (max-width: 620px) {
