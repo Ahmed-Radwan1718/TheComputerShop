@@ -1306,6 +1306,108 @@ body.user-is-logged-in .account-menu-authenticated {
   color: white;
 }
 
+.account-custom-select {
+  position: relative;
+}
+
+.account-custom-select-button {
+  width: 100%;
+  min-height: 58px;
+  padding: 0 22px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(24, 25, 24, 0.72);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-family: inherit;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.18s ease,
+    background 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.account-custom-select.open .account-custom-select-button {
+  border-color: white;
+  background: rgba(255, 255, 255, 0.09);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.42);
+}
+
+.account-custom-select-chevron {
+  width: 13px;
+  height: 13px;
+  border-right: 1.8px solid rgba(255, 255, 255, 0.86);
+  border-bottom: 1.8px solid rgba(255, 255, 255, 0.86);
+  transform: rotate(45deg) translateY(-2px);
+  transition: transform 0.18s ease;
+}
+
+.account-custom-select.open .account-custom-select-chevron {
+  transform: rotate(225deg) translateY(-2px);
+}
+
+.account-custom-select-menu {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 0;
+  right: 0;
+  z-index: 20;
+  max-height: 310px;
+  padding: 14px 0;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(24, 25, 24, 0.98);
+  box-shadow: 0 22px 52px rgba(0, 0, 0, 0.34);
+  overflow-y: auto;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  pointer-events: none;
+  transition:
+    opacity 0.18s ease,
+    visibility 0.18s ease,
+    transform 0.18s ease;
+}
+
+.account-custom-select.open .account-custom-select-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.account-custom-select-option {
+  width: 100%;
+  min-height: 52px;
+  padding: 0 28px;
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.62);
+  display: flex;
+  align-items: center;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 650;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background 0.16s ease,
+    color 0.16s ease;
+}
+
+.account-custom-select-option:hover,
+.account-custom-select-option.active {
+  background: rgba(255, 255, 255, 0.055);
+  color: white;
+}
+
 .account-profile-textarea {
   min-height: 80px;
   resize: vertical;
