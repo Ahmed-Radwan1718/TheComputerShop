@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verifying Account - The Computer Shop</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body oncontextmenu="return false;">
+
+<main style="min-height: 100vh; padding: 150px 24px 80px; background: #000; color: white; display: flex; align-items: center; justify-content: center;">
+  <section style="width: 100%; max-width: 440px; padding: 34px; border-radius: 24px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); text-align: center;">
+    <p style="margin-bottom: 14px; color: rgba(255,255,255,0.58); font-size: 13px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;">Account</p>
+    <h1 style="margin-bottom: 12px; font-size: 34px; line-height: 1.1;">Verifying...</h1>
+    <p id="auth-callback-message" style="color: rgba(255,255,255,0.72); line-height: 1.7;">
+      Please wait while we verify your account.
+    </p>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
+
+<script>
+  const message = document.getElementById("auth-callback-message");
+
+  async function handleAuthCallback() {
+    const { data, error } = await supabaseClient.auth.getSession();
+
+    if (error) {
+      message.textContent = error.message;
+      return;
+    }
+
+    if (data.session) {
+      message.textContent = "Your account is verified. Redirecting...";
+      setTimeout(() => {
+        window.location.href = "account.html";
+      }, 1200);
+      return;
+    }
+
+    message.textContent = "Verification complete. You can now log in.";
+    setTimeout(() => {
+      window.location.href = "login.html";
+    }, 1600);
+  }
+
+  handleAuthCallback();
+</script>
+
+</body>
+</html>
