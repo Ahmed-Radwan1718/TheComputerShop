@@ -123,35 +123,42 @@
 
           <div class="account-field-grid">
             <div class="account-field-group">
-              <label class="account-field-label" for="profile-address-area">Area / District</label>
-              <div class="account-field-card">
-                <select id="profile-address-area" class="account-profile-select">
-                  <option value="">Select area</option>
-                  <option value="New Cairo">New Cairo</option>
-                  <option value="Nasr City">Nasr City</option>
-                  <option value="Heliopolis">Heliopolis</option>
-                  <option value="Maadi">Maadi</option>
-                  <option value="Zamalek">Zamalek</option>
-                  <option value="Downtown Cairo">Downtown Cairo</option>
-                  <option value="Garden City">Garden City</option>
-                  <option value="Mokattam">Mokattam</option>
-                  <option value="Rehab">Rehab</option>
-                  <option value="Madinaty">Madinaty</option>
-                  <option value="Shorouk">Shorouk</option>
-                  <option value="Obour">Obour</option>
-                  <option value="6th of October">6th of October</option>
-                  <option value="Sheikh Zayed">Sheikh Zayed</option>
-                  <option value="Dokki">Dokki</option>
-                  <option value="Mohandessin">Mohandessin</option>
-                  <option value="Haram / Faisal">Haram / Faisal</option>
-                  <option value="Giza">Giza</option>
-                  <option value="Manial">Manial</option>
-                  <option value="Abbasiya">Abbasiya</option>
-                  <option value="Ain Shams">Ain Shams</option>
-                  <option value="Shubra">Shubra</option>
-                  <option value="Helwan">Helwan</option>
-                  <option value="Other">Other</option>
-                </select>
+              <label class="account-field-label" for="profile-address-area-button">Area / District</label>
+
+              <div class="account-custom-select" id="profile-address-area-dropdown">
+                <input id="profile-address-area" type="hidden" value="">
+
+                <button id="profile-address-area-button" class="account-custom-select-button" type="button" aria-expanded="false">
+                  <span id="profile-address-area-label">Select area</span>
+                  <span class="account-custom-select-chevron" aria-hidden="true"></span>
+                </button>
+
+                <div class="account-custom-select-menu">
+                  <button class="account-custom-select-option" type="button" data-area-value="New Cairo">New Cairo</button>
+                  <button class="account-custom-select-option" type="button" data-area-value="Nasr City">Nasr City</button>
+                  <button class="account-custom-select-option" type="button" data-area-value="Heliopolis">Heliopolis</button>
+                  <button class="account-custom-select-option" type="button" data-area-value="Maadi">Maadi</button>
+                  <button class="account-custom-select-option" type="button" data-area-value="Zamalek">Zamalek</button>
+                  <button class="account-custom-select-option" type="button" data-area-value="Downtown Cairo">Downtown Cairo</button>
+                  <button class="account-custom-select-option" type="button" data-area-value="Garden City">Garden City</button>
+                  <button class="account-custom-select-option" type="button" data-area-value="Mokattam">Mokattam</button>
+                  <button class="account-custom-select-option" type="button" data-area-value="Rehab">Rehab</button>
+                  <button class="account-custom-select-option" type="button" data-area-value="Madinaty">Madinaty</button>
+                  <button class="account-custom-select-option" type="button" data-area-value="Shorouk">Shorouk</button>
+                  <button class="account-custom-select-option" type="button" data-area-value="Obour">Obour</button>
+                  <button class="account-custom-select-option" type="button" data-area-value="6th of October">6th of October</button>
+                  <button class="account-custom-select-option" type="button" data-area-value="Sheikh Zayed">Sheikh Zayed</button>
+                  <button class="account-custom-select-option" type="button" data-area-value="Dokki">Dokki</button>
+                  <button class="account-custom-select-option" type="button" data-area-value="Mohandessin">Mohandessin</button>
+                  <button class="account-custom-select-option" type="button" data-area-value="Haram / Faisal">Haram / Faisal</button>
+                  <button class="account-custom-select-option" type="button" data-area-value="Giza">Giza</button>
+                  <button class="account-custom-select-option" type="button" data-area-value="Manial">Manial</button>
+                  <button class="account-custom-select-option" type="button" data-area-value="Abbasiya">Abbasiya</button>
+                  <button class="account-custom-select-option" type="button" data-area-value="Ain Shams">Ain Shams</button>
+                  <button class="account-custom-select-option" type="button" data-area-value="Shubra">Shubra</button>
+                  <button class="account-custom-select-option" type="button" data-area-value="Helwan">Helwan</button>
+                  <button class="account-custom-select-option" type="button" data-area-value="Other">Other</button>
+                </div>
               </div>
             </div>
 
@@ -423,6 +430,10 @@
   const profileFullName = document.getElementById("profile-full-name");
   const profilePhone = document.getElementById("profile-phone");
   const profileAddressArea = document.getElementById("profile-address-area");
+  const profileAddressAreaDropdown = document.getElementById("profile-address-area-dropdown");
+  const profileAddressAreaButton = document.getElementById("profile-address-area-button");
+  const profileAddressAreaLabel = document.getElementById("profile-address-area-label");
+  const profileAddressAreaOptions = document.querySelectorAll("[data-area-value]");
   const profileAddressCity = document.getElementById("profile-address-city");
   const profileGooglePlusCode = document.getElementById("profile-google-plus-code");
   const addressTypeButtons = document.querySelectorAll("[data-address-type]");
@@ -477,6 +488,20 @@
     }).format(new Date(value));
   }
 
+  function setAddressArea(areaValue) {
+    profileAddressArea.value = areaValue || "";
+    profileAddressAreaLabel.textContent = areaValue || "Select area";
+
+    profileAddressAreaOptions.forEach((option) => {
+      option.classList.toggle("active", option.dataset.areaValue === areaValue);
+    });
+  }
+
+  function closeAddressAreaDropdown() {
+    profileAddressAreaDropdown.classList.remove("open");
+    profileAddressAreaButton.setAttribute("aria-expanded", "false");
+  }
+
   function setAddressType(addressType) {
     selectedAddressType = addressType || "apartment";
 
@@ -521,7 +546,7 @@
         ? user.user_metadata.phone
         : "";
 
-    profileAddressArea.value = profile && profile.address_area ? profile.address_area : "";
+    setAddressArea(profile && profile.address_area ? profile.address_area : "");
     profileAddressCity.value = profile && profile.address_city ? profile.address_city : "";
     profileGooglePlusCode.value = profile && profile.google_plus_code ? profile.google_plus_code : "";
 
@@ -674,6 +699,34 @@
     button.addEventListener("click", () => {
       setAddressType(button.dataset.addressType);
     });
+  });
+
+  profileAddressAreaButton.addEventListener("click", (event) => {
+    event.stopPropagation();
+    profileAddressAreaDropdown.classList.toggle("open");
+    profileAddressAreaButton.setAttribute(
+      "aria-expanded",
+      profileAddressAreaDropdown.classList.contains("open") ? "true" : "false"
+    );
+  });
+
+  profileAddressAreaOptions.forEach((option) => {
+    option.addEventListener("click", () => {
+      setAddressArea(option.dataset.areaValue);
+      closeAddressAreaDropdown();
+    });
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!profileAddressAreaDropdown.contains(event.target)) {
+      closeAddressAreaDropdown();
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeAddressAreaDropdown();
+    }
   });
 
   saveProfileButton.addEventListener("click", saveProfile);
