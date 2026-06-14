@@ -294,6 +294,9 @@
 </section>
 </main>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
+
 <script>
   const menuButton = document.querySelector(".hamburger-toggle");
   const mainMenu = document.querySelector(".nav-menu-main");
@@ -9713,6 +9716,10 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
   function saveCart(cart) {
     localStorage.setItem("computerShopCart", JSON.stringify(cart));
     updateCartCount();
+
+    if (typeof saveCartToSupabase === "function") {
+      saveCartToSupabase(cart);
+    }
   }
 
   function updateCartCount() {
