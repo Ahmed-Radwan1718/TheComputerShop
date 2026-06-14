@@ -1475,6 +1475,26 @@ body.user-is-logged-in .account-menu-authenticated {
   line-height: 1.6;
 }
 
+.security-inline-form {
+  display: none;
+  margin-top: 22px;
+}
+
+.security-inline-form.active {
+  display: block;
+}
+
+.security-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.security-form-grid .account-field-group.full {
+  grid-column: 1 / -1;
+}
+
 @media (max-width: 620px) {
   .address-type-grid {
     grid-template-columns: 1fr;
