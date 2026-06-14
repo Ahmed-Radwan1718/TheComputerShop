@@ -358,7 +358,53 @@
           <h2>Password</h2>
 
           <div class="account-action-row">
-            <a href="forgot-password.html" class="account-action-button">Change Password</a>
+            <button id="start-password-change-button" class="account-action-button" type="button">
+              Change Password
+            </button>
+          </div>
+
+          <div id="password-change-form" class="security-inline-form">
+            <div class="account-placeholder-card">
+              <h3>Email verification required</h3>
+              <p>We will send a verification code to your account email before changing your password.</p>
+            </div>
+
+            <div class="account-action-row">
+              <button id="send-password-code-button" class="account-action-button secondary" type="button">
+                Send Verification Code
+              </button>
+            </div>
+
+            <div class="security-form-grid">
+              <div class="account-field-group">
+                <label class="account-field-label" for="password-change-code">Verification Code</label>
+                <div class="account-field-card">
+                  <input id="password-change-code" class="account-profile-input" type="text" inputmode="numeric" placeholder="Enter code">
+                </div>
+              </div>
+
+              <div class="account-field-group">
+                <label class="account-field-label" for="password-change-new">New Password</label>
+                <div class="account-field-card">
+                  <input id="password-change-new" class="account-profile-input" type="password" autocomplete="new-password" placeholder="New password">
+                </div>
+              </div>
+
+              <div class="account-field-group full">
+                <label class="account-field-label" for="password-change-confirm">Confirm New Password</label>
+                <div class="account-field-card">
+                  <input id="password-change-confirm" class="account-profile-input" type="password" autocomplete="new-password" placeholder="Confirm new password">
+                </div>
+              </div>
+            </div>
+
+            <div class="account-action-row">
+              <button id="confirm-password-change-button" class="account-action-button" type="button">
+                Update Password
+              </button>
+            </div>
+
+            <p id="password-change-message" class="account-save-message"></p>
           </div>
         </div>
 
@@ -459,6 +505,15 @@
   const saveProfileButton = document.getElementById("save-profile-button");
   const signOutEverywhereButton = document.getElementById("sign-out-everywhere-button");
   const securityMessage = document.getElementById("security-message");
+
+  const startPasswordChangeButton = document.getElementById("start-password-change-button");
+  const passwordChangeForm = document.getElementById("password-change-form");
+  const sendPasswordCodeButton = document.getElementById("send-password-code-button");
+  const confirmPasswordChangeButton = document.getElementById("confirm-password-change-button");
+  const passwordChangeCode = document.getElementById("password-change-code");
+  const passwordChangeNew = document.getElementById("password-change-new");
+  const passwordChangeConfirm = document.getElementById("password-change-confirm");
+  const passwordChangeMessage = document.getElementById("password-change-message");
   const profileSaveMessage = document.getElementById("profile-save-message");
 
   let currentUser = null;
@@ -758,6 +813,81 @@
   });
 
   saveProfileButton.addEventListener("click", saveProfile);
+
+  if (startPasswordChangeButton) {
+    startPasswordChangeButton.addEventListener("click", () => {
+      passwordChangeForm.classList.toggle("active");
+    });
+  }
+
+  if (sendPasswordCodeButton) {
+    sendPasswordCodeButton.addEventListener("click", async () => {
+      sendPasswordCodeButton.disabled = true;
+      sendPasswordCodeButton.textContent = "Sending Code...";
+      passwordChangeMessage.textContent = "";
+
+      const { error } = await supabaseClient.auth.reauthenticate();
+
+      if (error) {
+        passwordChangeMessage.textContent = error.message;
+        sendPasswordCodeButton.disabled = false;
+        sendPasswordCodeButton.textContent = "Send Verification Code";
+        return;
+      }
+
+      passwordChangeMessage.textContent = "Verification code sent to your email.";
+      sendPasswordCodeButton.disabled = false;
+      sendPasswordCodeButton.textContent = "Resend Verification Code";
+    });
+  }
+
+  if (confirmPasswordChangeButton) {
+    confirmPasswordChangeButton.addEventListener("click", async () => {
+      const code = passwordChangeCode.value.trim();
+      const newPassword = passwordChangeNew.value;
+      const confirmPassword = passwordChangeConfirm.value;
+
+      passwordChangeMessage.textContent = "";
+
+      if (!code) {
+        passwordChangeMessage.textContent = "Enter the verification code sent to your email.";
+        return;
+      }
+
+      if (!newPassword || !confirmPassword) {
+        passwordChangeMessage.textContent = "Enter and confirm your new password.";
+        return;
+      }
+
+      if (newPassword !== confirmPassword) {
+        passwordChangeMessage.textContent = "Passwords do not match.";
+        return;
+      }
+
+      confirmPasswordChangeButton.disabled = true;
+      confirmPasswordChangeButton.textContent = "Updating...";
+
+      const { error } = await supabaseClient.auth.updateUser({
+        password: newPassword,
+        nonce: code
+      });
+
+      if (error) {
+        passwordChangeMessage.textContent = error.message;
+        confirmPasswordChangeButton.disabled = false;
+        confirmPasswordChangeButton.textContent = "Update Password";
+        return;
+      }
+
+      passwordChangeCode.value = "";
+      passwordChangeNew.value = "";
+      passwordChangeConfirm.value = "";
+      passwordChangeMessage.textContent = "Password updated successfully.";
+
+      confirmPasswordChangeButton.disabled = false;
+      confirmPasswordChangeButton.textContent = "Update Password";
+    });
+  }
 
   if (signOutEverywhereButton) {
     signOutEverywhereButton.addEventListener("click", async () => {
