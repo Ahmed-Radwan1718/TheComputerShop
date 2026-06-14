@@ -1257,6 +1257,53 @@ body.user-is-logged-in .account-menu-authenticated {
   word-break: break-word;
 }
 
+.account-profile-input,
+.account-profile-select,
+.account-profile-textarea {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: white;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.35;
+  outline: none;
+}
+
+.account-profile-input::placeholder,
+.account-profile-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.28);
+}
+
+.account-profile-input[readonly] {
+  color: rgba(255, 255, 255, 0.72);
+  cursor: default;
+}
+
+.account-profile-select {
+  cursor: pointer;
+  appearance: none;
+}
+
+.account-profile-select option {
+  background: #181918;
+  color: white;
+}
+
+.account-profile-textarea {
+  min-height: 72px;
+  resize: vertical;
+}
+
+.account-save-message {
+  min-height: 22px;
+  margin-top: 16px;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
 .account-placeholder-card {
   margin-top: 24px;
   padding: 26px;
