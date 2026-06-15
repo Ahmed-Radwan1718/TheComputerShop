@@ -20,11 +20,6 @@
     <span class="nav-cart-count">0</span>
   </a>
 
-  <a href="cart.html" class="site-header-cart" aria-label="Cart">
-    <img src="cart-icon.png" alt="Cart">
-    <span class="nav-cart-count">0</span>
-  </a>
-
   <button class="hamburger-toggle" type="button" aria-label="Open menu">
 
   <button class="hamburger-toggle" type="button" aria-label="Open menu">
