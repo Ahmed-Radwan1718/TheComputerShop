@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Account - The Computer Shop</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body oncontextmenu="return false;">
+
+<div id="site-header-root"></div>
+<script src="site-header.js"></script>
+
+<main class="account-page">
+  <section class="account-section">
+    <div class="account-section-inner">
+      <div class="account-header">
+        <p class="account-eyebrow">Customer Account</p>
+        <h1>My Account</h1>
+        <p id="account-header-text">Manage your details, saved address, security, order history, and support requests.</p>
+      </div>
+
+      <div class="account-layout">
+        <aside class="account-sidebar">
+          <button class="account-sidebar-link active" type="button" data-account-panel="details">Account Details</button>
+          <button class="account-sidebar-link" type="button" data-account-panel="security">Security</button>
+          <button class="account-sidebar-link" type="button" data-account-panel="saved">Saved for Later</button>
+          <button class="account-sidebar-link" type="button" data-account-panel="support">Support History</button>
+          <button class="account-sidebar-link" type="button" data-account-panel="orders">Order History</button>
+          <button class="account-sidebar-link account-logout-link" type="button" id="account-logout-sidebar">Logout</button>
+        </aside>
+
+        <section class="account-content">
+          <div class="account-loading" id="account-loading">
+            Loading your account...
+          </div>
+
+          <article class="account-panel active" id="account-panel-details">
+            <div class="account-panel-header">
+              <p class="account-panel-eyebrow">Account Information</p>
+              <h2>Saved Details</h2>
+              <p>Your name and email are linked to your account. Your phone number and delivery details can be updated here.</p>
+            </div>
+
+            <form class="account-form" id="account-details-form">
+              <div class="account-form-grid">
+                <div class="account-field">
+                  <label for="account-name">Full Name</label>
+                  <input type="text" id="account-name" readonly>
+                </div>
+
+                <div class="account-field">
+                  <label for="account-email">Email Address</label>
+                  <input type="email" id="account-email" readonly>
+                </div>
+
+                <div class="account-field account-field-full">
+                  <label for="account-phone">Phone Number</label>
+                  <input type="tel" id="account-phone" autocomplete="tel">
+                </div>
+              </div>
+
+              <div class="account-divider"></div>
+
+              <div class="account-panel-subheader">
+                <h3>Saved Address</h3>
+                <p>This address can later be used during checkout to make order requests faster.</p>
+              </div>
+
+              <div class="account-form-grid">
+                <div class="account-field account-field-full">
+                  <label for="address-type">Address Type</label>
+                  <select id="address-type">
+                    <option value="apartment">Apartment</option>
+                    <option value="house">House</option>
+                    <option value="office">Office</option>
+                  </select>
+                </div>
+
+                <div class="account-field address-field address-apartment">
+                  <label for="building-name">Building Name</label>
+                  <input type="text" id="building-name">
+                </div>
+
+                <div class="account-field address-field address-apartment">
+                  <label for="apartment-number">Apartment Number</label>
+                  <input type="text" id="apartment-number">
+                </div>
+
+                <div class="account-field address-field address-apartment address-office">
+                  <label for="floor-number">Floor Number</label>
+                  <input type="text" id="floor-number">
+                </div>
+
+                <div class="account-field address-field address-house">
+                  <label for="house-number">House Number</label>
+                  <input type="text" id="house-number">
+                </div>
+
+                <div class="account-field address-field address-office">
+                  <label for="office-name">Office Name</label>
+                  <input type="text" id="office-name">
+                </div>
+
+                <div class="account-field address-field address-office">
+                  <label for="company-name">Company Name</label>
+                  <input type="text" id="company-name">
+                </div>
+
+                <div class="account-field account-field-full">
+                  <label for="street-name">Street Name</label>
+                  <input type="text" id="street-name">
+                </div>
+
+                <div class="account-field account-field-full">
+                  <label for="additional-info">Additional Info</label>
+                  <textarea id="additional-info" rows="4"></textarea>
+                </div>
+              </div>
+
+              <button class="account-primary-button" type="submit" id="save-account-details">
+                Save Changes
+              </button>
+
+              <p class="account-message" id="account-details-message" aria-live="polite"></p>
+            </form>
+          </article>
+
+          <article class="account-panel" id="account-panel-security">
+            <div class="account-panel-header">
+              <p class="account-panel-eyebrow">Security</p>
+              <h2>Change Password</h2>
+              <p>Update your account password. For security, Firebase may ask you to log in again before changing it.</p>
+            </div>
+
+            <form class="account-form" id="change-password-form">
+              <div class="account-field">
+                <label for="new-password">New Password</label>
+                <input type="password" id="new-password" minlength="8" autocomplete="new-password" required>
+              </div>
+
+              <div class="account-field">
+                <label for="confirm-new-password">Confirm New Password</label>
+                <input type="password" id="confirm-new-password" minlength="8" autocomplete="new-password" required>
+              </div>
+
+              <button class="account-primary-button" type="submit" id="change-password-button">
+                Change Password
+              </button>
+
+              <p class="account-message" id="password-message" aria-live="polite"></p>
+            </form>
+          </article>
+
+          <article class="account-panel" id="account-panel-saved">
+            <div class="account-panel-header">
+              <p class="account-panel-eyebrow">Saved for Later</p>
+              <h2>Saved Items</h2>
+              <p>Products you save for later will appear here.</p>
+            </div>
+
+            <div class="account-empty-state">
+              <h3>No saved items yet</h3>
+              <p>When saved-for-later is connected to product pages, your saved products will show here.</p>
+            </div>
+          </article>
+
+          <article class="account-panel" id="account-panel-support">
+            <div class="account-panel-header">
+              <p class="account-panel-eyebrow">Support History</p>
+              <h2>Support Requests</h2>
+              <p>Your previous support requests and messages will appear here.</p>
+            </div>
+
+            <div class="account-empty-state">
+              <h3>No support requests yet</h3>
+              <p>When support forms are connected to your account, requests will be stored here.</p>
+            </div>
+          </article>
+
+          <article class="account-panel" id="account-panel-orders">
+            <div class="account-panel-header">
+              <p class="account-panel-eyebrow">Order History</p>
+              <h2>Orders</h2>
+              <p>Your order requests will appear here after checkout is connected to accounts.</p>
+            </div>
+
+            <div class="account-empty-state">
+              <h3>No orders yet</h3>
+              <p>Once account checkout is connected, submitted order requests will be saved here.</p>
+            </div>
+          </article>
+        </section>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script type="module">
+  import "./auth.js";
+
+  const {
+    auth,
+    db,
+    signOut,
+    updatePassword,
+    onAuthStateChanged,
+    doc,
+    getDoc,
+    setDoc,
+    serverTimestamp
+  } = window.tcsAuth;
+
+  const accountLoading = document.getElementById("account-loading");
+  const accountHeaderText = document.getElementById("account-header-text");
+
+  const accountName = document.getElementById("account-name");
+  const accountEmail = document.getElementById("account-email");
+  const accountPhone = document.getElementById("account-phone");
+
+  const addressType = document.getElementById("address-type");
+  const buildingName = document.getElementById("building-name");
+  const apartmentNumber = document.getElementById("apartment-number");
+  const floorNumber = document.getElementById("floor-number");
+  const houseNumber = document.getElementById("house-number");
+  const officeName = document.getElementById("office-name");
+  const companyName = document.getElementById("company-name");
+  const streetName = document.getElementById("street-name");
+  const additionalInfo = document.getElementById("additional-info");
+
+  const detailsForm = document.getElementById("account-details-form");
+  const detailsButton = document.getElementById("save-account-details");
+  const detailsMessage = document.getElementById("account-details-message");
+
+  const passwordForm = document.getElementById("change-password-form");
+  const passwordButton = document.getElementById("change-password-button");
+  const passwordMessage = document.getElementById("password-message");
+
+  const logoutButton = document.getElementById("account-logout-sidebar");
+
+  let currentUser = null;
+
+  function showMessage(element, message, type) {
+    element.textContent = message;
+    element.className = "account-message";
+
+    if (type) {
+      element.classList.add(type);
+    }
+  }
+
+  function showAddressFields() {
+    const selectedType = addressType.value;
+    const allAddressFields = document.querySelectorAll(".address-field");
+
+    allAddressFields.forEach(function (field) {
+      field.hidden = true;
+    });
+
+    document.querySelectorAll(".address-" + selectedType).forEach(function (field) {
+      field.hidden = false;
+    });
+  }
+
+  function switchPanel(panelName) {
+    document.querySelectorAll(".account-sidebar-link").forEach(function (button) {
+      button.classList.remove("active");
+    });
+
+    document.querySelectorAll(".account-panel").forEach(function (panel) {
+      panel.classList.remove("active");
+    });
+
+    const activeButton = document.querySelector('[data-account-panel="' + panelName + '"]');
+    const activePanel = document.getElementById("account-panel-" + panelName);
+
+    if (activeButton && activePanel) {
+      activeButton.classList.add("active");
+      activePanel.classList.add("active");
+    }
+  }
+
+  function getReadablePasswordError(error) {
+    switch (error.code) {
+      case "auth/requires-recent-login":
+        return "For security, please log out, log in again, then try changing your password.";
+      case "auth/weak-password":
+        return "Please use a stronger password.";
+      case "auth/network-request-failed":
+        return "Network error. Please check your connection and try again.";
+      default:
+        return "Something went wrong. Please try again.";
+    }
+  }
+
+  document.querySelectorAll("[data-account-panel]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      switchPanel(button.dataset.accountPanel);
+    });
+  });
+
+  addressType.addEventListener("change", showAddressFields);
+
+  onAuthStateChanged(auth, async function (user) {
+    if (!user) {
+      window.location.href = "signup.html";
+      return;
+    }
+
+    currentUser = user;
+    accountEmail.value = user.email || "";
+
+    try {
+      const userDocRef = doc(db, "users", user.uid);
+      const userDoc = await getDoc(userDocRef);
+
+      if (userDoc.exists()) {
+        const data = userDoc.data();
+
+        accountName.value = data.fullName || "";
+        accountPhone.value = data.phone || "";
+        addressType.value = data.addressType || "apartment";
+
+        buildingName.value = data.buildingName || "";
+        apartmentNumber.value = data.apartmentNumber || "";
+        floorNumber.value = data.floorNumber || "";
+        houseNumber.value = data.houseNumber || "";
+        officeName.value = data.officeName || "";
+        companyName.value = data.companyName || "";
+        streetName.value = data.streetName || "";
+        additionalInfo.value = data.additionalInfo || "";
+
+        accountHeaderText.textContent = "Welcome back, " + (data.fullName || "Customer") + ".";
+      } else {
+        accountName.value = user.displayName || "";
+        accountHeaderText.textContent = "Welcome back.";
+      }
+
+      showAddressFields();
+      accountLoading.hidden = true;
+    } catch (error) {
+      accountLoading.textContent = "Unable to load account details. Please refresh and try again.";
+    }
+  });
+
+  detailsForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    if (!currentUser) {
+      return;
+    }
+
+    detailsButton.disabled = true;
+    detailsButton.textContent = "Saving...";
+    showMessage(detailsMessage, "", "");
+
+    try {
+      await setDoc(doc(db, "users", currentUser.uid), {
+        email: currentUser.email || "",
+        fullName: accountName.value.trim(),
+        phone: accountPhone.value.trim(),
+        addressType: addressType.value,
+        buildingName: buildingName.value.trim(),
+        apartmentNumber: apartmentNumber.value.trim(),
+        floorNumber: floorNumber.value.trim(),
+        houseNumber: houseNumber.value.trim(),
+        officeName: officeName.value.trim(),
+        companyName: companyName.value.trim(),
+        streetName: streetName.value.trim(),
+        additionalInfo: additionalInfo.value.trim(),
+        updatedAt: serverTimestamp()
+      }, { merge: true });
+
+      showMessage(detailsMessage, "Account details saved.", "success");
+    } catch (error) {
+      showMessage(detailsMessage, "Could not save your details. Please try again.", "error");
+    } finally {
+      detailsButton.disabled = false;
+      detailsButton.textContent = "Save Changes";
+    }
+  });
+
+  passwordForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    if (!currentUser) {
+      return;
+    }
+
+    const newPassword = document.getElementById("new-password").value;
+    const confirmNewPassword = document.getElementById("confirm-new-password").value;
+
+    if (newPassword !== confirmNewPassword) {
+      showMessage(passwordMessage, "Passwords do not match.", "error");
+      return;
+    }
+
+    passwordButton.disabled = true;
+    passwordButton.textContent = "Updating...";
+    showMessage(passwordMessage, "", "");
+
+    try {
+      await updatePassword(currentUser, newPassword);
+      passwordForm.reset();
+      showMessage(passwordMessage, "Password updated successfully.", "success");
+    } catch (error) {
+      showMessage(passwordMessage, getReadablePasswordError(error), "error");
+    } finally {
+      passwordButton.disabled = false;
+      passwordButton.textContent = "Change Password";
+    }
+  });
+
+  logoutButton.addEventListener("click", async function () {
+    await signOut(auth);
+    window.location.href = "signup.html";
+  });
+
+  document.addEventListener("keydown", function (event) {
+    if (
+      event.key === "F12" ||
+      (event.ctrlKey && event.shiftKey && ["I", "J", "C"].includes(event.key.toUpperCase())) ||
+      (event.ctrlKey && event.key.toUpperCase() === "U") ||
+      (event.metaKey && event.altKey && ["I", "J", "C"].includes(event.key.toUpperCase()))
+    ) {
+      event.preventDefault();
+      return false;
+    }
+  });
+</script>
+
+</body>
+</html>
