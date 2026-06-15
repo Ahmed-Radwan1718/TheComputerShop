@@ -273,30 +273,6 @@
   </footer>
 
   <script>
-    const menuButton = document.querySelector(".hamburger-toggle");
-    const mainMenu = document.querySelector(".nav-menu-main");
-    const componentsMenu = document.querySelector(".nav-menu-components");
-    const openComponentsButton = document.getElementById("open-components-menu");
-    const backButton = document.getElementById("back-to-main-menu");
-
-    if (menuButton && mainMenu && componentsMenu && openComponentsButton && backButton) {
-      menuButton.addEventListener("click", () => {
-        document.body.classList.toggle("nav-menu-open");
-        mainMenu.classList.add("active");
-        componentsMenu.classList.remove("active");
-      });
-
-      openComponentsButton.addEventListener("click", () => {
-        mainMenu.classList.remove("active");
-        componentsMenu.classList.add("active");
-      });
-
-      backButton.addEventListener("click", () => {
-        componentsMenu.classList.remove("active");
-        mainMenu.classList.add("active");
-      });
-    }
-
     document.querySelectorAll("[data-custom-select]").forEach((dropdown) => {
       const trigger = dropdown.querySelector(".custom-select-trigger");
       const valueText = dropdown.querySelector(".custom-select-value");
