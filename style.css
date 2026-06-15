@@ -5371,6 +5371,7 @@ body.nav-menu-open {
   height: 26px;
   display: block;
   object-fit: contain;
+  filter: brightness(0) invert(1);
 }
 
 .floating-account-button:hover {
