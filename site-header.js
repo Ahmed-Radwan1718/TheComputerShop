@@ -29,7 +29,7 @@
   </button>
 </header>
 
-<a href="signup.html" class="floating-account-button" aria-label="Create account">
+<a href="accounts.html" class="floating-account-button" aria-label="Account">
   <img src="user-icon.png" alt="Account">
 </a>
 
