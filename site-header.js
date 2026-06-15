@@ -29,7 +29,7 @@
   </button>
 </header>
 
-<a href="accounts.html" class="floating-account-button" aria-label="Account">
+<a href="signup.html" class="floating-account-button" id="floating-account-button" aria-label="Create account">
   <img src="user-icon.png" alt="Account">
 </a>
 
@@ -84,4 +84,32 @@
       mainMenu.classList.add("active");
     });
   }
+const floatingAccountButton = document.getElementById("floating-account-button");
+
+if (floatingAccountButton) {
+  const accountAuthScript = document.createElement("script");
+  accountAuthScript.type = "module";
+  accountAuthScript.textContent = `
+    import "./auth.js";
+
+    const accountButton = document.getElementById("floating-account-button");
+
+    if (accountButton && window.tcsAuth) {
+      const { auth, onAuthStateChanged } = window.tcsAuth;
+
+      onAuthStateChanged(auth, function (user) {
+        if (user) {
+          accountButton.href = "accounts.html";
+          accountButton.setAttribute("aria-label", "My account");
+        } else {
+          accountButton.href = "signup.html";
+          accountButton.setAttribute("aria-label", "Create account");
+        }
+      });
+    }
+  `;
+
+  document.body.appendChild(accountAuthScript);
+}
+
 })();
