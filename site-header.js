@@ -20,9 +20,12 @@
     <span class="nav-cart-count">0</span>
   </a>
 
-  <a href="signup.html" class="site-header-account" aria-label="Create account">
-    <img src="user-icon.png" alt="Account">
+  <a href="cart.html" class="site-header-cart" aria-label="Cart">
+    <img src="cart-icon.png" alt="Cart">
+    <span class="nav-cart-count">0</span>
   </a>
+
+  <button class="hamburger-toggle" type="button" aria-label="Open menu">
 
   <button class="hamburger-toggle" type="button" aria-label="Open menu">
     <span></span>
@@ -30,6 +33,10 @@
     <span></span>
   </button>
 </header>
+
+<a href="signup.html" class="floating-account-button" aria-label="Create account">
+  <img src="user-icon.png" alt="Account">
+</a>
 
 <div class="nav-menu-overlay">
   <div class="nav-menu-panel nav-menu-main active">
