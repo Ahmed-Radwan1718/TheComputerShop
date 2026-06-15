@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Log In - The Computer Shop</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body oncontextmenu="return false;">
+
+<div id="site-header-root"></div>
+<script src="site-header.js"></script>
+
+<main class="auth-page">
+  <section class="auth-section">
+    <div class="auth-section-inner">
+      <div class="auth-section-header">
+        <p class="auth-section-eyebrow">Customer Account</p>
+        <h1 class="auth-section-title">Log In</h1>
+        <p class="auth-section-intro">
+          Log in to manage your account details, saved address, order history, and support requests.
+        </p>
+      </div>
+
+      <div class="auth-panel">
+        <form class="auth-form" id="login-form">
+          <div class="auth-field">
+            <label for="login-email">Email Address</label>
+            <input type="email" id="login-email" autocomplete="email" required>
+          </div>
+
+          <div class="auth-field">
+            <label for="login-password">Password</label>
+            <input type="password" id="login-password" autocomplete="current-password" required>
+          </div>
+
+          <button class="auth-button" type="submit" id="login-submit">
+            Log In
+          </button>
+
+          <p class="auth-message" id="login-message" aria-live="polite"></p>
+        </form>
+
+        <div class="auth-panel-footer">
+          <span>Forgot your password?</span>
+          <a href="forgot-password.html">Reset it</a>
+        </div>
+
+        <div class="auth-panel-footer">
+          <span>Do not have an account?</span>
+          <a href="signup.html">Create one</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script type="module">
+  import "./auth.js";
+
+  const {
+    auth,
+    signInWithEmailAndPassword
+  } = window.tcsAuth;
+
+  const loginForm = document.getElementById("login-form");
+  const loginButton = document.getElementById("login-submit");
+  const loginMessage = document.getElementById("login-message");
+
+  function showMessage(message, type) {
+    loginMessage.textContent = message;
+    loginMessage.className = "auth-message";
+
+    if (type) {
+      loginMessage.classList.add(type);
+    }
+  }
+
+  function getReadableAuthError(error) {
+    switch (error.code) {
+      case "auth/invalid-email":
+        return "Please enter a valid email address.";
+      case "auth/user-disabled":
+        return "This account has been disabled.";
+      case "auth/invalid-credential":
+      case "auth/wrong-password":
+      case "auth/user-not-found":
+        return "Incorrect email or password.";
+      case "auth/too-many-requests":
+        return "Too many failed attempts. Please wait before trying again.";
+      case "auth/network-request-failed":
+        return "Network error. Please check your connection and try again.";
+      default:
+        return "Something went wrong. Please try again.";
+    }
+  }
+
+  loginForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const email = document.getElementById("login-email").value.trim();
+    const password = document.getElementById("login-password").value;
+
+    loginButton.disabled = true;
+    loginButton.textContent = "Logging In...";
+    showMessage("", "");
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+
+      showMessage("Logged in successfully.", "success");
+
+      setTimeout(function () {
+        window.location.href = "accounts.html";
+      }, 800);
+    } catch (error) {
+      showMessage(getReadableAuthError(error), "error");
+    } finally {
+      loginButton.disabled = false;
+      loginButton.textContent = "Log In";
+    }
+  });
+</script>
+
+<script>
+  document.addEventListener("keydown", function (event) {
+    if (
+      event.key === "F12" ||
+      (event.ctrlKey && event.shiftKey && ["I", "J", "C"].includes(event.key.toUpperCase())) ||
+      (event.ctrlKey && event.key.toUpperCase() === "U") ||
+      (event.metaKey && event.altKey && ["I", "J", "C"].includes(event.key.toUpperCase()))
+    ) {
+      event.preventDefault();
+      return false;
+    }
+  });
+</script>
+
+</body>
+</html>
