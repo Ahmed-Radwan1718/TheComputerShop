@@ -173,11 +173,6 @@
   function saveCart(cart) {
     localStorage.setItem("computerShopCart", JSON.stringify(cart));
     updateCartCount();
-
-    if (typeof saveCartToSupabase === "function") {
-      saveCartToSupabase(cart);
-    }
-
     renderCart();
   }
 
