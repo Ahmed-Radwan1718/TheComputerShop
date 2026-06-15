@@ -5345,3 +5345,53 @@ body.nav-menu-open {
     border-radius: 22px;
   }
 }
+
+.floating-account-button,
+.floating-account-button:visited {
+  position: fixed;
+  top: 28px;
+  right: 34px;
+  z-index: 1003;
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  color: white;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.floating-account-button img {
+  width: 26px;
+  height: 26px;
+  display: block;
+  object-fit: contain;
+}
+
+.floating-account-button:hover {
+  opacity: 0.72;
+}
+
+.floating-account-button:active {
+  transform: translateY(1px);
+}
+
+@media (max-width: 900px) {
+  .floating-account-button,
+  .floating-account-button:visited {
+    top: 22px;
+    right: 22px;
+    width: 42px;
+    height: 42px;
+  }
+
+  .floating-account-button img {
+    width: 24px;
+    height: 24px;
+  }
+}
