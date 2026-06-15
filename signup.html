@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Account - The Computer Shop</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body oncontextmenu="return false;">
+
+<div id="site-header-root"></div>
+<script src="site-header.js"></script>
+
+<main class="auth-page">
+  <section class="auth-section">
+    <div class="auth-section-inner">
+      <div class="auth-section-header">
+        <p class="auth-section-eyebrow">Customer Account</p>
+        <h1 class="auth-section-title">Create Account</h1>
+        <p class="auth-section-intro">
+          Create an account to save your details, manage your address, and access your order and support history later.
+        </p>
+      </div>
+
+      <div class="auth-panel">
+        <form class="auth-form" id="signup-form">
+          <div class="auth-field">
+            <label for="signup-name">Full Name</label>
+            <input type="text" id="signup-name" autocomplete="name" required>
+          </div>
+
+          <div class="auth-field">
+            <label for="signup-phone">Phone Number</label>
+            <input type="tel" id="signup-phone" autocomplete="tel" required>
+          </div>
+
+          <div class="auth-field">
+            <label for="signup-email">Email Address</label>
+            <input type="email" id="signup-email" autocomplete="email" required>
+          </div>
+
+          <div class="auth-field">
+            <label for="signup-password">Password</label>
+            <input type="password" id="signup-password" autocomplete="new-password" minlength="8" required>
+          </div>
+
+          <div class="auth-field">
+            <label for="signup-confirm-password">Confirm Password</label>
+            <input type="password" id="signup-confirm-password" autocomplete="new-password" minlength="8" required>
+          </div>
+
+          <p class="auth-small-note">
+            Use at least 8 characters. You can change your password later from your account security settings.
+          </p>
+
+          <button class="auth-button" type="submit" id="signup-submit">
+            Create Account
+          </button>
+
+          <p class="auth-message" id="signup-message" aria-live="polite"></p>
+        </form>
+
+        <div class="auth-panel-footer">
+          <span>Already have an account?</span>
+          <a href="login.html">Log in</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script type="module">
+  import "./auth.js";
+
+  const {
+    auth,
+    db,
+    createUserWithEmailAndPassword,
+    sendEmailVerification,
+    doc,
+    setDoc,
+    serverTimestamp
+  } = window.tcsAuth;
+
+  const signupForm = document.getElementById("signup-form");
+  const signupButton = document.getElementById("signup-submit");
+  const signupMessage = document.getElementById("signup-message");
+
+  function showMessage(message, type) {
+    signupMessage.textContent = message;
+    signupMessage.className = "auth-message";
+
+    if (type) {
+      signupMessage.classList.add(type);
+    }
+  }
+
+  function getReadableAuthError(error) {
+    switch (error.code) {
+      case "auth/email-already-in-use":
+        return "An account already exists with this email address.";
+      case "auth/invalid-email":
+        return "Please enter a valid email address.";
+      case "auth/weak-password":
+        return "Please use a stronger password.";
+      case "auth/network-request-failed":
+        return "Network error. Please check your connection and try again.";
+      default:
+        return "Something went wrong. Please try again.";
+    }
+  }
+
+  signupForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const fullName = document.getElementById("signup-name").value.trim();
+    const phone = document.getElementById("signup-phone").value.trim();
+    const email = document.getElementById("signup-email").value.trim();
+    const password = document.getElementById("signup-password").value;
+    const confirmPassword = document.getElementById("signup-confirm-password").value;
+
+    if (password !== confirmPassword) {
+      showMessage("Passwords do not match.", "error");
+      return;
+    }
+
+    signupButton.disabled = true;
+    signupButton.textContent = "Creating Account...";
+    showMessage("", "");
+
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      await setDoc(doc(db, "users", user.uid), {
+        fullName: fullName,
+        phone: phone,
+        email: email,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      });
+
+      await sendEmailVerification(user);
+
+      showMessage("Account created successfully. A verification email has been sent.", "success");
+
+      setTimeout(function () {
+        window.location.href = "account.html";
+      }, 1200);
+    } catch (error) {
+      showMessage(getReadableAuthError(error), "error");
+    } finally {
+      signupButton.disabled = false;
+      signupButton.textContent = "Create Account";
+    }
+  });
+</script>
+
+<script>
+  document.addEventListener("keydown", function (event) {
+    if (
+      event.key === "F12" ||
+      (event.ctrlKey && event.shiftKey && ["I", "J", "C"].includes(event.key.toUpperCase())) ||
+      (event.ctrlKey && event.key.toUpperCase() === "U") ||
+      (event.metaKey && event.altKey && ["I", "J", "C"].includes(event.key.toUpperCase()))
+    ) {
+      event.preventDefault();
+      return false;
+    }
+  });
+</script>
+
+</body>
+</html>
