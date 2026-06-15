@@ -1,5 +1,11 @@
 (function () {
-  const siteHeaderHTML = `
+  const headerRoot = document.getElementById("site-header-root");
+
+  if (!headerRoot) {
+    return;
+  }
+
+  headerRoot.outerHTML = `
 <header class="site-header">
   <a href="index.html" class="site-header-logo">The Computer Shop</a>
 
@@ -49,14 +55,6 @@
 </div>
 `;
 
-  const currentScript = document.currentScript;
-
-  if (currentScript) {
-    currentScript.insertAdjacentHTML("beforebegin", siteHeaderHTML);
-  } else {
-    document.body.insertAdjacentHTML("afterbegin", siteHeaderHTML);
-  }
-
   const menuButton = document.querySelector(".hamburger-toggle");
   const mainMenu = document.querySelector(".nav-menu-main");
   const componentsMenu = document.querySelector(".nav-menu-components");
@@ -80,24 +78,4 @@
       mainMenu.classList.add("active");
     });
   }
-
-  function getHeaderCart() {
-    try {
-      const cart = JSON.parse(localStorage.getItem("computerShopCart")) || [];
-      return Array.isArray(cart) ? cart : [];
-    } catch (error) {
-      return [];
-    }
-  }
-
-  function updateSharedHeaderCartCount() {
-    const cart = getHeaderCart();
-    const count = cart.reduce((total, item) => total + (Number(item.quantity) || 0), 0);
-
-    document.querySelectorAll(".nav-cart-count").forEach((counter) => {
-      counter.textContent = count;
-    });
-  }
-
-  updateSharedHeaderCartCount();
 })();
