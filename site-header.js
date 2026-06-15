@@ -20,6 +20,10 @@
     <span class="nav-cart-count">0</span>
   </a>
 
+  <a href="signup.html" class="site-header-account" aria-label="Create account">
+    <img src="user-icon.png" alt="Account">
+  </a>
+
   <button class="hamburger-toggle" type="button" aria-label="Open menu">
     <span></span>
     <span></span>
