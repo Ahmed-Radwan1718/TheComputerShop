@@ -9714,10 +9714,6 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
   function saveCart(cart) {
     localStorage.setItem("computerShopCart", JSON.stringify(cart));
     updateCartCount();
-
-    if (typeof saveCartToSupabase === "function") {
-      saveCartToSupabase(cart);
-    }
   }
 
   function updateCartCount() {
