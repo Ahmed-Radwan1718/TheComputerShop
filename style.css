@@ -5403,7 +5403,8 @@ body.nav-menu-open {
   gap: 4px;
 }
 
-.floating-account-menu[hidden] {
+.floating-account-menu[hidden],
+.floating-account-menu-link[hidden] {
   display: none;
 }
 
