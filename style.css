@@ -5151,7 +5151,7 @@ body.nav-menu-open {
 
 .auth-section {
   min-height: calc(100vh - 104px);
-  padding: 76px 44px 96px;
+  padding: 92px 44px 104px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -5159,44 +5159,50 @@ body.nav-menu-open {
 
 .auth-section-inner {
   width: 100%;
-  max-width: 620px;
+  max-width: 1180px;
   margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(420px, 0.62fr);
+  gap: 72px;
+  align-items: center;
 }
 
 .auth-section-header {
-  margin-bottom: 34px;
-  text-align: center;
+  max-width: 620px;
+  margin: 0;
+  text-align: left;
 }
 
 .auth-section-eyebrow {
-  margin-bottom: 14px;
+  margin-bottom: 16px;
   color: rgba(255, 255, 255, 0.72);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .auth-section-title {
-  margin-bottom: 18px;
+  max-width: 620px;
+  margin-bottom: 22px;
   color: white;
-  font-size: 42px;
-  font-weight: 700;
+  font-size: 52px;
+  font-weight: bold;
   line-height: 1.08;
   text-transform: uppercase;
 }
 
 .auth-section-intro {
-  max-width: 540px;
-  margin: 0 auto;
+  max-width: 560px;
+  margin: 0;
   color: rgba(255, 255, 255, 0.68);
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 400;
   line-height: 1.8;
 }
 
 .auth-panel {
-  padding: 28px;
+  padding: 30px;
   border-radius: 26px;
   border: 1px solid rgba(255, 255, 255, 0.11);
   background: rgba(24, 25, 24, 0.56);
@@ -5210,21 +5216,21 @@ body.nav-menu-open {
 
 .auth-field {
   display: grid;
-  gap: 9px;
+  gap: 10px;
 }
 
 .auth-field label {
-  color: rgba(255, 255, 255, 0.72);
+  color: rgba(255, 255, 255, 0.58);
   font-size: 12px;
   font-weight: 800;
-  letter-spacing: 0.09em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
 .auth-field input {
   width: 100%;
-  min-height: 50px;
-  padding: 0 16px;
+  min-height: 52px;
+  padding: 0 18px;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.16);
   background: rgba(255, 255, 255, 0.065);
@@ -5256,24 +5262,27 @@ body.nav-menu-open {
   width: 100%;
   min-height: 52px;
   margin-top: 4px;
-  border: 0;
+  border: 1px solid rgba(255, 255, 255, 0.38);
   border-radius: 999px;
-  background: white;
-  color: #181918;
+  background: rgba(36, 38, 36, 0.16);
+  color: #f0eeee;
   font-family: inherit;
   font-size: 13px;
-  font-weight: 900;
-  letter-spacing: 0.09em;
+  font-weight: 800;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
   transition:
     opacity 0.2s ease,
     transform 0.2s ease,
-    background 0.2s ease;
+    background 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .auth-button:hover {
-  opacity: 0.84;
+  background: rgba(255, 255, 255, 0.095);
+  border-color: rgba(255, 255, 255, 0.5);
+  opacity: 0.88;
 }
 
 .auth-button:active {
@@ -5302,23 +5311,32 @@ body.nav-menu-open {
 }
 
 .auth-panel-footer {
-  margin-top: 24px;
-  padding-top: 22px;
+  margin-top: 22px;
+  padding-top: 20px;
   border-top: 1px solid rgba(255, 255, 255, 0.105);
   color: rgba(255, 255, 255, 0.58);
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 8px;
   flex-wrap: wrap;
   font-size: 14px;
   font-weight: 600;
 }
 
+.auth-panel-footer + .auth-panel-footer {
+  margin-top: 0;
+  padding-top: 12px;
+  border-top: 0;
+}
+
 .auth-panel-footer a,
 .auth-panel-footer a:visited {
   color: white;
+  font-size: 13px;
   font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   text-decoration: none;
 }
 
@@ -5326,7 +5344,7 @@ body.nav-menu-open {
   opacity: 0.76;
 }
 
-@media (max-width: 700px) {
+@media (max-width: 900px) {
   .auth-page {
     padding-top: 88px;
   }
@@ -5336,143 +5354,35 @@ body.nav-menu-open {
     padding: 54px 20px 72px;
   }
 
+  .auth-section-inner {
+    grid-template-columns: 1fr;
+    gap: 34px;
+  }
+
+  .auth-section-header {
+    max-width: none;
+    text-align: center;
+  }
+
   .auth-section-title {
-    font-size: 32px;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 34px;
+  }
+
+  .auth-section-intro {
+    margin: 0 auto;
+    font-size: 15px;
   }
 
   .auth-panel {
     padding: 22px;
     border-radius: 22px;
   }
-}
 
-.floating-account-widget {
-  position: fixed;
-  top: 28px;
-  right: 34px;
-  z-index: 1003;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 12px;
-}
-
-.floating-account-greeting {
-  color: rgba(255, 255, 255, 0.72);
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.floating-account-button {
-  width: 42px;
-  height: 42px;
-  padding: 0;
-  border: 0;
-  border-radius: 999px;
-  background: transparent;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 1;
-  cursor: pointer;
-  transition:
-    opacity 0.2s ease,
-    transform 0.2s ease;
-}
-
-.floating-account-button img {
-  width: 26px;
-  height: 26px;
-  display: block;
-  object-fit: contain;
-  filter: brightness(0) invert(1);
-}
-
-.floating-account-button:hover {
-  opacity: 0.72;
-}
-
-.floating-account-button:active {
-  transform: translateY(1px);
-}
-
-.floating-account-menu {
-  position: absolute;
-  top: 52px;
-  right: 0;
-  min-width: 156px;
-  padding: 8px;
-  border-radius: 18px;
-  border: 1px solid rgba(255, 255, 255, 0.11);
-  background: rgba(24, 25, 24, 0.92);
-  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.28);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  display: grid;
-  gap: 4px;
-}
-
-.floating-account-menu[hidden],
-.floating-account-menu-link[hidden] {
-  display: none;
-}
-
-.floating-account-menu-link,
-.floating-account-menu-link:visited {
-  width: 100%;
-  min-height: 38px;
-  padding: 0 13px;
-  border: 0;
-  border-radius: 999px;
-  background: transparent;
-  color: rgba(255, 255, 255, 0.72);
-  font-family: inherit;
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-align: left;
-  text-transform: uppercase;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  transition:
-    background 0.2s ease,
-    color 0.2s ease,
-    opacity 0.2s ease;
-}
-
-.floating-account-menu-link:hover {
-  background: rgba(255, 255, 255, 0.095);
-  color: white;
-}
-
-.floating-account-logout {
-  color: rgba(255, 156, 156, 0.95);
-}
-
-.floating-account-logout:hover {
-  color: rgb(255, 120, 120);
-}
-
-@media (max-width: 900px) {
-  .floating-account-widget {
-    top: 22px;
-    right: 22px;
-  }
-
-  .floating-account-button {
-    width: 42px;
-    height: 42px;
-  }
-
-  .floating-account-button img {
-    width: 24px;
-    height: 24px;
+  .auth-panel-footer {
+    justify-content: center;
+    text-align: center;
   }
 }
 
