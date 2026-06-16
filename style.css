@@ -5289,18 +5289,13 @@ body.nav-menu-open {
 
 .auth-section-inner {
   width: 100%;
-  max-width: 1180px;
+  max-width: 620px;
   margin: 0 auto;
-  display: grid;
-  grid-template-columns: minmax(0, 0.92fr) minmax(420px, 0.62fr);
-  gap: 72px;
-  align-items: center;
 }
 
 .auth-section-header {
-  max-width: 620px;
-  margin: 0;
-  text-align: left;
+  margin-bottom: 34px;
+  text-align: center;
 }
 
 .auth-section-eyebrow {
