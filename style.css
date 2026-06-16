@@ -5387,10 +5387,10 @@ body.nav-menu-open {
   width: 100%;
   min-height: 52px;
   margin-top: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.38);
+  border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 999px;
-  background: rgba(36, 38, 36, 0.16);
-  color: #f0eeee;
+  background: #d8d7d7;
+  color: #111111;
   font-family: inherit;
   font-size: 13px;
   font-weight: 800;
@@ -5405,9 +5405,9 @@ body.nav-menu-open {
 }
 
 .auth-button:hover {
-  background: rgba(255, 255, 255, 0.095);
-  border-color: rgba(255, 255, 255, 0.5);
-  opacity: 0.88;
+  background: #cfcfcf;
+  border-color: rgba(255, 255, 255, 0.22);
+  opacity: 1;
 }
 
 .auth-button:active {
