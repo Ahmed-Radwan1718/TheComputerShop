@@ -5446,7 +5446,7 @@ body.nav-menu-open {
   gap: 8px;
   flex-wrap: wrap;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 400;
 }
 
 .auth-panel-footer + .auth-panel-footer {
@@ -5458,11 +5458,12 @@ body.nav-menu-open {
 .auth-panel-footer a,
 .auth-panel-footer a:visited {
   color: white;
-  font-size: 13px;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  text-decoration: none;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
 .auth-panel-footer a:hover {
