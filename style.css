@@ -5143,6 +5143,136 @@ body.nav-menu-open {
   }
 }
 
+.floating-account-widget {
+  position: fixed;
+  top: 28px;
+  right: 34px;
+  z-index: 1003;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.floating-account-greeting {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.floating-account-button {
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  cursor: pointer;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.floating-account-button img {
+  width: 26px;
+  height: 26px;
+  display: block;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+.floating-account-button:hover {
+  opacity: 0.72;
+}
+
+.floating-account-button:active {
+  transform: translateY(1px);
+}
+
+.floating-account-menu {
+  position: absolute;
+  top: 52px;
+  right: 0;
+  min-width: 156px;
+  padding: 8px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  background: rgba(24, 25, 24, 0.92);
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  display: grid;
+  gap: 4px;
+}
+
+.floating-account-menu[hidden],
+.floating-account-menu-link[hidden] {
+  display: none;
+}
+
+.floating-account-menu-link,
+.floating-account-menu-link:visited {
+  width: 100%;
+  min-height: 38px;
+  padding: 0 13px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.72);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-align: left;
+  text-transform: uppercase;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.floating-account-menu-link:hover {
+  background: rgba(255, 255, 255, 0.095);
+  color: white;
+}
+
+.floating-account-logout {
+  color: rgba(255, 156, 156, 0.95);
+}
+
+.floating-account-logout:hover {
+  color: rgb(255, 120, 120);
+}
+
+@media (max-width: 900px) {
+  .floating-account-widget {
+    top: 22px;
+    right: 22px;
+  }
+
+  .floating-account-button {
+    width: 42px;
+    height: 42px;
+  }
+
+  .floating-account-button img {
+    width: 24px;
+    height: 24px;
+  }
+}
+
 .auth-page {
   min-height: 100vh;
   background: #2a2b2a;
