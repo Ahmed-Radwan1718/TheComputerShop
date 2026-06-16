@@ -5749,6 +5749,13 @@ body.nav-menu-open {
   cursor: not-allowed;
 }
 
+.account-username-note {
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
 .account-divider {
   height: 1px;
   margin: 6px 0;
