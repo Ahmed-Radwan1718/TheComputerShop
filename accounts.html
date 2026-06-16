@@ -47,7 +47,7 @@
 <div class="account-field">
   <label for="account-name">Username</label>
   <input type="text" id="account-name" autocomplete="name" maxlength="60">
-  <p class="account-username-note" id="account-username-note">You can change your username once every 14 days.</p>
+  <p class="account-username-note" id="account-username-note"></p>
 </div>
 
                 <div class="account-field">
@@ -327,7 +327,7 @@ function updateUsernameLockState() {
     accountUsernameNote.textContent = "You can change your username again in " + daysLeft + (daysLeft === 1 ? " day." : " days.");
   } else {
     accountName.readOnly = false;
-    accountUsernameNote.textContent = "You can change your username once every 14 days.";
+    accountUsernameNote.textContent = "";
   }
 }
 
