@@ -30,6 +30,8 @@
 </header>
 
 <div class="floating-account-widget" id="floating-account-widget">
+  <span class="floating-account-greeting" id="floating-account-greeting" hidden></span>
+
   <button class="floating-account-button" id="floating-account-button" type="button" aria-label="Open account menu" aria-expanded="false">
     <img src="user-icon.png" alt="Account">
   </button>
@@ -101,14 +103,15 @@ if (floatingAccountWidget) {
     import "./auth.js";
 
     const accountWidget = document.getElementById("floating-account-widget");
+    const accountGreeting = document.getElementById("floating-account-greeting");
     const accountButton = document.getElementById("floating-account-button");
     const accountMenu = document.getElementById("floating-account-menu");
     const loginLink = document.getElementById("floating-login-link");
     const accountLink = document.getElementById("floating-account-link");
     const logoutButton = document.getElementById("floating-logout-button");
 
-    if (accountWidget && accountButton && accountMenu && loginLink && accountLink && logoutButton && window.tcsAuth) {
-      const { auth, onAuthStateChanged, signOut } = window.tcsAuth;
+    if (accountWidget && accountGreeting && accountButton && accountMenu && loginLink && accountLink && logoutButton && window.tcsAuth) {
+      const { auth, db, onAuthStateChanged, signOut, doc, getDoc } = window.tcsAuth;
 
       function closeAccountMenu() {
         accountMenu.hidden = true;
@@ -118,6 +121,18 @@ if (floatingAccountWidget) {
       function openAccountMenu() {
         accountMenu.hidden = false;
         accountButton.setAttribute("aria-expanded", "true");
+      }
+
+      function getFirstName(fullName, email) {
+        if (fullName && fullName.trim()) {
+          return fullName.trim().split(" ")[0];
+        }
+
+        if (email && email.includes("@")) {
+          return email.split("@")[0];
+        }
+
+        return "there";
       }
 
       accountButton.addEventListener("click", function (event) {
@@ -142,24 +157,41 @@ if (floatingAccountWidget) {
         }
       });
 
-      onAuthStateChanged(auth, function (user) {
+      onAuthStateChanged(auth, async function (user) {
         closeAccountMenu();
 
         if (user) {
           loginLink.hidden = true;
           accountLink.hidden = false;
           logoutButton.hidden = false;
+
+          let firstName = getFirstName("", user.email || "");
+
+          try {
+            const userDoc = await getDoc(doc(db, "users", user.uid));
+
+            if (userDoc.exists()) {
+              firstName = getFirstName(userDoc.data().fullName || "", user.email || "");
+            }
+          } catch (error) {
+            firstName = getFirstName("", user.email || "");
+          }
+
+          accountGreeting.textContent = "Hello, " + firstName;
+          accountGreeting.hidden = false;
         } else {
           loginLink.hidden = false;
           accountLink.hidden = true;
           logoutButton.hidden = true;
+          accountGreeting.textContent = "";
+          accountGreeting.hidden = true;
         }
       });
 
       logoutButton.addEventListener("click", async function () {
         await signOut(auth);
         closeAccountMenu();
-        window.location.href = "login.html";
+        window.location.href = "index.html";
       });
     }
   `;
