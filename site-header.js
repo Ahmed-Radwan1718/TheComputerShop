@@ -29,9 +29,17 @@
   </button>
 </header>
 
-<a href="signup.html" class="floating-account-button" id="floating-account-button" aria-label="Create account">
-  <img src="user-icon.png" alt="Account">
-</a>
+<div class="floating-account-widget" id="floating-account-widget">
+  <button class="floating-account-button" id="floating-account-button" type="button" aria-label="Open account menu" aria-expanded="false">
+    <img src="user-icon.png" alt="Account">
+  </button>
+
+  <div class="floating-account-menu" id="floating-account-menu" hidden>
+    <a href="login.html" class="floating-account-menu-link" id="floating-login-link">Login</a>
+    <a href="accounts.html" class="floating-account-menu-link" id="floating-account-link" hidden>Account</a>
+    <button class="floating-account-menu-link floating-account-logout" id="floating-logout-button" type="button" hidden>Logout</button>
+  </div>
+</div>
 
 <div class="nav-menu-overlay">
   <div class="nav-menu-panel nav-menu-main active">
@@ -84,27 +92,74 @@
       mainMenu.classList.add("active");
     });
   }
-const floatingAccountButton = document.getElementById("floating-account-button");
+const floatingAccountWidget = document.getElementById("floating-account-widget");
 
-if (floatingAccountButton) {
+if (floatingAccountWidget) {
   const accountAuthScript = document.createElement("script");
   accountAuthScript.type = "module";
   accountAuthScript.textContent = `
     import "./auth.js";
 
+    const accountWidget = document.getElementById("floating-account-widget");
     const accountButton = document.getElementById("floating-account-button");
+    const accountMenu = document.getElementById("floating-account-menu");
+    const loginLink = document.getElementById("floating-login-link");
+    const accountLink = document.getElementById("floating-account-link");
+    const logoutButton = document.getElementById("floating-logout-button");
 
-    if (accountButton && window.tcsAuth) {
-      const { auth, onAuthStateChanged } = window.tcsAuth;
+    if (accountWidget && accountButton && accountMenu && loginLink && accountLink && logoutButton && window.tcsAuth) {
+      const { auth, onAuthStateChanged, signOut } = window.tcsAuth;
+
+      function closeAccountMenu() {
+        accountMenu.hidden = true;
+        accountButton.setAttribute("aria-expanded", "false");
+      }
+
+      function openAccountMenu() {
+        accountMenu.hidden = false;
+        accountButton.setAttribute("aria-expanded", "true");
+      }
+
+      accountButton.addEventListener("click", function (event) {
+        event.stopPropagation();
+
+        if (accountMenu.hidden) {
+          openAccountMenu();
+        } else {
+          closeAccountMenu();
+        }
+      });
+
+      document.addEventListener("click", function (event) {
+        if (!accountWidget.contains(event.target)) {
+          closeAccountMenu();
+        }
+      });
+
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+          closeAccountMenu();
+        }
+      });
 
       onAuthStateChanged(auth, function (user) {
+        closeAccountMenu();
+
         if (user) {
-          accountButton.href = "accounts.html";
-          accountButton.setAttribute("aria-label", "My account");
+          loginLink.hidden = true;
+          accountLink.hidden = false;
+          logoutButton.hidden = false;
         } else {
-          accountButton.href = "signup.html";
-          accountButton.setAttribute("aria-label", "Create account");
+          loginLink.hidden = false;
+          accountLink.hidden = true;
+          logoutButton.hidden = true;
         }
+      });
+
+      logoutButton.addEventListener("click", async function () {
+        await signOut(auth);
+        closeAccountMenu();
+        window.location.href = "login.html";
       });
     }
   `;
