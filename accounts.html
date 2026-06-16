@@ -39,15 +39,16 @@
             <div class="account-panel-header">
               <p class="account-panel-eyebrow">Account Information</p>
               <h2>Saved Details</h2>
-              <p>Your name and email are linked to your account. Your phone number and delivery details can be updated here.</p>
+              <p>Your username can be changed once every 14 days. Your phone number and delivery details can be updated here.</p>
             </div>
 
             <form class="account-form" id="account-details-form">
               <div class="account-form-grid">
-                <div class="account-field">
-                  <label for="account-name">Full Name</label>
-                  <input type="text" id="account-name" readonly>
-                </div>
+<div class="account-field">
+  <label for="account-name">Username</label>
+  <input type="text" id="account-name" autocomplete="name" maxlength="60">
+  <p class="account-username-note" id="account-username-note">You can change your username once every 14 days.</p>
+</div>
 
                 <div class="account-field">
                   <label for="account-email">Email Address</label>
@@ -214,9 +215,10 @@
   const accountLoading = document.getElementById("account-loading");
   const accountHeaderText = document.getElementById("account-header-text");
 
-  const accountName = document.getElementById("account-name");
-  const accountEmail = document.getElementById("account-email");
-  const accountPhone = document.getElementById("account-phone");
+const accountName = document.getElementById("account-name");
+const accountUsernameNote = document.getElementById("account-username-note");
+const accountEmail = document.getElementById("account-email");
+const accountPhone = document.getElementById("account-phone");
 
   const addressType = document.getElementById("address-type");
   const buildingName = document.getElementById("building-name");
@@ -238,7 +240,10 @@
 
   const logoutButton = document.getElementById("account-logout-sidebar");
 
-  let currentUser = null;
+let currentUser = null;
+let originalUsername = "";
+let usernameLastChangedAt = null;
+const usernameCooldownDays = 14;
 
   function showMessage(element, message, type) {
     element.textContent = message;
@@ -280,18 +285,64 @@
     }
   }
 
-  function getReadablePasswordError(error) {
-    switch (error.code) {
-      case "auth/requires-recent-login":
-        return "For security, please log out, log in again, then try changing your password.";
-      case "auth/weak-password":
-        return "Please use a stronger password.";
-      case "auth/network-request-failed":
-        return "Network error. Please check your connection and try again.";
-      default:
-        return "Something went wrong. Please try again.";
-    }
+function getDateFromFirestoreValue(value) {
+  if (!value) {
+    return null;
   }
+
+  if (typeof value.toDate === "function") {
+    return value.toDate();
+  }
+
+  if (typeof value.seconds === "number") {
+    return new Date(value.seconds * 1000);
+  }
+
+  const parsedDate = new Date(value);
+  return Number.isNaN(parsedDate.getTime()) ? null : parsedDate;
+}
+
+function getUsernameDaysLeft() {
+  const lastChangeDate = getDateFromFirestoreValue(usernameLastChangedAt);
+
+  if (!lastChangeDate) {
+    return 0;
+  }
+
+  const nextAllowedChange = lastChangeDate.getTime() + usernameCooldownDays * 24 * 60 * 60 * 1000;
+  const millisecondsLeft = nextAllowedChange - Date.now();
+
+  if (millisecondsLeft <= 0) {
+    return 0;
+  }
+
+  return Math.ceil(millisecondsLeft / (24 * 60 * 60 * 1000));
+}
+
+function updateUsernameLockState() {
+  const daysLeft = getUsernameDaysLeft();
+
+  if (daysLeft > 0) {
+    accountName.readOnly = true;
+    accountUsernameNote.textContent = "You can change your username again in " + daysLeft + (daysLeft === 1 ? " day." : " days.");
+  } else {
+    accountName.readOnly = false;
+    accountUsernameNote.textContent = "You can change your username once every 14 days.";
+  }
+}
+
+function getReadablePasswordError(error) {
+  switch (error.code) {
+    case "auth/requires-recent-login":
+      return "For security, please log out, log in again, then try changing your password.";
+    case "auth/weak-password":
+      return "Please use a stronger password.";
+    case "auth/network-request-failed":
+      return "Network error. Please check your connection and try again.";
+    default:
+      return "Something went wrong. Please try again.";
+  }
+}
 
   document.querySelectorAll("[data-account-panel]").forEach(function (button) {
     button.addEventListener("click", function () {
@@ -314,71 +365,106 @@
       const userDocRef = doc(db, "users", user.uid);
       const userDoc = await getDoc(userDocRef);
 
-      if (userDoc.exists()) {
-        const data = userDoc.data();
+if (userDoc.exists()) {
+  const data = userDoc.data();
 
-        accountName.value = data.fullName || "";
-        accountPhone.value = data.phone || "";
-        addressType.value = data.addressType || "apartment";
+  accountName.value = data.fullName || "";
+  originalUsername = data.fullName || "";
+  usernameLastChangedAt = data.usernameLastChangedAt || null;
 
-        buildingName.value = data.buildingName || "";
-        apartmentNumber.value = data.apartmentNumber || "";
-        floorNumber.value = data.floorNumber || "";
-        houseNumber.value = data.houseNumber || "";
-        officeName.value = data.officeName || "";
-        companyName.value = data.companyName || "";
-        streetName.value = data.streetName || "";
-        additionalInfo.value = data.additionalInfo || "";
+  accountPhone.value = data.phone || "";
+  addressType.value = data.addressType || "apartment";
 
-        accountHeaderText.textContent = "Welcome back, " + (data.fullName || "Customer") + ".";
-      } else {
-        accountName.value = user.displayName || "";
-        accountHeaderText.textContent = "Welcome back.";
-      }
+  buildingName.value = data.buildingName || "";
+  apartmentNumber.value = data.apartmentNumber || "";
+  floorNumber.value = data.floorNumber || "";
+  houseNumber.value = data.houseNumber || "";
+  officeName.value = data.officeName || "";
+  companyName.value = data.companyName || "";
+  streetName.value = data.streetName || "";
+  additionalInfo.value = data.additionalInfo || "";
 
-      showAddressFields();
-      accountLoading.hidden = true;
+  accountHeaderText.textContent = "Welcome back, " + (data.fullName || "Customer") + ".";
+} else {
+  accountName.value = user.displayName || "";
+  originalUsername = user.displayName || "";
+  usernameLastChangedAt = null;
+  accountHeaderText.textContent = "Welcome back.";
+}
+
+updateUsernameLockState();
+showAddressFields();
+accountLoading.hidden = true;
     } catch (error) {
       accountLoading.textContent = "Unable to load account details. Please refresh and try again.";
     }
   });
 
-  detailsForm.addEventListener("submit", async function (event) {
-    event.preventDefault();
+detailsForm.addEventListener("submit", async function (event) {
+  event.preventDefault();
 
-    if (!currentUser) {
-      return;
+  if (!currentUser) {
+    return;
+  }
+
+  const newUsername = accountName.value.trim();
+  const usernameIsChanging = newUsername !== originalUsername;
+  const usernameDaysLeft = getUsernameDaysLeft();
+
+  if (!newUsername) {
+    showMessage(detailsMessage, "Username cannot be empty.", "error");
+    return;
+  }
+
+  if (usernameIsChanging && usernameDaysLeft > 0) {
+    accountName.value = originalUsername;
+    updateUsernameLockState();
+    showMessage(detailsMessage, "You can change your username again in " + usernameDaysLeft + (usernameDaysLeft === 1 ? " day." : " days."), "error");
+    return;
+  }
+
+  detailsButton.disabled = true;
+  detailsButton.textContent = "Saving...";
+  showMessage(detailsMessage, "", "");
+
+  const accountData = {
+    email: currentUser.email || "",
+    fullName: newUsername,
+    phone: accountPhone.value.trim(),
+    addressType: addressType.value,
+    buildingName: buildingName.value.trim(),
+    apartmentNumber: apartmentNumber.value.trim(),
+    floorNumber: floorNumber.value.trim(),
+    houseNumber: houseNumber.value.trim(),
+    officeName: officeName.value.trim(),
+    companyName: companyName.value.trim(),
+    streetName: streetName.value.trim(),
+    additionalInfo: additionalInfo.value.trim(),
+    updatedAt: serverTimestamp()
+  };
+
+  if (usernameIsChanging) {
+    accountData.usernameLastChangedAt = serverTimestamp();
+  }
+
+  try {
+    await setDoc(doc(db, "users", currentUser.uid), accountData, { merge: true });
+
+    if (usernameIsChanging) {
+      originalUsername = newUsername;
+      usernameLastChangedAt = new Date();
+      accountHeaderText.textContent = "Welcome back, " + newUsername + ".";
+      updateUsernameLockState();
     }
 
-    detailsButton.disabled = true;
-    detailsButton.textContent = "Saving...";
-    showMessage(detailsMessage, "", "");
-
-    try {
-      await setDoc(doc(db, "users", currentUser.uid), {
-        email: currentUser.email || "",
-        fullName: accountName.value.trim(),
-        phone: accountPhone.value.trim(),
-        addressType: addressType.value,
-        buildingName: buildingName.value.trim(),
-        apartmentNumber: apartmentNumber.value.trim(),
-        floorNumber: floorNumber.value.trim(),
-        houseNumber: houseNumber.value.trim(),
-        officeName: officeName.value.trim(),
-        companyName: companyName.value.trim(),
-        streetName: streetName.value.trim(),
-        additionalInfo: additionalInfo.value.trim(),
-        updatedAt: serverTimestamp()
-      }, { merge: true });
-
-      showMessage(detailsMessage, "Account details saved.", "success");
-    } catch (error) {
-      showMessage(detailsMessage, "Could not save your details. Please try again.", "error");
-    } finally {
-      detailsButton.disabled = false;
-      detailsButton.textContent = "Save Changes";
-    }
-  });
+    showMessage(detailsMessage, usernameIsChanging ? "Account details saved. Username can be changed again in 14 days." : "Account details saved.", "success");
+  } catch (error) {
+    showMessage(detailsMessage, "Could not save your details. Please try again.", "error");
+  } finally {
+    detailsButton.disabled = false;
+    detailsButton.textContent = "Save Changes";
+  }
+});
 
   passwordForm.addEventListener("submit", async function (event) {
     event.preventDefault();
