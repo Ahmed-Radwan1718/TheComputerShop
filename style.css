@@ -5295,7 +5295,7 @@ body.nav-menu-open {
 
 .auth-section-header {
   margin-bottom: 34px;
-  text-align: center;
+  text-align: left;
 }
 
 .auth-section-eyebrow {
@@ -5462,8 +5462,7 @@ body.nav-menu-open {
   font-weight: 400;
   letter-spacing: 0;
   text-transform: none;
-  text-decoration: underline;
-  text-underline-offset: 4px;
+  text-decoration: none;
 }
 
 .auth-panel-footer a:hover {
@@ -5487,17 +5486,17 @@ body.nav-menu-open {
 
   .auth-section-header {
     max-width: none;
-    text-align: center;
+    text-align: left;
   }
 
   .auth-section-title {
-    margin-left: auto;
-    margin-right: auto;
+    margin-left: 0;
+    margin-right: 0;
     font-size: 34px;
   }
 
   .auth-section-intro {
-    margin: 0 auto;
+    margin: 0;
     font-size: 15px;
   }
 
