@@ -5593,10 +5593,24 @@ body.nav-menu-open {
   text-align: left;
   text-transform: uppercase;
   cursor: pointer;
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
   transition:
     background 0.2s ease,
     color 0.2s ease,
     opacity 0.2s ease;
+}
+
+.account-sidebar-link img {
+  width: 19px;
+  height: 19px;
+  display: block;
+  object-fit: contain;
+  opacity: 0.62;
+  filter: brightness(0) invert(1);
+  transition: opacity 0.2s ease;
 }
 
 .account-sidebar-link:hover,
@@ -5605,9 +5619,19 @@ body.nav-menu-open {
   color: white;
 }
 
+.account-sidebar-link:hover img,
+.account-sidebar-link.active img {
+  opacity: 1;
+}
+
 .account-logout-link {
   margin-top: 8px;
   color: rgba(255, 156, 156, 0.95);
+}
+
+.account-logout-link img {
+  opacity: 0.95;
+  filter: brightness(0) saturate(100%) invert(82%) sepia(19%) saturate(933%) hue-rotate(306deg) brightness(102%) contrast(101%);
 }
 
 .account-content {
