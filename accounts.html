@@ -202,10 +202,13 @@
               </div>
 
               <div class="account-status-grid">
-                <div class="account-status-card">
-                  <span>Email Verified</span>
-                  <strong id="status-email-verified">Checking...</strong>
-                </div>
+<div class="account-status-card">
+  <span>Email Verified</span>
+  <strong id="status-email-verified">Checking...</strong>
+  <button class="account-status-button" type="button" id="send-email-verification-button" hidden>
+    Send Verification Email
+  </button>
+</div>
 
                 <div class="account-status-card">
                   <span>Phone Verified</span>
@@ -394,6 +397,7 @@
     auth,
     db,
     signOut,
+    sendEmailVerification,
     updatePassword,
     EmailAuthProvider,
     reauthenticateWithCredential,
@@ -420,6 +424,7 @@ const accountPhone = document.getElementById("account-phone");
 const accountPhoneEditButton = document.getElementById("account-phone-edit-button");
 
 const statusEmailVerified = document.getElementById("status-email-verified");
+const sendEmailVerificationButton = document.getElementById("send-email-verification-button");
 const statusPhoneVerified = document.getElementById("status-phone-verified");
 const statusMemberSince = document.getElementById("status-member-since");
 const statusLastUpdated = document.getElementById("status-last-updated");
@@ -558,6 +563,8 @@ function getReadableDate(value) {
 
 function updateAccountStatus(user, data) {
   statusEmailVerified.textContent = user.emailVerified ? "Verified" : "Not Verified";
+  sendEmailVerificationButton.hidden = user.emailVerified;
+
   statusPhoneVerified.textContent = user.phoneNumber ? "Verified" : "Not Verified";
 
   statusMemberSince.textContent = getReadableDate(data.createdAt || user.metadata.creationTime);
@@ -852,11 +859,39 @@ function updateUsernameLockState() {
     }
   }
 
-  document.querySelectorAll("[data-account-panel]").forEach(function (button) {
-    button.addEventListener("click", function () {
-      switchPanel(button.dataset.accountPanel);
-    });
+document.querySelectorAll("[data-account-panel]").forEach(function (button) {
+  button.addEventListener("click", function () {
+    switchPanel(button.dataset.accountPanel);
   });
+});
+
+sendEmailVerificationButton.addEventListener("click", async function () {
+  if (!currentUser) {
+    return;
+  }
+
+  sendEmailVerificationButton.disabled = true;
+  sendEmailVerificationButton.textContent = "Sending...";
+  showMessage(detailsMessage, "", "");
+
+  try {
+    await currentUser.reload();
+
+    if (currentUser.emailVerified) {
+      updateAccountStatus(currentUser, {});
+      showMessage(detailsMessage, "Your email is already verified.", "success");
+      return;
+    }
+
+    await sendEmailVerification(currentUser);
+    showMessage(detailsMessage, "Verification email sent. Please check your inbox and spam folder.", "success");
+  } catch (error) {
+    showMessage(detailsMessage, "Could not send verification email. Please try again.", "error");
+  } finally {
+    sendEmailVerificationButton.disabled = false;
+    sendEmailVerificationButton.textContent = "Send Verification Email";
+  }
+});
 
 document.querySelectorAll(".account-address-type-button").forEach(function (button) {
   button.addEventListener("click", function () {
