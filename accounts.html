@@ -107,10 +107,24 @@
   </div>
 </div>
 
-                <div class="account-field account-field-full">
-                  <label for="account-phone">Phone Number</label>
-                  <input type="tel" id="account-phone" autocomplete="tel">
-                </div>
+<div class="account-field account-field-full account-phone-field">
+  <label for="account-phone">Phone Number</label>
+
+  <div class="account-email-row">
+    <div class="account-email-input-wrap">
+      <input type="tel" id="account-phone" autocomplete="tel" readonly>
+
+      <button class="account-email-info-button" type="button" aria-label="Phone information">
+        <img src="username-info-icon.png" alt="">
+        <span class="account-email-tooltip">To change your phone number, enter your current password and verify the SMS code sent to your new phone number.</span>
+      </button>
+    </div>
+
+    <button class="account-email-edit-button" type="button" id="account-phone-edit-button" aria-label="Change phone number">
+      <img src="username-edit-icon.png" alt="">
+    </button>
+  </div>
+</div>
               </div>
 
               <div class="account-divider"></div>
@@ -301,6 +315,50 @@
   </div>
 </div>
 
+<div class="account-email-modal" id="phone-change-modal" hidden>
+  <div class="account-email-modal-backdrop" id="phone-change-modal-backdrop"></div>
+
+  <div class="account-email-modal-card" role="dialog" aria-modal="true" aria-labelledby="phone-change-modal-title">
+    <button class="account-email-modal-close" type="button" id="phone-change-modal-close" aria-label="Close phone change popup">×</button>
+
+    <div class="account-email-modal-header">
+      <h2 id="phone-change-modal-title">Change Phone Number</h2>
+      <p>Enter your new phone number and current password. A verification code will be sent by SMS.</p>
+    </div>
+
+    <form class="account-form" id="change-phone-form">
+      <div class="account-field">
+        <label for="new-phone">New Phone Number</label>
+        <input type="tel" id="new-phone" autocomplete="tel" placeholder="+201010206091" required>
+      </div>
+
+      <div class="account-field">
+        <label for="phone-current-password">Current Password</label>
+        <input type="password" id="phone-current-password" autocomplete="current-password" required>
+      </div>
+
+      <div class="account-field" id="phone-code-field" hidden>
+        <label for="phone-verification-code">Verification Code</label>
+        <input type="text" id="phone-verification-code" inputmode="numeric" autocomplete="one-time-code">
+      </div>
+
+      <div id="phone-recaptcha-container"></div>
+
+      <div class="account-email-modal-actions">
+        <button class="account-email-modal-cancel" type="button" id="phone-change-modal-cancel">
+          Cancel
+        </button>
+
+        <button class="account-primary-button account-email-modal-submit" type="submit" id="change-phone-button">
+          Send Verification Code
+        </button>
+      </div>
+
+      <p class="account-message" id="phone-message" aria-live="polite"></p>
+    </form>
+  </div>
+</div>
+
 <script type="module">
   import "./auth.js";
 
@@ -312,6 +370,9 @@
     EmailAuthProvider,
     reauthenticateWithCredential,
     verifyBeforeUpdateEmail,
+    PhoneAuthProvider,
+    RecaptchaVerifier,
+    updatePhoneNumber,
     onAuthStateChanged,
     doc,
     getDoc,
@@ -328,6 +389,7 @@ const accountUsernameEditButton = document.getElementById("account-username-edit
 const accountEmail = document.getElementById("account-email");
 const accountEmailEditButton = document.getElementById("account-email-edit-button");
 const accountPhone = document.getElementById("account-phone");
+const accountPhoneEditButton = document.getElementById("account-phone-edit-button");
 
   const addressType = document.getElementById("address-type");
   const buildingName = document.getElementById("building-name");
@@ -355,6 +417,18 @@ const emailCurrentPassword = document.getElementById("email-current-password");
 const emailButton = document.getElementById("change-email-button");
 const emailMessage = document.getElementById("email-message");
 
+  const phoneModal = document.getElementById("phone-change-modal");
+  const phoneModalBackdrop = document.getElementById("phone-change-modal-backdrop");
+  const phoneModalClose = document.getElementById("phone-change-modal-close");
+  const phoneModalCancel = document.getElementById("phone-change-modal-cancel");
+  const phoneForm = document.getElementById("change-phone-form");
+  const newPhone = document.getElementById("new-phone");
+  const phoneCurrentPassword = document.getElementById("phone-current-password");
+  const phoneCodeField = document.getElementById("phone-code-field");
+  const phoneVerificationCode = document.getElementById("phone-verification-code");
+  const phoneButton = document.getElementById("change-phone-button");
+  const phoneMessage = document.getElementById("phone-message");
+
   const passwordForm = document.getElementById("change-password-form");
   const passwordButton = document.getElementById("change-password-button");
   const passwordMessage = document.getElementById("password-message");
@@ -366,6 +440,9 @@ let originalUsername = "";
 let usernameLastChangedAt = null;
 let usernameEditMode = false;
 let emailLastChangedAt = null;
+let phoneVerificationId = null;
+let pendingPhoneNumber = "";
+let phoneRecaptchaVerifier = null;
 const usernameCooldownDays = 14;
 const emailCooldownDays = 90;
 
@@ -601,6 +678,71 @@ function updateUsernameLockState() {
     document.body.classList.remove("account-email-modal-open");
   }
 
+  function resetPhoneModalState() {
+    phoneVerificationId = null;
+    pendingPhoneNumber = "";
+    phoneCodeField.hidden = true;
+    phoneVerificationCode.value = "";
+    phoneVerificationCode.required = false;
+    phoneButton.textContent = "Send Verification Code";
+    phoneButton.disabled = false;
+  }
+
+  function openPhoneModal() {
+    resetPhoneModalState();
+    phoneForm.reset();
+    showMessage(phoneMessage, "", "");
+    phoneModal.hidden = false;
+    document.body.classList.add("account-email-modal-open");
+
+    setTimeout(function () {
+      newPhone.focus();
+    }, 50);
+  }
+
+  function closePhoneModal() {
+    phoneModal.hidden = true;
+    document.body.classList.remove("account-email-modal-open");
+    resetPhoneModalState();
+  }
+
+  function getPhoneRecaptchaVerifier() {
+    if (!phoneRecaptchaVerifier) {
+      phoneRecaptchaVerifier = new RecaptchaVerifier(auth, "phone-recaptcha-container", {
+        size: "invisible"
+      });
+    }
+
+    return phoneRecaptchaVerifier;
+  }
+
+  function getReadablePhoneError(error) {
+    switch (error.code) {
+      case "auth/invalid-phone-number":
+        return "Please enter the phone number in international format, like +201010206091.";
+      case "auth/missing-phone-number":
+        return "Please enter your new phone number.";
+      case "auth/code-expired":
+        return "This verification code expired. Please send a new code.";
+      case "auth/invalid-verification-code":
+        return "The verification code is incorrect.";
+      case "auth/wrong-password":
+      case "auth/invalid-credential":
+        return "The current password is incorrect.";
+      case "auth/credential-already-in-use":
+        return "This phone number is already used by another account.";
+      case "auth/requires-recent-login":
+        return "For security, please log out, log in again, then try changing your phone number.";
+      case "auth/quota-exceeded":
+      case "auth/too-many-requests":
+        return "Too many SMS requests. Please wait and try again later.";
+      case "auth/network-request-failed":
+        return "Network error. Please check your connection and try again.";
+      default:
+        return "Could not update your phone number. Please try again.";
+    }
+  }
+
   document.querySelectorAll("[data-account-panel]").forEach(function (button) {
     button.addEventListener("click", function () {
       switchPanel(button.dataset.accountPanel);
@@ -630,13 +772,25 @@ accountEmailEditButton.addEventListener("click", function () {
   openEmailModal();
 });
 
+accountPhoneEditButton.addEventListener("click", function () {
+  openPhoneModal();
+});
+
 emailModalClose.addEventListener("click", closeEmailModal);
 emailModalCancel.addEventListener("click", closeEmailModal);
 emailModalBackdrop.addEventListener("click", closeEmailModal);
 
+phoneModalClose.addEventListener("click", closePhoneModal);
+phoneModalCancel.addEventListener("click", closePhoneModal);
+phoneModalBackdrop.addEventListener("click", closePhoneModal);
+
 document.addEventListener("keydown", function (event) {
   if (event.key === "Escape" && !emailModal.hidden) {
     closeEmailModal();
+  }
+
+  if (event.key === "Escape" && !phoneModal.hidden) {
+    closePhoneModal();
   }
 });
 
@@ -760,7 +914,82 @@ detailsForm.addEventListener("submit", async function (event) {
   }
 });
 
-emailForm.addEventListener("submit", async function (event) {
+  phoneForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    if (!currentUser) {
+      return;
+    }
+
+    const requestedPhone = newPhone.value.trim();
+    const currentPassword = phoneCurrentPassword.value;
+    const enteredCode = phoneVerificationCode.value.trim();
+
+    phoneButton.disabled = true;
+    showMessage(phoneMessage, "", "");
+
+    try {
+      if (!phoneVerificationId) {
+        if (!requestedPhone) {
+          showMessage(phoneMessage, "Please enter your new phone number.", "error");
+          phoneButton.disabled = false;
+          return;
+        }
+
+        const credential = EmailAuthProvider.credential(currentUser.email || "", currentPassword);
+        await reauthenticateWithCredential(currentUser, credential);
+
+        phoneButton.textContent = "Sending...";
+        const phoneProvider = new PhoneAuthProvider(auth);
+        phoneVerificationId = await phoneProvider.verifyPhoneNumber(requestedPhone, getPhoneRecaptchaVerifier());
+        pendingPhoneNumber = requestedPhone;
+
+        phoneCodeField.hidden = false;
+        phoneVerificationCode.required = true;
+        phoneButton.textContent = "Verify And Save";
+        showMessage(phoneMessage, "Verification code sent. Enter the SMS code to save your new phone number.", "success");
+        phoneVerificationCode.focus();
+        phoneButton.disabled = false;
+        return;
+      }
+
+      if (!enteredCode) {
+        showMessage(phoneMessage, "Please enter the verification code.", "error");
+        phoneButton.disabled = false;
+        return;
+      }
+
+      phoneButton.textContent = "Saving...";
+
+      const phoneCredential = PhoneAuthProvider.credential(phoneVerificationId, enteredCode);
+      await updatePhoneNumber(currentUser, phoneCredential);
+
+      await setDoc(doc(db, "users", currentUser.uid), {
+        phone: pendingPhoneNumber,
+        phoneUpdatedAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      }, { merge: true });
+
+      accountPhone.value = pendingPhoneNumber;
+      phoneForm.reset();
+      showMessage(phoneMessage, "Phone number updated successfully.", "success");
+
+      setTimeout(function () {
+        closePhoneModal();
+      }, 900);
+    } catch (error) {
+      showMessage(phoneMessage, getReadablePhoneError(error), "error");
+      phoneButton.disabled = false;
+
+      if (!phoneVerificationId) {
+        phoneButton.textContent = "Send Verification Code";
+      } else {
+        phoneButton.textContent = "Verify And Save";
+      }
+    }
+  });
+
+  emailForm.addEventListener("submit", async function (event) {
   event.preventDefault();
 
   if (!currentUser) {
