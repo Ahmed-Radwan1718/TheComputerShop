@@ -88,10 +88,24 @@
   <p class="account-username-note" id="account-username-note"></p>
 </div>
 
-                <div class="account-field">
-                  <label for="account-email">Email Address</label>
-                  <input type="email" id="account-email" readonly>
-                </div>
+<div class="account-field account-email-field">
+  <label for="account-email">Email Address</label>
+
+  <div class="account-email-row">
+    <div class="account-email-input-wrap">
+      <input type="email" id="account-email" readonly>
+
+      <button class="account-email-info-button" type="button" aria-label="Email information">
+        <img src="username-info-icon.png" alt="">
+        <span class="account-email-tooltip">To change your email, you must enter your current password and verify the new email address.</span>
+      </button>
+    </div>
+
+    <button class="account-email-edit-button" type="button" id="account-email-edit-button" aria-label="Change email">
+      <img src="username-edit-icon.png" alt="">
+    </button>
+  </div>
+</div>
 
                 <div class="account-field account-field-full">
                   <label for="account-phone">Phone Number</label>
@@ -300,6 +314,7 @@ const accountName = document.getElementById("account-name");
 const accountUsernameNote = document.getElementById("account-username-note");
 const accountUsernameEditButton = document.getElementById("account-username-edit-button");
 const accountEmail = document.getElementById("account-email");
+const accountEmailEditButton = document.getElementById("account-email-edit-button");
 const accountPhone = document.getElementById("account-phone");
 
   const addressType = document.getElementById("address-type");
@@ -506,6 +521,14 @@ accountUsernameEditButton.addEventListener("click", function () {
   updateUsernameLockState();
   accountName.focus();
   accountName.select();
+});
+
+accountEmailEditButton.addEventListener("click", function () {
+  switchPanel("security");
+
+  if (newEmail) {
+    newEmail.focus();
+  }
 });
 
   onAuthStateChanged(auth, async function (user) {
