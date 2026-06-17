@@ -5236,6 +5236,7 @@ body.nav-menu-open {
   text-decoration: none;
   display: flex;
   align-items: center;
+  gap: 10px;
   cursor: pointer;
   transition:
     background 0.2s ease,
@@ -5248,8 +5249,19 @@ body.nav-menu-open {
   color: white;
 }
 
+.floating-account-menu-link img {
+  width: 16px;
+  height: 16px;
+  display: block;
+  object-fit: contain;
+}
+
 .floating-account-logout {
   color: rgba(255, 156, 156, 0.95);
+}
+
+.floating-account-logout img {
+  filter: brightness(0) saturate(100%) invert(82%) sepia(19%) saturate(933%) hue-rotate(306deg) brightness(102%) contrast(101%);
 }
 
 .floating-account-logout:hover {
