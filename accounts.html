@@ -178,11 +178,41 @@
           <article class="account-panel" id="account-panel-security">
             <div class="account-panel-header">
               <p class="account-panel-eyebrow">Security</p>
-              <h2>Change Password</h2>
-              <p>Update your account password. For security, Firebase may ask you to log in again before changing it.</p>
+              <h2>Account Security</h2>
+              <p>Update your email or password securely.</p>
             </div>
 
+            <form class="account-form" id="change-email-form">
+              <div class="account-panel-subheader">
+                <h3>Change Email</h3>
+                <p>A verification link will be sent to your new email address. Your email will only change after you verify it.</p>
+              </div>
+
+              <div class="account-field">
+                <label for="new-email">New Email Address</label>
+                <input type="email" id="new-email" autocomplete="email" required>
+              </div>
+
+              <div class="account-field">
+                <label for="email-current-password">Current Password</label>
+                <input type="password" id="email-current-password" autocomplete="current-password" required>
+              </div>
+
+              <button class="account-primary-button" type="submit" id="change-email-button">
+                Send Verification Email
+              </button>
+
+              <p class="account-message" id="email-message" aria-live="polite"></p>
+            </form>
+
+            <div class="account-divider"></div>
+
             <form class="account-form" id="change-password-form">
+              <div class="account-panel-subheader">
+                <h3>Change Password</h3>
+                <p>Update your account password. For security, you may need to log in again before changing it.</p>
+              </div>
+
               <div class="account-field">
                 <label for="new-password">New Password</label>
                 <input type="password" id="new-password" minlength="8" autocomplete="new-password" required>
@@ -253,6 +283,9 @@
     db,
     signOut,
     updatePassword,
+    EmailAuthProvider,
+    reauthenticateWithCredential,
+    verifyBeforeUpdateEmail,
     onAuthStateChanged,
     doc,
     getDoc,
@@ -282,6 +315,12 @@ const accountPhone = document.getElementById("account-phone");
   const detailsForm = document.getElementById("account-details-form");
   const detailsButton = document.getElementById("save-account-details");
   const detailsMessage = document.getElementById("account-details-message");
+
+  const emailForm = document.getElementById("change-email-form");
+  const newEmail = document.getElementById("new-email");
+  const emailCurrentPassword = document.getElementById("email-current-password");
+  const emailButton = document.getElementById("change-email-button");
+  const emailMessage = document.getElementById("email-message");
 
   const passwordForm = document.getElementById("change-password-form");
   const passwordButton = document.getElementById("change-password-button");
@@ -413,18 +452,36 @@ function updateUsernameLockState() {
   }
 }
 
-function getReadablePasswordError(error) {
-  switch (error.code) {
-    case "auth/requires-recent-login":
-      return "For security, please log out, log in again, then try changing your password.";
-    case "auth/weak-password":
-      return "Please use a stronger password.";
-    case "auth/network-request-failed":
-      return "Network error. Please check your connection and try again.";
-    default:
-      return "Something went wrong. Please try again.";
+  function getReadablePasswordError(error) {
+    switch (error.code) {
+      case "auth/requires-recent-login":
+        return "For security, please log out, log in again, then try changing your password.";
+      case "auth/weak-password":
+        return "Please use a stronger password.";
+      case "auth/network-request-failed":
+        return "Network error. Please check your connection and try again.";
+      default:
+        return "Something went wrong. Please try again.";
+    }
   }
-}
+
+  function getReadableEmailError(error) {
+    switch (error.code) {
+      case "auth/wrong-password":
+      case "auth/invalid-credential":
+        return "The current password is incorrect.";
+      case "auth/invalid-email":
+        return "Please enter a valid email address.";
+      case "auth/email-already-in-use":
+        return "This email is already used by another account.";
+      case "auth/requires-recent-login":
+        return "For security, please log out, log in again, then try changing your email.";
+      case "auth/network-request-failed":
+        return "Network error. Please check your connection and try again.";
+      default:
+        return "Could not send the verification email. Please try again.";
+    }
+  }
 
   document.querySelectorAll("[data-account-panel]").forEach(function (button) {
     button.addEventListener("click", function () {
@@ -567,6 +624,46 @@ detailsForm.addEventListener("submit", async function (event) {
     detailsButton.textContent = "Save Changes";
   }
 });
+
+  emailForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    if (!currentUser) {
+      return;
+    }
+
+    const requestedEmail = newEmail.value.trim();
+    const currentPassword = emailCurrentPassword.value;
+
+    if (!requestedEmail) {
+      showMessage(emailMessage, "Please enter your new email address.", "error");
+      return;
+    }
+
+    if (requestedEmail.toLowerCase() === (currentUser.email || "").toLowerCase()) {
+      showMessage(emailMessage, "This is already your current email address.", "error");
+      return;
+    }
+
+    emailButton.disabled = true;
+    emailButton.textContent = "Sending...";
+    showMessage(emailMessage, "", "");
+
+    try {
+      const credential = EmailAuthProvider.credential(currentUser.email || "", currentPassword);
+
+      await reauthenticateWithCredential(currentUser, credential);
+      await verifyBeforeUpdateEmail(currentUser, requestedEmail);
+
+      emailForm.reset();
+      showMessage(emailMessage, "Verification email sent. Your email will change after you click the link sent to your new email address.", "success");
+    } catch (error) {
+      showMessage(emailMessage, getReadableEmailError(error), "error");
+    } finally {
+      emailButton.disabled = false;
+      emailButton.textContent = "Send Verification Email";
+    }
+  });
 
   passwordForm.addEventListener("submit", async function (event) {
     event.preventDefault();
