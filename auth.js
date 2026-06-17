@@ -8,6 +8,9 @@ import {
   sendPasswordResetEmail,
   sendEmailVerification,
   updatePassword,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
+  verifyBeforeUpdateEmail,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 
@@ -44,6 +47,9 @@ window.tcsAuth = {
   sendPasswordResetEmail,
   sendEmailVerification,
   updatePassword,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
+  verifyBeforeUpdateEmail,
   onAuthStateChanged,
   doc,
   setDoc,
