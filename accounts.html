@@ -127,7 +127,35 @@
 </div>
               </div>
 
-              <div class="account-divider"></div>
+<div class="account-divider"></div>
+
+<div class="account-panel-subheader">
+  <h3>Account Status</h3>
+</div>
+
+<div class="account-status-grid">
+  <div class="account-status-card">
+    <span>Email Verified</span>
+    <strong id="status-email-verified">Checking...</strong>
+  </div>
+
+  <div class="account-status-card">
+    <span>Phone Verified</span>
+    <strong id="status-phone-verified">Checking...</strong>
+  </div>
+
+  <div class="account-status-card">
+    <span>Member Since</span>
+    <strong id="status-member-since">Checking...</strong>
+  </div>
+
+  <div class="account-status-card">
+    <span>Last Updated</span>
+    <strong id="status-last-updated">Checking...</strong>
+  </div>
+</div>
+
+<div class="account-divider"></div>
 
               <div class="account-panel-subheader">
                 <h3>Saved Address</h3>
@@ -391,6 +419,11 @@ const accountEmailEditButton = document.getElementById("account-email-edit-butto
 const accountPhone = document.getElementById("account-phone");
 const accountPhoneEditButton = document.getElementById("account-phone-edit-button");
 
+const statusEmailVerified = document.getElementById("status-email-verified");
+const statusPhoneVerified = document.getElementById("status-phone-verified");
+const statusMemberSince = document.getElementById("status-member-since");
+const statusLastUpdated = document.getElementById("status-last-updated");
+
   const addressType = document.getElementById("address-type");
   const buildingName = document.getElementById("building-name");
   const apartmentNumber = document.getElementById("apartment-number");
@@ -507,6 +540,28 @@ function getDateFromFirestoreValue(value) {
 
   const parsedDate = new Date(value);
   return Number.isNaN(parsedDate.getTime()) ? null : parsedDate;
+}
+
+function getReadableDate(value) {
+  const date = getDateFromFirestoreValue(value);
+
+  if (!date) {
+    return "Not available";
+  }
+
+  return date.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric"
+  });
+}
+
+function updateAccountStatus(user, data) {
+  statusEmailVerified.textContent = user.emailVerified ? "Verified" : "Not Verified";
+  statusPhoneVerified.textContent = user.phoneNumber ? "Verified" : "Not Verified";
+
+  statusMemberSince.textContent = getReadableDate(data.createdAt || user.metadata.creationTime);
+  statusLastUpdated.textContent = getReadableDate(data.updatedAt || user.metadata.lastSignInTime);
 }
 
 function getUsernameUnlockDate() {
@@ -868,7 +923,8 @@ document.addEventListener("keydown", function (event) {
       const userDoc = await getDoc(userDocRef);
 
 if (userDoc.exists()) {
-  const data = userDoc.data();
+const data = userDoc.data();
+updateAccountStatus(user, data);
 
   accountName.value = data.fullName || "";
   originalUsername = data.fullName || "";
@@ -890,11 +946,12 @@ phoneLastChangedAt = data.phoneLastChangedAt || null;
 
   accountHeaderText.textContent = "Welcome back, " + (data.fullName || "Customer") + ".";
 } else {
-  accountName.value = user.displayName || "";
-  originalUsername = user.displayName || "";
+accountName.value = user.displayName || "";
+originalUsername = user.displayName || "";
 usernameLastChangedAt = null;
 emailLastChangedAt = null;
 phoneLastChangedAt = null;
+updateAccountStatus(user, {});
 accountHeaderText.textContent = "Welcome back.";
 }
 
