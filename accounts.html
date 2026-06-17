@@ -342,21 +342,44 @@ function getDateFromFirestoreValue(value) {
   return Number.isNaN(parsedDate.getTime()) ? null : parsedDate;
 }
 
-function getUsernameDaysLeft() {
+function getUsernameUnlockDate() {
   const lastChangeDate = getDateFromFirestoreValue(usernameLastChangedAt);
 
   if (!lastChangeDate) {
+    return null;
+  }
+
+  return new Date(lastChangeDate.getTime() + usernameCooldownDays * 24 * 60 * 60 * 1000);
+}
+
+function getUsernameDaysLeft() {
+  const unlockDate = getUsernameUnlockDate();
+
+  if (!unlockDate) {
     return 0;
   }
 
-  const nextAllowedChange = lastChangeDate.getTime() + usernameCooldownDays * 24 * 60 * 60 * 1000;
-  const millisecondsLeft = nextAllowedChange - Date.now();
+  const millisecondsLeft = unlockDate.getTime() - Date.now();
 
   if (millisecondsLeft <= 0) {
     return 0;
   }
 
   return Math.ceil(millisecondsLeft / (24 * 60 * 60 * 1000));
+}
+
+function getUsernameUnlockDateText() {
+  const unlockDate = getUsernameUnlockDate();
+
+  if (!unlockDate) {
+    return "";
+  }
+
+  return unlockDate.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric"
+  });
 }
 
 function updateUsernameLockState() {
@@ -367,7 +390,7 @@ function updateUsernameLockState() {
     accountName.readOnly = true;
     accountUsernameEditButton.disabled = true;
     accountUsernameEditButton.setAttribute("aria-label", "Username locked");
-    accountUsernameNote.textContent = "You can change your username again in " + daysLeft + (daysLeft === 1 ? " day." : " days.");
+    accountUsernameNote.textContent = "You can change your username again on " + getUsernameUnlockDateText() + ".";
   } else {
     accountName.readOnly = !usernameEditMode;
     accountUsernameEditButton.disabled = false;
@@ -476,7 +499,7 @@ detailsForm.addEventListener("submit", async function (event) {
   if (usernameIsChanging && usernameDaysLeft > 0) {
     accountName.value = originalUsername;
     updateUsernameLockState();
-    showMessage(detailsMessage, "You can change your username again in " + usernameDaysLeft + (usernameDaysLeft === 1 ? " day." : " days."), "error");
+    showMessage(detailsMessage, "You can change your username again on " + getUsernameUnlockDateText() + ".", "error");
     return;
   }
 
@@ -517,7 +540,7 @@ detailsForm.addEventListener("submit", async function (event) {
 
     updateUsernameLockState();
 
-    showMessage(detailsMessage, usernameIsChanging ? "Account details saved. Username can be changed again in 14 days." : "Account details saved.", "success");
+    showMessage(detailsMessage, usernameIsChanging ? "Account details saved. Username can be changed again on " + getUsernameUnlockDateText() + "." : "Account details saved.", "success");
   } catch (error) {
     showMessage(detailsMessage, "Could not save your details. Please try again.", "error");
   } finally {
