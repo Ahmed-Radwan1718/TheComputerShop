@@ -6057,6 +6057,124 @@ body.nav-menu-open {
   transform: translateY(1px);
 }
 
+.account-email-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.account-email-modal[hidden] {
+  display: none;
+}
+
+.account-email-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.48);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.account-email-modal-card {
+  position: relative;
+  z-index: 1;
+  width: min(520px, 100%);
+  padding: 32px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  background: rgba(31, 32, 34, 0.96);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.42);
+}
+
+.account-email-modal-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 30px;
+  font-weight: 300;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.account-email-modal-close:hover {
+  color: white;
+}
+
+.account-email-modal-header {
+  margin-bottom: 24px;
+}
+
+.account-email-modal-header h2 {
+  margin-bottom: 18px;
+  padding-right: 34px;
+  color: white;
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.account-email-modal-header p {
+  max-width: 420px;
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.65;
+}
+
+.account-email-modal-actions {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.account-email-modal-cancel {
+  min-height: 52px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.11);
+  color: white;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  transition:
+    opacity 0.2s ease,
+    background 0.2s ease;
+}
+
+.account-email-modal-cancel:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.account-email-modal-submit {
+  margin-top: 0;
+  border-radius: 14px;
+}
+
+body.account-email-modal-open {
+  overflow: hidden;
+}
+
+@media (max-width: 700px) {
+  .account-email-modal-card {
+    padding: 26px 20px;
+  }
+
+  .account-email-modal-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
 .account-divider {
   height: 1px;
   margin: 6px 0;
