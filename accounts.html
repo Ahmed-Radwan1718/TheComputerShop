@@ -440,11 +440,13 @@ let originalUsername = "";
 let usernameLastChangedAt = null;
 let usernameEditMode = false;
 let emailLastChangedAt = null;
+let phoneLastChangedAt = null;
 let phoneVerificationId = null;
 let pendingPhoneNumber = "";
 let phoneRecaptchaVerifier = null;
 const usernameCooldownDays = 14;
 const emailCooldownDays = 90;
+const phoneCooldownDays = 90;
 
   function showMessage(element, message, type) {
     element.textContent = message;
@@ -716,6 +718,58 @@ function updateUsernameLockState() {
     return phoneRecaptchaVerifier;
   }
 
+  function getPhoneUnlockDate() {
+    const lastChangeDate = getDateFromFirestoreValue(phoneLastChangedAt);
+
+    if (!lastChangeDate) {
+      return null;
+    }
+
+    return new Date(lastChangeDate.getTime() + phoneCooldownDays * 24 * 60 * 60 * 1000);
+  }
+
+  function getPhoneDaysLeft() {
+    const unlockDate = getPhoneUnlockDate();
+
+    if (!unlockDate) {
+      return 0;
+    }
+
+    const millisecondsLeft = unlockDate.getTime() - Date.now();
+
+    if (millisecondsLeft <= 0) {
+      return 0;
+    }
+
+    return Math.ceil(millisecondsLeft / (24 * 60 * 60 * 1000));
+  }
+
+  function getPhoneUnlockDateText() {
+    const unlockDate = getPhoneUnlockDate();
+
+    if (!unlockDate) {
+      return "";
+    }
+
+    return unlockDate.toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    });
+  }
+
+  function updatePhoneLockState() {
+    const daysLeft = getPhoneDaysLeft();
+
+    if (daysLeft > 0) {
+      accountPhoneEditButton.disabled = true;
+      accountPhoneEditButton.setAttribute("aria-label", "Phone number locked");
+    } else {
+      accountPhoneEditButton.disabled = false;
+      accountPhoneEditButton.setAttribute("aria-label", "Change phone number");
+    }
+  }
+
   function getReadablePhoneError(error) {
     switch (error.code) {
       case "auth/invalid-phone-number":
@@ -773,6 +827,12 @@ accountEmailEditButton.addEventListener("click", function () {
 });
 
 accountPhoneEditButton.addEventListener("click", function () {
+  if (getPhoneDaysLeft() > 0) {
+    showMessage(detailsMessage, "You can change your phone number again on " + getPhoneUnlockDateText() + ".", "error");
+    updatePhoneLockState();
+    return;
+  }
+
   openPhoneModal();
 });
 
@@ -814,6 +874,7 @@ if (userDoc.exists()) {
   originalUsername = data.fullName || "";
 usernameLastChangedAt = data.usernameLastChangedAt || null;
 emailLastChangedAt = data.emailLastChangedAt || null;
+phoneLastChangedAt = data.phoneLastChangedAt || null;
 
   accountPhone.value = data.phone || "";
   addressType.value = data.addressType || "apartment";
@@ -833,11 +894,13 @@ emailLastChangedAt = data.emailLastChangedAt || null;
   originalUsername = user.displayName || "";
 usernameLastChangedAt = null;
 emailLastChangedAt = null;
+phoneLastChangedAt = null;
 accountHeaderText.textContent = "Welcome back.";
 }
 
 updateUsernameLockState();
 updateEmailLockState();
+updatePhoneLockState();
 showAddressFields();
 accountLoading.hidden = true;
     } catch (error) {
@@ -921,12 +984,19 @@ detailsForm.addEventListener("submit", async function (event) {
       return;
     }
 
-    const requestedPhone = newPhone.value.trim();
-    const currentPassword = phoneCurrentPassword.value;
-    const enteredCode = phoneVerificationCode.value.trim();
+const requestedPhone = newPhone.value.trim();
+const currentPassword = phoneCurrentPassword.value;
+const enteredCode = phoneVerificationCode.value.trim();
+const phoneDaysLeft = getPhoneDaysLeft();
 
-    phoneButton.disabled = true;
-    showMessage(phoneMessage, "", "");
+if (phoneDaysLeft > 0) {
+  showMessage(phoneMessage, "You can change your phone number again on " + getPhoneUnlockDateText() + ".", "error");
+  updatePhoneLockState();
+  return;
+}
+
+phoneButton.disabled = true;
+showMessage(phoneMessage, "", "");
 
     try {
       if (!phoneVerificationId) {
@@ -964,15 +1034,18 @@ detailsForm.addEventListener("submit", async function (event) {
       const phoneCredential = PhoneAuthProvider.credential(phoneVerificationId, enteredCode);
       await updatePhoneNumber(currentUser, phoneCredential);
 
-      await setDoc(doc(db, "users", currentUser.uid), {
-        phone: pendingPhoneNumber,
-        phoneUpdatedAt: serverTimestamp(),
-        updatedAt: serverTimestamp()
-      }, { merge: true });
+await setDoc(doc(db, "users", currentUser.uid), {
+  phone: pendingPhoneNumber,
+  phoneUpdatedAt: serverTimestamp(),
+  phoneLastChangedAt: serverTimestamp(),
+  updatedAt: serverTimestamp()
+}, { merge: true });
 
-      accountPhone.value = pendingPhoneNumber;
-      phoneForm.reset();
-      showMessage(phoneMessage, "Phone number updated successfully.", "success");
+accountPhone.value = pendingPhoneNumber;
+phoneLastChangedAt = new Date();
+updatePhoneLockState();
+phoneForm.reset();
+showMessage(phoneMessage, "Phone number updated successfully. You can change it again on " + getPhoneUnlockDateText() + ".", "success");
 
       setTimeout(function () {
         closePhoneModal();
