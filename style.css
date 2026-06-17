@@ -5761,6 +5761,39 @@ body.nav-menu-open {
   cursor: pointer;
 }
 
+.account-address-type-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.account-address-type-button {
+  min-height: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.055);
+  color: white;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.account-address-type-button:hover {
+  opacity: 0.82;
+}
+
+.account-address-type-button.active {
+  background: white;
+  border-color: white;
+  color: #111;
+}
+
 .account-field input:focus,
 .account-field select:focus,
 .account-field textarea:focus {
