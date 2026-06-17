@@ -356,15 +356,15 @@
     <button class="account-email-modal-close" type="button" id="phone-change-modal-close" aria-label="Close phone change popup">×</button>
 
     <div class="account-email-modal-header">
-      <h2 id="phone-change-modal-title">Change Phone Number</h2>
-      <p>Enter your new phone number and current password. A verification code will be sent by SMS.</p>
+      <h2 id="phone-change-modal-title">Phone Number</h2>
+      <p id="phone-change-modal-text">Enter your phone number and current password. A verification code will be sent by SMS.</p>
     </div>
 
     <form class="account-form" id="change-phone-form">
-      <div class="account-field">
-        <label for="new-phone">New Phone Number</label>
-        <input type="tel" id="new-phone" autocomplete="tel" placeholder="+201010206091" required>
-      </div>
+<div class="account-field">
+  <label for="new-phone" id="phone-change-number-label">Phone Number</label>
+  <input type="tel" id="new-phone" autocomplete="tel" placeholder="+201010206091" required>
+</div>
 
       <div class="account-field">
         <label for="phone-current-password">Current Password</label>
@@ -463,6 +463,9 @@ const emailMessage = document.getElementById("email-message");
   const phoneModalBackdrop = document.getElementById("phone-change-modal-backdrop");
   const phoneModalClose = document.getElementById("phone-change-modal-close");
   const phoneModalCancel = document.getElementById("phone-change-modal-cancel");
+  const phoneModalTitle = document.getElementById("phone-change-modal-title");
+  const phoneModalText = document.getElementById("phone-change-modal-text");
+  const phoneNumberLabel = document.getElementById("phone-change-number-label");
   const phoneForm = document.getElementById("change-phone-form");
   const newPhone = document.getElementById("new-phone");
   const phoneCurrentPassword = document.getElementById("phone-current-password");
@@ -486,6 +489,7 @@ let phoneLastChangedAt = null;
 let phoneVerificationId = null;
 let pendingPhoneNumber = "";
 let phoneRecaptchaVerifier = null;
+let phoneModalMode = "change";
 const usernameCooldownDays = 14;
 const emailCooldownDays = 90;
 const phoneCooldownDays = 90;
@@ -757,10 +761,23 @@ function updateUsernameLockState() {
     phoneButton.disabled = false;
   }
 
-  function openPhoneModal() {
+  function openPhoneModal(mode) {
+    phoneModalMode = mode || "change";
     resetPhoneModalState();
     phoneForm.reset();
     showMessage(phoneMessage, "", "");
+
+    if (phoneModalMode === "verify") {
+      phoneModalTitle.textContent = "Verify Phone Number";
+      phoneModalText.textContent = "Enter your saved phone number and current password. A verification code will be sent by SMS.";
+      phoneNumberLabel.textContent = "Phone Number";
+      newPhone.value = accountPhone.value.trim();
+    } else {
+      phoneModalTitle.textContent = "Change Phone Number";
+      phoneModalText.textContent = "Enter your new phone number and current password. A verification code will be sent by SMS.";
+      phoneNumberLabel.textContent = "New Phone Number";
+    }
+
     phoneModal.hidden = false;
     document.body.classList.add("account-email-modal-open");
 
@@ -772,6 +789,7 @@ function updateUsernameLockState() {
   function closePhoneModal() {
     phoneModal.hidden = true;
     document.body.classList.remove("account-email-modal-open");
+    phoneModalMode = "change";
     resetPhoneModalState();
   }
 
@@ -909,13 +927,7 @@ verifyPhoneButton.addEventListener("click", function () {
     return;
   }
 
-  if (getPhoneDaysLeft() > 0) {
-    showMessage(detailsMessage, "You can change your phone number again on " + getPhoneUnlockDateText() + ".", "error");
-    updatePhoneLockState();
-    return;
-  }
-
-  openPhoneModal();
+  openPhoneModal("verify");
 });
 
 document.querySelectorAll(".account-address-type-button").forEach(function (button) {
@@ -948,7 +960,7 @@ accountPhoneEditButton.addEventListener("click", function () {
     return;
   }
 
-  openPhoneModal();
+  openPhoneModal("change");
 });
 
 emailModalClose.addEventListener("click", closeEmailModal);
