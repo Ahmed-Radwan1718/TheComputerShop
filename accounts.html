@@ -97,7 +97,7 @@
 
       <button class="account-email-info-button" type="button" aria-label="Email information">
         <img src="username-info-icon.png" alt="">
-        <span class="account-email-tooltip">To change your email, you must enter your current password and verify the new email address.</span>
+        <span class="account-email-tooltip">You can change your email once every 90 days. You must enter your current password and verify the new email address.</span>
       </button>
     </div>
 
@@ -347,7 +347,9 @@ let currentUser = null;
 let originalUsername = "";
 let usernameLastChangedAt = null;
 let usernameEditMode = false;
+let emailLastChangedAt = null;
 const usernameCooldownDays = 14;
+const emailCooldownDays = 90;
 
   function showMessage(element, message, type) {
     element.textContent = message;
@@ -450,6 +452,70 @@ function getUsernameUnlockDateText() {
   });
 }
 
+function getEmailUnlockDate() {
+  const lastChangeDate = getDateFromFirestoreValue(emailLastChangedAt);
+
+  if (!lastChangeDate) {
+    return null;
+  }
+
+  return new Date(lastChangeDate.getTime() + emailCooldownDays * 24 * 60 * 60 * 1000);
+}
+
+function getEmailDaysLeft() {
+  const unlockDate = getEmailUnlockDate();
+
+  if (!unlockDate) {
+    return 0;
+  }
+
+  const millisecondsLeft = unlockDate.getTime() - Date.now();
+
+  if (millisecondsLeft <= 0) {
+    return 0;
+  }
+
+  return Math.ceil(millisecondsLeft / (24 * 60 * 60 * 1000));
+}
+
+function getEmailUnlockDateText() {
+  const unlockDate = getEmailUnlockDate();
+
+  if (!unlockDate) {
+    return "";
+  }
+
+  return unlockDate.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric"
+  });
+}
+
+function updateEmailLockState() {
+  const daysLeft = getEmailDaysLeft();
+
+  if (daysLeft > 0) {
+    newEmail.disabled = true;
+    emailCurrentPassword.disabled = true;
+    emailButton.disabled = true;
+    emailButton.textContent = "Email Locked";
+
+    if (!emailMessage.textContent || emailMessage.textContent.startsWith("You can change your email again on ")) {
+      showMessage(emailMessage, "You can change your email again on " + getEmailUnlockDateText() + ".", "");
+    }
+  } else {
+    newEmail.disabled = false;
+    emailCurrentPassword.disabled = false;
+    emailButton.disabled = false;
+    emailButton.textContent = "Send Verification Email";
+
+    if (emailMessage.textContent.startsWith("You can change your email again on ")) {
+      showMessage(emailMessage, "", "");
+    }
+  }
+}
+
 function updateUsernameLockState() {
   const daysLeft = getUsernameDaysLeft();
 
@@ -549,7 +615,8 @@ if (userDoc.exists()) {
 
   accountName.value = data.fullName || "";
   originalUsername = data.fullName || "";
-  usernameLastChangedAt = data.usernameLastChangedAt || null;
+usernameLastChangedAt = data.usernameLastChangedAt || null;
+emailLastChangedAt = data.emailLastChangedAt || null;
 
   accountPhone.value = data.phone || "";
   addressType.value = data.addressType || "apartment";
@@ -567,11 +634,13 @@ if (userDoc.exists()) {
 } else {
   accountName.value = user.displayName || "";
   originalUsername = user.displayName || "";
-  usernameLastChangedAt = null;
-  accountHeaderText.textContent = "Welcome back.";
+usernameLastChangedAt = null;
+emailLastChangedAt = null;
+accountHeaderText.textContent = "Welcome back.";
 }
 
 updateUsernameLockState();
+updateEmailLockState();
 showAddressFields();
 accountLoading.hidden = true;
     } catch (error) {
@@ -648,45 +717,64 @@ detailsForm.addEventListener("submit", async function (event) {
   }
 });
 
-  emailForm.addEventListener("submit", async function (event) {
-    event.preventDefault();
+emailForm.addEventListener("submit", async function (event) {
+  event.preventDefault();
 
-    if (!currentUser) {
-      return;
-    }
+  if (!currentUser) {
+    return;
+  }
 
-    const requestedEmail = newEmail.value.trim();
-    const currentPassword = emailCurrentPassword.value;
+  const requestedEmail = newEmail.value.trim();
+  const currentPassword = emailCurrentPassword.value;
+  const emailDaysLeft = getEmailDaysLeft();
 
-    if (!requestedEmail) {
-      showMessage(emailMessage, "Please enter your new email address.", "error");
-      return;
-    }
+  if (emailDaysLeft > 0) {
+    showMessage(emailMessage, "You can change your email again on " + getEmailUnlockDateText() + ".", "error");
+    updateEmailLockState();
+    return;
+  }
 
-    if (requestedEmail.toLowerCase() === (currentUser.email || "").toLowerCase()) {
-      showMessage(emailMessage, "This is already your current email address.", "error");
-      return;
-    }
+  if (!requestedEmail) {
+    showMessage(emailMessage, "Please enter your new email address.", "error");
+    return;
+  }
 
-    emailButton.disabled = true;
-    emailButton.textContent = "Sending...";
-    showMessage(emailMessage, "", "");
+  if (requestedEmail.toLowerCase() === (currentUser.email || "").toLowerCase()) {
+    showMessage(emailMessage, "This is already your current email address.", "error");
+    return;
+  }
 
-    try {
-      const credential = EmailAuthProvider.credential(currentUser.email || "", currentPassword);
+  emailButton.disabled = true;
+  emailButton.textContent = "Sending...";
+  showMessage(emailMessage, "", "");
 
-      await reauthenticateWithCredential(currentUser, credential);
-      await verifyBeforeUpdateEmail(currentUser, requestedEmail);
+  try {
+    const credential = EmailAuthProvider.credential(currentUser.email || "", currentPassword);
 
-      emailForm.reset();
-      showMessage(emailMessage, "Verification email sent. Your email will change after you click the link sent to your new email address.", "success");
-    } catch (error) {
-      showMessage(emailMessage, getReadableEmailError(error), "error");
-    } finally {
+    await reauthenticateWithCredential(currentUser, credential);
+    await verifyBeforeUpdateEmail(currentUser, requestedEmail);
+
+    await setDoc(doc(db, "users", currentUser.uid), {
+      emailLastChangedAt: serverTimestamp(),
+      emailChangePendingTo: requestedEmail,
+      updatedAt: serverTimestamp()
+    }, { merge: true });
+
+    emailLastChangedAt = new Date();
+    emailForm.reset();
+    showMessage(emailMessage, "Verification email sent. Your email can be changed again on " + getEmailUnlockDateText() + ".", "success");
+    updateEmailLockState();
+  } catch (error) {
+    showMessage(emailMessage, getReadableEmailError(error), "error");
+  } finally {
+    if (getEmailDaysLeft() > 0) {
+      updateEmailLockState();
+    } else {
       emailButton.disabled = false;
       emailButton.textContent = "Send Verification Email";
     }
-  });
+  }
+});
 
   passwordForm.addEventListener("submit", async function (event) {
     event.preventDefault();
