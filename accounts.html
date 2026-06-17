@@ -210,10 +210,13 @@
   </button>
 </div>
 
-                <div class="account-status-card">
-                  <span>Phone Verified</span>
-                  <strong id="status-phone-verified">Checking...</strong>
-                </div>
+<div class="account-status-card">
+  <span>Phone Verified</span>
+  <strong id="status-phone-verified">Checking...</strong>
+  <button class="account-status-button" type="button" id="verify-phone-button" hidden>
+    Verify Phone Number
+  </button>
+</div>
 
                 <div class="account-status-card">
                   <span>Member Since</span>
@@ -426,6 +429,7 @@ const accountPhoneEditButton = document.getElementById("account-phone-edit-butto
 const statusEmailVerified = document.getElementById("status-email-verified");
 const sendEmailVerificationButton = document.getElementById("send-email-verification-button");
 const statusPhoneVerified = document.getElementById("status-phone-verified");
+const verifyPhoneButton = document.getElementById("verify-phone-button");
 const statusMemberSince = document.getElementById("status-member-since");
 const statusLastUpdated = document.getElementById("status-last-updated");
 
@@ -566,6 +570,7 @@ function updateAccountStatus(user, data) {
   sendEmailVerificationButton.hidden = user.emailVerified;
 
   statusPhoneVerified.textContent = user.phoneNumber ? "Verified" : "Not Verified";
+  verifyPhoneButton.hidden = !!user.phoneNumber;
 
   statusMemberSince.textContent = getReadableDate(data.createdAt || user.metadata.creationTime);
   statusLastUpdated.textContent = getReadableDate(data.updatedAt || user.metadata.lastSignInTime);
@@ -891,6 +896,26 @@ sendEmailVerificationButton.addEventListener("click", async function () {
     sendEmailVerificationButton.disabled = false;
     sendEmailVerificationButton.textContent = "Send Verification Email";
   }
+});
+
+verifyPhoneButton.addEventListener("click", function () {
+  if (!currentUser) {
+    return;
+  }
+
+  if (currentUser.phoneNumber) {
+    updateAccountStatus(currentUser, {});
+    showMessage(detailsMessage, "Your phone number is already verified.", "success");
+    return;
+  }
+
+  if (getPhoneDaysLeft() > 0) {
+    showMessage(detailsMessage, "You can change your phone number again on " + getPhoneUnlockDateText() + ".", "error");
+    updatePhoneLockState();
+    return;
+  }
+
+  openPhoneModal();
 });
 
 document.querySelectorAll(".account-address-type-button").forEach(function (button) {
