@@ -107,14 +107,24 @@
               </div>
 
               <div class="account-form-grid">
-                <div class="account-field account-field-full">
-                  <label for="address-type">Address Type</label>
-                  <select id="address-type">
-                    <option value="apartment">Apartment</option>
-                    <option value="house">House</option>
-                    <option value="office">Office</option>
-                  </select>
-                </div>
+<div class="account-field account-field-full">
+  <label>Address Type</label>
+  <input type="hidden" id="address-type" value="apartment">
+
+  <div class="account-address-type-options">
+    <button class="account-address-type-button active" type="button" data-address-type="apartment">
+      Apartment
+    </button>
+
+    <button class="account-address-type-button" type="button" data-address-type="house">
+      House
+    </button>
+
+    <button class="account-address-type-button" type="button" data-address-type="office">
+      Office
+    </button>
+  </div>
+</div>
 
                 <div class="account-field address-field address-apartment">
                   <label for="building-name">Building Name</label>
@@ -294,18 +304,22 @@ const usernameCooldownDays = 14;
     }
   }
 
-  function showAddressFields() {
-    const selectedType = addressType.value;
-    const allAddressFields = document.querySelectorAll(".address-field");
+function showAddressFields() {
+  const selectedType = addressType.value;
+  const allAddressFields = document.querySelectorAll(".address-field");
 
-    allAddressFields.forEach(function (field) {
-      field.hidden = true;
-    });
+  document.querySelectorAll(".account-address-type-button").forEach(function (button) {
+    button.classList.toggle("active", button.dataset.addressType === selectedType);
+  });
 
-    document.querySelectorAll(".address-" + selectedType).forEach(function (field) {
-      field.hidden = false;
-    });
-  }
+  allAddressFields.forEach(function (field) {
+    field.hidden = true;
+  });
+
+  document.querySelectorAll(".address-" + selectedType).forEach(function (field) {
+    field.hidden = false;
+  });
+}
 
   function switchPanel(panelName) {
     document.querySelectorAll(".account-sidebar-link").forEach(function (button) {
@@ -418,7 +432,12 @@ function getReadablePasswordError(error) {
     });
   });
 
-addressType.addEventListener("change", showAddressFields);
+document.querySelectorAll(".account-address-type-button").forEach(function (button) {
+  button.addEventListener("click", function () {
+    addressType.value = button.dataset.addressType;
+    showAddressFields();
+  });
+});
 
 accountUsernameEditButton.addEventListener("click", function () {
   if (getUsernameDaysLeft() > 0) {
