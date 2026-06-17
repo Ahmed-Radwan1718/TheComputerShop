@@ -39,7 +39,10 @@
   <div class="floating-account-menu" id="floating-account-menu" hidden>
     <a href="login.html" class="floating-account-menu-link" id="floating-login-link">Login</a>
     <a href="accounts.html" class="floating-account-menu-link" id="floating-account-link" hidden>Account</a>
-    <button class="floating-account-menu-link floating-account-logout" id="floating-logout-button" type="button" hidden>Logout</button>
+<button class="floating-account-menu-link floating-account-logout" id="floating-logout-button" type="button" hidden>
+  <img src="logout-icon.png" alt="">
+  <span>Logout</span>
+</button>
   </div>
 </div>
 
