@@ -6057,6 +6057,11 @@ body.nav-menu-open {
   transform: translateY(1px);
 }
 
+.account-email-edit-button:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+}
+
 .account-email-modal {
   position: fixed;
   inset: 0;
