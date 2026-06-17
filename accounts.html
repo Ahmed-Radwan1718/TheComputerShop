@@ -361,15 +361,15 @@
     </div>
 
     <form class="account-form" id="change-phone-form">
-<div class="account-field">
+<div class="account-field" id="phone-number-field">
   <label for="new-phone" id="phone-change-number-label">Phone Number</label>
   <input type="tel" id="new-phone" autocomplete="tel" placeholder="+201010206091" required>
 </div>
 
-      <div class="account-field">
-        <label for="phone-current-password">Current Password</label>
-        <input type="password" id="phone-current-password" autocomplete="current-password" required>
-      </div>
+<div class="account-field" id="phone-password-field">
+  <label for="phone-current-password">Current Password</label>
+  <input type="password" id="phone-current-password" autocomplete="current-password" required>
+</div>
 
       <div class="account-field" id="phone-code-field" hidden>
         <label for="phone-verification-code">Verification Code</label>
@@ -463,12 +463,14 @@ const emailMessage = document.getElementById("email-message");
   const phoneModalBackdrop = document.getElementById("phone-change-modal-backdrop");
   const phoneModalClose = document.getElementById("phone-change-modal-close");
   const phoneModalCancel = document.getElementById("phone-change-modal-cancel");
-  const phoneModalTitle = document.getElementById("phone-change-modal-title");
-  const phoneModalText = document.getElementById("phone-change-modal-text");
-  const phoneNumberLabel = document.getElementById("phone-change-number-label");
-  const phoneForm = document.getElementById("change-phone-form");
-  const newPhone = document.getElementById("new-phone");
-  const phoneCurrentPassword = document.getElementById("phone-current-password");
+const phoneModalTitle = document.getElementById("phone-change-modal-title");
+const phoneModalText = document.getElementById("phone-change-modal-text");
+const phoneNumberLabel = document.getElementById("phone-change-number-label");
+const phoneNumberField = document.getElementById("phone-number-field");
+const phonePasswordField = document.getElementById("phone-password-field");
+const phoneForm = document.getElementById("change-phone-form");
+const newPhone = document.getElementById("new-phone");
+const phoneCurrentPassword = document.getElementById("phone-current-password");
   const phoneCodeField = document.getElementById("phone-code-field");
   const phoneVerificationCode = document.getElementById("phone-verification-code");
   const phoneButton = document.getElementById("change-phone-button");
@@ -761,30 +763,44 @@ function updateUsernameLockState() {
     phoneButton.disabled = false;
   }
 
-  function openPhoneModal(mode) {
-    phoneModalMode = mode || "change";
-    resetPhoneModalState();
-    phoneForm.reset();
-    showMessage(phoneMessage, "", "");
+function openPhoneModal(mode) {
+  phoneModalMode = mode || "change";
+  resetPhoneModalState();
+  phoneForm.reset();
+  showMessage(phoneMessage, "", "");
 
-    if (phoneModalMode === "verify") {
-      phoneModalTitle.textContent = "Verify Phone Number";
-      phoneModalText.textContent = "Enter your saved phone number and current password. A verification code will be sent by SMS.";
-      phoneNumberLabel.textContent = "Phone Number";
-      newPhone.value = accountPhone.value.trim();
-    } else {
-      phoneModalTitle.textContent = "Change Phone Number";
-      phoneModalText.textContent = "Enter your new phone number and current password. A verification code will be sent by SMS.";
-      phoneNumberLabel.textContent = "New Phone Number";
-    }
+  if (phoneModalMode === "verify") {
+    phoneModalTitle.textContent = "Verify Phone Number";
+    phoneModalText.textContent = "Send a verification code to your saved phone number, then enter the code below.";
+    phoneNumberLabel.textContent = "Phone Number";
 
-    phoneModal.hidden = false;
-    document.body.classList.add("account-email-modal-open");
+    phoneNumberField.hidden = true;
+    phonePasswordField.hidden = true;
+    newPhone.required = false;
+    phoneCurrentPassword.required = false;
+    pendingPhoneNumber = accountPhone.value.trim();
+  } else {
+    phoneModalTitle.textContent = "Change Phone Number";
+    phoneModalText.textContent = "Enter your new phone number and current password. A verification code will be sent by SMS.";
+    phoneNumberLabel.textContent = "New Phone Number";
 
-    setTimeout(function () {
-      newPhone.focus();
-    }, 50);
+    phoneNumberField.hidden = false;
+    phonePasswordField.hidden = false;
+    newPhone.required = true;
+    phoneCurrentPassword.required = true;
   }
+
+  phoneModal.hidden = false;
+  document.body.classList.add("account-email-modal-open");
+
+  setTimeout(function () {
+    if (phoneModalMode === "verify") {
+      phoneButton.focus();
+    } else {
+      newPhone.focus();
+    }
+  }, 50);
+}
 
   function closePhoneModal() {
     phoneModal.hidden = true;
@@ -1106,90 +1122,107 @@ detailsForm.addEventListener("submit", async function (event) {
   }
 });
 
-  phoneForm.addEventListener("submit", async function (event) {
-    event.preventDefault();
+phoneForm.addEventListener("submit", async function (event) {
+  event.preventDefault();
 
-    if (!currentUser) {
+  if (!currentUser) {
+    return;
+  }
+
+  const rawRequestedPhone = phoneModalMode === "verify" ? accountPhone.value.trim() : newPhone.value.trim();
+  const requestedPhone = rawRequestedPhone.startsWith("0") ? "+20" + rawRequestedPhone.slice(1) : rawRequestedPhone;
+  const currentPassword = phoneCurrentPassword.value;
+  const enteredCode = phoneVerificationCode.value.trim();
+  const phoneDaysLeft = getPhoneDaysLeft();
+
+  if (phoneModalMode === "change" && phoneDaysLeft > 0) {
+    showMessage(phoneMessage, "You can change your phone number again on " + getPhoneUnlockDateText() + ".", "error");
+    updatePhoneLockState();
+    return;
+  }
+
+  phoneButton.disabled = true;
+  showMessage(phoneMessage, "", "");
+
+  try {
+    if (!phoneVerificationId) {
+      if (!requestedPhone) {
+        showMessage(phoneMessage, "Please save a phone number first.", "error");
+        phoneButton.disabled = false;
+        return;
+      }
+
+      if (phoneModalMode === "change") {
+        const credential = EmailAuthProvider.credential(currentUser.email || "", currentPassword);
+        await reauthenticateWithCredential(currentUser, credential);
+      }
+
+      phoneButton.textContent = "Sending...";
+      const phoneProvider = new PhoneAuthProvider(auth);
+      phoneVerificationId = await phoneProvider.verifyPhoneNumber(requestedPhone, getPhoneRecaptchaVerifier());
+      pendingPhoneNumber = requestedPhone;
+
+      phoneCodeField.hidden = false;
+      phoneVerificationCode.required = true;
+      phoneButton.textContent = "Verify And Save";
+      showMessage(phoneMessage, "Verification code sent. Enter the SMS code to continue.", "success");
+      phoneVerificationCode.focus();
+      phoneButton.disabled = false;
       return;
     }
 
-const requestedPhone = newPhone.value.trim();
-const currentPassword = phoneCurrentPassword.value;
-const enteredCode = phoneVerificationCode.value.trim();
-const phoneDaysLeft = getPhoneDaysLeft();
-
-if (phoneDaysLeft > 0) {
-  showMessage(phoneMessage, "You can change your phone number again on " + getPhoneUnlockDateText() + ".", "error");
-  updatePhoneLockState();
-  return;
-}
-
-phoneButton.disabled = true;
-showMessage(phoneMessage, "", "");
-
-    try {
-      if (!phoneVerificationId) {
-        if (!requestedPhone) {
-          showMessage(phoneMessage, "Please enter your new phone number.", "error");
-          phoneButton.disabled = false;
-          return;
-        }
-
-        const credential = EmailAuthProvider.credential(currentUser.email || "", currentPassword);
-        await reauthenticateWithCredential(currentUser, credential);
-
-        phoneButton.textContent = "Sending...";
-        const phoneProvider = new PhoneAuthProvider(auth);
-        phoneVerificationId = await phoneProvider.verifyPhoneNumber(requestedPhone, getPhoneRecaptchaVerifier());
-        pendingPhoneNumber = requestedPhone;
-
-        phoneCodeField.hidden = false;
-        phoneVerificationCode.required = true;
-        phoneButton.textContent = "Verify And Save";
-        showMessage(phoneMessage, "Verification code sent. Enter the SMS code to save your new phone number.", "success");
-        phoneVerificationCode.focus();
-        phoneButton.disabled = false;
-        return;
-      }
-
-      if (!enteredCode) {
-        showMessage(phoneMessage, "Please enter the verification code.", "error");
-        phoneButton.disabled = false;
-        return;
-      }
-
-      phoneButton.textContent = "Saving...";
-
-      const phoneCredential = PhoneAuthProvider.credential(phoneVerificationId, enteredCode);
-      await updatePhoneNumber(currentUser, phoneCredential);
-
-await setDoc(doc(db, "users", currentUser.uid), {
-  phone: pendingPhoneNumber,
-  phoneUpdatedAt: serverTimestamp(),
-  phoneLastChangedAt: serverTimestamp(),
-  updatedAt: serverTimestamp()
-}, { merge: true });
-
-accountPhone.value = pendingPhoneNumber;
-phoneLastChangedAt = new Date();
-updatePhoneLockState();
-phoneForm.reset();
-showMessage(phoneMessage, "Phone number updated successfully. You can change it again on " + getPhoneUnlockDateText() + ".", "success");
-
-      setTimeout(function () {
-        closePhoneModal();
-      }, 900);
-    } catch (error) {
-      showMessage(phoneMessage, getReadablePhoneError(error), "error");
+    if (!enteredCode) {
+      showMessage(phoneMessage, "Please enter the verification code.", "error");
       phoneButton.disabled = false;
-
-      if (!phoneVerificationId) {
-        phoneButton.textContent = "Send Verification Code";
-      } else {
-        phoneButton.textContent = "Verify And Save";
-      }
+      return;
     }
-  });
+
+    phoneButton.textContent = "Saving...";
+
+    const phoneCredential = PhoneAuthProvider.credential(phoneVerificationId, enteredCode);
+    await updatePhoneNumber(currentUser, phoneCredential);
+
+    const phoneData = {
+      phone: pendingPhoneNumber,
+      phoneVerifiedAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    };
+
+    if (phoneModalMode === "change") {
+      phoneData.phoneUpdatedAt = serverTimestamp();
+      phoneData.phoneLastChangedAt = serverTimestamp();
+    }
+
+    await setDoc(doc(db, "users", currentUser.uid), phoneData, { merge: true });
+
+    accountPhone.value = pendingPhoneNumber;
+
+    if (phoneModalMode === "change") {
+      phoneLastChangedAt = new Date();
+      updatePhoneLockState();
+      showMessage(phoneMessage, "Phone number updated successfully. You can change it again on " + getPhoneUnlockDateText() + ".", "success");
+    } else {
+      await currentUser.reload();
+      updateAccountStatus(currentUser, {});
+      showMessage(phoneMessage, "Phone number verified successfully.", "success");
+    }
+
+    phoneForm.reset();
+
+    setTimeout(function () {
+      closePhoneModal();
+    }, 900);
+  } catch (error) {
+    showMessage(phoneMessage, getReadablePhoneError(error), "error");
+    phoneButton.disabled = false;
+
+    if (!phoneVerificationId) {
+      phoneButton.textContent = "Send Verification Code";
+    } else {
+      phoneButton.textContent = "Verify And Save";
+    }
+  }
+});
 
   emailForm.addEventListener("submit", async function (event) {
   event.preventDefault();
