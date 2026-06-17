@@ -5934,6 +5934,117 @@ body.nav-menu-open {
   line-height: 1.6;
 }
 
+.account-email-field input[readonly] {
+  opacity: 1;
+  cursor: default;
+}
+
+.account-email-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 50px;
+  gap: 10px;
+  align-items: start;
+}
+
+.account-email-input-wrap {
+  position: relative;
+}
+
+.account-email-input-wrap input {
+  padding-right: 54px;
+}
+
+.account-email-info-button {
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: help;
+  transform: translateY(-50%);
+}
+
+.account-email-info-button img {
+  width: 22px;
+  height: 22px;
+  display: block;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+.account-email-tooltip {
+  position: absolute;
+  right: -12px;
+  bottom: calc(100% + 12px);
+  width: 250px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(24, 25, 24, 0.96);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.3);
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.55;
+  text-transform: none;
+  letter-spacing: 0;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.18s ease,
+    visibility 0.18s ease,
+    transform 0.18s ease;
+  transform: translateY(4px);
+}
+
+.account-email-info-button:hover .account-email-tooltip,
+.account-email-info-button:focus .account-email-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.account-email-edit-button {
+  width: 50px;
+  height: 50px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 14px;
+  background: #d8d7d7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.account-email-edit-button img {
+  width: 23px;
+  height: 23px;
+  display: block;
+  object-fit: contain;
+}
+
+.account-email-edit-button:hover {
+  background: #cfcfcf;
+  opacity: 1;
+}
+
+.account-email-edit-button:active {
+  transform: translateY(1px);
+}
+
 .account-divider {
   height: 1px;
   margin: 6px 0;
