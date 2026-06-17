@@ -267,28 +267,33 @@
 
     <div class="account-email-modal-header">
       <h2 id="email-change-modal-title">Change Email Address</h2>
-      <p>Enter your new email address and current password. A verification link will be sent to your new email.</p>
+      <p>Enter your current email address, new email address, and current password. A verification email will be sent to your new email.</p>
     </div>
 
     <form class="account-form" id="change-email-form">
-      <div class="account-field">
-        <label for="new-email">New Email Address</label>
-        <input type="email" id="new-email" autocomplete="email" required>
-      </div>
+<div class="account-field">
+  <label for="current-email-confirm">Current Email Address</label>
+  <input type="email" id="current-email-confirm" autocomplete="email" required>
+</div>
 
-      <div class="account-field">
-        <label for="email-current-password">Current Password</label>
-        <input type="password" id="email-current-password" autocomplete="current-password" required>
-      </div>
+<div class="account-field">
+  <label for="new-email">New Email Address</label>
+  <input type="email" id="new-email" autocomplete="email" required>
+</div>
+
+<div class="account-field">
+  <label for="email-current-password">Current Password</label>
+  <input type="password" id="email-current-password" autocomplete="current-password" required>
+</div>
 
       <div class="account-email-modal-actions">
         <button class="account-email-modal-cancel" type="button" id="email-change-modal-cancel">
           Cancel
         </button>
 
-        <button class="account-primary-button account-email-modal-submit" type="submit" id="change-email-button">
-          Send Verification Email
-        </button>
+<button class="account-primary-button account-email-modal-submit" type="submit" id="change-email-button">
+  Send Verification Code
+</button>
       </div>
 
       <p class="account-message" id="email-message" aria-live="polite"></p>
@@ -343,11 +348,12 @@ const accountPhone = document.getElementById("account-phone");
   const emailModalClose = document.getElementById("email-change-modal-close");
   const emailModalCancel = document.getElementById("email-change-modal-cancel");
 
-  const emailForm = document.getElementById("change-email-form");
-  const newEmail = document.getElementById("new-email");
-  const emailCurrentPassword = document.getElementById("email-current-password");
-  const emailButton = document.getElementById("change-email-button");
-  const emailMessage = document.getElementById("email-message");
+const emailForm = document.getElementById("change-email-form");
+const currentEmailConfirm = document.getElementById("current-email-confirm");
+const newEmail = document.getElementById("new-email");
+const emailCurrentPassword = document.getElementById("email-current-password");
+const emailButton = document.getElementById("change-email-button");
+const emailMessage = document.getElementById("email-message");
 
   const passwordForm = document.getElementById("change-password-form");
   const passwordButton = document.getElementById("change-password-button");
@@ -508,7 +514,8 @@ function updateEmailLockState() {
   const daysLeft = getEmailDaysLeft();
 
   if (daysLeft > 0) {
-    newEmail.disabled = true;
+currentEmailConfirm.disabled = true;
+newEmail.disabled = true;
     emailCurrentPassword.disabled = true;
     emailButton.disabled = true;
     emailButton.textContent = "Email Locked";
@@ -517,10 +524,11 @@ function updateEmailLockState() {
       showMessage(emailMessage, "You can change your email again on " + getEmailUnlockDateText() + ".", "");
     }
   } else {
-    newEmail.disabled = false;
+currentEmailConfirm.disabled = false;
+newEmail.disabled = false;
     emailCurrentPassword.disabled = false;
     emailButton.disabled = false;
-    emailButton.textContent = "Send Verification Email";
+    emailButton.textContent = "Send Verification Code";
 
     if (emailMessage.textContent.startsWith("You can change your email again on ")) {
       showMessage(emailMessage, "", "");
@@ -759,9 +767,10 @@ emailForm.addEventListener("submit", async function (event) {
     return;
   }
 
-  const requestedEmail = newEmail.value.trim();
-  const currentPassword = emailCurrentPassword.value;
-  const emailDaysLeft = getEmailDaysLeft();
+const confirmedCurrentEmail = currentEmailConfirm.value.trim();
+const requestedEmail = newEmail.value.trim();
+const currentPassword = emailCurrentPassword.value;
+const emailDaysLeft = getEmailDaysLeft();
 
   if (emailDaysLeft > 0) {
     showMessage(emailMessage, "You can change your email again on " + getEmailUnlockDateText() + ".", "error");
@@ -769,10 +778,20 @@ emailForm.addEventListener("submit", async function (event) {
     return;
   }
 
-  if (!requestedEmail) {
-    showMessage(emailMessage, "Please enter your new email address.", "error");
-    return;
-  }
+if (!confirmedCurrentEmail) {
+  showMessage(emailMessage, "Please enter your current email address.", "error");
+  return;
+}
+
+if (confirmedCurrentEmail.toLowerCase() !== (currentUser.email || "").toLowerCase()) {
+  showMessage(emailMessage, "The current email address does not match your account.", "error");
+  return;
+}
+
+if (!requestedEmail) {
+  showMessage(emailMessage, "Please enter your new email address.", "error");
+  return;
+}
 
   if (requestedEmail.toLowerCase() === (currentUser.email || "").toLowerCase()) {
     showMessage(emailMessage, "This is already your current email address.", "error");
@@ -806,7 +825,7 @@ emailForm.addEventListener("submit", async function (event) {
       updateEmailLockState();
     } else {
       emailButton.disabled = false;
-      emailButton.textContent = "Send Verification Email";
+      emailButton.textContent = "Send Verification Code";
     }
   }
 });
