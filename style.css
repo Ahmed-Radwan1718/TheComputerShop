@@ -6200,9 +6200,42 @@ body.account-email-modal-open {
 }
 
 .account-panel-subheader p {
-  color: rgba(255, 255, 255, 0.62);
+  color: rgba(255, 255, 255, 0.58);
   font-size: 14px;
+  font-weight: 400;
   line-height: 1.7;
+}
+
+.account-status-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.account-status-card {
+  min-height: 92px;
+  padding: 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.105);
+  background: rgba(255, 255, 255, 0.045);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.account-status-card span {
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.account-status-card strong {
+  color: white;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.4;
 }
 
 .account-primary-button {
@@ -6306,7 +6339,8 @@ body.account-email-modal-open {
     font-size: 27px;
   }
 
-  .account-form-grid {
+  .account-form-grid,
+  .account-status-grid {
     grid-template-columns: 1fr;
   }
 
