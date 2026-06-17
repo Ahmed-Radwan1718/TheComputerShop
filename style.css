@@ -6072,7 +6072,9 @@ body.nav-menu-open {
   padding: 24px;
 }
 
-.account-email-modal[hidden] {
+.account-email-modal[hidden],
+#phone-number-field[hidden],
+#phone-password-field[hidden] {
   display: none;
 }
 
