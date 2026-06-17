@@ -39,14 +39,29 @@
             <div class="account-panel-header">
               <p class="account-panel-eyebrow">Account Information</p>
               <h2>Saved Details</h2>
-              <p>Your username can be changed once every 14 days. Your phone number and delivery details can be updated here.</p>
+              <p>Your phone number and delivery details can be updated here.</p>
             </div>
 
             <form class="account-form" id="account-details-form">
               <div class="account-form-grid">
-<div class="account-field">
-  <label for="account-name">Username</label>
-  <input type="text" id="account-name" autocomplete="name" maxlength="60">
+<div class="account-field account-username-field">
+  <label for="account-name">Display Name</label>
+
+  <div class="account-username-row">
+    <div class="account-username-input-wrap">
+      <input type="text" id="account-name" autocomplete="name" maxlength="60" readonly>
+
+      <button class="account-username-info-button" type="button" aria-label="Username information">
+        <img src="username-info-icon.png" alt="">
+        <span class="account-username-tooltip">You can change your username once every 14 days.</span>
+      </button>
+    </div>
+
+    <button class="account-username-edit-button" type="button" id="account-username-edit-button" aria-label="Edit username">
+      <img src="username-edit-icon.png" alt="">
+    </button>
+  </div>
+
   <p class="account-username-note" id="account-username-note"></p>
 </div>
 
@@ -217,6 +232,7 @@
 
 const accountName = document.getElementById("account-name");
 const accountUsernameNote = document.getElementById("account-username-note");
+const accountUsernameEditButton = document.getElementById("account-username-edit-button");
 const accountEmail = document.getElementById("account-email");
 const accountPhone = document.getElementById("account-phone");
 
@@ -243,6 +259,7 @@ const accountPhone = document.getElementById("account-phone");
 let currentUser = null;
 let originalUsername = "";
 let usernameLastChangedAt = null;
+let usernameEditMode = false;
 const usernameCooldownDays = 14;
 
   function showMessage(element, message, type) {
@@ -323,10 +340,15 @@ function updateUsernameLockState() {
   const daysLeft = getUsernameDaysLeft();
 
   if (daysLeft > 0) {
+    usernameEditMode = false;
     accountName.readOnly = true;
+    accountUsernameEditButton.disabled = true;
+    accountUsernameEditButton.setAttribute("aria-label", "Username locked");
     accountUsernameNote.textContent = "You can change your username again in " + daysLeft + (daysLeft === 1 ? " day." : " days.");
   } else {
-    accountName.readOnly = false;
+    accountName.readOnly = !usernameEditMode;
+    accountUsernameEditButton.disabled = false;
+    accountUsernameEditButton.setAttribute("aria-label", "Edit username");
     accountUsernameNote.textContent = "";
   }
 }
@@ -350,7 +372,19 @@ function getReadablePasswordError(error) {
     });
   });
 
-  addressType.addEventListener("change", showAddressFields);
+addressType.addEventListener("change", showAddressFields);
+
+accountUsernameEditButton.addEventListener("click", function () {
+  if (getUsernameDaysLeft() > 0) {
+    updateUsernameLockState();
+    return;
+  }
+
+  usernameEditMode = true;
+  updateUsernameLockState();
+  accountName.focus();
+  accountName.select();
+});
 
   onAuthStateChanged(auth, async function (user) {
     if (!user) {
@@ -450,12 +484,15 @@ detailsForm.addEventListener("submit", async function (event) {
   try {
     await setDoc(doc(db, "users", currentUser.uid), accountData, { merge: true });
 
+    usernameEditMode = false;
+
     if (usernameIsChanging) {
       originalUsername = newUsername;
       usernameLastChangedAt = new Date();
       accountHeaderText.textContent = "Welcome back, " + newUsername + ".";
-      updateUsernameLockState();
     }
+
+    updateUsernameLockState();
 
     showMessage(detailsMessage, usernameIsChanging ? "Account details saved. Username can be changed again in 14 days." : "Account details saved.", "success");
   } catch (error) {
