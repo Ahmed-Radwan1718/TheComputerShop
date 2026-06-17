@@ -6238,6 +6238,44 @@ body.account-email-modal-open {
   line-height: 1.4;
 }
 
+.account-status-button {
+  width: fit-content;
+  min-height: 34px;
+  margin-top: 12px;
+  padding: 0 14px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  background: #d8d7d7;
+  color: #111111;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    opacity 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.account-status-button:hover {
+  background: #cfcfcf;
+}
+
+.account-status-button:active {
+  transform: translateY(1px);
+}
+
+.account-status-button:disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
+}
+
+.account-status-button[hidden] {
+  display: none;
+}
+
 .account-primary-button {
   width: fit-content;
   min-height: 52px;
