@@ -873,10 +873,13 @@ function openPhoneModal(mode) {
 
   function getReadablePhoneError(error) {
     switch (error.code) {
+      case "auth/captcha-check-failed":
+      case "auth/invalid-app-credential":
+        return "reCAPTCHA failed. Make sure your domain is added in Firebase Authentication authorized domains, then refresh and try again.";
       case "auth/invalid-phone-number":
         return "Please enter the phone number in international format, like +201010206091.";
       case "auth/missing-phone-number":
-        return "Please enter your new phone number.";
+        return "Please enter your phone number first.";
       case "auth/code-expired":
         return "This verification code expired. Please send a new code.";
       case "auth/invalid-verification-code":
@@ -891,10 +894,12 @@ function openPhoneModal(mode) {
       case "auth/quota-exceeded":
       case "auth/too-many-requests":
         return "Too many SMS requests. Please wait and try again later.";
+      case "auth/operation-not-allowed":
+        return "Phone authentication is not enabled in Firebase.";
       case "auth/network-request-failed":
         return "Network error. Please check your connection and try again.";
       default:
-        return "Could not update your phone number. Please try again.";
+        return "Could not update your phone number. Firebase error: " + (error.code || "unknown");
     }
   }
 
