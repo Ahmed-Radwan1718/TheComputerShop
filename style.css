@@ -6074,8 +6074,7 @@ body.nav-menu-open {
 
 .account-email-modal[hidden],
 #phone-number-field[hidden],
-#phone-password-field[hidden],
-#phone-code-field[hidden] {
+#phone-password-field[hidden] {
   display: none;
 }
 
