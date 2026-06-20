@@ -6389,3 +6389,102 @@ body.account-email-modal-open {
     width: 100%;
   }
 }
+
+.account-security-lock,
+.account-security-unlocked {
+  display: grid;
+  gap: 18px;
+}
+
+.account-security-lock[hidden],
+.account-security-unlocked[hidden] {
+  display: none;
+}
+
+.account-password-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.account-password-modal[hidden] {
+  display: none;
+}
+
+.account-password-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.48);
+  backdrop-filter: blur(16px);
+}
+
+.account-password-modal-card {
+  position: relative;
+  z-index: 1;
+  width: min(520px, 100%);
+  padding: 32px;
+  border-radius: 22px;
+  background: rgba(31, 32, 34, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+}
+
+.account-password-modal-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.account-password-modal-close:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.account-password-modal-header {
+  margin-bottom: 24px;
+}
+
+.account-password-modal-header h2 {
+  margin: 0 0 8px;
+}
+
+.account-password-modal-header p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.account-password-modal-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  align-items: center;
+}
+
+.account-password-modal-cancel {
+  height: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.account-password-modal-cancel:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.account-password-modal-submit {
+  height: 50px;
+}
