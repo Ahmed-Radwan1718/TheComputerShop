@@ -11,9 +11,6 @@ import {
   EmailAuthProvider,
   reauthenticateWithCredential,
   verifyBeforeUpdateEmail,
-  PhoneAuthProvider,
-  RecaptchaVerifier,
-  updatePhoneNumber,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 
@@ -53,9 +50,6 @@ window.tcsAuth = {
   EmailAuthProvider,
   reauthenticateWithCredential,
   verifyBeforeUpdateEmail,
-  PhoneAuthProvider,
-  RecaptchaVerifier,
-  updatePhoneNumber,
   onAuthStateChanged,
   doc,
   setDoc,
