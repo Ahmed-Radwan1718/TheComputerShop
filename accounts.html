@@ -221,12 +221,15 @@
           </article>
 
 <article class="account-panel" id="account-panel-security">
-  <div class="account-change-password-section">
-    <h2>Change your password</h2>
-    <p>For your security, we highly recommend that you choose a unique password that you don't use for any other online account.</p>
+  <div class="account-panel-header">
+    <p class="account-panel-eyebrow">Security</p>
+    <h2>Change Password</h2>
+    <p>For your security, choose a unique password that you do not use for any other online account.</p>
+  </div>
 
-    <button class="account-change-password-open-button" type="button" id="open-password-modal-button">
-      Change password
+  <div class="account-change-password-section">
+    <button class="account-primary-button account-change-password-open-button" type="button" id="open-password-modal-button">
+      Change Password
     </button>
 
     <p class="account-message" id="security-code-request-message" aria-live="polite"></p>
@@ -239,42 +242,43 @@
       <button class="account-password-modal-close" type="button" id="password-change-modal-close" aria-label="Close password popup">×</button>
 
       <div class="account-password-modal-header">
-        <h2 id="password-change-modal-title">Change your password</h2>
-        <p>For your security, we recommend choosing a unique password that you don't use elsewhere.</p>
+        <p class="account-panel-eyebrow">Security Verification</p>
+        <h2 id="password-change-modal-title">Change Password</h2>
+        <p>Verify your account email first. After the code is confirmed, you can set a new password.</p>
       </div>
 
       <form class="account-form" id="security-code-request-form">
         <div class="account-field">
-          <label for="security-email">Account email</label>
+          <label for="security-email">Account Email Address</label>
           <input type="email" id="security-email" autocomplete="email" required>
         </div>
 
-        <button class="account-password-confirm-button" type="submit" id="send-security-code-button">
-          Send security code
+        <button class="account-primary-button account-password-confirm-button" type="submit" id="send-security-code-button">
+          Send Security Code
         </button>
       </form>
 
       <form class="account-form account-security-code-form" id="security-code-verify-form" hidden>
         <div class="account-field">
-          <label for="security-code">Security code</label>
+          <label for="security-code">Security Code</label>
           <input type="text" id="security-code" inputmode="numeric" maxlength="6" autocomplete="one-time-code" required>
         </div>
 
-        <button class="account-password-confirm-button" type="submit" id="verify-security-code-button">
-          Verify code
+        <button class="account-primary-button account-password-confirm-button" type="submit" id="verify-security-code-button">
+          Verify Code
         </button>
 
         <p class="account-message" id="security-code-verify-message" aria-live="polite"></p>
       </form>
 
       <form class="account-form account-new-password-form" id="change-password-form" hidden>
-        <div class="account-field account-password-field">
-          <label for="new-password">New password</label>
+        <div class="account-field">
+          <label for="new-password">New Password</label>
           <input type="password" id="new-password" minlength="8" autocomplete="new-password" required>
         </div>
 
-        <div class="account-field account-password-field">
-          <label for="confirm-new-password">Confirm new password</label>
+        <div class="account-field">
+          <label for="confirm-new-password">Confirm New Password</label>
           <input type="password" id="confirm-new-password" minlength="8" autocomplete="new-password" required>
         </div>
 
@@ -293,7 +297,7 @@
             Cancel
           </button>
 
-          <button class="account-password-confirm-button" type="submit" id="change-password-button" disabled>
+          <button class="account-primary-button account-password-confirm-button" type="submit" id="change-password-button" disabled>
             Confirm
           </button>
         </div>
