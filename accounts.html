@@ -223,16 +223,16 @@
 <article class="account-panel" id="account-panel-security">
   <div class="account-panel-header">
     <p class="account-panel-eyebrow">Security</p>
-    <h2>Change Password</h2>
-    <p>For your security, choose a unique password that you do not use for any other online account.</p>
+    <h2>Change your password</h2>
+    <p>For your security, we highly recommend that you choose a unique password that you don't use for any other online account.</p>
   </div>
 
   <div class="account-change-password-section">
     <button class="account-primary-button account-change-password-open-button" type="button" id="open-password-modal-button">
-      Change Password
+      Change password
     </button>
 
-    <p class="account-message" id="security-code-request-message" aria-live="polite"></p>
+    <p class="account-message" id="password-section-message" aria-live="polite"></p>
   </div>
 
   <div class="account-password-modal" id="password-change-modal" hidden>
@@ -242,50 +242,43 @@
       <button class="account-password-modal-close" type="button" id="password-change-modal-close" aria-label="Close password popup">×</button>
 
       <div class="account-password-modal-header">
-        <p class="account-panel-eyebrow">Security Verification</p>
-        <h2 id="password-change-modal-title">Change Password</h2>
-        <p>Verify your account email first. After the code is confirmed, you can set a new password.</p>
+        <h2 id="password-change-modal-title">Change your password</h2>
+        <p>For your security, we recommend choosing a unique password that you don't use elsewhere.</p>
       </div>
 
-      <form class="account-form" id="security-code-request-form">
-        <div class="account-field">
-          <label for="security-email">Account Email Address</label>
-          <input type="email" id="security-email" autocomplete="email" required>
+      <form class="account-form" id="change-password-form">
+        <div class="account-field account-password-field">
+          <label for="current-password">Current password</label>
+
+          <div class="account-password-input-wrap">
+            <input type="password" id="current-password" autocomplete="current-password" required>
+
+            <button class="account-password-visibility-toggle" type="button" data-target="current-password" aria-label="Show current password">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M12 5C6 5 2.1 9.6 1 12c1.1 2.4 5 7 11 7s9.9-4.6 11-7c-1.1-2.4-5-7-11-7Zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm0-2.2a1.8 1.8 0 1 0 0-3.6 1.8 1.8 0 0 0 0 3.6Z"/>
+              </svg>
+            </button>
+          </div>
         </div>
 
-        <button class="account-primary-button account-password-confirm-button" type="submit" id="send-security-code-button">
-          Send Security Code
-        </button>
-      </form>
+        <div class="account-field account-password-field">
+          <label for="new-password">New password</label>
 
-      <form class="account-form account-security-code-form" id="security-code-verify-form" hidden>
-        <div class="account-field">
-          <label for="security-code">Security Code</label>
-          <input type="text" id="security-code" inputmode="numeric" maxlength="6" autocomplete="one-time-code" required>
-        </div>
+          <div class="account-password-input-wrap">
+            <input type="password" id="new-password" autocomplete="new-password" required>
 
-        <button class="account-primary-button account-password-confirm-button" type="submit" id="verify-security-code-button">
-          Verify Code
-        </button>
-
-        <p class="account-message" id="security-code-verify-message" aria-live="polite"></p>
-      </form>
-
-      <form class="account-form account-new-password-form" id="change-password-form" hidden>
-        <div class="account-field">
-          <label for="new-password">New Password</label>
-          <input type="password" id="new-password" minlength="8" autocomplete="new-password" required>
-        </div>
-
-        <div class="account-field">
-          <label for="confirm-new-password">Confirm New Password</label>
-          <input type="password" id="confirm-new-password" minlength="8" autocomplete="new-password" required>
+            <button class="account-password-visibility-toggle" type="button" data-target="new-password" aria-label="Show new password">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M12 5C6 5 2.1 9.6 1 12c1.1 2.4 5 7 11 7s9.9-4.6 11-7c-1.1-2.4-5-7-11-7Zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm0-2.2a1.8 1.8 0 1 0 0-3.6 1.8 1.8 0 0 0 0 3.6Z"/>
+              </svg>
+            </button>
+          </div>
         </div>
 
         <div class="account-password-rules">
           <strong>You must:</strong>
           <ul>
-            <li>Use at least 8 characters</li>
+            <li>Use at least 7 characters</li>
             <li>Use at least 1 letter</li>
             <li>Use at least 1 number</li>
             <li>Not use spaces</li>
@@ -477,26 +470,17 @@ const passwordResetEmail = document.getElementById("password-reset-email");
 const passwordButton = document.getElementById("change-password-button");
 const passwordMessage = document.getElementById("password-message");
 
-  const securityCodeRequestForm = document.getElementById("security-code-request-form");
-  const securityCodeVerifyForm = document.getElementById("security-code-verify-form");
-  const securityEmail = document.getElementById("security-email");
-  const securityCode = document.getElementById("security-code");
-  const sendSecurityCodeButton = document.getElementById("send-security-code-button");
-  const verifySecurityCodeButton = document.getElementById("verify-security-code-button");
-  const securityCodeRequestMessage = document.getElementById("security-code-request-message");
-  const securityCodeVerifyMessage = document.getElementById("security-code-verify-message");
-
   const openPasswordModalButton = document.getElementById("open-password-modal-button");
+  const passwordSectionMessage = document.getElementById("password-section-message");
   const passwordChangeModal = document.getElementById("password-change-modal");
   const passwordChangeModalBackdrop = document.getElementById("password-change-modal-backdrop");
   const passwordChangeModalClose = document.getElementById("password-change-modal-close");
   const passwordChangeModalCancel = document.getElementById("password-change-modal-cancel");
+  const currentPasswordInput = document.getElementById("current-password");
   const newPasswordInput = document.getElementById("new-password");
-  const confirmNewPasswordInput = document.getElementById("confirm-new-password");
+  const passwordVisibilityToggles = document.querySelectorAll(".account-password-visibility-toggle");
 
   const logoutButton = document.getElementById("account-logout-sidebar");
-
-  let securityUnlockToken = "";
 
 let currentUser = null;
 let originalUsername = "";
@@ -839,7 +823,6 @@ document.addEventListener("keydown", function (event) {
 
     currentUser = user;
     accountEmail.value = user.email || "";
-    securityEmail.value = user.email || "";
 
     try {
       const userDocRef = doc(db, "users", user.uid);
@@ -1024,70 +1007,53 @@ if (!requestedEmail) {
   }
 });
 
-  async function getBackendJson(response) {
-    const data = await response.json().catch(function () {
-      return {};
-    });
-
-    if (!response.ok) {
-      throw new Error(data.error || "Something went wrong. Please try again.");
-    }
-
-    return data;
-  }
-
   function isValidNewPassword(password) {
     return (
-      password.length >= 8 &&
+      password.length >= 7 &&
       /[A-Za-z]/.test(password) &&
       /[0-9]/.test(password) &&
       !/\s/.test(password)
     );
   }
 
-  function updatePasswordConfirmButton() {
-    const newPassword = newPasswordInput.value;
-    const confirmPassword = confirmNewPasswordInput.value;
+  function getReadablePasswordError(error) {
+    switch (error.code) {
+      case "auth/wrong-password":
+      case "auth/invalid-credential":
+        return "The current password is incorrect.";
+      case "auth/weak-password":
+        return "Please choose a stronger password.";
+      case "auth/requires-recent-login":
+        return "For security, please log out and log in again, then try changing your password.";
+      case "auth/too-many-requests":
+        return "Too many attempts. Please wait a bit and try again.";
+      case "auth/network-request-failed":
+        return "Network error. Please check your connection and try again.";
+      default:
+        return "Could not change your password. Please try again.";
+    }
+  }
 
+  function updatePasswordConfirmButton() {
     passwordButton.disabled = !(
-      isValidNewPassword(newPassword) &&
-      newPassword === confirmPassword
+      currentPasswordInput.value.trim() &&
+      isValidNewPassword(newPasswordInput.value)
     );
   }
 
-  function resetPasswordSecurityFlow() {
-    securityUnlockToken = "";
-    securityCodeRequestForm.hidden = false;
-    securityCodeVerifyForm.hidden = true;
-    passwordForm.hidden = true;
-    securityCodeRequestForm.reset();
-    securityCodeVerifyForm.reset();
-    passwordForm.reset();
-
-    if (currentUser && currentUser.email) {
-      securityEmail.value = currentUser.email;
-    }
-
-    sendSecurityCodeButton.disabled = false;
-    sendSecurityCodeButton.textContent = "Send security code";
-    verifySecurityCodeButton.disabled = false;
-    verifySecurityCodeButton.textContent = "Verify code";
-    passwordButton.disabled = true;
-    passwordButton.textContent = "Confirm";
-
-    showMessage(securityCodeRequestMessage, "", "");
-    showMessage(securityCodeVerifyMessage, "", "");
-    showMessage(passwordMessage, "", "");
-  }
-
   function openPasswordModal() {
-    resetPasswordSecurityFlow();
+    passwordForm.reset();
+    showMessage(passwordMessage, "", "");
     passwordChangeModal.hidden = false;
+    updatePasswordConfirmButton();
+    currentPasswordInput.focus();
   }
 
   function closePasswordModal() {
     passwordChangeModal.hidden = true;
-    resetPasswordSecurityFlow();
+    passwordForm.reset();
+    showMessage(passwordMessage, "", "");
+    updatePasswordConfirmButton();
   }
 
   openPasswordModalButton.addEventListener("click", function () {
@@ -1112,115 +1078,31 @@ if (!requestedEmail) {
     }
   });
 
+  passwordVisibilityToggles.forEach(function (toggleButton) {
+    toggleButton.addEventListener("click", function () {
+      const targetId = toggleButton.getAttribute("data-target");
+      const targetInput = document.getElementById(targetId);
+
+      if (!targetInput) {
+        return;
+      }
+
+      if (targetInput.type === "password") {
+        targetInput.type = "text";
+        toggleButton.setAttribute("aria-label", "Hide password");
+      } else {
+        targetInput.type = "password";
+        toggleButton.setAttribute("aria-label", "Show password");
+      }
+    });
+  });
+
+  currentPasswordInput.addEventListener("input", function () {
+    updatePasswordConfirmButton();
+  });
+
   newPasswordInput.addEventListener("input", function () {
     updatePasswordConfirmButton();
-  });
-
-  confirmNewPasswordInput.addEventListener("input", function () {
-    updatePasswordConfirmButton();
-  });
-
-  securityCodeRequestForm.addEventListener("submit", async function (event) {
-    event.preventDefault();
-
-    if (!currentUser) {
-      return;
-    }
-
-    const enteredEmail = securityEmail.value.trim().toLowerCase();
-    const accountEmailValue = (currentUser.email || "").toLowerCase();
-
-    if (!enteredEmail) {
-      showMessage(securityCodeRequestMessage, "Please enter your account email address.", "error");
-      return;
-    }
-
-    if (enteredEmail !== accountEmailValue) {
-      showMessage(securityCodeRequestMessage, "This email address does not match your account.", "error");
-      return;
-    }
-
-    sendSecurityCodeButton.disabled = true;
-    sendSecurityCodeButton.textContent = "Sending...";
-    showMessage(securityCodeRequestMessage, "", "");
-    showMessage(securityCodeVerifyMessage, "", "");
-
-    try {
-      const idToken = await currentUser.getIdToken();
-
-      const response = await fetch("/api/send-security-code", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer " + idToken
-        },
-        body: JSON.stringify({
-          purpose: "password"
-        })
-      });
-
-      await getBackendJson(response);
-
-      securityCodeVerifyForm.hidden = false;
-      securityCode.value = "";
-      securityCode.focus();
-
-      showMessage(securityCodeRequestMessage, "Security code sent. Check your email inbox and spam folder.", "success");
-    } catch (error) {
-      showMessage(securityCodeRequestMessage, error.message, "error");
-    } finally {
-      sendSecurityCodeButton.disabled = false;
-      sendSecurityCodeButton.textContent = "Send security code";
-    }
-  });
-
-  securityCodeVerifyForm.addEventListener("submit", async function (event) {
-    event.preventDefault();
-
-    if (!currentUser) {
-      return;
-    }
-
-    const codeValue = securityCode.value.trim();
-
-    if (!/^\d{6}$/.test(codeValue)) {
-      showMessage(securityCodeVerifyMessage, "Please enter the 6-digit security code.", "error");
-      return;
-    }
-
-    verifySecurityCodeButton.disabled = true;
-    verifySecurityCodeButton.textContent = "Verifying...";
-    showMessage(securityCodeVerifyMessage, "", "");
-
-    try {
-      const idToken = await currentUser.getIdToken();
-
-      const response = await fetch("/api/verify-security-code", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer " + idToken
-        },
-        body: JSON.stringify({
-          code: codeValue
-        })
-      });
-
-      const data = await getBackendJson(response);
-
-      securityUnlockToken = data.unlockToken;
-      securityCodeRequestForm.hidden = true;
-      securityCodeVerifyForm.hidden = true;
-      passwordForm.hidden = false;
-      newPasswordInput.focus();
-
-      showMessage(securityCodeVerifyMessage, "", "");
-    } catch (error) {
-      showMessage(securityCodeVerifyMessage, error.message, "error");
-    } finally {
-      verifySecurityCodeButton.disabled = false;
-      verifySecurityCodeButton.textContent = "Verify code";
-    }
   });
 
   passwordForm.addEventListener("submit", async function (event) {
@@ -1230,49 +1112,37 @@ if (!requestedEmail) {
       return;
     }
 
-    if (!securityUnlockToken) {
-      showMessage(passwordMessage, "Security session expired. Please verify your email again.", "error");
-      return;
-    }
-
+    const currentPassword = currentPasswordInput.value.trim();
     const newPassword = newPasswordInput.value;
-    const confirmNewPassword = confirmNewPasswordInput.value;
 
-    if (newPassword !== confirmNewPassword) {
-      showMessage(passwordMessage, "Passwords do not match.", "error");
+    if (!currentPassword) {
+      showMessage(passwordMessage, "Please enter your current password.", "error");
       return;
     }
 
     if (!isValidNewPassword(newPassword)) {
-      showMessage(passwordMessage, "Password must be at least 8 characters and include at least 1 letter and 1 number.", "error");
+      showMessage(passwordMessage, "Password must be at least 7 characters and include at least 1 letter and 1 number, with no spaces.", "error");
       return;
     }
 
     passwordButton.disabled = true;
-    passwordButton.textContent = "Saving...";
+    passwordButton.textContent = "Confirming...";
     showMessage(passwordMessage, "", "");
 
     try {
-      const idToken = await currentUser.getIdToken();
+      const credential = EmailAuthProvider.credential(currentUser.email || "", currentPassword);
 
-      const response = await fetch("/api/change-password", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer " + idToken
-        },
-        body: JSON.stringify({
-          unlockToken: securityUnlockToken,
-          newPassword: newPassword
-        })
-      });
+      await reauthenticateWithCredential(currentUser, credential);
+      await updatePassword(currentUser, newPassword);
 
-      await getBackendJson(response);
+      showMessage(passwordMessage, "Password changed successfully.", "success");
+      showMessage(passwordSectionMessage, "Password changed successfully.", "success");
 
-      closePasswordModal();
-      showMessage(securityCodeRequestMessage, "Password changed successfully.", "success");
+      setTimeout(function () {
+        closePasswordModal();
+      }, 900);
     } catch (error) {
-      showMessage(passwordMessage, error.message, "error");
+      showMessage(passwordMessage, getReadablePasswordError(error), "error");
     } finally {
       passwordButton.disabled = false;
       passwordButton.textContent = "Confirm";
