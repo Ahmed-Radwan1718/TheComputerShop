@@ -448,25 +448,7 @@ const emailCurrentPassword = document.getElementById("email-current-password");
 const emailButton = document.getElementById("change-email-button");
 const emailMessage = document.getElementById("email-message");
 
-  const phoneModal = document.getElementById("phone-change-modal");
-  const phoneModalBackdrop = document.getElementById("phone-change-modal-backdrop");
-  const phoneModalClose = document.getElementById("phone-change-modal-close");
-  const phoneModalCancel = document.getElementById("phone-change-modal-cancel");
-const phoneModalTitle = document.getElementById("phone-change-modal-title");
-const phoneModalText = document.getElementById("phone-change-modal-text");
-const phoneNumberLabel = document.getElementById("phone-change-number-label");
-const phoneNumberField = document.getElementById("phone-number-field");
-const phonePasswordField = document.getElementById("phone-password-field");
-const phoneForm = document.getElementById("change-phone-form");
-const newPhone = document.getElementById("new-phone");
-const phoneCurrentPassword = document.getElementById("phone-current-password");
-  const phoneCodeField = document.getElementById("phone-code-field");
-  const phoneVerificationCode = document.getElementById("phone-verification-code");
-  const phoneButton = document.getElementById("change-phone-button");
-  const phoneMessage = document.getElementById("phone-message");
-
 const passwordForm = document.getElementById("change-password-form");
-const passwordResetEmail = document.getElementById("password-reset-email");
 const passwordButton = document.getElementById("change-password-button");
 const passwordMessage = document.getElementById("password-message");
 
@@ -491,6 +473,10 @@ const usernameCooldownDays = 14;
 const emailCooldownDays = 90;
 
   function showMessage(element, message, type) {
+    if (!element) {
+      return;
+    }
+
     element.textContent = message;
     element.className = "account-message";
 
