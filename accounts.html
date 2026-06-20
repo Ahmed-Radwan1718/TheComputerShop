@@ -220,31 +220,26 @@
             </form>
           </article>
 
-          <article class="account-panel" id="account-panel-security">
-            <div class="account-panel-header">
-              <p class="account-panel-eyebrow">Security</p>
-              <h2>Change Password</h2>
-              <p>Update your account password. For security, you may need to log in again before changing it.</p>
-            </div>
+<article class="account-panel" id="account-panel-security">
+  <div class="account-panel-header">
+    <p class="account-panel-eyebrow">Security</p>
+    <h2>Change Password</h2>
+    <p>Enter your account email address. We will send you a secure password reset email.</p>
+  </div>
 
-            <form class="account-form" id="change-password-form">
-              <div class="account-field">
-                <label for="new-password">New Password</label>
-                <input type="password" id="new-password" minlength="8" autocomplete="new-password" required>
-              </div>
+  <form class="account-form" id="change-password-form">
+    <div class="account-field">
+      <label for="password-reset-email">Email Address</label>
+      <input type="email" id="password-reset-email" autocomplete="email" required>
+    </div>
 
-              <div class="account-field">
-                <label for="confirm-new-password">Confirm New Password</label>
-                <input type="password" id="confirm-new-password" minlength="8" autocomplete="new-password" required>
-              </div>
+    <button class="account-primary-button" type="submit" id="change-password-button">
+      Send Password Reset Email
+    </button>
 
-              <button class="account-primary-button" type="submit" id="change-password-button">
-                Change Password
-              </button>
-
-              <p class="account-message" id="password-message" aria-live="polite"></p>
-            </form>
-          </article>
+    <p class="account-message" id="password-message" aria-live="polite"></p>
+  </form>
+</article>
 
           <article class="account-panel" id="account-panel-saved">
             <div class="account-panel-header">
@@ -410,9 +405,10 @@ const phoneCurrentPassword = document.getElementById("phone-current-password");
   const phoneButton = document.getElementById("change-phone-button");
   const phoneMessage = document.getElementById("phone-message");
 
-  const passwordForm = document.getElementById("change-password-form");
-  const passwordButton = document.getElementById("change-password-button");
-  const passwordMessage = document.getElementById("password-message");
+const passwordForm = document.getElementById("change-password-form");
+const passwordResetEmail = document.getElementById("password-reset-email");
+const passwordButton = document.getElementById("change-password-button");
+const passwordMessage = document.getElementById("password-message");
 
   const logoutButton = document.getElementById("account-logout-sidebar");
 
@@ -941,36 +937,40 @@ if (!requestedEmail) {
   }
 });
 
-  passwordForm.addEventListener("submit", async function (event) {
-    event.preventDefault();
+passwordForm.addEventListener("submit", async function (event) {
+  event.preventDefault();
 
-    if (!currentUser) {
-      return;
-    }
+  if (!currentUser) {
+    return;
+  }
 
-    const newPassword = document.getElementById("new-password").value;
-    const confirmNewPassword = document.getElementById("confirm-new-password").value;
+  const enteredEmail = passwordResetEmail.value.trim();
 
-    if (newPassword !== confirmNewPassword) {
-      showMessage(passwordMessage, "Passwords do not match.", "error");
-      return;
-    }
+  if (!enteredEmail) {
+    showMessage(passwordMessage, "Please enter your email address.", "error");
+    return;
+  }
 
-    passwordButton.disabled = true;
-    passwordButton.textContent = "Updating...";
-    showMessage(passwordMessage, "", "");
+  if (enteredEmail.toLowerCase() !== (currentUser.email || "").toLowerCase()) {
+    showMessage(passwordMessage, "The email address does not match your account.", "error");
+    return;
+  }
 
-    try {
-      await updatePassword(currentUser, newPassword);
-      passwordForm.reset();
-      showMessage(passwordMessage, "Password updated successfully.", "success");
-    } catch (error) {
-      showMessage(passwordMessage, getReadablePasswordError(error), "error");
-    } finally {
-      passwordButton.disabled = false;
-      passwordButton.textContent = "Change Password";
-    }
-  });
+  passwordButton.disabled = true;
+  passwordButton.textContent = "Sending...";
+  showMessage(passwordMessage, "", "");
+
+  try {
+    await sendPasswordResetEmail(auth, enteredEmail);
+    passwordForm.reset();
+    showMessage(passwordMessage, "Password reset email sent. Please check your inbox and spam folder.", "success");
+  } catch (error) {
+    showMessage(passwordMessage, "Could not send password reset email. Please try again.", "error");
+  } finally {
+    passwordButton.disabled = false;
+    passwordButton.textContent = "Send Password Reset Email";
+  }
+});
 
   logoutButton.addEventListener("click", async function () {
     await signOut(auth);
