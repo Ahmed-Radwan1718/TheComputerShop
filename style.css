@@ -6398,7 +6398,7 @@ body.account-email-modal-open {
 
 .account-change-password-open-button {
   width: fit-content;
-  min-width: 180px;
+  min-width: 210px;
 }
 
 .account-password-modal {
@@ -6418,21 +6418,21 @@ body.account-email-modal-open {
 .account-password-modal-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.48);
+  background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(16px);
 }
 
 .account-password-modal-card {
   position: relative;
   z-index: 1;
-  width: min(560px, 100%);
+  width: min(620px, 100%);
   max-height: calc(100vh - 48px);
   overflow-y: auto;
-  padding: 32px;
+  padding: 42px 42px 36px;
   border-radius: 22px;
-  background: rgba(31, 32, 34, 0.96);
+  background: rgba(31, 32, 34, 0.97);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.48);
 }
 
 .account-password-modal-close {
@@ -6441,37 +6441,36 @@ body.account-email-modal-open {
   right: 18px;
   width: 34px;
   height: 34px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.06);
-  color: #ffffff;
-  font-size: 22px;
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 40px;
   line-height: 1;
   cursor: pointer;
 }
 
 .account-password-modal-close:hover {
-  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
 }
 
 .account-password-modal-header {
-  margin-bottom: 24px;
-  padding-right: 42px;
+  margin-bottom: 22px;
+  padding-right: 32px;
 }
 
 .account-password-modal-header h2 {
-  margin: 0 0 10px;
+  margin: 0 0 18px;
   color: #ffffff;
-  font-size: 24px;
-  line-height: 1.2;
+  font-size: 32px;
+  line-height: 1.15;
 }
 
-.account-password-modal-header p:last-child {
+.account-password-modal-header p {
   margin: 0;
-  max-width: 460px;
+  max-width: 470px;
   color: rgba(255, 255, 255, 0.68);
-  font-size: 15px;
-  line-height: 1.55;
+  font-size: 17px;
+  line-height: 1.5;
 }
 
 .account-password-modal-card .account-form {
@@ -6479,65 +6478,93 @@ body.account-email-modal-open {
   gap: 18px;
 }
 
-.account-security-code-form,
-.account-new-password-form {
-  margin-top: 18px;
+.account-password-field {
+  display: grid;
+  gap: 10px;
 }
 
-.account-security-code-form[hidden],
-.account-new-password-form[hidden] {
-  display: none;
+.account-password-input-wrap {
+  position: relative;
+}
+
+.account-password-input-wrap input {
+  padding-right: 64px;
+}
+
+.account-password-visibility-toggle {
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  border: 0;
+  background: transparent;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 0;
+}
+
+.account-password-visibility-toggle svg {
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+  opacity: 0.95;
 }
 
 .account-password-rules {
-  padding: 18px;
+  margin-top: 8px;
+  padding: 22px 20px;
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.045);
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  color: rgba(255, 255, 255, 0.76);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.84);
 }
 
 .account-password-rules strong {
   display: block;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   color: #ffffff;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 700;
 }
 
 .account-password-rules ul {
   margin: 0;
-  padding-left: 20px;
+  padding-left: 24px;
 }
 
 .account-password-rules li {
-  margin: 6px 0;
-  font-size: 14px;
+  margin: 8px 0;
+  font-size: 15px;
   line-height: 1.45;
 }
 
 .account-password-modal-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 14px;
-  align-items: center;
+  gap: 18px;
+  margin-top: 20px;
 }
 
 .account-password-modal-cancel {
-  height: 50px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.06);
+  height: 56px;
+  border: 0;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.14);
   color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
   cursor: pointer;
 }
 
 .account-password-modal-cancel:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .account-password-confirm-button {
-  height: 50px;
+  height: 56px;
+  border-radius: 16px;
 }
 
 .account-password-confirm-button:disabled {
