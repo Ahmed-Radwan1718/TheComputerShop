@@ -684,19 +684,6 @@ function updateUsernameLockState() {
   }
 }
 
-  function getReadablePasswordError(error) {
-    switch (error.code) {
-      case "auth/requires-recent-login":
-        return "For security, please log out, log in again, then try changing your password.";
-      case "auth/weak-password":
-        return "Please use a stronger password.";
-      case "auth/network-request-failed":
-        return "Network error. Please check your connection and try again.";
-      default:
-        return "Something went wrong. Please try again.";
-    }
-  }
-
   function getReadableEmailError(error) {
     switch (error.code) {
       case "auth/wrong-password":
