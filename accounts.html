@@ -221,49 +221,15 @@
           </article>
 
 <article class="account-panel" id="account-panel-security">
-  <div class="account-panel-header">
-    <p class="account-panel-eyebrow">Security</p>
-    <h2>Password Security</h2>
-    <p>To change your password, first send a one-time security code to your account email address.</p>
-  </div>
+  <div class="account-change-password-section">
+    <h2>Change your password</h2>
+    <p>For your security, we highly recommend that you choose a unique password that you don't use for any other online account.</p>
 
-  <div class="account-security-lock" id="account-security-lock">
-    <form class="account-form" id="security-code-request-form">
-      <div class="account-field">
-        <label for="security-email">Account Email Address</label>
-        <input type="email" id="security-email" autocomplete="email" required>
-      </div>
-
-      <button class="account-primary-button" type="submit" id="send-security-code-button">
-        Send Security Code
-      </button>
-
-      <p class="account-message" id="security-code-request-message" aria-live="polite"></p>
-    </form>
-
-    <form class="account-form" id="security-code-verify-form" hidden>
-      <div class="account-field">
-        <label for="security-code">Security Code</label>
-        <input type="text" id="security-code" inputmode="numeric" maxlength="6" autocomplete="one-time-code" required>
-      </div>
-
-      <button class="account-primary-button" type="submit" id="verify-security-code-button">
-        Verify Code
-      </button>
-
-      <p class="account-message" id="security-code-verify-message" aria-live="polite"></p>
-    </form>
-  </div>
-
-  <div class="account-security-unlocked" id="account-security-unlocked" hidden>
-    <div class="account-empty-state">
-      <h3>Security Unlocked</h3>
-      <p>Your password settings are unlocked for this session. You can now change your password.</p>
-    </div>
-
-    <button class="account-primary-button" type="button" id="open-password-modal-button">
-      Change Password
+    <button class="account-change-password-open-button" type="button" id="open-password-modal-button">
+      Change password
     </button>
+
+    <p class="account-message" id="security-code-request-message" aria-live="polite"></p>
   </div>
 
   <div class="account-password-modal" id="password-change-modal" hidden>
@@ -273,19 +239,53 @@
       <button class="account-password-modal-close" type="button" id="password-change-modal-close" aria-label="Close password popup">×</button>
 
       <div class="account-password-modal-header">
-        <h2 id="password-change-modal-title">Change Password</h2>
-        <p>Use at least 8 characters with at least 1 letter and 1 number.</p>
+        <h2 id="password-change-modal-title">Change your password</h2>
+        <p>For your security, we recommend choosing a unique password that you don't use elsewhere.</p>
       </div>
 
-      <form class="account-form" id="change-password-form">
+      <form class="account-form" id="security-code-request-form">
         <div class="account-field">
-          <label for="new-password">New Password</label>
+          <label for="security-email">Account email</label>
+          <input type="email" id="security-email" autocomplete="email" required>
+        </div>
+
+        <button class="account-password-confirm-button" type="submit" id="send-security-code-button">
+          Send security code
+        </button>
+      </form>
+
+      <form class="account-form account-security-code-form" id="security-code-verify-form" hidden>
+        <div class="account-field">
+          <label for="security-code">Security code</label>
+          <input type="text" id="security-code" inputmode="numeric" maxlength="6" autocomplete="one-time-code" required>
+        </div>
+
+        <button class="account-password-confirm-button" type="submit" id="verify-security-code-button">
+          Verify code
+        </button>
+
+        <p class="account-message" id="security-code-verify-message" aria-live="polite"></p>
+      </form>
+
+      <form class="account-form account-new-password-form" id="change-password-form" hidden>
+        <div class="account-field account-password-field">
+          <label for="new-password">New password</label>
           <input type="password" id="new-password" minlength="8" autocomplete="new-password" required>
         </div>
 
-        <div class="account-field">
-          <label for="confirm-new-password">Confirm New Password</label>
+        <div class="account-field account-password-field">
+          <label for="confirm-new-password">Confirm new password</label>
           <input type="password" id="confirm-new-password" minlength="8" autocomplete="new-password" required>
+        </div>
+
+        <div class="account-password-rules">
+          <strong>You must:</strong>
+          <ul>
+            <li>Use at least 8 characters</li>
+            <li>Use at least 1 letter</li>
+            <li>Use at least 1 number</li>
+            <li>Not use spaces</li>
+          </ul>
         </div>
 
         <div class="account-password-modal-actions">
@@ -293,8 +293,8 @@
             Cancel
           </button>
 
-          <button class="account-primary-button account-password-modal-submit" type="submit" id="change-password-button">
-            Save New Password
+          <button class="account-password-confirm-button" type="submit" id="change-password-button" disabled>
+            Confirm
           </button>
         </div>
 
@@ -482,14 +482,13 @@ const passwordMessage = document.getElementById("password-message");
   const securityCodeRequestMessage = document.getElementById("security-code-request-message");
   const securityCodeVerifyMessage = document.getElementById("security-code-verify-message");
 
-  const accountSecurityLock = document.getElementById("account-security-lock");
-  const accountSecurityUnlocked = document.getElementById("account-security-unlocked");
   const openPasswordModalButton = document.getElementById("open-password-modal-button");
-
   const passwordChangeModal = document.getElementById("password-change-modal");
   const passwordChangeModalBackdrop = document.getElementById("password-change-modal-backdrop");
   const passwordChangeModalClose = document.getElementById("password-change-modal-close");
   const passwordChangeModalCancel = document.getElementById("password-change-modal-cancel");
+  const newPasswordInput = document.getElementById("new-password");
+  const confirmNewPasswordInput = document.getElementById("confirm-new-password");
 
   const logoutButton = document.getElementById("account-logout-sidebar");
 
@@ -1042,15 +1041,80 @@ if (!requestedEmail) {
     );
   }
 
+  function updatePasswordConfirmButton() {
+    const newPassword = newPasswordInput.value;
+    const confirmPassword = confirmNewPasswordInput.value;
+
+    passwordButton.disabled = !(
+      isValidNewPassword(newPassword) &&
+      newPassword === confirmPassword
+    );
+  }
+
+  function resetPasswordSecurityFlow() {
+    securityUnlockToken = "";
+    securityCodeRequestForm.hidden = false;
+    securityCodeVerifyForm.hidden = true;
+    passwordForm.hidden = true;
+    securityCodeRequestForm.reset();
+    securityCodeVerifyForm.reset();
+    passwordForm.reset();
+
+    if (currentUser && currentUser.email) {
+      securityEmail.value = currentUser.email;
+    }
+
+    sendSecurityCodeButton.disabled = false;
+    sendSecurityCodeButton.textContent = "Send security code";
+    verifySecurityCodeButton.disabled = false;
+    verifySecurityCodeButton.textContent = "Verify code";
+    passwordButton.disabled = true;
+    passwordButton.textContent = "Confirm";
+
+    showMessage(securityCodeRequestMessage, "", "");
+    showMessage(securityCodeVerifyMessage, "", "");
+    showMessage(passwordMessage, "", "");
+  }
+
   function openPasswordModal() {
+    resetPasswordSecurityFlow();
     passwordChangeModal.hidden = false;
   }
 
   function closePasswordModal() {
     passwordChangeModal.hidden = true;
-    passwordForm.reset();
-    showMessage(passwordMessage, "", "");
+    resetPasswordSecurityFlow();
   }
+
+  openPasswordModalButton.addEventListener("click", function () {
+    openPasswordModal();
+  });
+
+  passwordChangeModalBackdrop.addEventListener("click", function () {
+    closePasswordModal();
+  });
+
+  passwordChangeModalClose.addEventListener("click", function () {
+    closePasswordModal();
+  });
+
+  passwordChangeModalCancel.addEventListener("click", function () {
+    closePasswordModal();
+  });
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape" && !passwordChangeModal.hidden) {
+      closePasswordModal();
+    }
+  });
+
+  newPasswordInput.addEventListener("input", function () {
+    updatePasswordConfirmButton();
+  });
+
+  confirmNewPasswordInput.addEventListener("input", function () {
+    updatePasswordConfirmButton();
+  });
 
   securityCodeRequestForm.addEventListener("submit", async function (event) {
     event.preventDefault();
@@ -1102,7 +1166,7 @@ if (!requestedEmail) {
       showMessage(securityCodeRequestMessage, error.message, "error");
     } finally {
       sendSecurityCodeButton.disabled = false;
-      sendSecurityCodeButton.textContent = "Send Security Code";
+      sendSecurityCodeButton.textContent = "Send security code";
     }
   });
 
@@ -1141,37 +1205,17 @@ if (!requestedEmail) {
       const data = await getBackendJson(response);
 
       securityUnlockToken = data.unlockToken;
-      accountSecurityLock.hidden = true;
-      accountSecurityUnlocked.hidden = false;
+      securityCodeRequestForm.hidden = true;
+      securityCodeVerifyForm.hidden = true;
+      passwordForm.hidden = false;
+      newPasswordInput.focus();
 
       showMessage(securityCodeVerifyMessage, "", "");
     } catch (error) {
       showMessage(securityCodeVerifyMessage, error.message, "error");
     } finally {
       verifySecurityCodeButton.disabled = false;
-      verifySecurityCodeButton.textContent = "Verify Code";
-    }
-  });
-
-  openPasswordModalButton.addEventListener("click", function () {
-    openPasswordModal();
-  });
-
-  passwordChangeModalBackdrop.addEventListener("click", function () {
-    closePasswordModal();
-  });
-
-  passwordChangeModalClose.addEventListener("click", function () {
-    closePasswordModal();
-  });
-
-  passwordChangeModalCancel.addEventListener("click", function () {
-    closePasswordModal();
-  });
-
-  document.addEventListener("keydown", function (event) {
-    if (event.key === "Escape" && !passwordChangeModal.hidden) {
-      closePasswordModal();
+      verifySecurityCodeButton.textContent = "Verify code";
     }
   });
 
@@ -1187,8 +1231,8 @@ if (!requestedEmail) {
       return;
     }
 
-    const newPassword = document.getElementById("new-password").value;
-    const confirmNewPassword = document.getElementById("confirm-new-password").value;
+    const newPassword = newPasswordInput.value;
+    const confirmNewPassword = confirmNewPasswordInput.value;
 
     if (newPassword !== confirmNewPassword) {
       showMessage(passwordMessage, "Passwords do not match.", "error");
@@ -1221,26 +1265,14 @@ if (!requestedEmail) {
 
       await getBackendJson(response);
 
-      securityUnlockToken = "";
-      passwordForm.reset();
       closePasswordModal();
-
-      accountSecurityUnlocked.hidden = true;
-      accountSecurityLock.hidden = false;
-      securityCodeVerifyForm.hidden = true;
-      securityCodeRequestForm.reset();
-      securityCodeVerifyForm.reset();
-
-      if (currentUser.email) {
-        securityEmail.value = currentUser.email;
-      }
-
       showMessage(securityCodeRequestMessage, "Password changed successfully.", "success");
     } catch (error) {
       showMessage(passwordMessage, error.message, "error");
     } finally {
       passwordButton.disabled = false;
-      passwordButton.textContent = "Save New Password";
+      passwordButton.textContent = "Confirm";
+      updatePasswordConfirmButton();
     }
   });
 
