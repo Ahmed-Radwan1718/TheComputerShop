@@ -801,58 +801,84 @@ document.addEventListener("keydown", function (event) {
   }
 });
 
-  onAuthStateChanged(auth, async function (user) {
-    if (!user) {
-      window.location.href = "signup.html";
-      return;
-    }
+function finishAccountLoading() {
+  try {
+    updateUsernameLockState();
+  } catch (error) {}
 
-    currentUser = user;
-    accountEmail.value = user.email || "";
+  try {
+    updateEmailLockState();
+  } catch (error) {}
 
-    try {
-      const userDocRef = doc(db, "users", user.uid);
-      const userDoc = await getDoc(userDocRef);
+  try {
+    showAddressFields();
+  } catch (error) {}
 
-if (userDoc.exists()) {
-const data = userDoc.data();
-updateAccountStatus(user, data);
-
-  accountName.value = data.fullName || "";
-  originalUsername = data.fullName || "";
-usernameLastChangedAt = data.usernameLastChangedAt || null;
-emailLastChangedAt = data.emailLastChangedAt || null;
-
-  accountPhone.value = data.phone || "";
-  addressType.value = data.addressType || "apartment";
-
-  buildingName.value = data.buildingName || "";
-  apartmentNumber.value = data.apartmentNumber || "";
-  floorNumber.value = data.floorNumber || "";
-  houseNumber.value = data.houseNumber || "";
-  officeName.value = data.officeName || "";
-  companyName.value = data.companyName || "";
-  streetName.value = data.streetName || "";
-  additionalInfo.value = data.additionalInfo || "";
-
-  accountHeaderText.textContent = "Welcome back, " + (data.fullName || "Customer") + ".";
-} else {
-accountName.value = user.displayName || "";
-originalUsername = user.displayName || "";
-usernameLastChangedAt = null;
-emailLastChangedAt = null;
-updateAccountStatus(user, {});
-accountHeaderText.textContent = "Welcome back.";
+  accountLoading.hidden = true;
 }
 
-updateUsernameLockState();
-updateEmailLockState();
-showAddressFields();
-accountLoading.hidden = true;
-    } catch (error) {
-      accountLoading.textContent = "Unable to load account details. Please refresh and try again.";
+function getDocWithTimeout(docRef, timeoutMs) {
+  return Promise.race([
+    getDoc(docRef),
+    new Promise(function (_, reject) {
+      setTimeout(function () {
+        reject(new Error("account-load-timeout"));
+      }, timeoutMs);
+    })
+  ]);
+}
+
+onAuthStateChanged(auth, async function (user) {
+  if (!user) {
+    window.location.href = "signup.html";
+    return;
+  }
+
+  currentUser = user;
+  accountEmail.value = user.email || "";
+
+  accountName.value = user.displayName || "";
+  originalUsername = user.displayName || "";
+  usernameLastChangedAt = null;
+  emailLastChangedAt = null;
+  addressType.value = "apartment";
+  accountHeaderText.textContent = "Welcome back.";
+  updateAccountStatus(user, {});
+
+  try {
+    const userDocRef = doc(db, "users", user.uid);
+    const userDoc = await getDocWithTimeout(userDocRef, 7000);
+
+    if (userDoc.exists()) {
+      const data = userDoc.data();
+
+      updateAccountStatus(user, data);
+
+      accountName.value = data.fullName || "";
+      originalUsername = data.fullName || "";
+      usernameLastChangedAt = data.usernameLastChangedAt || null;
+      emailLastChangedAt = data.emailLastChangedAt || null;
+
+      accountPhone.value = data.phone || "";
+      addressType.value = data.addressType || "apartment";
+
+      buildingName.value = data.buildingName || "";
+      apartmentNumber.value = data.apartmentNumber || "";
+      floorNumber.value = data.floorNumber || "";
+      houseNumber.value = data.houseNumber || "";
+      officeName.value = data.officeName || "";
+      companyName.value = data.companyName || "";
+      streetName.value = data.streetName || "";
+      additionalInfo.value = data.additionalInfo || "";
+
+      accountHeaderText.textContent = "Welcome back, " + (data.fullName || "Customer") + ".";
     }
-  });
+  } catch (error) {
+    showMessage(detailsMessage, "Some saved account details could not load, but you can still use the page.", "error");
+  } finally {
+    finishAccountLoading();
+  }
+});
 
 detailsForm.addEventListener("submit", async function (event) {
   event.preventDefault();
