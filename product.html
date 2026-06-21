@@ -9698,33 +9698,45 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
   }
 
   if (addToCartButton) {
-    addToCartButton.addEventListener("click", () => {
+    addToCartButton.addEventListener("click", async () => {
       if (cartTransitionOverlay) {
         cartTransitionOverlay.classList.add("active");
       }
 
       addToCartButton.disabled = true;
 
-      setTimeout(() => {
-        const cart = getCart();
-        const existingItem = cart.find((item) => item.id === productData.id);
+      setTimeout(async () => {
+        try {
+          if (typeof window.addProductToSyncedCart === "function") {
+            await window.addProductToSyncedCart(productData, quantity);
+          } else {
+            const cart = getCart();
+            const existingItem = cart.find((item) => item.id === productData.id);
 
-        if (existingItem) {
-          existingItem.quantity += quantity;
-        } else {
-          cart.push({
-            ...productData,
-            quantity: quantity
-          });
+            if (existingItem) {
+              existingItem.quantity += quantity;
+            } else {
+              cart.push({
+                ...productData,
+                quantity: quantity
+              });
+            }
+
+            saveCart(cart);
+          }
+
+          if (cartTransitionOverlay) {
+            cartTransitionOverlay.classList.remove("active");
+          }
+
+          addToCartButton.textContent = "Added to Cart";
+        } catch (error) {
+          if (cartTransitionOverlay) {
+            cartTransitionOverlay.classList.remove("active");
+          }
+
+          addToCartButton.textContent = "Could Not Add";
         }
-
-        saveCart(cart);
-
-        if (cartTransitionOverlay) {
-          cartTransitionOverlay.classList.remove("active");
-        }
-
-        addToCartButton.textContent = "Added to Cart";
 
         setTimeout(() => {
           addToCartButton.textContent = "Add to Cart";
@@ -9735,6 +9747,130 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
   }
 
   updateCartCount();
+</script>
+
+<script type="module">
+  import "./auth.js";
+
+  const {
+    auth,
+    db,
+    onAuthStateChanged,
+    doc,
+    collection,
+    getDoc,
+    setDoc,
+    onSnapshot,
+    serverTimestamp
+  } = window.tcsAuth;
+
+  let currentCartUser = null;
+  let cloudCartUnsubscribe = null;
+
+  function getLocalCart() {
+    return JSON.parse(localStorage.getItem("computerShopCart")) || [];
+  }
+
+  function saveLocalCart(cart) {
+    localStorage.setItem("computerShopCart", JSON.stringify(cart));
+    updateCartCountFromItems(cart);
+  }
+
+  function updateCartCountFromItems(items) {
+    const totalQuantity = items.reduce(function (total, item) {
+      return total + Number(item.quantity || 0);
+    }, 0);
+
+    document.querySelectorAll(".nav-cart-count").forEach(function (count) {
+      count.textContent = totalQuantity;
+      count.style.display = totalQuantity > 0 ? "block" : "none";
+    });
+  }
+
+  async function mergeLocalCartToCloud(user) {
+    const localCart = getLocalCart();
+
+    if (!user || !localCart.length) {
+      return;
+    }
+
+    await Promise.all(localCart.map(async function (item) {
+      const itemRef = doc(db, "users", user.uid, "cartItems", item.id);
+      const existingDoc = await getDoc(itemRef);
+      const existingQuantity = existingDoc.exists() ? Number(existingDoc.data().quantity || 0) : 0;
+
+      await setDoc(itemRef, {
+        ...item,
+        quantity: existingQuantity + Number(item.quantity || 1),
+        updatedAt: serverTimestamp(),
+        addedAt: existingDoc.exists() && existingDoc.data().addedAt ? existingDoc.data().addedAt : serverTimestamp()
+      }, { merge: true });
+    }));
+
+    localStorage.removeItem("computerShopCart");
+  }
+
+  window.addProductToSyncedCart = async function (product, quantityToAdd) {
+    const cleanQuantity = Number(quantityToAdd || 1);
+
+    if (!currentCartUser) {
+      const cart = getLocalCart();
+      const existingItem = cart.find(function (item) {
+        return item.id === product.id;
+      });
+
+      if (existingItem) {
+        existingItem.quantity += cleanQuantity;
+      } else {
+        cart.push({
+          ...product,
+          quantity: cleanQuantity
+        });
+      }
+
+      saveLocalCart(cart);
+      return;
+    }
+
+    const itemRef = doc(db, "users", currentCartUser.uid, "cartItems", product.id);
+    const existingDoc = await getDoc(itemRef);
+    const existingQuantity = existingDoc.exists() ? Number(existingDoc.data().quantity || 0) : 0;
+
+    await setDoc(itemRef, {
+      ...product,
+      quantity: existingQuantity + cleanQuantity,
+      updatedAt: serverTimestamp(),
+      addedAt: existingDoc.exists() && existingDoc.data().addedAt ? existingDoc.data().addedAt : serverTimestamp()
+    }, { merge: true });
+  };
+
+  onAuthStateChanged(auth, async function (user) {
+    currentCartUser = user || null;
+
+    if (typeof cloudCartUnsubscribe === "function") {
+      cloudCartUnsubscribe();
+    }
+
+    cloudCartUnsubscribe = null;
+
+    if (!user) {
+      updateCartCountFromItems(getLocalCart());
+      return;
+    }
+
+    await mergeLocalCartToCloud(user);
+
+    cloudCartUnsubscribe = onSnapshot(collection(db, "users", user.uid, "cartItems"), function (snapshot) {
+      const cloudCart = snapshot.docs.map(function (cartDoc) {
+        return {
+          id: cartDoc.id,
+          ...cartDoc.data()
+        };
+      });
+
+      updateCartCountFromItems(cloudCart);
+    });
+  });
 </script>
 
 <script type="module">
