@@ -405,13 +405,21 @@
             <div class="account-panel-header">
               <p class="account-panel-eyebrow">Saved for Later</p>
               <h2>Saved Items</h2>
-              <p>Products you save for later will appear here.</p>
+              <p>Products you save for later are synced to your account and will appear on every device you sign in from.</p>
             </div>
 
-            <div class="account-empty-state">
-              <h3>No saved items yet</h3>
-              <p>When saved-for-later is connected to product pages, your saved products will show here.</p>
+            <div class="account-saved-loading" id="account-saved-loading">
+              Loading saved items...
             </div>
+
+            <div class="account-saved-list" id="account-saved-list"></div>
+
+            <div class="account-empty-state" id="account-saved-empty">
+              <h3>No saved items yet</h3>
+              <p>Open a product page and press Save for Later to keep it here.</p>
+            </div>
+
+            <p class="account-message" id="saved-items-message" aria-live="polite"></p>
           </article>
 
           <article class="account-panel" id="account-panel-support">
@@ -559,8 +567,11 @@
     verifyBeforeUpdateEmail,
     onAuthStateChanged,
     doc,
+    collection,
     getDoc,
     setDoc,
+    deleteDoc,
+    onSnapshot,
     serverTimestamp
   } = window.tcsAuth;
 
@@ -639,7 +650,12 @@ const passwordMessage = document.getElementById("password-message");
   const signOutEverywhereButton = document.getElementById("sign-out-everywhere-button");
   const signOutEverywhereMessage = document.getElementById("sign-out-everywhere-message");
 
-  const twoFactorAppStatus = document.getElementById("two-factor-app-status");
+  const savedItemsLoading = document.getElementById("account-saved-loading");
+  const savedItemsList = document.getElementById("account-saved-list");
+  const savedItemsEmpty = document.getElementById("account-saved-empty");
+  const savedItemsMessage = document.getElementById("saved-items-message");
+
+  const logoutButton = document.getElementById("account-logout-sidebar");
   const twoFactorAppButton = document.getElementById("two-factor-app-button");
   const twoFactorEmailStatus = document.getElementById("two-factor-email-status");
   const twoFactorEmailButton = document.getElementById("two-factor-email-button");
@@ -664,7 +680,7 @@ let usernameLastChangedAt = null;
 let usernameEditMode = false;
 let emailLastChangedAt = null;
 let securityUnlockToken = "";
-let twoFactorSettings = {};
+let savedItemsUnsubscribe = null;
 const usernameCooldownDays = 14;
 const emailCooldownDays = 90;
 const securityUnlockMinutes = 30;
@@ -1023,6 +1039,113 @@ function closeSecurityCodeModal() {
   if (securityGateModal.hidden) {
     document.body.classList.remove("account-security-modal-open");
   }
+}
+
+function escapeHtml(value) {
+  return String(value || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function getSavedItemTime(item) {
+  if (item.savedAt && typeof item.savedAt.toMillis === "function") {
+    return item.savedAt.toMillis();
+  }
+
+  if (item.savedAt) {
+    return new Date(item.savedAt).getTime() || 0;
+  }
+
+  return 0;
+}
+
+function stopSavedItemsSync() {
+  if (typeof savedItemsUnsubscribe === "function") {
+    savedItemsUnsubscribe();
+  }
+
+  savedItemsUnsubscribe = null;
+}
+
+function renderSavedItems(items) {
+  if (!savedItemsList || !savedItemsEmpty || !savedItemsLoading) {
+    return;
+  }
+
+  savedItemsLoading.hidden = true;
+
+  if (!items.length) {
+    savedItemsList.innerHTML = "";
+    savedItemsEmpty.hidden = false;
+    return;
+  }
+
+  savedItemsEmpty.hidden = true;
+
+  savedItemsList.innerHTML = items.map(function (item) {
+    const image = item.image || "";
+    const name = item.name || "Saved product";
+    const category = item.category || "Product";
+    const specsLine = item.specsLine || "";
+    const priceText = item.priceText || "Price coming soon";
+    const url = item.url || "product.html";
+
+    return `
+      <article class="account-saved-item">
+        <a class="account-saved-item-main" href="${escapeHtml(url)}">
+          <div class="account-saved-item-image-frame">
+            <img src="${escapeHtml(image)}" alt="${escapeHtml(name)}">
+          </div>
+
+          <div class="account-saved-item-info">
+            <span>${escapeHtml(category)}</span>
+            <h3>${escapeHtml(name)}</h3>
+            <p>${escapeHtml(specsLine)}</p>
+            <strong>${escapeHtml(priceText)}</strong>
+          </div>
+        </a>
+
+        <button class="account-saved-remove-button" type="button" data-remove-saved-id="${escapeHtml(item.docId)}">
+          Remove
+        </button>
+      </article>
+    `;
+  }).join("");
+}
+
+function startSavedItemsSync(uid) {
+  stopSavedItemsSync();
+
+  if (!savedItemsList || !savedItemsEmpty || !savedItemsLoading) {
+    return;
+  }
+
+  savedItemsLoading.hidden = false;
+  savedItemsEmpty.hidden = true;
+  savedItemsList.innerHTML = "";
+  showMessage(savedItemsMessage, "", "");
+
+  const savedItemsRef = collection(db, "users", uid, "savedForLater");
+
+  savedItemsUnsubscribe = onSnapshot(savedItemsRef, function (snapshot) {
+    const savedItems = snapshot.docs.map(function (savedDoc) {
+      return {
+        docId: savedDoc.id,
+        ...savedDoc.data()
+      };
+    }).sort(function (a, b) {
+      return getSavedItemTime(b) - getSavedItemTime(a);
+    });
+
+    renderSavedItems(savedItems);
+  }, function () {
+    savedItemsLoading.hidden = true;
+    savedItemsEmpty.hidden = false;
+    showMessage(savedItemsMessage, "Could not load saved items. Please refresh and try again.", "error");
+  });
 }
 
 function showAddressFields() {
@@ -1481,6 +1604,7 @@ onAuthStateChanged(auth, async function (user) {
 
   currentUser = user;
   accountEmail.value = user.email || "";
+  startSavedItemsSync(user.uid);
 
   accountName.value = user.displayName || "";
   originalUsername = user.displayName || "";
@@ -1884,7 +2008,33 @@ if (!requestedEmail) {
     signOutEverywhere();
   });
 
+  if (savedItemsList) {
+    savedItemsList.addEventListener("click", async function (event) {
+      const removeButton = event.target.closest("[data-remove-saved-id]");
+
+      if (!removeButton || !currentUser) {
+        return;
+      }
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      removeButton.disabled = true;
+      removeButton.textContent = "Removing...";
+      showMessage(savedItemsMessage, "", "");
+
+      try {
+        await deleteDoc(doc(db, "users", currentUser.uid, "savedForLater", removeButton.dataset.removeSavedId));
+      } catch (error) {
+        removeButton.disabled = false;
+        removeButton.textContent = "Remove";
+        showMessage(savedItemsMessage, "Could not remove this saved item. Please try again.", "error");
+      }
+    });
+  }
+
   logoutButton.addEventListener("click", async function () {
+    stopSavedItemsSync();
     clearSecurityUnlock();
     await signOut(auth);
     window.location.href = "signup.html";
