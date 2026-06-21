@@ -39,14 +39,32 @@
             <input type="email" id="signup-email" autocomplete="email" required>
           </div>
 
-          <div class="auth-field">
+          <div class="auth-field auth-password-field">
             <label for="signup-password">Password</label>
-            <input type="password" id="signup-password" autocomplete="new-password" minlength="8" required>
+
+            <div class="auth-password-input-wrap">
+              <input type="password" id="signup-password" autocomplete="new-password" minlength="8" required>
+
+              <button class="auth-password-visibility-toggle" type="button" data-target="signup-password" aria-label="Show password">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path d="M12 5C6 5 2.1 9.6 1 12c1.1 2.4 5 7 11 7s9.9-4.6 11-7c-1.1-2.4-5-7-11-7Zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm0-2.2a1.8 1.8 0 1 0 0-3.6 1.8 1.8 0 0 0 0 3.6Z"/>
+                </svg>
+              </button>
+            </div>
           </div>
 
-          <div class="auth-field">
+          <div class="auth-field auth-password-field">
             <label for="signup-confirm-password">Confirm Password</label>
-            <input type="password" id="signup-confirm-password" autocomplete="new-password" minlength="8" required>
+
+            <div class="auth-password-input-wrap">
+              <input type="password" id="signup-confirm-password" autocomplete="new-password" minlength="8" required>
+
+              <button class="auth-password-visibility-toggle" type="button" data-target="signup-confirm-password" aria-label="Show confirm password">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path d="M12 5C6 5 2.1 9.6 1 12c1.1 2.4 5 7 11 7s9.9-4.6 11-7c-1.1-2.4-5-7-11-7Zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm0-2.2a1.8 1.8 0 1 0 0-3.6 1.8 1.8 0 0 0 0 3.6Z"/>
+                </svg>
+              </button>
+            </div>
           </div>
 
           <p class="auth-small-note">
@@ -85,6 +103,7 @@
   const signupForm = document.getElementById("signup-form");
   const signupButton = document.getElementById("signup-submit");
   const signupMessage = document.getElementById("signup-message");
+  const passwordVisibilityToggles = document.querySelectorAll(".auth-password-visibility-toggle");
 
   function showMessage(message, type) {
     signupMessage.textContent = message;
@@ -109,6 +128,25 @@
         return "Something went wrong. Please try again.";
     }
   }
+
+  passwordVisibilityToggles.forEach(function (toggleButton) {
+    toggleButton.addEventListener("click", function () {
+      const targetId = toggleButton.getAttribute("data-target");
+      const targetInput = document.getElementById(targetId);
+
+      if (!targetInput) {
+        return;
+      }
+
+      if (targetInput.type === "password") {
+        targetInput.type = "text";
+        toggleButton.setAttribute("aria-label", "Hide password");
+      } else {
+        targetInput.type = "password";
+        toggleButton.setAttribute("aria-label", "Show password");
+      }
+    });
+  });
 
   signupForm.addEventListener("submit", async function (event) {
     event.preventDefault();
