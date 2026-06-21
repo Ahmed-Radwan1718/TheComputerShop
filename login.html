@@ -73,8 +73,16 @@
 
     <form class="auth-form" id="login-two-factor-form">
       <div class="auth-field">
-        <label for="login-two-factor-code">Verification Code</label>
-        <input type="text" id="login-two-factor-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required>
+        <label>Verification Code</label>
+
+        <div class="auth-two-factor-code-inputs" aria-label="Verification code">
+          <input class="auth-two-factor-code-input" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="1" data-login-two-factor-input aria-label="Digit 1">
+          <input class="auth-two-factor-code-input" type="text" inputmode="numeric" maxlength="1" data-login-two-factor-input aria-label="Digit 2">
+          <input class="auth-two-factor-code-input" type="text" inputmode="numeric" maxlength="1" data-login-two-factor-input aria-label="Digit 3">
+          <input class="auth-two-factor-code-input" type="text" inputmode="numeric" maxlength="1" data-login-two-factor-input aria-label="Digit 4">
+          <input class="auth-two-factor-code-input" type="text" inputmode="numeric" maxlength="1" data-login-two-factor-input aria-label="Digit 5">
+          <input class="auth-two-factor-code-input" type="text" inputmode="numeric" maxlength="1" data-login-two-factor-input aria-label="Digit 6">
+        </div>
       </div>
 
       <button class="auth-button" type="submit" id="login-two-factor-submit">
@@ -115,7 +123,7 @@
   const twoFactorForm = document.getElementById("login-two-factor-form");
   const twoFactorTitle = document.getElementById("login-two-factor-title");
   const twoFactorText = document.getElementById("login-two-factor-text");
-  const twoFactorCode = document.getElementById("login-two-factor-code");
+  const twoFactorCodeInputs = Array.from(document.querySelectorAll("[data-login-two-factor-input]"));
   const twoFactorSubmit = document.getElementById("login-two-factor-submit");
   const twoFactorMessage = document.getElementById("login-two-factor-message");
   const useEmailCodeButton = document.getElementById("login-use-email-code");
@@ -210,9 +218,27 @@
     }, 700);
   }
 
+  function clearTwoFactorCodeInputs() {
+    twoFactorCodeInputs.forEach(function (input) {
+      input.value = "";
+    });
+  }
+
+  function getTwoFactorCodeValue() {
+    return twoFactorCodeInputs.map(function (input) {
+      return input.value.trim();
+    }).join("");
+  }
+
+  function focusFirstTwoFactorCodeInput() {
+    if (twoFactorCodeInputs[0]) {
+      twoFactorCodeInputs[0].focus();
+    }
+  }
+
   function openTwoFactorPanel(method) {
     activeTwoFactorMethod = method;
-    twoFactorCode.value = "";
+    clearTwoFactorCodeInputs();
     showTwoFactorMessage("", "");
     loginForm.hidden = true;
 
@@ -233,7 +259,7 @@
     }
 
     setTimeout(function () {
-      twoFactorCode.focus();
+      focusFirstTwoFactorCodeInput();
     }, 50);
   }
 
@@ -376,14 +402,46 @@
     }
   });
 
-  twoFactorCode.addEventListener("input", function () {
-    twoFactorCode.value = twoFactorCode.value.replace(/\D/g, "").slice(0, 6);
+  twoFactorCodeInputs.forEach(function (input, index) {
+    input.addEventListener("input", function () {
+      input.value = input.value.replace(/\D/g, "").slice(0, 1);
+
+      if (input.value && twoFactorCodeInputs[index + 1]) {
+        twoFactorCodeInputs[index + 1].focus();
+      }
+    });
+
+    input.addEventListener("keydown", function (event) {
+      if (event.key === "Backspace" && !input.value && twoFactorCodeInputs[index - 1]) {
+        twoFactorCodeInputs[index - 1].focus();
+      }
+    });
+
+    input.addEventListener("paste", function (event) {
+      const pastedCode = event.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
+
+      if (!pastedCode) {
+        return;
+      }
+
+      event.preventDefault();
+
+      twoFactorCodeInputs.forEach(function (codeInput, codeIndex) {
+        codeInput.value = pastedCode.charAt(codeIndex) || "";
+      });
+
+      const focusIndex = Math.min(pastedCode.length, twoFactorCodeInputs.length) - 1;
+
+      if (twoFactorCodeInputs[focusIndex]) {
+        twoFactorCodeInputs[focusIndex].focus();
+      }
+    });
   });
 
   twoFactorForm.addEventListener("submit", async function (event) {
     event.preventDefault();
 
-    const code = twoFactorCode.value.trim();
+    const code = getTwoFactorCodeValue();
 
     if (code.length !== 6) {
       showTwoFactorMessage("Please enter the 6-digit code.", "error");
@@ -404,8 +462,8 @@
       finishLogin();
     } catch (error) {
       showTwoFactorMessage(error.message || "The code is incorrect.", "error");
-      twoFactorCode.value = "";
-      twoFactorCode.focus();
+      clearTwoFactorCodeInputs();
+      focusFirstTwoFactorCodeInput();
     } finally {
       twoFactorSubmit.disabled = false;
       twoFactorSubmit.textContent = "Continue";
