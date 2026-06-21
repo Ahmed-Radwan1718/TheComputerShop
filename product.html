@@ -122,6 +122,12 @@
 <button class="product-button product-button-primary product-button-full" type="button" id="add-to-cart-button">
   Add to Cart
 </button>
+
+<button class="product-button product-button-secondary product-button-full" type="button" id="save-for-later-button">
+  Save for Later
+</button>
+
+<p class="product-save-message" id="product-save-message" aria-live="polite"></p>
     </div>
   </div>
 
@@ -9108,6 +9114,13 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
   }
 
   let productData = buildProductData(currentProduct);
+
+  window.getCurrentSavedProductData = function () {
+    return {
+      ...productData
+    };
+  };
+
   const visibleProductThumbnailLimit = 8;
   let activeProductImageIndex = 0;
   let visibleProductThumbnailStart = 0;
@@ -9722,6 +9735,172 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
   }
 
   updateCartCount();
+</script>
+
+<script type="module">
+  import "./auth.js";
+
+  const {
+    auth,
+    db,
+    onAuthStateChanged,
+    doc,
+    getDoc,
+    setDoc,
+    deleteDoc,
+    serverTimestamp
+  } = window.tcsAuth;
+
+  const saveForLaterButton = document.getElementById("save-for-later-button");
+  const productSaveMessage = document.getElementById("product-save-message");
+
+  let savedCurrentUser = null;
+  let productIsSaved = false;
+
+  function showProductSaveMessage(message, type) {
+    if (!productSaveMessage) {
+      return;
+    }
+
+    productSaveMessage.textContent = message;
+    productSaveMessage.className = "product-save-message";
+
+    if (type) {
+      productSaveMessage.classList.add(type);
+    }
+  }
+
+  function getCurrentSavedProduct() {
+    if (typeof window.getCurrentSavedProductData !== "function") {
+      return null;
+    }
+
+    const data = window.getCurrentSavedProductData();
+
+    if (!data || !data.id) {
+      return null;
+    }
+
+    return {
+      id: data.id,
+      name: data.name || "Saved product",
+      category: data.category || "Product",
+      specsLine: data.specsLine || "",
+      priceText: data.priceText || "Price coming soon",
+      priceNumber: data.priceNumber || null,
+      image: data.image || "",
+      url: data.url || window.location.pathname + window.location.search
+    };
+  }
+
+  function getSavedProductRef() {
+    const product = getCurrentSavedProduct();
+
+    if (!savedCurrentUser || !product) {
+      return null;
+    }
+
+    return doc(db, "users", savedCurrentUser.uid, "savedForLater", product.id);
+  }
+
+  function updateSaveButton() {
+    if (!saveForLaterButton) {
+      return;
+    }
+
+    if (!savedCurrentUser) {
+      saveForLaterButton.textContent = "Log in to save";
+      return;
+    }
+
+    saveForLaterButton.textContent = productIsSaved ? "Saved for Later" : "Save for Later";
+  }
+
+  async function refreshSavedState() {
+    if (!saveForLaterButton) {
+      return;
+    }
+
+    if (!savedCurrentUser) {
+      productIsSaved = false;
+      updateSaveButton();
+      return;
+    }
+
+    const savedRef = getSavedProductRef();
+
+    if (!savedRef) {
+      productIsSaved = false;
+      updateSaveButton();
+      return;
+    }
+
+    try {
+      const savedDoc = await getDoc(savedRef);
+      productIsSaved = savedDoc.exists();
+    } catch (error) {
+      productIsSaved = false;
+    }
+
+    updateSaveButton();
+  }
+
+  onAuthStateChanged(auth, async function (user) {
+    savedCurrentUser = user || null;
+    await refreshSavedState();
+  });
+
+  document.addEventListener("click", function (event) {
+    if (event.target.closest(".product-capacity-button")) {
+      setTimeout(function () {
+        refreshSavedState();
+      }, 80);
+    }
+  });
+
+  if (saveForLaterButton) {
+    saveForLaterButton.addEventListener("click", async function () {
+      if (!savedCurrentUser) {
+        window.location.href = "login.html";
+        return;
+      }
+
+      const product = getCurrentSavedProduct();
+      const savedRef = getSavedProductRef();
+
+      if (!product || !savedRef) {
+        showProductSaveMessage("Could not save this product. Please refresh and try again.", "error");
+        return;
+      }
+
+      saveForLaterButton.disabled = true;
+      showProductSaveMessage("", "");
+
+      try {
+        if (productIsSaved) {
+          await deleteDoc(savedRef);
+          productIsSaved = false;
+          showProductSaveMessage("Removed from saved items.", "success");
+        } else {
+          await setDoc(savedRef, {
+            ...product,
+            savedAt: serverTimestamp(),
+            updatedAt: serverTimestamp()
+          }, { merge: true });
+
+          productIsSaved = true;
+          showProductSaveMessage("Saved to your account.", "success");
+        }
+
+        updateSaveButton();
+      } catch (error) {
+        showProductSaveMessage("Could not update saved items. Please try again.", "error");
+      } finally {
+        saveForLaterButton.disabled = false;
+        updateSaveButton();
+      }
+    });
+  }
 </script>
 
 <footer class="site-footer">
