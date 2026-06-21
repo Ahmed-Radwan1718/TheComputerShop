@@ -18,11 +18,14 @@ import {
   getFirestore,
   doc,
   collection,
+  addDoc,
   setDoc,
   getDoc,
   updateDoc,
   deleteDoc,
   onSnapshot,
+  query,
+  where,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
@@ -56,10 +59,13 @@ window.tcsAuth = {
   onAuthStateChanged,
   doc,
   collection,
+  addDoc,
   setDoc,
   getDoc,
   updateDoc,
   deleteDoc,
   onSnapshot,
+  query,
+  where,
   serverTimestamp
 };
