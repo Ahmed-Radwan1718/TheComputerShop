@@ -6047,6 +6047,28 @@ body.nav-menu-open {
   line-height: 1.75;
 }
 
+.auth-two-factor-code-inputs {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.auth-field .auth-two-factor-code-input {
+  width: 100%;
+  min-height: 58px;
+  padding: 0;
+  border-radius: 16px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.auth-field .auth-two-factor-code-input:focus {
+  border-color: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.08);
+}
+
 .auth-two-factor-link-button {
   border: 0;
   background: transparent;
