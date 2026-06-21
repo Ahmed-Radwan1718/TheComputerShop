@@ -67,7 +67,7 @@ module.exports = async function handler(req, res) {
       sessionHash,
       salt: sessionSalt,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      expiresAt: admin.firestore.Timestamp.fromDate(new Date(Date.now() + 15 * 60 * 1000))
+      expiresAt: admin.firestore.Timestamp.fromDate(new Date(Date.now() + 30 * 60 * 1000))
     });
 
     await codeRef.delete();
