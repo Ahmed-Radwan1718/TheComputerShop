@@ -3031,6 +3031,14 @@ if (!requestedEmail) {
   });
 
   passwordVisibilityToggles.forEach(function (toggleButton) {
+    const targetId = toggleButton.getAttribute("data-target");
+    const targetInput = document.getElementById(targetId);
+
+    if (targetInput && targetInput.type === "password") {
+      toggleButton.classList.add("password-hidden");
+      toggleButton.classList.remove("password-visible");
+    }
+
     toggleButton.addEventListener("click", function () {
       const targetId = toggleButton.getAttribute("data-target");
       const targetInput = document.getElementById(targetId);
@@ -3041,9 +3049,13 @@ if (!requestedEmail) {
 
       if (targetInput.type === "password") {
         targetInput.type = "text";
+        toggleButton.classList.remove("password-hidden");
+        toggleButton.classList.add("password-visible");
         toggleButton.setAttribute("aria-label", "Hide password");
       } else {
         targetInput.type = "password";
+        toggleButton.classList.add("password-hidden");
+        toggleButton.classList.remove("password-visible");
         toggleButton.setAttribute("aria-label", "Show password");
       }
     });
