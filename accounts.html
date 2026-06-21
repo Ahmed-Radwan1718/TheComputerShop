@@ -655,7 +655,7 @@ const passwordMessage = document.getElementById("password-message");
   const savedItemsEmpty = document.getElementById("account-saved-empty");
   const savedItemsMessage = document.getElementById("saved-items-message");
 
-  const logoutButton = document.getElementById("account-logout-sidebar");
+  const twoFactorAppStatus = document.getElementById("two-factor-app-status");
   const twoFactorAppButton = document.getElementById("two-factor-app-button");
   const twoFactorEmailStatus = document.getElementById("two-factor-email-status");
   const twoFactorEmailButton = document.getElementById("two-factor-email-button");
@@ -681,6 +681,7 @@ let usernameEditMode = false;
 let emailLastChangedAt = null;
 let securityUnlockToken = "";
 let savedItemsUnsubscribe = null;
+let twoFactorSettings = {};
 const usernameCooldownDays = 14;
 const emailCooldownDays = 90;
 const securityUnlockMinutes = 30;
