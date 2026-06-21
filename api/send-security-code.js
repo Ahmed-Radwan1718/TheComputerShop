@@ -16,6 +16,7 @@ module.exports = async function handler(req, res) {
 
   try {
     const decodedUser = await getUserFromRequest(req);
+    const { reason } = req.body || {};
 
     if (!decodedUser.email) {
       return res.status(400).json({ error: "No email address found on this account." });
@@ -38,11 +39,14 @@ module.exports = async function handler(req, res) {
     const salt = admin.firestore().collection("_").doc().id;
     const codeHash = getCodeHash(decodedUser.uid, code, salt);
 
+    const isLoginCode = reason === "login-email";
+
     await codeRef.set({
       codeHash,
       salt,
       attempts: 0,
       email: decodedUser.email,
+      reason: isLoginCode ? "login-email" : "security-panel",
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
       lastSentAt: admin.firestore.FieldValue.serverTimestamp(),
       expiresAt: admin.firestore.Timestamp.fromDate(new Date(Date.now() + 10 * 60 * 1000))
@@ -51,11 +55,11 @@ module.exports = async function handler(req, res) {
     await resend.emails.send({
       from: process.env.SECURITY_EMAIL_FROM,
       to: decodedUser.email,
-      subject: "Your security code",
+      subject: isLoginCode ? "Your login verification code" : "Your security code",
       html: `
         <div style="font-family: Arial, sans-serif; line-height: 1.6;">
-          <h2>Your Computer Shop security code</h2>
-          <p>Use this code to unlock your Security panel:</p>
+          <h2>${isLoginCode ? "Your Computer Shop login code" : "Your Computer Shop security code"}</h2>
+          <p>${isLoginCode ? "Use this code to finish signing in:" : "Use this code to unlock your Security panel:"}</p>
           <p style="font-size: 28px; font-weight: bold; letter-spacing: 6px;">${code}</p>
           <p>This code expires in 10 minutes.</p>
           <p>If you did not request this, you can ignore this email.</p>
