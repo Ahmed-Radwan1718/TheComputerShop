@@ -250,6 +250,93 @@
     <p class="account-message" id="sign-out-everywhere-message" aria-live="polite"></p>
   </div>
 
+  <div class="account-divider"></div>
+
+  <div class="account-two-factor-section">
+    <div class="account-panel-subheader">
+      <h3>Two-Factor Authentication</h3>
+      <p>Require a verification code after your password whenever you sign in. You can use an authenticator app, email, or both.</p>
+    </div>
+
+    <div class="account-two-factor-methods">
+      <article class="account-two-factor-card">
+        <div class="account-two-factor-icon">
+          <span>▣</span>
+        </div>
+
+        <div class="account-two-factor-text">
+          <h4>Authenticator App <span class="account-two-factor-status" id="two-factor-app-status">Off</span></h4>
+          <p>Use a code from Google Authenticator, Microsoft Authenticator, Authy, or another authenticator app.</p>
+        </div>
+
+        <button class="account-two-factor-button" type="button" id="two-factor-app-button">
+          Set up app
+        </button>
+      </article>
+
+      <article class="account-two-factor-card">
+        <div class="account-two-factor-icon">
+          <span>@</span>
+        </div>
+
+        <div class="account-two-factor-text">
+          <h4>Email <span class="account-two-factor-status" id="two-factor-email-status">Off</span></h4>
+          <p>Use a 6-digit code sent to the email address connected to your account.</p>
+        </div>
+
+        <button class="account-two-factor-button" type="button" id="two-factor-email-button">
+          Enable email
+        </button>
+      </article>
+    </div>
+
+    <p class="account-message" id="two-factor-message" aria-live="polite"></p>
+  </div>
+
+  <div class="account-authenticator-modal" id="authenticator-setup-modal" hidden>
+    <div class="account-authenticator-modal-backdrop" id="authenticator-setup-modal-backdrop"></div>
+
+    <div class="account-authenticator-modal-card" role="dialog" aria-modal="true" aria-labelledby="authenticator-setup-modal-title">
+      <button class="account-authenticator-modal-close" type="button" id="authenticator-setup-modal-close" aria-label="Close authenticator setup popup">×</button>
+
+      <div class="account-authenticator-modal-header">
+        <p class="account-security-modal-eyebrow">Authenticator App</p>
+        <h2 id="authenticator-setup-modal-title">Set Up App Verification</h2>
+        <p>Scan the QR code with your authenticator app, then enter the 6-digit code it gives you.</p>
+      </div>
+
+      <div class="account-authenticator-setup-grid">
+        <div class="account-authenticator-qr-wrap">
+          <img id="authenticator-qr-image" alt="Authenticator QR code">
+        </div>
+
+        <div class="account-authenticator-manual">
+          <span>Manual setup key</span>
+          <strong id="authenticator-secret-key"></strong>
+        </div>
+      </div>
+
+      <form class="account-form" id="authenticator-setup-form">
+        <div class="account-field">
+          <label for="authenticator-setup-code">Authenticator Code</label>
+          <input type="text" id="authenticator-setup-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required>
+        </div>
+
+        <div class="account-security-modal-actions">
+          <button class="account-security-modal-cancel" type="button" id="authenticator-setup-modal-cancel">
+            Cancel
+          </button>
+
+          <button class="account-security-modal-continue" type="submit" id="authenticator-setup-confirm">
+            Verify and enable
+          </button>
+        </div>
+
+        <p class="account-message" id="authenticator-setup-message" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+
   <div class="account-password-modal" id="password-change-modal" hidden>
     <div class="account-password-modal-backdrop" id="password-change-modal-backdrop"></div>
 
@@ -554,6 +641,23 @@ const passwordMessage = document.getElementById("password-message");
   const signOutEverywhereButton = document.getElementById("sign-out-everywhere-button");
   const signOutEverywhereMessage = document.getElementById("sign-out-everywhere-message");
 
+  const twoFactorAppStatus = document.getElementById("two-factor-app-status");
+  const twoFactorAppButton = document.getElementById("two-factor-app-button");
+  const twoFactorEmailStatus = document.getElementById("two-factor-email-status");
+  const twoFactorEmailButton = document.getElementById("two-factor-email-button");
+  const twoFactorMessage = document.getElementById("two-factor-message");
+
+  const authenticatorSetupModal = document.getElementById("authenticator-setup-modal");
+  const authenticatorSetupModalBackdrop = document.getElementById("authenticator-setup-modal-backdrop");
+  const authenticatorSetupModalClose = document.getElementById("authenticator-setup-modal-close");
+  const authenticatorSetupModalCancel = document.getElementById("authenticator-setup-modal-cancel");
+  const authenticatorSetupForm = document.getElementById("authenticator-setup-form");
+  const authenticatorSetupCode = document.getElementById("authenticator-setup-code");
+  const authenticatorSetupConfirm = document.getElementById("authenticator-setup-confirm");
+  const authenticatorSetupMessage = document.getElementById("authenticator-setup-message");
+  const authenticatorQrImage = document.getElementById("authenticator-qr-image");
+  const authenticatorSecretKey = document.getElementById("authenticator-secret-key");
+
   const logoutButton = document.getElementById("account-logout-sidebar");
 
 let currentUser = null;
@@ -562,6 +666,7 @@ let usernameLastChangedAt = null;
 let usernameEditMode = false;
 let emailLastChangedAt = null;
 let securityUnlockToken = "";
+let twoFactorSettings = {};
 const usernameCooldownDays = 14;
 const emailCooldownDays = 90;
 const securityUnlockMinutes = 30;
@@ -696,6 +801,132 @@ async function verifySecurityPanelCode(code) {
   }
 
   return data;
+}
+
+function updateTwoFactorUI() {
+  const appEnabled = Boolean(twoFactorSettings && twoFactorSettings.appEnabled);
+  const emailEnabled = Boolean(twoFactorSettings && twoFactorSettings.emailEnabled);
+
+  twoFactorAppStatus.textContent = appEnabled ? "On" : "Off";
+  twoFactorEmailStatus.textContent = emailEnabled ? "On" : "Off";
+
+  twoFactorAppStatus.classList.toggle("enabled", appEnabled);
+  twoFactorEmailStatus.classList.toggle("enabled", emailEnabled);
+
+  twoFactorAppButton.textContent = appEnabled ? "Disable app" : "Set up app";
+  twoFactorEmailButton.textContent = emailEnabled ? "Disable email" : "Enable email";
+}
+
+async function startAuthenticatorSetup() {
+  twoFactorAppButton.disabled = true;
+  twoFactorAppButton.textContent = "Starting...";
+  showMessage(twoFactorMessage, "", "");
+
+  try {
+    const response = await fetch("/api/setup-authenticator", {
+      method: "POST",
+      headers: await getSecurityRequestHeaders(),
+      body: JSON.stringify({})
+    });
+
+    const data = await response.json().catch(function () {
+      return {};
+    });
+
+    if (!response.ok) {
+      throw new Error(data.error || "Could not start authenticator setup.");
+    }
+
+    authenticatorQrImage.src = data.qrDataUrl;
+    authenticatorSecretKey.textContent = data.secret;
+    authenticatorSetupCode.value = "";
+    showMessage(authenticatorSetupMessage, "", "");
+    authenticatorSetupModal.hidden = false;
+    document.body.classList.add("account-security-modal-open");
+
+    setTimeout(function () {
+      authenticatorSetupCode.focus();
+    }, 50);
+  } catch (error) {
+    showMessage(twoFactorMessage, error.message || "Could not start authenticator setup.", "error");
+  } finally {
+    twoFactorAppButton.disabled = false;
+    updateTwoFactorUI();
+  }
+}
+
+async function disableAuthenticatorApp() {
+  const confirmed = window.confirm("Disable authenticator app 2FA for this account?");
+
+  if (!confirmed) {
+    return;
+  }
+
+  twoFactorAppButton.disabled = true;
+  showMessage(twoFactorMessage, "", "");
+
+  try {
+    const response = await fetch("/api/disable-authenticator", {
+      method: "POST",
+      headers: await getSecurityRequestHeaders(),
+      body: JSON.stringify({})
+    });
+
+    const data = await response.json().catch(function () {
+      return {};
+    });
+
+    if (!response.ok) {
+      throw new Error(data.error || "Could not disable authenticator app.");
+    }
+
+    twoFactorSettings.appEnabled = false;
+    delete twoFactorSettings.appSecret;
+    updateTwoFactorUI();
+    showMessage(twoFactorMessage, "Authenticator app 2FA disabled.", "success");
+  } catch (error) {
+    showMessage(twoFactorMessage, error.message || "Could not disable authenticator app.", "error");
+  } finally {
+    twoFactorAppButton.disabled = false;
+    updateTwoFactorUI();
+  }
+}
+
+async function setEmailTwoFactor(enabled) {
+  twoFactorEmailButton.disabled = true;
+  showMessage(twoFactorMessage, "", "");
+
+  try {
+    const response = await fetch("/api/set-email-2fa", {
+      method: "POST",
+      headers: await getSecurityRequestHeaders(),
+      body: JSON.stringify({ enabled: enabled })
+    });
+
+    const data = await response.json().catch(function () {
+      return {};
+    });
+
+    if (!response.ok) {
+      throw new Error(data.error || "Could not update email 2FA.");
+    }
+
+    twoFactorSettings.emailEnabled = Boolean(enabled);
+    updateTwoFactorUI();
+    showMessage(twoFactorMessage, enabled ? "Email 2FA enabled." : "Email 2FA disabled.", "success");
+  } catch (error) {
+    showMessage(twoFactorMessage, error.message || "Could not update email 2FA.", "error");
+  } finally {
+    twoFactorEmailButton.disabled = false;
+    updateTwoFactorUI();
+  }
+}
+
+function closeAuthenticatorSetupModal() {
+  authenticatorSetupModal.hidden = true;
+  authenticatorSetupCode.value = "";
+  showMessage(authenticatorSetupMessage, "", "");
+  document.body.classList.remove("account-security-modal-open");
 }
 
 async function signOutEverywhere() {
@@ -1260,6 +1491,8 @@ onAuthStateChanged(auth, async function (user) {
   addressType.value = "apartment";
   accountHeaderText.textContent = "Welcome back.";
   updateAccountStatus(user, {});
+  twoFactorSettings = {};
+  updateTwoFactorUI();
 
   try {
     const userDocRef = doc(db, "users", user.uid);
@@ -1269,6 +1502,8 @@ onAuthStateChanged(auth, async function (user) {
       const data = userDoc.data();
 
       updateAccountStatus(user, data);
+      twoFactorSettings = data.twoFactor || {};
+      updateTwoFactorUI();
 
       accountName.value = data.fullName || "";
       originalUsername = data.fullName || "";
@@ -1581,6 +1816,69 @@ if (!requestedEmail) {
       passwordButton.disabled = false;
       passwordButton.textContent = "Confirm";
       updatePasswordConfirmButton();
+    }
+  });
+
+  twoFactorAppButton.addEventListener("click", function () {
+    if (twoFactorSettings && twoFactorSettings.appEnabled) {
+      disableAuthenticatorApp();
+      return;
+    }
+
+    startAuthenticatorSetup();
+  });
+
+  twoFactorEmailButton.addEventListener("click", function () {
+    const emailEnabled = Boolean(twoFactorSettings && twoFactorSettings.emailEnabled);
+    setEmailTwoFactor(!emailEnabled);
+  });
+
+  authenticatorSetupModalBackdrop.addEventListener("click", closeAuthenticatorSetupModal);
+  authenticatorSetupModalClose.addEventListener("click", closeAuthenticatorSetupModal);
+  authenticatorSetupModalCancel.addEventListener("click", closeAuthenticatorSetupModal);
+
+  authenticatorSetupCode.addEventListener("input", function () {
+    authenticatorSetupCode.value = authenticatorSetupCode.value.replace(/\D/g, "").slice(0, 6);
+  });
+
+  authenticatorSetupForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const code = authenticatorSetupCode.value.trim();
+
+    if (code.length !== 6) {
+      showMessage(authenticatorSetupMessage, "Please enter the 6-digit authenticator code.", "error");
+      return;
+    }
+
+    authenticatorSetupConfirm.disabled = true;
+    authenticatorSetupConfirm.textContent = "Verifying...";
+    showMessage(authenticatorSetupMessage, "", "");
+
+    try {
+      const response = await fetch("/api/verify-authenticator-setup", {
+        method: "POST",
+        headers: await getSecurityRequestHeaders(),
+        body: JSON.stringify({ code: code })
+      });
+
+      const data = await response.json().catch(function () {
+        return {};
+      });
+
+      if (!response.ok) {
+        throw new Error(data.error || "Could not verify authenticator setup.");
+      }
+
+      twoFactorSettings.appEnabled = true;
+      updateTwoFactorUI();
+      closeAuthenticatorSetupModal();
+      showMessage(twoFactorMessage, "Authenticator app 2FA enabled.", "success");
+    } catch (error) {
+      showMessage(authenticatorSetupMessage, error.message || "Could not verify authenticator setup.", "error");
+    } finally {
+      authenticatorSetupConfirm.disabled = false;
+      authenticatorSetupConfirm.textContent = "Verify and enable";
     }
   });
 
