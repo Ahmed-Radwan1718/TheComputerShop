@@ -6725,10 +6725,11 @@ body.account-security-modal-open {
 
 .account-saved-item-image-frame img {
   width: 100%;
-  height: 100%;
+  height: auto;
+  max-height: 100%;
   object-fit: contain;
   display: block;
-  border-radius: 28px;
+  border-radius: 18px;
 }
 
 .account-saved-item-info {
