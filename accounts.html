@@ -387,6 +387,63 @@
   </div>
 </div>
 
+<div class="account-security-modal" id="security-gate-modal" hidden>
+  <div class="account-security-modal-backdrop" id="security-gate-modal-backdrop"></div>
+
+  <div class="account-security-modal-card account-security-gate-card" role="dialog" aria-modal="true" aria-labelledby="security-gate-modal-title">
+    <button class="account-security-modal-close" type="button" id="security-gate-modal-close" aria-label="Close security verification popup">×</button>
+
+    <div class="account-security-modal-header">
+      <h2 id="security-gate-modal-title">Two-factor authentication required</h2>
+      <p>To access the Password and security page, we need to verify it's you.</p>
+    </div>
+
+    <div class="account-security-modal-actions">
+      <button class="account-security-modal-cancel" type="button" id="security-gate-modal-cancel">
+        Cancel
+      </button>
+
+      <button class="account-security-modal-continue" type="button" id="security-gate-modal-continue">
+        Continue
+      </button>
+    </div>
+
+    <p class="account-message" id="security-gate-message" aria-live="polite"></p>
+  </div>
+</div>
+
+<div class="account-security-modal" id="security-code-modal" hidden>
+  <div class="account-security-modal-backdrop" id="security-code-modal-backdrop"></div>
+
+  <div class="account-security-modal-card account-security-code-card" role="dialog" aria-modal="true" aria-labelledby="security-code-modal-title">
+    <div class="account-security-modal-header">
+      <h2 id="security-code-modal-title">Check Your Inbox</h2>
+      <p id="security-code-modal-text">Enter the 6-digit security code we sent to your email.</p>
+    </div>
+
+    <form id="security-code-form" class="account-security-code-form">
+      <div class="account-security-code-inputs" aria-label="Security code">
+        <input class="account-security-code-input" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="1" data-security-code-input aria-label="Digit 1">
+        <input class="account-security-code-input" type="text" inputmode="numeric" maxlength="1" data-security-code-input aria-label="Digit 2">
+        <input class="account-security-code-input" type="text" inputmode="numeric" maxlength="1" data-security-code-input aria-label="Digit 3">
+        <input class="account-security-code-input" type="text" inputmode="numeric" maxlength="1" data-security-code-input aria-label="Digit 4">
+        <input class="account-security-code-input" type="text" inputmode="numeric" maxlength="1" data-security-code-input aria-label="Digit 5">
+        <input class="account-security-code-input" type="text" inputmode="numeric" maxlength="1" data-security-code-input aria-label="Digit 6">
+      </div>
+
+      <button class="account-security-code-submit" type="submit" id="security-code-submit" disabled>
+        Continue
+      </button>
+
+      <button class="account-security-code-cancel" type="button" id="security-code-modal-cancel">
+        Cancel
+      </button>
+
+      <p class="account-message" id="security-code-message" aria-live="polite"></p>
+    </form>
+  </div>
+</div>
+
 <script type="module">
   import "./auth.js";
 
@@ -462,6 +519,22 @@ const passwordMessage = document.getElementById("password-message");
   const newPasswordInput = document.getElementById("new-password");
   const passwordVisibilityToggles = document.querySelectorAll(".account-password-visibility-toggle");
 
+  const securityGateModal = document.getElementById("security-gate-modal");
+  const securityGateModalBackdrop = document.getElementById("security-gate-modal-backdrop");
+  const securityGateModalClose = document.getElementById("security-gate-modal-close");
+  const securityGateModalCancel = document.getElementById("security-gate-modal-cancel");
+  const securityGateModalContinue = document.getElementById("security-gate-modal-continue");
+  const securityGateMessage = document.getElementById("security-gate-message");
+
+  const securityCodeModal = document.getElementById("security-code-modal");
+  const securityCodeModalBackdrop = document.getElementById("security-code-modal-backdrop");
+  const securityCodeModalCancel = document.getElementById("security-code-modal-cancel");
+  const securityCodeModalText = document.getElementById("security-code-modal-text");
+  const securityCodeForm = document.getElementById("security-code-form");
+  const securityCodeSubmit = document.getElementById("security-code-submit");
+  const securityCodeMessage = document.getElementById("security-code-message");
+  const securityCodeInputs = Array.from(document.querySelectorAll("[data-security-code-input]"));
+
   const logoutButton = document.getElementById("account-logout-sidebar");
 
 let currentUser = null;
@@ -469,8 +542,10 @@ let originalUsername = "";
 let usernameLastChangedAt = null;
 let usernameEditMode = false;
 let emailLastChangedAt = null;
+let securityUnlockToken = "";
 const usernameCooldownDays = 14;
 const emailCooldownDays = 90;
+const securityUnlockMinutes = 30;
 
   function showMessage(element, message, type) {
     if (!element) {
@@ -484,6 +559,183 @@ const emailCooldownDays = 90;
       element.classList.add(type);
     }
   }
+
+function getSecurityStorageKey() {
+  return currentUser ? "tcs-security-unlocked-until-" + currentUser.uid : "";
+}
+
+function getSecurityTokenStorageKey() {
+  return currentUser ? "tcs-security-unlock-token-" + currentUser.uid : "";
+}
+
+function getSavedSecurityUnlockTime() {
+  const storageKey = getSecurityStorageKey();
+
+  if (!storageKey) {
+    return 0;
+  }
+
+  const savedValue = Number(localStorage.getItem(storageKey) || "0");
+  return Number.isFinite(savedValue) ? savedValue : 0;
+}
+
+function isSecurityUnlocked() {
+  return getSavedSecurityUnlockTime() > Date.now();
+}
+
+function saveSecurityUnlock(unlockToken) {
+  const unlockUntil = Date.now() + securityUnlockMinutes * 60 * 1000;
+  const storageKey = getSecurityStorageKey();
+  const tokenStorageKey = getSecurityTokenStorageKey();
+
+  if (storageKey) {
+    localStorage.setItem(storageKey, String(unlockUntil));
+  }
+
+  if (tokenStorageKey && unlockToken) {
+    localStorage.setItem(tokenStorageKey, unlockToken);
+  }
+
+  securityUnlockToken = unlockToken || "";
+}
+
+function clearSecurityUnlock() {
+  const storageKey = getSecurityStorageKey();
+  const tokenStorageKey = getSecurityTokenStorageKey();
+
+  if (storageKey) {
+    localStorage.removeItem(storageKey);
+  }
+
+  if (tokenStorageKey) {
+    localStorage.removeItem(tokenStorageKey);
+  }
+
+  securityUnlockToken = "";
+}
+
+function getMaskedEmail(email) {
+  if (!email || !email.includes("@")) {
+    return "your email";
+  }
+
+  const parts = email.split("@");
+  const name = parts[0];
+  const domain = parts.slice(1).join("@");
+
+  if (name.length <= 2) {
+    return name.charAt(0) + "***@" + domain;
+  }
+
+  return name.charAt(0) + "***" + name.charAt(name.length - 1) + "@" + domain;
+}
+
+async function getSecurityRequestHeaders() {
+  if (!currentUser) {
+    throw new Error("missing-user");
+  }
+
+  const idToken = await currentUser.getIdToken(true);
+
+  return {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer " + idToken
+  };
+}
+
+async function sendSecurityPanelCode() {
+  const response = await fetch("/api/send-security-code", {
+    method: "POST",
+    headers: await getSecurityRequestHeaders(),
+    body: JSON.stringify({ reason: "security-panel" })
+  });
+
+  const data = await response.json().catch(function () {
+    return {};
+  });
+
+  if (!response.ok) {
+    throw new Error(data.error || "Could not send security code.");
+  }
+
+  return data;
+}
+
+async function verifySecurityPanelCode(code) {
+  const response = await fetch("/api/verify-security-code", {
+    method: "POST",
+    headers: await getSecurityRequestHeaders(),
+    body: JSON.stringify({ code: code })
+  });
+
+  const data = await response.json().catch(function () {
+    return {};
+  });
+
+  if (!response.ok) {
+    throw new Error(data.error || "Could not verify security code.");
+  }
+
+  return data;
+}
+
+function clearSecurityCodeInputs() {
+  securityCodeInputs.forEach(function (input) {
+    input.value = "";
+  });
+
+  securityCodeSubmit.disabled = true;
+}
+
+function getSecurityCodeValue() {
+  return securityCodeInputs.map(function (input) {
+    return input.value.trim();
+  }).join("");
+}
+
+function updateSecurityCodeSubmitState() {
+  securityCodeSubmit.disabled = getSecurityCodeValue().length !== 6;
+}
+
+function openSecurityGateModal() {
+  showMessage(securityGateMessage, "", "");
+  securityGateModal.hidden = false;
+  document.body.classList.add("account-security-modal-open");
+}
+
+function closeSecurityGateModal() {
+  securityGateModal.hidden = true;
+
+  if (securityCodeModal.hidden) {
+    document.body.classList.remove("account-security-modal-open");
+  }
+
+  showMessage(securityGateMessage, "", "");
+}
+
+function openSecurityCodeModal() {
+  clearSecurityCodeInputs();
+  showMessage(securityCodeMessage, "", "");
+  securityCodeModalText.textContent = "Enter the 6-digit security code we sent to " + getMaskedEmail(currentUser && currentUser.email ? currentUser.email : "") + ".";
+  securityCodeModal.hidden = false;
+  document.body.classList.add("account-security-modal-open");
+
+  setTimeout(function () {
+    if (securityCodeInputs[0]) {
+      securityCodeInputs[0].focus();
+    }
+  }, 50);
+}
+
+function closeSecurityCodeModal() {
+  securityCodeModal.hidden = true;
+  clearSecurityCodeInputs();
+  showMessage(securityCodeMessage, "", "");
+
+  if (securityGateModal.hidden) {
+    document.body.classList.remove("account-security-modal-open");
+  }
+}
 
 function showAddressFields() {
   const selectedType = addressType.value;
@@ -721,9 +973,127 @@ function updateUsernameLockState() {
 
 document.querySelectorAll("[data-account-panel]").forEach(function (button) {
   button.addEventListener("click", function () {
-    switchPanel(button.dataset.accountPanel);
+    const panelName = button.dataset.accountPanel;
+
+    if (panelName === "security" && !isSecurityUnlocked()) {
+      openSecurityGateModal();
+      return;
+    }
+
+    switchPanel(panelName);
   });
 });
+
+securityGateModalContinue.addEventListener("click", async function () {
+  if (!currentUser) {
+    return;
+  }
+
+  securityGateModalContinue.disabled = true;
+  securityGateModalContinue.textContent = "Sending...";
+  showMessage(securityGateMessage, "", "");
+
+  try {
+    await sendSecurityPanelCode();
+    closeSecurityGateModal();
+    openSecurityCodeModal();
+  } catch (error) {
+    showMessage(securityGateMessage, error.message || "Could not send security code.", "error");
+  } finally {
+    securityGateModalContinue.disabled = false;
+    securityGateModalContinue.textContent = "Continue";
+  }
+});
+
+securityGateModalCancel.addEventListener("click", closeSecurityGateModal);
+securityGateModalClose.addEventListener("click", closeSecurityGateModal);
+securityGateModalBackdrop.addEventListener("click", closeSecurityGateModal);
+securityCodeModalCancel.addEventListener("click", closeSecurityCodeModal);
+securityCodeModalBackdrop.addEventListener("click", closeSecurityCodeModal);
+
+securityCodeInputs.forEach(function (input, index) {
+  input.addEventListener("input", function () {
+    input.value = input.value.replace(/\D/g, "").slice(0, 1);
+
+    if (input.value && securityCodeInputs[index + 1]) {
+      securityCodeInputs[index + 1].focus();
+    }
+
+    updateSecurityCodeSubmitState();
+  });
+
+  input.addEventListener("keydown", function (event) {
+    if (event.key === "Backspace" && !input.value && securityCodeInputs[index - 1]) {
+      securityCodeInputs[index - 1].focus();
+    }
+  });
+
+  input.addEventListener("paste", function (event) {
+    const pastedCode = event.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
+
+    if (!pastedCode) {
+      return;
+    }
+
+    event.preventDefault();
+
+    securityCodeInputs.forEach(function (codeInput, codeIndex) {
+      codeInput.value = pastedCode.charAt(codeIndex) || "";
+    });
+
+    const focusIndex = Math.min(pastedCode.length, securityCodeInputs.length) - 1;
+
+    if (securityCodeInputs[focusIndex]) {
+      securityCodeInputs[focusIndex].focus();
+    }
+
+    updateSecurityCodeSubmitState();
+  });
+});
+
+securityCodeForm.addEventListener("submit", async function (event) {
+  event.preventDefault();
+
+  const code = getSecurityCodeValue();
+
+  if (code.length !== 6) {
+    showMessage(securityCodeMessage, "Please enter the 6-digit security code.", "error");
+    return;
+  }
+
+  securityCodeSubmit.disabled = true;
+  securityCodeSubmit.textContent = "Verifying...";
+  showMessage(securityCodeMessage, "", "");
+
+  try {
+    const data = await verifySecurityPanelCode(code);
+    saveSecurityUnlock(data.unlockToken || "");
+    closeSecurityCodeModal();
+    switchPanel("security");
+  } catch (error) {
+    showMessage(securityCodeMessage, error.message || "The security code is incorrect.", "error");
+    clearSecurityCodeInputs();
+
+    if (securityCodeInputs[0]) {
+      securityCodeInputs[0].focus();
+    }
+  } finally {
+    securityCodeSubmit.textContent = "Continue";
+    updateSecurityCodeSubmitState();
+  }
+});
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      if (!securityCodeModal.hidden) {
+        closeSecurityCodeModal();
+      }
+
+      if (!securityGateModal.hidden) {
+        closeSecurityGateModal();
+      }
+    }
+  });
 
 sendEmailVerificationButton.addEventListener("click", async function () {
   if (!currentUser) {
@@ -1056,6 +1426,12 @@ if (!requestedEmail) {
   }
 
   openPasswordModalButton.addEventListener("click", function () {
+    if (!isSecurityUnlocked()) {
+      closePasswordModal();
+      openSecurityGateModal();
+      return;
+    }
+
     openPasswordModal();
   });
 
@@ -1150,6 +1526,7 @@ if (!requestedEmail) {
   });
 
   logoutButton.addEventListener("click", async function () {
+    clearSecurityUnlock();
     await signOut(auth);
     window.location.href = "signup.html";
   });
