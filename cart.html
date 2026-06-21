@@ -430,7 +430,10 @@
     cloudCartUnsubscribe = null;
 
     if (!user) {
-      renderCart(getLocalCart());
+      localStorage.removeItem("computerShopCart");
+      localStorage.setItem("tcs-login-redirect", "cart.html");
+      renderCart([]);
+      window.location.href = "login.html";
       return;
     }
 
