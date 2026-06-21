@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout - The Computer Shop</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body oncontextmenu="return false;">
+
+<div id="site-header-root"></div>
+<script src="site-header.js"></script>
+
+<main class="checkout-page">
+  <section class="checkout-section">
+    <div class="checkout-section-inner">
+      <div class="checkout-header">
+        <p class="checkout-eyebrow">Checkout</p>
+        <h1>Place Order Request</h1>
+        <p>Enter your delivery details so we can review availability, confirm final pricing, and contact you about your order.</p>
+      </div>
+
+      <div class="checkout-layout">
+        <section class="checkout-panel">
+          <div class="checkout-panel-header">
+            <p class="checkout-panel-eyebrow">Customer Details</p>
+            <h2>Contact & Delivery</h2>
+            <p>These details will be attached to your order request.</p>
+          </div>
+
+          <form class="checkout-form" id="checkout-form">
+            <div class="checkout-form-grid">
+              <div class="checkout-field">
+                <label for="checkout-name">Full Name</label>
+                <input type="text" id="checkout-name" autocomplete="name" required>
+              </div>
+
+              <div class="checkout-field">
+                <label for="checkout-email">Email Address</label>
+                <input type="email" id="checkout-email" autocomplete="email" readonly>
+              </div>
+
+              <div class="checkout-field">
+                <label for="checkout-phone">Phone Number</label>
+                <input type="tel" id="checkout-phone" autocomplete="tel" required>
+              </div>
+
+              <div class="checkout-field">
+                <label for="checkout-payment-method">Payment Method</label>
+                <select id="checkout-payment-method" required>
+                  <option value="Cash on Delivery">Cash on Delivery</option>
+                  <option value="Cash on Pickup">Cash on Pickup</option>
+                  <option value="Bank Transfer">Bank Transfer</option>
+                  <option value="Instapay">Instapay</option>
+                  <option value="To be confirmed">To be confirmed</option>
+                </select>
+              </div>
+
+              <div class="checkout-field checkout-field-full">
+                <label>Address Type</label>
+                <input type="hidden" id="checkout-address-type" value="apartment">
+
+                <div class="checkout-address-type-options">
+                  <button class="checkout-address-type-button active" type="button" data-checkout-address-type="apartment">
+                    Apartment
+                  </button>
+
+                  <button class="checkout-address-type-button" type="button" data-checkout-address-type="house">
+                    House / Villa
+                  </button>
+
+                  <button class="checkout-address-type-button" type="button" data-checkout-address-type="office">
+                    Office
+                  </button>
+                </div>
+              </div>
+
+              <div class="checkout-field checkout-address-field checkout-address-apartment">
+                <label for="checkout-building-name">Building Name</label>
+                <input type="text" id="checkout-building-name">
+              </div>
+
+              <div class="checkout-field checkout-address-field checkout-address-apartment">
+                <label for="checkout-apartment-number">Apartment Number</label>
+                <input type="text" id="checkout-apartment-number">
+              </div>
+
+              <div class="checkout-field checkout-address-field checkout-address-apartment checkout-address-office">
+                <label for="checkout-floor-number">Floor Number</label>
+                <input type="text" id="checkout-floor-number">
+              </div>
+
+              <div class="checkout-field checkout-address-field checkout-address-house">
+                <label for="checkout-house-number">House / Villa Number</label>
+                <input type="text" id="checkout-house-number">
+              </div>
+
+              <div class="checkout-field checkout-address-field checkout-address-office">
+                <label for="checkout-office-name">Office Name</label>
+                <input type="text" id="checkout-office-name">
+              </div>
+
+              <div class="checkout-field checkout-address-field checkout-address-office">
+                <label for="checkout-company-name">Company Name</label>
+                <input type="text" id="checkout-company-name">
+              </div>
+
+              <div class="checkout-field">
+                <label for="checkout-street-name">Street Name</label>
+                <input type="text" id="checkout-street-name" required>
+              </div>
+
+              <div class="checkout-field checkout-field-full">
+                <label for="checkout-additional-info">Additional Info</label>
+                <textarea id="checkout-additional-info" rows="4"></textarea>
+              </div>
+
+              <div class="checkout-field checkout-field-full">
+                <label for="checkout-customer-note">Order Note</label>
+                <textarea id="checkout-customer-note" rows="4" placeholder="Optional: delivery timing, product notes, or anything we should know."></textarea>
+              </div>
+            </div>
+
+            <button class="checkout-submit-button" type="submit" id="checkout-submit-button">
+              Place Order Request
+            </button>
+
+            <p class="checkout-message" id="checkout-message" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <aside class="checkout-summary">
+          <div class="checkout-summary-header">
+            <p class="checkout-panel-eyebrow">Order Summary</p>
+            <h2>Your Cart</h2>
+          </div>
+
+          <div class="checkout-items" id="checkout-items"></div>
+
+          <div class="checkout-summary-total">
+            <span>Total</span>
+            <strong id="checkout-total">Final price to be confirmed</strong>
+          </div>
+
+          <p class="checkout-summary-note">
+            Final availability and pricing will be reviewed before your order is confirmed.
+          </p>
+        </aside>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script type="module">
+  import "./auth.js";
+
+  const {
+    auth,
+    db,
+    onAuthStateChanged,
+    doc,
+    collection,
+    addDoc,
+    getDoc,
+    setDoc,
+    deleteDoc,
+    onSnapshot,
+    serverTimestamp
+  } = window.tcsAuth;
+
+  const checkoutForm = document.getElementById("checkout-form");
+  const checkoutName = document.getElementById("checkout-name");
+  const checkoutEmail = document.getElementById("checkout-email");
+  const checkoutPhone = document.getElementById("checkout-phone");
+  const checkoutPaymentMethod = document.getElementById("checkout-payment-method");
+  const checkoutAddressType = document.getElementById("checkout-address-type");
+  const checkoutBuildingName = document.getElementById("checkout-building-name");
+  const checkoutApartmentNumber = document.getElementById("checkout-apartment-number");
+  const checkoutFloorNumber = document.getElementById("checkout-floor-number");
+  const checkoutHouseNumber = document.getElementById("checkout-house-number");
+  const checkoutOfficeName = document.getElementById("checkout-office-name");
+  const checkoutCompanyName = document.getElementById("checkout-company-name");
+  const checkoutStreetName = document.getElementById("checkout-street-name");
+  const checkoutAdditionalInfo = document.getElementById("checkout-additional-info");
+  const checkoutCustomerNote = document.getElementById("checkout-customer-note");
+  const checkoutSubmitButton = document.getElementById("checkout-submit-button");
+  const checkoutMessage = document.getElementById("checkout-message");
+  const checkoutItems = document.getElementById("checkout-items");
+  const checkoutTotal = document.getElementById("checkout-total");
+
+  let currentCheckoutUser = null;
+  let checkoutCartItems = [];
+  let checkoutCartUnsubscribe = null;
+
+  function showCheckoutMessage(message, type) {
+    checkoutMessage.textContent = message;
+    checkoutMessage.className = "checkout-message";
+
+    if (type) {
+      checkoutMessage.classList.add(type);
+    }
+  }
+
+  function escapeHtml(value) {
+    return String(value || "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  function getLocalCart() {
+    return JSON.parse(localStorage.getItem("computerShopCart")) || [];
+  }
+
+  async function mergeLocalCartToCloud(user) {
+    const localCart = getLocalCart();
+
+    if (!user || !localCart.length) {
+      return;
+    }
+
+    await Promise.all(localCart.map(async function (item) {
+      const itemRef = doc(db, "users", user.uid, "cartItems", item.id);
+      const existingDoc = await getDoc(itemRef);
+      const existingQuantity = existingDoc.exists() ? Number(existingDoc.data().quantity || 0) : 0;
+
+      await setDoc(itemRef, {
+        ...item,
+        quantity: existingQuantity + Number(item.quantity || 1),
+        updatedAt: serverTimestamp(),
+        addedAt: existingDoc.exists() && existingDoc.data().addedAt ? existingDoc.data().addedAt : serverTimestamp()
+      }, { merge: true });
+    }));
+
+    localStorage.removeItem("computerShopCart");
+  }
+
+  function getCartTotalValue(cart) {
+    const hasKnownPrices = cart.every(function (item) {
+      return typeof item.priceNumber === "number";
+    });
+
+    if (!hasKnownPrices) {
+      return null;
+    }
+
+    return cart.reduce(function (sum, item) {
+      return sum + Number(item.priceNumber || 0) * Number(item.quantity || 0);
+    }, 0);
+  }
+
+  function renderCheckoutCart() {
+    if (!checkoutCartItems.length) {
+      checkoutItems.innerHTML = `
+        <div class="checkout-empty-cart">
+          <h3>Your cart is empty</h3>
+          <p>Add products to your cart before checkout.</p>
+        </div>
+      `;
+
+      checkoutTotal.textContent = "0 EGP";
+      checkoutSubmitButton.disabled = true;
+      return;
+    }
+
+    checkoutSubmitButton.disabled = false;
+
+    checkoutItems.innerHTML = checkoutCartItems.map(function (item) {
+      return `
+        <article class="checkout-item">
+          <div class="checkout-item-image-frame">
+            <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}">
+          </div>
+
+          <div class="checkout-item-info">
+            <span>${escapeHtml(item.category || "Product")}</span>
+            <h3>${escapeHtml(item.name || "Product")}</h3>
+            <p>${escapeHtml(item.specsLine || "")}</p>
+            <strong>${escapeHtml(item.priceText || "Price pending confirmation")} · Qty ${escapeHtml(item.quantity || 1)}</strong>
+          </div>
+        </article>
+      `;
+    }).join("");
+
+    const totalValue = getCartTotalValue(checkoutCartItems);
+    checkoutTotal.textContent = totalValue === null ? "Final price to be confirmed" : totalValue.toLocaleString() + " EGP";
+  }
+
+  function showCheckoutAddressFields() {
+    const selectedType = checkoutAddressType.value;
+
+    document.querySelectorAll(".checkout-address-type-button").forEach(function (button) {
+      button.classList.toggle("active", button.dataset.checkoutAddressType === selectedType);
+    });
+
+    document.querySelectorAll(".checkout-address-field").forEach(function (field) {
+      field.hidden = true;
+    });
+
+    document.querySelectorAll(".checkout-address-" + selectedType).forEach(function (field) {
+      field.hidden = false;
+    });
+  }
+
+  function createOrderNumber() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    const randomPart = Math.random().toString(36).slice(2, 6).toUpperCase();
+
+    return "TCS-" + year + month + day + "-" + randomPart;
+  }
+
+  async function clearCloudCart() {
+    await Promise.all(checkoutCartItems.map(function (item) {
+      return deleteDoc(doc(db, "users", currentCheckoutUser.uid, "cartItems", item.id));
+    }));
+  }
+
+  async function loadCheckoutUserDetails(user) {
+    checkoutEmail.value = user.email || "";
+    checkoutName.value = user.displayName || "";
+
+    try {
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+
+      if (!userDoc.exists()) {
+        return;
+      }
+
+      const data = userDoc.data();
+
+      checkoutName.value = data.fullName || user.displayName || "";
+      checkoutPhone.value = data.phone || "";
+      checkoutAddressType.value = data.addressType || "apartment";
+      checkoutBuildingName.value = data.buildingName || "";
+      checkoutApartmentNumber.value = data.apartmentNumber || "";
+      checkoutFloorNumber.value = data.floorNumber || "";
+      checkoutHouseNumber.value = data.houseNumber || "";
+      checkoutOfficeName.value = data.officeName || "";
+      checkoutCompanyName.value = data.companyName || "";
+      checkoutStreetName.value = data.streetName || "";
+      checkoutAdditionalInfo.value = data.additionalInfo || "";
+
+      showCheckoutAddressFields();
+    } catch (error) {}
+  }
+
+  document.querySelectorAll(".checkout-address-type-button").forEach(function (button) {
+    button.addEventListener("click", function () {
+      checkoutAddressType.value = button.dataset.checkoutAddressType;
+      showCheckoutAddressFields();
+    });
+  });
+
+  checkoutForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    if (!currentCheckoutUser) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    if (!checkoutCartItems.length) {
+      showCheckoutMessage("Your cart is empty.", "error");
+      return;
+    }
+
+    const fullName = checkoutName.value.trim();
+    const phone = checkoutPhone.value.trim();
+    const streetName = checkoutStreetName.value.trim();
+
+    if (!fullName || !phone || !streetName) {
+      showCheckoutMessage("Please enter your name, phone number, and street name.", "error");
+      return;
+    }
+
+    checkoutSubmitButton.disabled = true;
+    checkoutSubmitButton.textContent = "Placing Order...";
+    showCheckoutMessage("", "");
+
+    try {
+      const totalValue = getCartTotalValue(checkoutCartItems);
+
+      const checkoutData = {
+        fullName: fullName,
+        phone: phone,
+        addressType: checkoutAddressType.value,
+        buildingName: checkoutBuildingName.value.trim(),
+        apartmentNumber: checkoutApartmentNumber.value.trim(),
+        floorNumber: checkoutFloorNumber.value.trim(),
+        houseNumber: checkoutHouseNumber.value.trim(),
+        officeName: checkoutOfficeName.value.trim(),
+        companyName: checkoutCompanyName.value.trim(),
+        streetName: streetName,
+        additionalInfo: checkoutAdditionalInfo.value.trim(),
+        updatedAt: serverTimestamp()
+      };
+
+      await setDoc(doc(db, "users", currentCheckoutUser.uid), checkoutData, { merge: true });
+
+      await addDoc(collection(db, "orders"), {
+        orderNumber: createOrderNumber(),
+        userId: currentCheckoutUser.uid,
+        userName: fullName,
+        userEmail: currentCheckoutUser.email || "",
+        phone: phone,
+        paymentMethod: checkoutPaymentMethod.value,
+        addressType: checkoutAddressType.value,
+        buildingName: checkoutBuildingName.value.trim(),
+        apartmentNumber: checkoutApartmentNumber.value.trim(),
+        floorNumber: checkoutFloorNumber.value.trim(),
+        houseNumber: checkoutHouseNumber.value.trim(),
+        officeName: checkoutOfficeName.value.trim(),
+        companyName: checkoutCompanyName.value.trim(),
+        streetName: streetName,
+        additionalInfo: checkoutAdditionalInfo.value.trim(),
+        customerNote: checkoutCustomerNote.value.trim(),
+        items: checkoutCartItems.map(function (item) {
+          return {
+            id: item.id || "",
+            name: item.name || "Product",
+            category: item.category || "Product",
+            specsLine: item.specsLine || "",
+            priceText: item.priceText || "Price pending confirmation",
+            priceNumber: typeof item.priceNumber === "number" ? item.priceNumber : null,
+            image: item.image || "",
+            url: item.url || "",
+            quantity: Number(item.quantity || 1)
+          };
+        }),
+        itemCount: checkoutCartItems.reduce(function (total, item) {
+          return total + Number(item.quantity || 0);
+        }, 0),
+        totalValue: totalValue,
+        totalText: totalValue === null ? "Final price to be confirmed" : totalValue.toLocaleString() + " EGP",
+        status: "submitted",
+        paymentStatus: "not_paid",
+        adminNote: "",
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      });
+
+      await clearCloudCart();
+
+      showCheckoutMessage("Order request placed. Redirecting to your account...", "success");
+
+      setTimeout(function () {
+        window.location.href = "accounts.html";
+      }, 1000);
+    } catch (error) {
+      showCheckoutMessage("Could not place your order request. Please try again.", "error");
+      checkoutSubmitButton.disabled = false;
+      checkoutSubmitButton.textContent = "Place Order Request";
+    }
+  });
+
+  onAuthStateChanged(auth, async function (user) {
+    if (!user) {
+      localStorage.setItem("tcs-login-redirect", "checkout.html");
+      window.location.href = "login.html";
+      return;
+    }
+
+    currentCheckoutUser = user;
+
+    await mergeLocalCartToCloud(user);
+    await loadCheckoutUserDetails(user);
+
+    if (typeof checkoutCartUnsubscribe === "function") {
+      checkoutCartUnsubscribe();
+    }
+
+    checkoutCartUnsubscribe = onSnapshot(collection(db, "users", user.uid, "cartItems"), function (snapshot) {
+      checkoutCartItems = snapshot.docs.map(function (cartDoc) {
+        return {
+          id: cartDoc.id,
+          ...cartDoc.data()
+        };
+      });
+
+      renderCheckoutCart();
+    }, function () {
+      showCheckoutMessage("Could not load your cart. Please refresh and try again.", "error");
+    });
+  });
+
+  showCheckoutAddressFields();
+</script>
+
+<script>
+  document.addEventListener("keydown", function (event) {
+    if (
+      event.key === "F12" ||
+      (event.ctrlKey && event.shiftKey && ["I", "J", "C"].includes(event.key.toUpperCase())) ||
+      (event.ctrlKey && event.key.toUpperCase() === "U") ||
+      (event.metaKey && event.altKey && ["I", "J", "C"].includes(event.key.toUpperCase()))
+    ) {
+      event.preventDefault();
+      return false;
+    }
+  });
+</script>
+
+</body>
+</html>
