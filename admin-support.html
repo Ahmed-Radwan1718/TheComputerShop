@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Support - The Computer Shop</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body oncontextmenu="return false;">
+
+<div id="site-header-root"></div>
+<script src="site-header.js"></script>
+
+<main class="account-page">
+  <section class="account-section">
+    <div class="account-section-inner">
+      <div class="account-header">
+        <p class="account-eyebrow">Admin</p>
+        <h1>Support Inbox</h1>
+        <p id="admin-support-header-text">View customer requests, reply to tickets, and update their status.</p>
+      </div>
+
+      <section class="account-content">
+        <article class="account-panel active">
+          <div class="account-panel-header">
+            <p class="account-panel-eyebrow">All Tickets</p>
+            <h2>Customer Support</h2>
+            <p>New customer inquiries appear here automatically after they submit a support request.</p>
+          </div>
+
+          <div class="account-support-filters" id="admin-support-filters">
+            <button class="account-support-filter active" type="button" data-admin-support-filter="all">All</button>
+            <button class="account-support-filter" type="button" data-admin-support-filter="open">Open</button>
+            <button class="account-support-filter" type="button" data-admin-support-filter="pending">Pending</button>
+            <button class="account-support-filter" type="button" data-admin-support-filter="answered">Answered</button>
+            <button class="account-support-filter" type="button" data-admin-support-filter="resolved">Resolved</button>
+            <button class="account-support-filter" type="button" data-admin-support-filter="closed">Closed</button>
+          </div>
+
+          <div class="account-support-loading" id="admin-support-loading">
+            Loading support tickets...
+          </div>
+
+          <div class="account-support-list" id="admin-support-list"></div>
+
+          <div class="account-empty-state" id="admin-support-empty">
+            <h3>No tickets yet</h3>
+            <p>Customer support requests will appear here after they submit them.</p>
+          </div>
+
+          <p class="account-message" id="admin-support-message" aria-live="polite"></p>
+        </article>
+      </section>
+    </div>
+  </section>
+</main>
+
+<div class="account-support-modal" id="admin-ticket-modal" hidden>
+  <div class="account-support-modal-backdrop" id="admin-ticket-modal-backdrop"></div>
+
+  <div class="account-support-modal-card account-support-detail-card" role="dialog" aria-modal="true" aria-labelledby="admin-ticket-title">
+    <button class="account-support-modal-close" type="button" id="admin-ticket-modal-close" aria-label="Close ticket">×</button>
+
+    <div class="account-support-modal-header">
+      <p class="account-security-modal-eyebrow" id="admin-ticket-category">Support Ticket</p>
+      <h2 id="admin-ticket-title">Ticket Details</h2>
+      <p id="admin-ticket-summary">Reply to the customer or update the ticket status.</p>
+    </div>
+
+    <div class="account-form-grid">
+      <div class="account-field">
+        <label for="admin-ticket-status">Status</label>
+        <select id="admin-ticket-status">
+          <option value="open">Open</option>
+          <option value="pending">Pending</option>
+          <option value="answered">Answered</option>
+          <option value="resolved">Resolved</option>
+          <option value="closed">Closed</option>
+        </select>
+      </div>
+
+      <div class="account-field">
+        <label>Customer</label>
+        <input type="text" id="admin-ticket-customer" readonly>
+      </div>
+    </div>
+
+    <div class="account-support-thread" id="admin-ticket-thread"></div>
+
+    <form class="account-form" id="admin-ticket-reply-form">
+      <div class="account-field">
+        <label for="admin-ticket-reply">Reply</label>
+        <textarea id="admin-ticket-reply" rows="4" maxlength="1500"></textarea>
+      </div>
+
+      <div class="account-support-detail-actions">
+        <button class="account-security-modal-cancel" type="button" id="admin-ticket-save-status">
+          Save Status
+        </button>
+
+        <button class="account-security-modal-continue" type="submit" id="admin-ticket-send-reply">
+          Send Reply
+        </button>
+      </div>
+
+      <p class="account-message" id="admin-ticket-reply-message" aria-live="polite"></p>
+    </form>
+  </div>
+</div>
+
+<script type="module">
+  import "./auth.js";
+
+  const {
+    auth,
+    db,
+    onAuthStateChanged,
+    collection,
+    onSnapshot,
+    doc,
+    updateDoc,
+    serverTimestamp
+  } = window.tcsAuth;
+
+  const adminEmails = ["ahmedradwan21@gmail.com"];
+
+  const adminSupportLoading = document.getElementById("admin-support-loading");
+  const adminSupportList = document.getElementById("admin-support-list");
+  const adminSupportEmpty = document.getElementById("admin-support-empty");
+  const adminSupportMessage = document.getElementById("admin-support-message");
+  const adminSupportFilters = document.getElementById("admin-support-filters");
+
+  const adminTicketModal = document.getElementById("admin-ticket-modal");
+  const adminTicketModalBackdrop = document.getElementById("admin-ticket-modal-backdrop");
+  const adminTicketModalClose = document.getElementById("admin-ticket-modal-close");
+  const adminTicketCategory = document.getElementById("admin-ticket-category");
+  const adminTicketTitle = document.getElementById("admin-ticket-title");
+  const adminTicketSummary = document.getElementById("admin-ticket-summary");
+  const adminTicketStatus = document.getElementById("admin-ticket-status");
+  const adminTicketCustomer = document.getElementById("admin-ticket-customer");
+  const adminTicketThread = document.getElementById("admin-ticket-thread");
+  const adminTicketReplyForm = document.getElementById("admin-ticket-reply-form");
+  const adminTicketReply = document.getElementById("admin-ticket-reply");
+  const adminTicketSendReply = document.getElementById("admin-ticket-send-reply");
+  const adminTicketSaveStatus = document.getElementById("admin-ticket-save-status");
+  const adminTicketReplyMessage = document.getElementById("admin-ticket-reply-message");
+
+  let tickets = [];
+  let activeFilter = "all";
+  let activeTicketId = "";
+  let unsubscribeTickets = null;
+
+  function showMessage(element, message, type) {
+    element.textContent = message;
+    element.className = "account-message";
+
+    if (type) {
+      element.classList.add(type);
+    }
+  }
+
+  function escapeHtml(value) {
+    return String(value || "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  function getTicketDate(value) {
+    if (!value) {
+      return "Not available";
+    }
+
+    if (typeof value.toDate === "function") {
+      return value.toDate().toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+      });
+    }
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+      return "Not available";
+    }
+
+    return date.toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "short",
+      year: "numeric"
+    });
+  }
+
+  function getTicketTimeValue(ticket) {
+    if (ticket.updatedAt && typeof ticket.updatedAt.toMillis === "function") {
+      return ticket.updatedAt.toMillis();
+    }
+
+    if (ticket.createdAt && typeof ticket.createdAt.toMillis === "function") {
+      return ticket.createdAt.toMillis();
+    }
+
+    return 0;
+  }
+
+  function getStatusLabel(status) {
+    switch (status) {
+      case "open":
+        return "Open";
+      case "pending":
+        return "Pending";
+      case "answered":
+        return "Answered";
+      case "resolved":
+        return "Resolved";
+      case "closed":
+        return "Closed";
+      default:
+        return "Open";
+    }
+  }
+
+  function getActiveTicket() {
+    return tickets.find(function (ticket) {
+      return ticket.id === activeTicketId;
+    }) || null;
+  }
+
+  function renderTickets() {
+    adminSupportLoading.hidden = true;
+
+    const visibleTickets = tickets.filter(function (ticket) {
+      return activeFilter === "all" || ticket.status === activeFilter;
+    });
+
+    if (!visibleTickets.length) {
+      adminSupportList.innerHTML = "";
+      adminSupportEmpty.hidden = false;
+      return;
+    }
+
+    adminSupportEmpty.hidden = true;
+
+    adminSupportList.innerHTML = visibleTickets.map(function (ticket) {
+      const lastMessage = Array.isArray(ticket.messages) && ticket.messages.length ? ticket.messages[ticket.messages.length - 1] : null;
+      const preview = lastMessage && lastMessage.message ? lastMessage.message : ticket.message || "";
+
+      return `
+        <article class="account-support-ticket-card" data-admin-ticket-id="${escapeHtml(ticket.id)}">
+          <div class="account-support-ticket-top">
+            <div>
+              <span class="account-support-ticket-category">${escapeHtml(ticket.category || "Support")}</span>
+              <h3>${escapeHtml(ticket.subject || "Support Ticket")}</h3>
+            </div>
+
+            <span class="account-support-ticket-status ${escapeHtml(ticket.status || "open")}">
+              ${escapeHtml(getStatusLabel(ticket.status || "open"))}
+            </span>
+          </div>
+
+          <p>${escapeHtml(preview)}</p>
+
+          <div class="account-support-ticket-meta">
+            <span>${escapeHtml(ticket.userName || "Customer")}</span>
+            <span>${escapeHtml(ticket.userEmail || "")}</span>
+            <span>Submitted ${escapeHtml(getTicketDate(ticket.createdAt))}</span>
+          </div>
+
+          <button class="account-support-ticket-button" type="button">
+            Open Ticket
+          </button>
+        </article>
+      `;
+    }).join("");
+  }
+
+  function renderTicketModal(ticket) {
+    const messages = Array.isArray(ticket.messages) ? ticket.messages : [];
+
+    adminTicketCategory.textContent = ticket.category || "Support Ticket";
+    adminTicketTitle.textContent = ticket.subject || "Support Ticket";
+    adminTicketSummary.textContent = "Submitted " + getTicketDate(ticket.createdAt) + " · Current status: " + getStatusLabel(ticket.status || "open");
+    adminTicketStatus.value = ticket.status || "open";
+    adminTicketCustomer.value = (ticket.userName || "Customer") + " · " + (ticket.userEmail || "");
+
+    adminTicketThread.innerHTML = messages.map(function (message) {
+      const senderLabel = message.sender === "admin" ? "The Computer Shop" : (ticket.userName || "Customer");
+
+      return `
+        <article class="account-support-message ${escapeHtml(message.sender || "customer")}">
+          <div class="account-support-message-head">
+            <strong>${escapeHtml(senderLabel)}</strong>
+            <span>${escapeHtml(getTicketDate(message.createdAt))}</span>
+          </div>
+
+          <p>${escapeHtml(message.message || "")}</p>
+        </article>
+      `;
+    }).join("");
+  }
+
+  function openTicket(ticketId) {
+    activeTicketId = ticketId;
+
+    const ticket = getActiveTicket();
+
+    if (!ticket) {
+      return;
+    }
+
+    adminTicketReplyForm.reset();
+    showMessage(adminTicketReplyMessage, "", "");
+    renderTicketModal(ticket);
+    adminTicketModal.hidden = false;
+    document.body.classList.add("account-security-modal-open");
+  }
+
+  function closeTicketModal() {
+    adminTicketModal.hidden = true;
+    activeTicketId = "";
+    adminTicketReplyForm.reset();
+    showMessage(adminTicketReplyMessage, "", "");
+    document.body.classList.remove("account-security-modal-open");
+  }
+
+  onAuthStateChanged(auth, function (user) {
+    if (!user) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    if (!adminEmails.includes(user.email || "")) {
+      adminSupportLoading.hidden = true;
+      adminSupportEmpty.hidden = false;
+      showMessage(adminSupportMessage, "You do not have permission to view this page.", "error");
+      return;
+    }
+
+    unsubscribeTickets = onSnapshot(collection(db, "supportTickets"), function (snapshot) {
+      tickets = snapshot.docs.map(function (ticketDoc) {
+        return {
+          id: ticketDoc.id,
+          ...ticketDoc.data()
+        };
+      }).sort(function (a, b) {
+        return getTicketTimeValue(b) - getTicketTimeValue(a);
+      });
+
+      renderTickets();
+
+      if (activeTicketId) {
+        const ticket = getActiveTicket();
+
+        if (ticket) {
+          renderTicketModal(ticket);
+        }
+      }
+    }, function () {
+      adminSupportLoading.hidden = true;
+      adminSupportEmpty.hidden = false;
+      showMessage(adminSupportMessage, "Could not load tickets. Check Firestore rules.", "error");
+    });
+  });
+
+  adminSupportFilters.addEventListener("click", function (event) {
+    const filterButton = event.target.closest("[data-admin-support-filter]");
+
+    if (!filterButton) {
+      return;
+    }
+
+    activeFilter = filterButton.dataset.adminSupportFilter;
+
+    adminSupportFilters.querySelectorAll("[data-admin-support-filter]").forEach(function (button) {
+      button.classList.toggle("active", button === filterButton);
+    });
+
+    renderTickets();
+  });
+
+  adminSupportList.addEventListener("click", function (event) {
+    const ticketCard = event.target.closest("[data-admin-ticket-id]");
+
+    if (!ticketCard) {
+      return;
+    }
+
+    openTicket(ticketCard.dataset.adminTicketId);
+  });
+
+  adminTicketModalBackdrop.addEventListener("click", closeTicketModal);
+  adminTicketModalClose.addEventListener("click", closeTicketModal);
+
+  adminTicketSaveStatus.addEventListener("click", async function () {
+    if (!activeTicketId) {
+      return;
+    }
+
+    adminTicketSaveStatus.disabled = true;
+    showMessage(adminTicketReplyMessage, "", "");
+
+    try {
+      await updateDoc(doc(db, "supportTickets", activeTicketId), {
+        status: adminTicketStatus.value,
+        updatedAt: serverTimestamp()
+      });
+
+      showMessage(adminTicketReplyMessage, "Status saved.", "success");
+    } catch (error) {
+      showMessage(adminTicketReplyMessage, "Could not save status.", "error");
+    } finally {
+      adminTicketSaveStatus.disabled = false;
+    }
+  });
+
+  adminTicketReplyForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const ticket = getActiveTicket();
+
+    if (!ticket || !activeTicketId) {
+      return;
+    }
+
+    const replyText = adminTicketReply.value.trim();
+
+    if (!replyText) {
+      showMessage(adminTicketReplyMessage, "Please enter a reply.", "error");
+      return;
+    }
+
+    adminTicketSendReply.disabled = true;
+    adminTicketSendReply.textContent = "Sending...";
+    showMessage(adminTicketReplyMessage, "", "");
+
+    try {
+      const messages = Array.isArray(ticket.messages) ? ticket.messages : [];
+
+      await updateDoc(doc(db, "supportTickets", activeTicketId), {
+        status: "answered",
+        lastMessageFrom: "admin",
+        messages: messages.concat([
+          {
+            sender: "admin",
+            name: "The Computer Shop",
+            email: "ahmedradwan21@gmail.com",
+            message: replyText,
+            createdAt: new Date().toISOString()
+          }
+        ]),
+        updatedAt: serverTimestamp()
+      });
+
+      adminTicketReplyForm.reset();
+      showMessage(adminTicketReplyMessage, "Reply sent.", "success");
+    } catch (error) {
+      showMessage(adminTicketReplyMessage, "Could not send reply.", "error");
+    } finally {
+      adminTicketSendReply.disabled = false;
+      adminTicketSendReply.textContent = "Send Reply";
+    }
+  });
+</script>
+
+</body>
+</html>
