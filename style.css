@@ -6716,7 +6716,7 @@ body.account-security-modal-open {
   width: 118px;
   aspect-ratio: 1 / 1;
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.055);
+  background: transparent;
   overflow: hidden;
   display: flex;
   align-items: center;
