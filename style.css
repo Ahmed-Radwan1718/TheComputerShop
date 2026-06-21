@@ -4326,6 +4326,29 @@ body.nav-menu-open {
   transform: translateY(1px);
 }
 
+.cart-checkout-button:disabled {
+  opacity: 0.62;
+  cursor: not-allowed;
+}
+
+.cart-order-submit-message {
+  min-height: 20px;
+  margin-top: 14px;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.cart-order-submit-message.success {
+  color: rgba(185, 255, 202, 0.9);
+}
+
+.cart-order-submit-message.error {
+  color: rgba(255, 156, 156, 0.95);
+}
+
 @media (max-width: 700px) {
   .nav-cart-link {
     top: 30px;
