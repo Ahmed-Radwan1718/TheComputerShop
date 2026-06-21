@@ -5663,10 +5663,7 @@ body.nav-menu-open {
   }
 
   .floating-account-greeting {
-    max-width: 150px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    display: none;
   }
 }
 
