@@ -7173,6 +7173,326 @@ body.account-security-modal-open {
   flex-wrap: wrap;
 }
 
+.account-orders-loading {
+  padding: 18px 0;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.account-orders-loading[hidden] {
+  display: none;
+}
+
+.account-orders-list {
+  display: grid;
+  gap: 14px;
+}
+
+.account-orders-list:empty {
+  display: none;
+}
+
+.account-order-card {
+  padding: 20px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.105);
+  background: rgba(255, 255, 255, 0.045);
+  display: grid;
+  gap: 16px;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.account-order-card:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.18);
+  transform: translateY(-1px);
+}
+
+.account-order-card-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: start;
+}
+
+.account-order-number {
+  margin-bottom: 8px;
+  color: rgba(255, 255, 255, 0.42);
+  display: block;
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.account-order-card h3 {
+  color: white;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.account-order-status {
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255, 214, 140, 0.12);
+  color: rgba(255, 218, 150, 0.96);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.account-order-status.confirmed,
+.account-order-status.price_confirmed {
+  background: rgba(185, 255, 202, 0.12);
+  color: rgba(185, 255, 202, 0.92);
+}
+
+.account-order-status.preparing,
+.account-order-status.out_for_delivery,
+.account-order-status.ready_for_pickup {
+  background: rgba(145, 190, 255, 0.12);
+  color: rgba(170, 205, 255, 0.96);
+}
+
+.account-order-status.completed {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.account-order-status.cancelled {
+  background: rgba(255, 156, 156, 0.12);
+  color: rgba(255, 176, 176, 0.96);
+}
+
+.account-order-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.account-order-card-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+}
+
+.account-order-card-bottom strong {
+  color: white;
+  font-size: 15px;
+  font-weight: 850;
+}
+
+.account-order-view-button {
+  width: fit-content;
+  min-height: 38px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.account-order-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 3400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.account-order-modal[hidden] {
+  display: none;
+}
+
+.account-order-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.52);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.account-order-modal-card {
+  position: relative;
+  z-index: 1;
+  width: min(820px, 100%);
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  padding: 36px;
+  border-radius: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  background: rgba(24, 25, 24, 0.96);
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.32);
+}
+
+.account-order-modal-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.62);
+  font-family: inherit;
+  font-size: 34px;
+  font-weight: 300;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.account-order-modal-header {
+  margin-bottom: 24px;
+  padding-right: 34px;
+}
+
+.account-order-modal-header h2 {
+  margin-bottom: 12px;
+  color: white;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.12;
+  text-transform: uppercase;
+}
+
+.account-order-modal-header p {
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.account-order-detail-status-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.account-order-detail-status-row div {
+  padding: 18px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  display: grid;
+  gap: 8px;
+}
+
+.account-order-detail-status-row span {
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.account-order-detail-status-row strong {
+  color: white;
+  font-size: 15px;
+  font-weight: 850;
+  line-height: 1.35;
+}
+
+.account-order-detail-items {
+  display: grid;
+  gap: 14px;
+}
+
+.account-order-detail-item {
+  padding: 16px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 16px;
+  align-items: center;
+}
+
+.account-order-detail-image-frame {
+  width: 96px;
+  aspect-ratio: 1 / 1;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.account-order-detail-image-frame img {
+  width: 100%;
+  height: auto;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+  border-radius: 16px;
+}
+
+.account-order-detail-item-info {
+  display: grid;
+  gap: 7px;
+}
+
+.account-order-detail-item-info span {
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.account-order-detail-item-info h3 {
+  color: white;
+  font-size: 17px;
+  font-weight: 850;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.account-order-detail-item-info p {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.account-order-detail-item-info strong {
+  color: white;
+  font-size: 14px;
+  font-weight: 850;
+}
+
+.account-order-detail-info {
+  display: grid;
+  gap: 8px;
+}
+
+.account-order-detail-info p {
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.account-order-inline-empty {
+  padding: 22px;
+}
+
 @media (max-width: 900px) {
   .account-page {
     padding-top: 88px;
