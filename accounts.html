@@ -235,6 +235,21 @@
     <p class="account-message" id="password-section-message" aria-live="polite"></p>
   </div>
 
+  <div class="account-divider"></div>
+
+  <div class="account-sign-out-everywhere-section">
+    <div class="account-panel-subheader">
+      <h3>Sign Out Everywhere</h3>
+      <p>This signs your account out from every device where it is currently logged in.</p>
+    </div>
+
+    <button class="account-danger-button" type="button" id="sign-out-everywhere-button">
+      Sign out everywhere
+    </button>
+
+    <p class="account-message" id="sign-out-everywhere-message" aria-live="polite"></p>
+  </div>
+
   <div class="account-password-modal" id="password-change-modal" hidden>
     <div class="account-password-modal-backdrop" id="password-change-modal-backdrop"></div>
 
@@ -536,6 +551,9 @@ const passwordMessage = document.getElementById("password-message");
   const securityCodeMessage = document.getElementById("security-code-message");
   const securityCodeInputs = Array.from(document.querySelectorAll("[data-security-code-input]"));
 
+  const signOutEverywhereButton = document.getElementById("sign-out-everywhere-button");
+  const signOutEverywhereMessage = document.getElementById("sign-out-everywhere-message");
+
   const logoutButton = document.getElementById("account-logout-sidebar");
 
 let currentUser = null;
@@ -678,6 +696,46 @@ async function verifySecurityPanelCode(code) {
   }
 
   return data;
+}
+
+async function signOutEverywhere() {
+  if (!currentUser) {
+    return;
+  }
+
+  const confirmed = window.confirm("This will sign your account out from every device. Continue?");
+
+  if (!confirmed) {
+    return;
+  }
+
+  signOutEverywhereButton.disabled = true;
+  signOutEverywhereButton.textContent = "Signing out...";
+  showMessage(signOutEverywhereMessage, "", "");
+
+  try {
+    const response = await fetch("/api/sign-out-everywhere", {
+      method: "POST",
+      headers: await getSecurityRequestHeaders(),
+      body: JSON.stringify({})
+    });
+
+    const data = await response.json().catch(function () {
+      return {};
+    });
+
+    if (!response.ok) {
+      throw new Error(data.error || "Could not sign out from all devices.");
+    }
+
+    clearSecurityUnlock();
+    await signOut(auth);
+    window.location.href = "login.html";
+  } catch (error) {
+    showMessage(signOutEverywhereMessage, error.message || "Could not sign out from all devices.", "error");
+    signOutEverywhereButton.disabled = false;
+    signOutEverywhereButton.textContent = "Sign out everywhere";
+  }
 }
 
 function clearSecurityCodeInputs() {
@@ -1524,6 +1582,10 @@ if (!requestedEmail) {
       passwordButton.textContent = "Confirm";
       updatePasswordConfirmButton();
     }
+  });
+
+  signOutEverywhereButton.addEventListener("click", function () {
+    signOutEverywhere();
   });
 
   logoutButton.addEventListener("click", async function () {
