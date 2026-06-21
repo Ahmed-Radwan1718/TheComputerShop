@@ -43,6 +43,18 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+const pendingTwoFactorKey = "tcs-login-2fa-pending";
+
+onAuthStateChanged(auth, async function (user) {
+  const isLoginPage = window.location.pathname.endsWith("/login.html") || window.location.pathname.endsWith("login.html");
+
+  if (user && sessionStorage.getItem(pendingTwoFactorKey) === "1" && !isLoginPage) {
+    sessionStorage.removeItem(pendingTwoFactorKey);
+    await signOut(auth).catch(function () {});
+    window.location.href = "login.html";
+  }
+});
+
 window.tcsAuth = {
   app,
   auth,
