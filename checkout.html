@@ -29,6 +29,15 @@
           </div>
 
           <form class="checkout-form" id="checkout-form">
+            <div class="checkout-saved-address-picker" id="checkout-saved-address-picker" hidden>
+              <div class="checkout-field">
+                <label for="checkout-saved-address-select">Saved Address</label>
+                <select id="checkout-saved-address-select">
+                  <option value="">Enter a new address</option>
+                </select>
+              </div>
+            </div>
+
             <div class="checkout-form-grid">
               <div class="checkout-field">
                 <label for="checkout-name">Full Name</label>
@@ -173,6 +182,8 @@
   const checkoutEmail = document.getElementById("checkout-email");
   const checkoutPhone = document.getElementById("checkout-phone");
   const checkoutPaymentMethod = document.getElementById("checkout-payment-method");
+  const checkoutSavedAddressPicker = document.getElementById("checkout-saved-address-picker");
+  const checkoutSavedAddressSelect = document.getElementById("checkout-saved-address-select");
   const checkoutAddressType = document.getElementById("checkout-address-type");
   const checkoutBuildingName = document.getElementById("checkout-building-name");
   const checkoutApartmentNumber = document.getElementById("checkout-apartment-number");
@@ -190,7 +201,9 @@
 
   let currentCheckoutUser = null;
   let checkoutCartItems = [];
+  let checkoutSavedAddresses = [];
   let checkoutCartUnsubscribe = null;
+  let checkoutAddressesUnsubscribe = null;
 
   function showCheckoutMessage(message, type) {
     checkoutMessage.textContent = message;
@@ -288,6 +301,60 @@
     checkoutTotal.textContent = totalValue === null ? "Final price to be confirmed" : totalValue.toLocaleString() + " EGP";
   }
 
+  function getCheckoutAddressLabel(address) {
+    return address.label || "Saved Address";
+  }
+
+  function fillCheckoutAddress(address) {
+    if (!address) {
+      return;
+    }
+
+    checkoutAddressType.value = address.addressType || "apartment";
+    checkoutBuildingName.value = address.buildingName || "";
+    checkoutApartmentNumber.value = address.apartmentNumber || "";
+    checkoutFloorNumber.value = address.floorNumber || "";
+    checkoutHouseNumber.value = address.houseNumber || "";
+    checkoutOfficeName.value = address.officeName || "";
+    checkoutCompanyName.value = address.companyName || "";
+    checkoutStreetName.value = address.streetName || "";
+    checkoutAdditionalInfo.value = address.additionalInfo || "";
+    showCheckoutAddressFields();
+  }
+
+  function renderCheckoutSavedAddresses() {
+    if (!checkoutSavedAddressPicker || !checkoutSavedAddressSelect) {
+      return;
+    }
+
+    checkoutSavedAddressPicker.hidden = checkoutSavedAddresses.length === 0;
+
+    checkoutSavedAddressSelect.innerHTML = `
+      <option value="">Enter a new address</option>
+    ` + checkoutSavedAddresses.map(function (address) {
+      return `
+        <option value="${escapeHtml(address.id)}">${escapeHtml(getCheckoutAddressLabel(address))}</option>
+      `;
+    }).join("");
+  }
+
+  function startCheckoutAddressesSync(user) {
+    if (typeof checkoutAddressesUnsubscribe === "function") {
+      checkoutAddressesUnsubscribe();
+    }
+
+    checkoutAddressesUnsubscribe = onSnapshot(collection(db, "users", user.uid, "addresses"), function (snapshot) {
+      checkoutSavedAddresses = snapshot.docs.map(function (addressDoc) {
+        return {
+          id: addressDoc.id,
+          ...addressDoc.data()
+        };
+      });
+
+      renderCheckoutSavedAddresses();
+    });
+  }
+
   function showCheckoutAddressFields() {
     const selectedType = checkoutAddressType.value;
 
@@ -352,9 +419,22 @@
   document.querySelectorAll(".checkout-address-type-button").forEach(function (button) {
     button.addEventListener("click", function () {
       checkoutAddressType.value = button.dataset.checkoutAddressType;
+      checkoutSavedAddressSelect.value = "";
       showCheckoutAddressFields();
     });
   });
+
+  if (checkoutSavedAddressSelect) {
+    checkoutSavedAddressSelect.addEventListener("change", function () {
+      const selectedAddress = checkoutSavedAddresses.find(function (address) {
+        return address.id === checkoutSavedAddressSelect.value;
+      });
+
+      if (selectedAddress) {
+        fillCheckoutAddress(selectedAddress);
+      }
+    });
+  }
 
   checkoutForm.addEventListener("submit", async function (event) {
     event.preventDefault();
@@ -469,6 +549,7 @@
 
     await mergeLocalCartToCloud(user);
     await loadCheckoutUserDetails(user);
+    startCheckoutAddressesSync(user);
 
     if (typeof checkoutCartUnsubscribe === "function") {
       checkoutCartUnsubscribe();
