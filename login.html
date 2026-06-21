@@ -110,6 +110,7 @@
     db,
     signInWithEmailAndPassword,
     signOut,
+    onAuthStateChanged,
     doc,
     getDoc
   } = window.tcsAuth;
@@ -132,6 +133,9 @@
   let pendingLoginUser = null;
   let pendingTwoFactorSettings = {};
   let activeTwoFactorMethod = "";
+  let twoFactorFlowActive = false;
+
+  const pendingTwoFactorKey = "tcs-login-2fa-pending";
 
   function showMessage(message, type) {
     loginMessage.textContent = message;
@@ -199,6 +203,15 @@
     };
   }
 
+  function markTwoFactorPending() {
+    sessionStorage.setItem(pendingTwoFactorKey, "1");
+  }
+
+  function clearTwoFactorPending() {
+    sessionStorage.removeItem(pendingTwoFactorKey);
+    twoFactorFlowActive = false;
+  }
+
   function getLoginRedirectTarget() {
     const savedRedirect = localStorage.getItem("tcs-login-redirect");
 
@@ -211,6 +224,7 @@
   }
 
   function finishLogin() {
+    clearTwoFactorPending();
     showTwoFactorMessage("Logged in successfully.", "success");
 
     setTimeout(function () {
@@ -238,6 +252,8 @@
 
   function openTwoFactorPanel(method) {
     activeTwoFactorMethod = method;
+    twoFactorFlowActive = true;
+    markTwoFactorPending();
     clearTwoFactorCodeInputs();
     showTwoFactorMessage("", "");
     loginForm.hidden = true;
@@ -394,6 +410,7 @@
         window.location.href = getLoginRedirectTarget();
       }, 800);
     } catch (error) {
+      clearTwoFactorPending();
       showMessage(getReadableAuthError(error), "error");
       await signOut(auth).catch(function () {});
     } finally {
@@ -488,6 +505,7 @@
   });
 
   twoFactorCancelButton.addEventListener("click", async function () {
+    clearTwoFactorPending();
     await signOut(auth).catch(function () {});
     pendingLoginUser = null;
     pendingTwoFactorSettings = {};
@@ -501,6 +519,14 @@
 
     showTwoFactorMessage("", "");
     showMessage("Sign in cancelled.", "error");
+  });
+
+  onAuthStateChanged(auth, async function (user) {
+    if (user && sessionStorage.getItem(pendingTwoFactorKey) === "1" && !twoFactorFlowActive) {
+      clearTwoFactorPending();
+      await signOut(auth).catch(function () {});
+      showMessage("Sign in restarted because two-factor verification was not completed.", "error");
+    }
   });
 </script>
 
