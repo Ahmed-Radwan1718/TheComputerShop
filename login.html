@@ -181,11 +181,22 @@
     };
   }
 
+  function getLoginRedirectTarget() {
+    const savedRedirect = localStorage.getItem("tcs-login-redirect");
+
+    if (savedRedirect) {
+      localStorage.removeItem("tcs-login-redirect");
+      return savedRedirect;
+    }
+
+    return "index.html";
+  }
+
   function finishLogin() {
     showTwoFactorMessage("Logged in successfully.", "success");
 
     setTimeout(function () {
-      window.location.href = "index.html";
+      window.location.href = getLoginRedirectTarget();
     }, 700);
   }
 
@@ -313,7 +324,7 @@
       showMessage("Logged in successfully.", "success");
 
       setTimeout(function () {
-        window.location.href = "index.html";
+        window.location.href = getLoginRedirectTarget();
       }, 800);
     } catch (error) {
       showMessage(getReadableAuthError(error), "error");
