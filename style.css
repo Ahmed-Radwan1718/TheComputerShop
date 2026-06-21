@@ -6669,10 +6669,16 @@ body.account-security-modal-open {
 }
 
 .account-empty-state {
-  padding: 28px;
-  border-radius: 22px;
-  border: 1px solid rgba(255, 255, 255, 0.105);
+  padding: 36px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
   background: rgba(255, 255, 255, 0.045);
+}
+
+.account-support-empty-state {
+  padding: 26px 0 0;
+  border: 0;
+  background: transparent;
 }
 
 .account-empty-state h3 {
@@ -6817,30 +6823,62 @@ body.account-security-modal-open {
   cursor: not-allowed;
 }
 
-.account-support-actions {
+.account-support-panel-header {
   display: flex;
-  justify-content: flex-start;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.account-support-panel-header > div {
+  max-width: 690px;
 }
 
 .account-support-new-button {
-  width: fit-content;
+  min-height: 42px;
+  padding: 0 18px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.09);
+  color: white;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.account-support-new-button:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.24);
 }
 
 .account-support-filters {
+  margin-top: -4px;
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
+}
+
+.account-support-filters[hidden] {
+  display: none;
 }
 
 .account-support-filter {
-  min-height: 38px;
-  padding: 0 15px;
+  min-height: 34px;
+  padding: 0 13px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.13);
-  background: rgba(255, 255, 255, 0.055);
-  color: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.5);
   font-family: inherit;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 900;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -6849,7 +6887,7 @@ body.account-security-modal-open {
 
 .account-support-filter.active,
 .account-support-filter:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.085);
   color: white;
 }
 
