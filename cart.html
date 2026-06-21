@@ -42,9 +42,11 @@
           <strong id="cart-total">0 EGP</strong>
         </div>
 
-        <button class="cart-checkout-button" type="button">
-          Checkout
+        <button class="cart-checkout-button" type="button" id="submit-order-request-button">
+          Submit Order Request
         </button>
+
+        <p class="cart-order-submit-message" id="cart-order-submit-message" aria-live="polite"></p>
       </aside>
     </section>
   </main>
@@ -100,6 +102,7 @@
     onAuthStateChanged,
     doc,
     collection,
+    addDoc,
     getDoc,
     setDoc,
     deleteDoc,
@@ -111,6 +114,8 @@
   const cartEmpty = document.getElementById("cart-empty");
   const cartSummary = document.getElementById("cart-summary");
   const cartTotal = document.getElementById("cart-total");
+  const submitOrderRequestButton = document.getElementById("submit-order-request-button");
+  const cartOrderSubmitMessage = document.getElementById("cart-order-submit-message");
 
   let currentCartUser = null;
   let cloudCartItems = [];
@@ -227,6 +232,144 @@
     localStorage.removeItem("computerShopCart");
   }
 
+  function showCartOrderMessage(message, type) {
+    if (!cartOrderSubmitMessage) {
+      return;
+    }
+
+    cartOrderSubmitMessage.textContent = message;
+    cartOrderSubmitMessage.className = "cart-order-submit-message";
+
+    if (type) {
+      cartOrderSubmitMessage.classList.add(type);
+    }
+  }
+
+  function createOrderNumber() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    const randomPart = Math.random().toString(36).slice(2, 6).toUpperCase();
+
+    return "TCS-" + year + month + day + "-" + randomPart;
+  }
+
+  function getCurrentCartItems() {
+    return currentCartUser ? cloudCartItems : getLocalCart();
+  }
+
+  function getCartTotalValue(cart) {
+    const hasKnownPrices = cart.every(function (item) {
+      return typeof item.priceNumber === "number";
+    });
+
+    if (!hasKnownPrices) {
+      return null;
+    }
+
+    return cart.reduce(function (sum, item) {
+      return sum + Number(item.priceNumber || 0) * Number(item.quantity || 0);
+    }, 0);
+  }
+
+  async function clearCurrentCart() {
+    if (currentCartUser) {
+      await Promise.all(cloudCartItems.map(function (item) {
+        return deleteDoc(doc(db, "users", currentCartUser.uid, "cartItems", item.id));
+      }));
+
+      return;
+    }
+
+    localStorage.removeItem("computerShopCart");
+    renderCart([]);
+  }
+
+  async function submitOrderRequest() {
+    if (!currentCartUser) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    const cart = getCurrentCartItems();
+
+    if (!cart.length) {
+      showCartOrderMessage("Your cart is empty.", "error");
+      return;
+    }
+
+    const confirmed = window.confirm("Submit this cart as an order request? We will review availability and final pricing before confirming.");
+
+    if (!confirmed) {
+      return;
+    }
+
+    submitOrderRequestButton.disabled = true;
+    submitOrderRequestButton.textContent = "Submitting...";
+    showCartOrderMessage("", "");
+
+    try {
+      const userDoc = await getDoc(doc(db, "users", currentCartUser.uid));
+      const userData = userDoc.exists() ? userDoc.data() : {};
+      const totalValue = getCartTotalValue(cart);
+
+      await addDoc(collection(db, "orders"), {
+        orderNumber: createOrderNumber(),
+        userId: currentCartUser.uid,
+        userName: userData.fullName || currentCartUser.displayName || "Customer",
+        userEmail: currentCartUser.email || "",
+        phone: userData.phone || "",
+        addressType: userData.addressType || "",
+        buildingName: userData.buildingName || "",
+        apartmentNumber: userData.apartmentNumber || "",
+        floorNumber: userData.floorNumber || "",
+        houseNumber: userData.houseNumber || "",
+        officeName: userData.officeName || "",
+        companyName: userData.companyName || "",
+        streetName: userData.streetName || "",
+        additionalInfo: userData.additionalInfo || "",
+        items: cart.map(function (item) {
+          return {
+            id: item.id || "",
+            name: item.name || "Product",
+            category: item.category || "Product",
+            specsLine: item.specsLine || "",
+            priceText: item.priceText || "Price pending confirmation",
+            priceNumber: typeof item.priceNumber === "number" ? item.priceNumber : null,
+            image: item.image || "",
+            url: item.url || "",
+            quantity: Number(item.quantity || 1)
+          };
+        }),
+        itemCount: cart.reduce(function (total, item) {
+          return total + Number(item.quantity || 0);
+        }, 0),
+        totalValue: totalValue,
+        totalText: totalValue === null ? "Final price to be confirmed" : totalValue.toLocaleString() + " EGP",
+        status: "submitted",
+        paymentStatus: "not_paid",
+        customerNote: "",
+        adminNote: "",
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      });
+
+      await clearCurrentCart();
+
+      showCartOrderMessage("Order request submitted. You can track it from your Order History.", "success");
+      submitOrderRequestButton.textContent = "Submitted";
+
+      setTimeout(function () {
+        window.location.href = "accounts.html";
+      }, 1200);
+    } catch (error) {
+      showCartOrderMessage("Could not submit your order request. Please try again.", "error");
+      submitOrderRequestButton.disabled = false;
+      submitOrderRequestButton.textContent = "Submit Order Request";
+    }
+  }
+
   async function removeCartItem(itemId) {
     if (currentCartUser) {
       await deleteDoc(doc(db, "users", currentCartUser.uid, "cartItems", itemId));
@@ -257,6 +400,10 @@
       removeButton.textContent = "Remove";
     }
   });
+
+  if (submitOrderRequestButton) {
+    submitOrderRequestButton.addEventListener("click", submitOrderRequest);
+  }
 
   onAuthStateChanged(auth, async function (user) {
     currentCartUser = user || null;
