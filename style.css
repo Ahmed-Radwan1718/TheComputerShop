@@ -5761,6 +5761,43 @@ body.nav-menu-open {
     box-shadow 0.2s ease;
 }
 
+.auth-password-input-wrap {
+  position: relative;
+}
+
+.auth-password-input-wrap input {
+  padding-right: 54px;
+}
+
+.auth-password-visibility-toggle {
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: opacity 0.2s ease;
+}
+
+.auth-password-visibility-toggle:hover {
+  opacity: 0.72;
+}
+
+.auth-password-visibility-toggle svg {
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
+  display: block;
+}
+
 .auth-field input:focus {
   background: rgba(255, 255, 255, 0.095);
   border-color: rgba(255, 255, 255, 0.32);
