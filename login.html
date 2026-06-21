@@ -28,9 +28,18 @@
             <input type="email" id="login-email" autocomplete="email" required>
           </div>
 
-          <div class="auth-field">
+          <div class="auth-field auth-password-field">
             <label for="login-password">Password</label>
-            <input type="password" id="login-password" autocomplete="current-password" required>
+
+            <div class="auth-password-input-wrap">
+              <input type="password" id="login-password" autocomplete="current-password" required>
+
+              <button class="auth-password-visibility-toggle password-hidden" type="button" data-target="login-password" aria-label="Show password">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path d="M12 5C6 5 2.1 9.6 1 12c1.1 2.4 5 7 11 7s9.9-4.6 11-7c-1.1-2.4-5-7-11-7Zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm0-2.2a1.8 1.8 0 1 0 0-3.6 1.8 1.8 0 0 0 0 3.6Z"/>
+                </svg>
+              </button>
+            </div>
           </div>
 
           <button class="auth-button" type="submit" id="login-submit">
@@ -100,6 +109,7 @@
   const loginForm = document.getElementById("login-form");
   const loginButton = document.getElementById("login-submit");
   const loginMessage = document.getElementById("login-message");
+  const passwordVisibilityToggles = document.querySelectorAll(".auth-password-visibility-toggle");
 
   const twoFactorPanel = document.getElementById("login-two-factor-panel");
   const twoFactorForm = document.getElementById("login-two-factor-form");
@@ -301,6 +311,37 @@
 
     return false;
   }
+
+  passwordVisibilityToggles.forEach(function (toggleButton) {
+    const targetId = toggleButton.getAttribute("data-target");
+    const targetInput = document.getElementById(targetId);
+
+    if (targetInput && targetInput.type === "password") {
+      toggleButton.classList.add("password-hidden");
+      toggleButton.classList.remove("password-visible");
+    }
+
+    toggleButton.addEventListener("click", function () {
+      const targetId = toggleButton.getAttribute("data-target");
+      const targetInput = document.getElementById(targetId);
+
+      if (!targetInput) {
+        return;
+      }
+
+      if (targetInput.type === "password") {
+        targetInput.type = "text";
+        toggleButton.classList.remove("password-hidden");
+        toggleButton.classList.add("password-visible");
+        toggleButton.setAttribute("aria-label", "Hide password");
+      } else {
+        targetInput.type = "password";
+        toggleButton.classList.add("password-hidden");
+        toggleButton.classList.remove("password-visible");
+        toggleButton.setAttribute("aria-label", "Show password");
+      }
+    });
+  });
 
   loginForm.addEventListener("submit", async function (event) {
     event.preventDefault();
