@@ -42,9 +42,9 @@
           <strong id="cart-total">0 EGP</strong>
         </div>
 
-        <button class="cart-checkout-button" type="button" id="submit-order-request-button">
-          Submit Order Request
-        </button>
+<button class="cart-checkout-button" type="button" id="submit-order-request-button">
+  Continue to Checkout
+</button>
 
         <p class="cart-order-submit-message" id="cart-order-submit-message" aria-live="polite"></p>
       </aside>
@@ -402,7 +402,22 @@
   });
 
   if (submitOrderRequestButton) {
-    submitOrderRequestButton.addEventListener("click", submitOrderRequest);
+    submitOrderRequestButton.addEventListener("click", function () {
+      const cart = getCurrentCartItems();
+
+      if (!cart.length) {
+        showCartOrderMessage("Your cart is empty.", "error");
+        return;
+      }
+
+      if (!currentCartUser) {
+        localStorage.setItem("tcs-login-redirect", "checkout.html");
+        window.location.href = "login.html";
+        return;
+      }
+
+      window.location.href = "checkout.html";
+    });
   }
 
   onAuthStateChanged(auth, async function (user) {
