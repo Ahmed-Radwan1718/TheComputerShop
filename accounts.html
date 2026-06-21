@@ -546,12 +546,69 @@
             <div class="account-panel-header">
               <p class="account-panel-eyebrow">Order History</p>
               <h2>Orders</h2>
-              <p>Your order requests will appear here after checkout is connected to accounts.</p>
+              <p>Track submitted order requests, pricing confirmation, payment status, and fulfillment updates.</p>
             </div>
 
-            <div class="account-empty-state">
+            <div class="account-orders-loading" id="account-orders-loading">
+              Loading order history...
+            </div>
+
+            <div class="account-orders-list" id="account-orders-list"></div>
+
+            <div class="account-empty-state" id="account-orders-empty">
               <h3>No orders yet</h3>
-              <p>Once account checkout is connected, submitted order requests will be saved here.</p>
+              <p>Your order requests will appear here after you submit your cart for review.</p>
+            </div>
+
+            <p class="account-message" id="account-orders-message" aria-live="polite"></p>
+
+            <div class="account-order-modal" id="account-order-detail-modal" hidden>
+              <div class="account-order-modal-backdrop" id="account-order-detail-modal-backdrop"></div>
+
+              <div class="account-order-modal-card" role="dialog" aria-modal="true" aria-labelledby="account-order-detail-title">
+                <button class="account-order-modal-close" type="button" id="account-order-detail-modal-close" aria-label="Close order details">×</button>
+
+                <div class="account-order-modal-header">
+                  <p class="account-security-modal-eyebrow" id="account-order-detail-number">Order Request</p>
+                  <h2 id="account-order-detail-title">Order Details</h2>
+                  <p id="account-order-detail-summary">View your order request details and status updates.</p>
+                </div>
+
+                <div class="account-order-detail-status-row">
+                  <div>
+                    <span>Order Status</span>
+                    <strong id="account-order-detail-status">Checking...</strong>
+                  </div>
+
+                  <div>
+                    <span>Payment Status</span>
+                    <strong id="account-order-detail-payment">Checking...</strong>
+                  </div>
+
+                  <div>
+                    <span>Total</span>
+                    <strong id="account-order-detail-total">Checking...</strong>
+                  </div>
+                </div>
+
+                <div class="account-divider"></div>
+
+                <div class="account-panel-subheader">
+                  <h3>Items</h3>
+                </div>
+
+                <div class="account-order-detail-items" id="account-order-detail-items"></div>
+
+                <div class="account-divider"></div>
+
+                <div class="account-panel-subheader">
+                  <h3>Delivery Details</h3>
+                </div>
+
+                <div class="account-order-detail-info" id="account-order-detail-info"></div>
+
+                <p class="account-message" id="account-order-detail-message" aria-live="polite"></p>
+              </div>
             </div>
           </article>
         </section>
@@ -797,6 +854,24 @@ const passwordMessage = document.getElementById("password-message");
   const supportReplyMessageStatus = document.getElementById("support-reply-message-status");
   const supportMarkResolvedButton = document.getElementById("support-mark-resolved-button");
 
+  const ordersLoading = document.getElementById("account-orders-loading");
+  const ordersList = document.getElementById("account-orders-list");
+  const ordersEmpty = document.getElementById("account-orders-empty");
+  const ordersMessage = document.getElementById("account-orders-message");
+
+  const orderDetailModal = document.getElementById("account-order-detail-modal");
+  const orderDetailModalBackdrop = document.getElementById("account-order-detail-modal-backdrop");
+  const orderDetailModalClose = document.getElementById("account-order-detail-modal-close");
+  const orderDetailNumber = document.getElementById("account-order-detail-number");
+  const orderDetailTitle = document.getElementById("account-order-detail-title");
+  const orderDetailSummary = document.getElementById("account-order-detail-summary");
+  const orderDetailStatus = document.getElementById("account-order-detail-status");
+  const orderDetailPayment = document.getElementById("account-order-detail-payment");
+  const orderDetailTotal = document.getElementById("account-order-detail-total");
+  const orderDetailItems = document.getElementById("account-order-detail-items");
+  const orderDetailInfo = document.getElementById("account-order-detail-info");
+  const orderDetailMessage = document.getElementById("account-order-detail-message");
+
   const twoFactorAppStatus = document.getElementById("two-factor-app-status");
   const twoFactorAppButton = document.getElementById("two-factor-app-button");
   const twoFactorEmailStatus = document.getElementById("two-factor-email-status");
@@ -827,6 +902,9 @@ let supportTicketsUnsubscribe = null;
 let supportTickets = [];
 let activeSupportFilter = "all";
 let activeSupportTicketId = "";
+let orderHistoryUnsubscribe = null;
+let orderHistory = [];
+let activeOrderId = "";
 let twoFactorSettings = {};
 const usernameCooldownDays = 14;
 const emailCooldownDays = 90;
@@ -1542,6 +1620,327 @@ function closeSupportDetailModal() {
   }
 }
 
+function getOrderStatusLabel(status) {
+  switch (status) {
+    case "submitted":
+      return "Submitted";
+    case "under_review":
+      return "Under Review";
+    case "price_confirmed":
+      return "Price Confirmed";
+    case "awaiting_customer_confirmation":
+      return "Awaiting Confirmation";
+    case "confirmed":
+      return "Confirmed";
+    case "preparing":
+      return "Preparing";
+    case "ready_for_pickup":
+      return "Ready for Pickup";
+    case "out_for_delivery":
+      return "Out for Delivery";
+    case "completed":
+      return "Completed";
+    case "cancelled":
+      return "Cancelled";
+    default:
+      return "Submitted";
+  }
+}
+
+function getPaymentStatusLabel(status) {
+  switch (status) {
+    case "not_paid":
+      return "Not Paid";
+    case "payment_pending":
+      return "Payment Pending";
+    case "paid":
+      return "Paid";
+    case "refunded":
+      return "Refunded";
+    default:
+      return "Not Paid";
+  }
+}
+
+function getOrderDate(value) {
+  if (!value) {
+    return "Not available";
+  }
+
+  if (typeof value.toDate === "function") {
+    return value.toDate().toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "short",
+      year: "numeric"
+    });
+  }
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "Not available";
+  }
+
+  return date.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric"
+  });
+}
+
+function getOrderTimeValue(order) {
+  if (order.updatedAt && typeof order.updatedAt.toMillis === "function") {
+    return order.updatedAt.toMillis();
+  }
+
+  if (order.createdAt && typeof order.createdAt.toMillis === "function") {
+    return order.createdAt.toMillis();
+  }
+
+  return 0;
+}
+
+function stopOrderHistorySync() {
+  if (typeof orderHistoryUnsubscribe === "function") {
+    orderHistoryUnsubscribe();
+  }
+
+  orderHistoryUnsubscribe = null;
+}
+
+function getOrderItemSummary(order) {
+  const items = Array.isArray(order.items) ? order.items : [];
+
+  if (!items.length) {
+    return "No items listed";
+  }
+
+  const firstNames = items.slice(0, 2).map(function (item) {
+    return item.name || "Product";
+  });
+
+  const remainingCount = items.length - firstNames.length;
+
+  if (remainingCount > 0) {
+    return firstNames.join(", ") + " +" + remainingCount + " more";
+  }
+
+  return firstNames.join(", ");
+}
+
+function renderOrderHistory() {
+  if (!ordersList || !ordersEmpty || !ordersLoading) {
+    return;
+  }
+
+  ordersLoading.hidden = true;
+
+  if (!orderHistory.length) {
+    ordersList.innerHTML = "";
+    ordersEmpty.hidden = false;
+    return;
+  }
+
+  ordersEmpty.hidden = true;
+
+  ordersList.innerHTML = orderHistory.map(function (order) {
+    const status = order.status || "submitted";
+    const paymentStatus = order.paymentStatus || "not_paid";
+
+    return `
+      <article class="account-order-card" data-order-id="${escapeHtml(order.id)}">
+        <div class="account-order-card-top">
+          <div>
+            <span class="account-order-number">${escapeHtml(order.orderNumber || "Order Request")}</span>
+            <h3>${escapeHtml(getOrderItemSummary(order))}</h3>
+          </div>
+
+          <span class="account-order-status ${escapeHtml(status)}">
+            ${escapeHtml(getOrderStatusLabel(status))}
+          </span>
+        </div>
+
+        <div class="account-order-card-meta">
+          <span>Submitted ${escapeHtml(getOrderDate(order.createdAt))}</span>
+          <span>${escapeHtml(Number(order.itemCount || 0))} item${Number(order.itemCount || 0) === 1 ? "" : "s"}</span>
+          <span>${escapeHtml(getPaymentStatusLabel(paymentStatus))}</span>
+        </div>
+
+        <div class="account-order-card-bottom">
+          <strong>${escapeHtml(order.totalText || "Final price to be confirmed")}</strong>
+
+          <button class="account-order-view-button" type="button">
+            View Order
+          </button>
+        </div>
+      </article>
+    `;
+  }).join("");
+}
+
+function startOrderHistorySync(uid) {
+  stopOrderHistorySync();
+
+  if (!ordersList || !ordersEmpty || !ordersLoading) {
+    return;
+  }
+
+  ordersLoading.hidden = false;
+  ordersEmpty.hidden = true;
+  ordersList.innerHTML = "";
+  showMessage(ordersMessage, "", "");
+
+  const ordersQuery = query(collection(db, "orders"), where("userId", "==", uid));
+
+  orderHistoryUnsubscribe = onSnapshot(ordersQuery, function (snapshot) {
+    orderHistory = snapshot.docs.map(function (orderDoc) {
+      return {
+        id: orderDoc.id,
+        ...orderDoc.data()
+      };
+    }).sort(function (a, b) {
+      return getOrderTimeValue(b) - getOrderTimeValue(a);
+    });
+
+    renderOrderHistory();
+
+    if (activeOrderId) {
+      const activeOrder = getActiveOrder();
+
+      if (activeOrder) {
+        renderOrderDetail(activeOrder);
+      }
+    }
+  }, function () {
+    ordersLoading.hidden = true;
+    ordersEmpty.hidden = false;
+    showMessage(ordersMessage, "Could not load your order history. Please refresh and try again.", "error");
+  });
+}
+
+function getActiveOrder() {
+  return orderHistory.find(function (order) {
+    return order.id === activeOrderId;
+  }) || null;
+}
+
+function getOrderDeliveryText(order) {
+  const parts = [];
+
+  if (order.addressType) {
+    parts.push("Address type: " + order.addressType);
+  }
+
+  if (order.buildingName) {
+    parts.push("Building: " + order.buildingName);
+  }
+
+  if (order.apartmentNumber) {
+    parts.push("Apartment: " + order.apartmentNumber);
+  }
+
+  if (order.floorNumber) {
+    parts.push("Floor: " + order.floorNumber);
+  }
+
+  if (order.houseNumber) {
+    parts.push("House / Villa: " + order.houseNumber);
+  }
+
+  if (order.officeName) {
+    parts.push("Office: " + order.officeName);
+  }
+
+  if (order.companyName) {
+    parts.push("Company: " + order.companyName);
+  }
+
+  if (order.streetName) {
+    parts.push("Street: " + order.streetName);
+  }
+
+  if (order.additionalInfo) {
+    parts.push("Additional info: " + order.additionalInfo);
+  }
+
+  if (order.phone) {
+    parts.push("Phone: " + order.phone);
+  }
+
+  return parts;
+}
+
+function renderOrderDetail(order) {
+  const status = order.status || "submitted";
+  const paymentStatus = order.paymentStatus || "not_paid";
+  const items = Array.isArray(order.items) ? order.items : [];
+  const deliveryParts = getOrderDeliveryText(order);
+
+  orderDetailNumber.textContent = order.orderNumber || "Order Request";
+  orderDetailTitle.textContent = "Order Details";
+  orderDetailSummary.textContent = "Submitted " + getOrderDate(order.createdAt) + " · Last updated " + getOrderDate(order.updatedAt || order.createdAt);
+  orderDetailStatus.textContent = getOrderStatusLabel(status);
+  orderDetailPayment.textContent = getPaymentStatusLabel(paymentStatus);
+  orderDetailTotal.textContent = order.totalText || "Final price to be confirmed";
+
+  orderDetailItems.innerHTML = items.map(function (item) {
+    return `
+      <article class="account-order-detail-item">
+        <div class="account-order-detail-image-frame">
+          <img src="${escapeHtml(item.image || "")}" alt="${escapeHtml(item.name || "Product")}">
+        </div>
+
+        <div class="account-order-detail-item-info">
+          <span>${escapeHtml(item.category || "Product")}</span>
+          <h3>${escapeHtml(item.name || "Product")}</h3>
+          <p>${escapeHtml(item.specsLine || "")}</p>
+          <strong>${escapeHtml(item.priceText || "Price pending confirmation")} · Qty ${escapeHtml(item.quantity || 1)}</strong>
+        </div>
+      </article>
+    `;
+  }).join("");
+
+  if (!items.length) {
+    orderDetailItems.innerHTML = `
+      <div class="account-empty-state account-order-inline-empty">
+        <h3>No items listed</h3>
+        <p>This order does not have item details saved.</p>
+      </div>
+    `;
+  }
+
+  if (deliveryParts.length) {
+    orderDetailInfo.innerHTML = deliveryParts.map(function (line) {
+      return `<p>${escapeHtml(line)}</p>`;
+    }).join("");
+  } else {
+    orderDetailInfo.innerHTML = `
+      <p>No delivery details were saved with this order.</p>
+    `;
+  }
+}
+
+function openOrderDetail(orderId) {
+  activeOrderId = orderId;
+  const order = getActiveOrder();
+
+  if (!order) {
+    return;
+  }
+
+  showMessage(orderDetailMessage, "", "");
+  renderOrderDetail(order);
+  orderDetailModal.hidden = false;
+  document.body.classList.add("account-security-modal-open");
+}
+
+function closeOrderDetailModal() {
+  orderDetailModal.hidden = true;
+  activeOrderId = "";
+  showMessage(orderDetailMessage, "", "");
+  document.body.classList.remove("account-security-modal-open");
+}
+
 function showAddressFields() {
   const selectedType = addressType.value;
   const allAddressFields = document.querySelectorAll(".address-field");
@@ -2000,6 +2399,7 @@ onAuthStateChanged(auth, async function (user) {
   accountEmail.value = user.email || "";
   startSavedItemsSync(user.uid);
   startSupportTicketsSync(user.uid);
+  startOrderHistorySync(user.uid);
 
   accountName.value = user.displayName || "";
   originalUsername = user.displayName || "";
@@ -2403,6 +2803,26 @@ if (!requestedEmail) {
     signOutEverywhere();
   });
 
+  if (ordersList) {
+    ordersList.addEventListener("click", function (event) {
+      const orderCard = event.target.closest("[data-order-id]");
+
+      if (!orderCard) {
+        return;
+      }
+
+      openOrderDetail(orderCard.dataset.orderId);
+    });
+  }
+
+  if (orderDetailModalBackdrop) {
+    orderDetailModalBackdrop.addEventListener("click", closeOrderDetailModal);
+  }
+
+  if (orderDetailModalClose) {
+    orderDetailModalClose.addEventListener("click", closeOrderDetailModal);
+  }
+
   if (openSupportRequestButton) {
     openSupportRequestButton.addEventListener("click", openSupportRequestModal);
   }
@@ -2618,6 +3038,7 @@ if (!requestedEmail) {
   logoutButton.addEventListener("click", async function () {
     stopSavedItemsSync();
     stopSupportTicketsSync();
+    stopOrderHistorySync();
     clearSecurityUnlock();
     await signOut(auth);
     window.location.href = "signup.html";
