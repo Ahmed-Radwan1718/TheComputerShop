@@ -4442,6 +4442,17 @@ body.nav-menu-open {
   gap: 24px;
 }
 
+.checkout-saved-address-picker {
+  padding: 18px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.105);
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.checkout-saved-address-picker[hidden] {
+  display: none;
+}
+
 .checkout-form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -6900,6 +6911,183 @@ body.account-security-modal-open {
   line-height: 1.7;
 }
 
+.account-addresses-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+.account-addresses-header > div {
+  min-width: 0;
+}
+
+.account-address-add-button {
+  min-height: 42px;
+  padding: 0 18px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.09);
+  color: white;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.account-addresses-list {
+  display: grid;
+  gap: 14px;
+}
+
+.account-addresses-list:empty {
+  display: none;
+}
+
+.account-addresses-empty {
+  padding: 24px;
+}
+
+.account-address-card {
+  padding: 18px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.105);
+  background: rgba(255, 255, 255, 0.045);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.account-address-card-text {
+  min-width: 0;
+  display: grid;
+  gap: 7px;
+}
+
+.account-address-card-text span {
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.account-address-card-text h3 {
+  color: white;
+  font-size: 17px;
+  font-weight: 850;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.account-address-card-text p {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.account-address-card-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.account-address-card-button {
+  min-height: 38px;
+  padding: 0 15px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.account-address-card-button.danger {
+  border-color: rgba(255, 156, 156, 0.28);
+  background: rgba(255, 156, 156, 0.12);
+  color: rgba(255, 176, 176, 0.96);
+}
+
+.account-address-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 3400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.account-address-modal[hidden] {
+  display: none;
+}
+
+.account-address-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.52);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.account-address-modal-card {
+  position: relative;
+  z-index: 1;
+  width: min(760px, 100%);
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  padding: 36px;
+  border-radius: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  background: rgba(24, 25, 24, 0.96);
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.32);
+}
+
+.account-address-modal-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.62);
+  font-family: inherit;
+  font-size: 34px;
+  font-weight: 300;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.account-address-modal-header {
+  margin-bottom: 24px;
+  padding-right: 34px;
+}
+
+.account-address-modal-header h2 {
+  margin-bottom: 12px;
+  color: white;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.12;
+  text-transform: uppercase;
+}
+
+.account-address-modal-header p {
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 15px;
+  line-height: 1.75;
+}
+
 .account-status-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -7856,6 +8044,11 @@ body.account-security-modal-open {
   .account-saved-item,
   .account-saved-item-main {
     grid-template-columns: 1fr;
+  }
+
+  .account-addresses-header,
+  .account-address-card {
+    display: grid;
   }
 
   .account-saved-item-image-frame {
