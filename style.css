@@ -5764,10 +5764,32 @@ body.nav-menu-open {
   border: 1px solid rgba(255, 255, 255, 0.11);
   background: rgba(24, 25, 24, 0.56);
   box-shadow: 0 22px 55px rgba(0, 0, 0, 0.18);
+  transform-origin: top center;
 }
 
 .account-panel.active {
   display: block;
+  animation: accountPanelEnter 0.34s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes accountPanelEnter {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.985);
+    filter: blur(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .account-panel.active {
+    animation: none;
+  }
 }
 
 .account-loading:not([hidden]) + .account-panel {
