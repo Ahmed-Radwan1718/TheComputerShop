@@ -9699,6 +9699,12 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
 
   if (addToCartButton) {
     addToCartButton.addEventListener("click", async () => {
+      if (typeof window.addProductToSyncedCart !== "function") {
+        localStorage.setItem("tcs-login-redirect", window.location.pathname.split("/").pop() + window.location.search);
+        window.location.href = "login.html";
+        return;
+      }
+
       if (cartTransitionOverlay) {
         cartTransitionOverlay.classList.add("active");
       }
@@ -9707,23 +9713,7 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
 
       setTimeout(async () => {
         try {
-          if (typeof window.addProductToSyncedCart === "function") {
-            await window.addProductToSyncedCart(productData, quantity);
-          } else {
-            const cart = getCart();
-            const existingItem = cart.find((item) => item.id === productData.id);
-
-            if (existingItem) {
-              existingItem.quantity += quantity;
-            } else {
-              cart.push({
-                ...productData,
-                quantity: quantity
-              });
-            }
-
-            saveCart(cart);
-          }
+          await window.addProductToSyncedCart(productData, quantity);
 
           if (cartTransitionOverlay) {
             cartTransitionOverlay.classList.remove("active");
@@ -9733,6 +9723,10 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
         } catch (error) {
           if (cartTransitionOverlay) {
             cartTransitionOverlay.classList.remove("active");
+          }
+
+          if (error.message === "login-required") {
+            return;
           }
 
           addToCartButton.textContent = "Could Not Add";
@@ -9814,22 +9808,9 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
     const cleanQuantity = Number(quantityToAdd || 1);
 
     if (!currentCartUser) {
-      const cart = getLocalCart();
-      const existingItem = cart.find(function (item) {
-        return item.id === product.id;
-      });
-
-      if (existingItem) {
-        existingItem.quantity += cleanQuantity;
-      } else {
-        cart.push({
-          ...product,
-          quantity: cleanQuantity
-        });
-      }
-
-      saveLocalCart(cart);
-      return;
+      localStorage.setItem("tcs-login-redirect", window.location.pathname.split("/").pop() + window.location.search);
+      window.location.href = "login.html";
+      throw new Error("login-required");
     }
 
     const itemRef = doc(db, "users", currentCartUser.uid, "cartItems", product.id);
@@ -9854,7 +9835,8 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
     cloudCartUnsubscribe = null;
 
     if (!user) {
-      updateCartCountFromItems(getLocalCart());
+      localStorage.removeItem("computerShopCart");
+      updateCartCountFromItems([]);
       return;
     }
 
