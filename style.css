@@ -6817,6 +6817,301 @@ body.account-security-modal-open {
   cursor: not-allowed;
 }
 
+.account-support-actions {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.account-support-new-button {
+  width: fit-content;
+}
+
+.account-support-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.account-support-filter {
+  min-height: 38px;
+  padding: 0 15px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  background: rgba(255, 255, 255, 0.055);
+  color: rgba(255, 255, 255, 0.62);
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.account-support-filter.active,
+.account-support-filter:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+}
+
+.account-support-loading {
+  padding: 18px 0;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.account-support-loading[hidden] {
+  display: none;
+}
+
+.account-support-list {
+  display: grid;
+  gap: 14px;
+}
+
+.account-support-list:empty {
+  display: none;
+}
+
+.account-support-ticket-card {
+  padding: 20px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.105);
+  background: rgba(255, 255, 255, 0.045);
+  display: grid;
+  gap: 14px;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.account-support-ticket-card:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.18);
+  transform: translateY(-1px);
+}
+
+.account-support-ticket-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: start;
+}
+
+.account-support-ticket-category {
+  margin-bottom: 8px;
+  color: rgba(255, 255, 255, 0.42);
+  display: block;
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.account-support-ticket-card h3 {
+  color: white;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.account-support-ticket-card p {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.account-support-ticket-status {
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.09);
+  color: white;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.account-support-ticket-status.open {
+  background: rgba(255, 214, 140, 0.12);
+  color: rgba(255, 218, 150, 0.96);
+}
+
+.account-support-ticket-status.pending {
+  background: rgba(145, 190, 255, 0.12);
+  color: rgba(170, 205, 255, 0.96);
+}
+
+.account-support-ticket-status.answered {
+  background: rgba(185, 255, 202, 0.12);
+  color: rgba(185, 255, 202, 0.92);
+}
+
+.account-support-ticket-status.resolved,
+.account-support-ticket-status.closed {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.account-support-ticket-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.account-support-ticket-button {
+  width: fit-content;
+  min-height: 38px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.account-support-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 3400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.account-support-modal[hidden] {
+  display: none;
+}
+
+.account-support-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.52);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.account-support-modal-card {
+  position: relative;
+  z-index: 1;
+  width: min(680px, 100%);
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  padding: 36px;
+  border-radius: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  background: rgba(24, 25, 24, 0.96);
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.32);
+}
+
+.account-support-detail-card {
+  width: min(780px, 100%);
+}
+
+.account-support-modal-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.62);
+  font-family: inherit;
+  font-size: 34px;
+  font-weight: 300;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.account-support-modal-header {
+  margin-bottom: 24px;
+  padding-right: 34px;
+}
+
+.account-support-modal-header h2 {
+  margin-bottom: 12px;
+  color: white;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.12;
+  text-transform: uppercase;
+}
+
+.account-support-modal-header p {
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.account-support-thread {
+  margin-bottom: 24px;
+  display: grid;
+  gap: 14px;
+}
+
+.account-support-message {
+  padding: 18px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  display: grid;
+  gap: 10px;
+}
+
+.account-support-message.admin {
+  background: rgba(185, 255, 202, 0.07);
+  border-color: rgba(185, 255, 202, 0.12);
+}
+
+.account-support-message-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.account-support-message-head strong {
+  color: white;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.account-support-message-head span {
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.account-support-message p {
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.account-support-detail-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
 @media (max-width: 900px) {
   .account-page {
     padding-top: 88px;
