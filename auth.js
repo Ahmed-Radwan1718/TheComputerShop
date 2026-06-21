@@ -17,9 +17,12 @@ import {
 import {
   getFirestore,
   doc,
+  collection,
   setDoc,
   getDoc,
   updateDoc,
+  deleteDoc,
+  onSnapshot,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
@@ -52,8 +55,11 @@ window.tcsAuth = {
   verifyBeforeUpdateEmail,
   onAuthStateChanged,
   doc,
+  collection,
   setDoc,
   getDoc,
   updateDoc,
+  deleteDoc,
+  onSnapshot,
   serverTimestamp
 };
