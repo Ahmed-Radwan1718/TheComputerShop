@@ -91,41 +91,66 @@
 </footer>
 
 
-<script>
+<script type="module">
+  import "./auth.js";
 
+  const {
+    auth,
+    db,
+    onAuthStateChanged,
+    doc,
+    collection,
+    getDoc,
+    setDoc,
+    deleteDoc,
+    onSnapshot,
+    serverTimestamp
+  } = window.tcsAuth;
 
   const cartItems = document.getElementById("cart-items");
   const cartEmpty = document.getElementById("cart-empty");
   const cartSummary = document.getElementById("cart-summary");
   const cartTotal = document.getElementById("cart-total");
 
-  function getCart() {
+  let currentCartUser = null;
+  let cloudCartItems = [];
+  let cloudCartUnsubscribe = null;
+
+  function getLocalCart() {
     return JSON.parse(localStorage.getItem("computerShopCart")) || [];
   }
 
-  function saveCart(cart) {
+  function saveLocalCart(cart) {
     localStorage.setItem("computerShopCart", JSON.stringify(cart));
-    updateCartCount();
-    renderCart();
+    renderCart(cart);
   }
 
-  function updateCartCount() {
-    const cart = getCart();
-    const totalQuantity = cart.reduce((total, item) => total + item.quantity, 0);
+  function updateCartCount(cart) {
+    const totalQuantity = cart.reduce(function (total, item) {
+      return total + Number(item.quantity || 0);
+    }, 0);
 
-    document.querySelectorAll(".nav-cart-count").forEach((count) => {
+    document.querySelectorAll(".nav-cart-count").forEach(function (count) {
       count.textContent = totalQuantity;
       count.style.display = totalQuantity > 0 ? "block" : "none";
     });
   }
 
-  function renderCart() {
-    const cart = getCart();
+  function escapeHtml(value) {
+    return String(value || "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
 
+  function renderCart(cart) {
     if (!cartItems || !cartEmpty || !cartSummary || !cartTotal) {
       return;
     }
 
+    updateCartCount(cart);
     cartItems.innerHTML = "";
 
     if (cart.length === 0) {
@@ -138,24 +163,24 @@
     cartEmpty.style.display = "none";
     cartSummary.style.display = "block";
 
-    cart.forEach((item) => {
+    cart.forEach(function (item) {
       const cartItem = document.createElement("article");
       cartItem.className = "cart-item";
 
       cartItem.innerHTML = `
-        <a href="${item.url}" class="cart-item-image-frame">
-          <img src="${item.image}" alt="${item.name}">
+        <a href="${escapeHtml(item.url)}" class="cart-item-image-frame">
+          <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}">
         </a>
 
         <div class="cart-item-info">
-          <a href="${item.url}" class="cart-item-title">${item.name}</a>
-          <p>${item.specsLine}</p>
-          <span>Quantity: ${item.quantity}</span>
+          <a href="${escapeHtml(item.url)}" class="cart-item-title">${escapeHtml(item.name)}</a>
+          <p>${escapeHtml(item.specsLine)}</p>
+          <span>Quantity: ${escapeHtml(item.quantity)}</span>
         </div>
 
         <div class="cart-item-side">
-          <strong>${item.priceText}</strong>
-          <button class="cart-item-remove" type="button" data-id="${item.id}">
+          <strong>${escapeHtml(item.priceText)}</strong>
+          <button class="cart-item-remove" type="button" data-id="${escapeHtml(item.id)}">
             Remove
           </button>
         </div>
@@ -164,25 +189,111 @@
       cartItems.appendChild(cartItem);
     });
 
-    const hasKnownPrices = cart.every((item) => typeof item.priceNumber === "number");
+    const hasKnownPrices = cart.every(function (item) {
+      return typeof item.priceNumber === "number";
+    });
 
     if (hasKnownPrices) {
-      const total = cart.reduce((sum, item) => sum + item.priceNumber * item.quantity, 0);
-      cartTotal.textContent = `${total.toLocaleString()} EGP`;
+      const total = cart.reduce(function (sum, item) {
+        return sum + Number(item.priceNumber || 0) * Number(item.quantity || 0);
+      }, 0);
+
+      cartTotal.textContent = total.toLocaleString() + " EGP";
     } else {
       cartTotal.textContent = "Final price to be confirmed";
     }
-
-    document.querySelectorAll(".cart-item-remove").forEach((button) => {
-      button.addEventListener("click", () => {
-        const updatedCart = getCart().filter((item) => item.id !== button.dataset.id);
-        saveCart(updatedCart);
-      });
-    });
   }
 
-  updateCartCount();
-  renderCart();
+  async function mergeLocalCartToCloud(user) {
+    const localCart = getLocalCart();
+
+    if (!user || !localCart.length) {
+      return;
+    }
+
+    await Promise.all(localCart.map(async function (item) {
+      const itemRef = doc(db, "users", user.uid, "cartItems", item.id);
+      const existingDoc = await getDoc(itemRef);
+      const existingQuantity = existingDoc.exists() ? Number(existingDoc.data().quantity || 0) : 0;
+
+      await setDoc(itemRef, {
+        ...item,
+        quantity: existingQuantity + Number(item.quantity || 1),
+        updatedAt: serverTimestamp(),
+        addedAt: existingDoc.exists() && existingDoc.data().addedAt ? existingDoc.data().addedAt : serverTimestamp()
+      }, { merge: true });
+    }));
+
+    localStorage.removeItem("computerShopCart");
+  }
+
+  async function removeCartItem(itemId) {
+    if (currentCartUser) {
+      await deleteDoc(doc(db, "users", currentCartUser.uid, "cartItems", itemId));
+      return;
+    }
+
+    const updatedCart = getLocalCart().filter(function (item) {
+      return item.id !== itemId;
+    });
+
+    saveLocalCart(updatedCart);
+  }
+
+  cartItems.addEventListener("click", async function (event) {
+    const removeButton = event.target.closest(".cart-item-remove");
+
+    if (!removeButton) {
+      return;
+    }
+
+    removeButton.disabled = true;
+    removeButton.textContent = "Removing...";
+
+    try {
+      await removeCartItem(removeButton.dataset.id);
+    } catch (error) {
+      removeButton.disabled = false;
+      removeButton.textContent = "Remove";
+    }
+  });
+
+  onAuthStateChanged(auth, async function (user) {
+    currentCartUser = user || null;
+
+    if (typeof cloudCartUnsubscribe === "function") {
+      cloudCartUnsubscribe();
+    }
+
+    cloudCartUnsubscribe = null;
+
+    if (!user) {
+      renderCart(getLocalCart());
+      return;
+    }
+
+    await mergeLocalCartToCloud(user);
+
+    cloudCartUnsubscribe = onSnapshot(collection(db, "users", user.uid, "cartItems"), function (snapshot) {
+      cloudCartItems = snapshot.docs.map(function (cartDoc) {
+        return {
+          id: cartDoc.id,
+          ...cartDoc.data()
+        };
+      }).sort(function (a, b) {
+        const aTime = a.updatedAt && typeof a.updatedAt.toMillis === "function" ? a.updatedAt.toMillis() : 0;
+        const bTime = b.updatedAt && typeof b.updatedAt.toMillis === "function" ? b.updatedAt.toMillis() : 0;
+
+        return bTime - aTime;
+      });
+
+      renderCart(cloudCartItems);
+    }, function () {
+      renderCart([]);
+    });
+  });
+
+  renderCart(getLocalCart());
 </script>
 <script>
   document.addEventListener("keydown", function (event) {
