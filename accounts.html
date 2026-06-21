@@ -115,69 +115,119 @@
 
 <div class="account-divider"></div>
 
-              <div class="account-panel-subheader">
-                <h3>Saved Address</h3>
-                <p>This address can later be used during checkout to make order requests faster.</p>
+              <div class="account-panel-subheader account-addresses-header">
+                <div>
+                  <h3>Saved Addresses</h3>
+                  <p>Save multiple delivery addresses and choose one quickly during checkout.</p>
+                </div>
+
+                <button class="account-address-add-button" type="button" id="open-address-modal-button">
+                  Add Address
+                </button>
               </div>
 
-              <div class="account-form-grid">
-<div class="account-field account-field-full">
-  <label>Address Type</label>
-  <input type="hidden" id="address-type" value="apartment">
+              <div class="account-addresses-list" id="account-addresses-list"></div>
 
-  <div class="account-address-type-options">
-    <button class="account-address-type-button active" type="button" data-address-type="apartment">
-      Apartment
-    </button>
+              <div class="account-empty-state account-addresses-empty" id="account-addresses-empty">
+                <h3>No saved addresses yet</h3>
+                <p>Add addresses like Apartment 1, Villa in Sherouk, or Office so checkout is faster.</p>
+              </div>
 
-<button class="account-address-type-button" type="button" data-address-type="house">
-  House / Villa
-</button>
+              <p class="account-message" id="account-addresses-message" aria-live="polite"></p>
 
-    <button class="account-address-type-button" type="button" data-address-type="office">
-      Office
-    </button>
-  </div>
-</div>
+              <div class="account-address-modal" id="address-modal" hidden>
+                <div class="account-address-modal-backdrop" id="address-modal-backdrop"></div>
 
-                <div class="account-field address-field address-apartment">
-                  <label for="building-name">Building Name</label>
-                  <input type="text" id="building-name">
-                </div>
+                <div class="account-address-modal-card" role="dialog" aria-modal="true" aria-labelledby="address-modal-title">
+                  <button class="account-address-modal-close" type="button" id="address-modal-close" aria-label="Close address popup">×</button>
 
-                <div class="account-field address-field address-apartment">
-                  <label for="apartment-number">Apartment Number</label>
-                  <input type="text" id="apartment-number">
-                </div>
+                  <div class="account-address-modal-header">
+                    <p class="account-security-modal-eyebrow">Saved Address</p>
+                    <h2 id="address-modal-title">Add Address</h2>
+                    <p>Name this address and save the delivery details you want to reuse later.</p>
+                  </div>
 
-                <div class="account-field address-field address-apartment address-office">
-                  <label for="floor-number">Floor Number</label>
-                  <input type="text" id="floor-number">
-                </div>
+                  <div class="account-form" id="address-form">
+                    <input type="hidden" id="address-edit-id">
 
-<div class="account-field address-field address-house">
-  <label for="house-number">House / Villa Number</label>
-  <input type="text" id="house-number">
-</div>
+                    <div class="account-form-grid">
+                      <div class="account-field account-field-full">
+                        <label for="address-label">Address Name</label>
+                        <input type="text" id="address-label" maxlength="60" placeholder="Apartment 1, Villa in Sherouk, Office" required>
+                      </div>
 
-                <div class="account-field address-field address-office">
-                  <label for="office-name">Office Name</label>
-                  <input type="text" id="office-name">
-                </div>
+                      <div class="account-field account-field-full">
+                        <label>Address Type</label>
+                        <input type="hidden" id="address-type" value="apartment">
 
-                <div class="account-field address-field address-office">
-                  <label for="company-name">Company Name</label>
-                  <input type="text" id="company-name">
-                </div>
+                        <div class="account-address-type-options">
+                          <button class="account-address-type-button active" type="button" data-address-type="apartment">
+                            Apartment
+                          </button>
 
-<div class="account-field">
-  <label for="street-name">Street Name</label>
-  <input type="text" id="street-name">
-</div>
+                          <button class="account-address-type-button" type="button" data-address-type="house">
+                            House / Villa
+                          </button>
 
-                <div class="account-field account-field-full">
-                  <label for="additional-info">Additional Info</label>
-                  <textarea id="additional-info" rows="4"></textarea>
+                          <button class="account-address-type-button" type="button" data-address-type="office">
+                            Office
+                          </button>
+                        </div>
+                      </div>
+
+                      <div class="account-field address-field address-apartment">
+                        <label for="building-name">Building Name</label>
+                        <input type="text" id="building-name">
+                      </div>
+
+                      <div class="account-field address-field address-apartment">
+                        <label for="apartment-number">Apartment Number</label>
+                        <input type="text" id="apartment-number">
+                      </div>
+
+                      <div class="account-field address-field address-apartment address-office">
+                        <label for="floor-number">Floor Number</label>
+                        <input type="text" id="floor-number">
+                      </div>
+
+                      <div class="account-field address-field address-house">
+                        <label for="house-number">House / Villa Number</label>
+                        <input type="text" id="house-number">
+                      </div>
+
+                      <div class="account-field address-field address-office">
+                        <label for="office-name">Office Name</label>
+                        <input type="text" id="office-name">
+                      </div>
+
+                      <div class="account-field address-field address-office">
+                        <label for="company-name">Company Name</label>
+                        <input type="text" id="company-name">
+                      </div>
+
+                      <div class="account-field">
+                        <label for="street-name">Street Name</label>
+                        <input type="text" id="street-name">
+                      </div>
+
+                      <div class="account-field account-field-full">
+                        <label for="additional-info">Additional Info</label>
+                        <textarea id="additional-info" rows="4"></textarea>
+                      </div>
+                    </div>
+
+                    <div class="account-security-modal-actions">
+                      <button class="account-security-modal-cancel" type="button" id="address-modal-cancel">
+                        Cancel
+                      </button>
+
+                      <button class="account-security-modal-continue" type="button" id="save-address-button">
+                        Save Address
+                      </button>
+                    </div>
+
+                    <p class="account-message" id="address-modal-message" aria-live="polite"></p>
+                  </div>
                 </div>
               </div>
 
@@ -759,6 +809,21 @@ const statusPhoneVerified = document.getElementById("status-phone-verified");
 const statusMemberSince = document.getElementById("status-member-since");
 const statusLastUpdated = document.getElementById("status-last-updated");
 
+  const openAddressModalButton = document.getElementById("open-address-modal-button");
+  const addressesList = document.getElementById("account-addresses-list");
+  const addressesEmpty = document.getElementById("account-addresses-empty");
+  const addressesMessage = document.getElementById("account-addresses-message");
+
+  const addressModal = document.getElementById("address-modal");
+  const addressModalBackdrop = document.getElementById("address-modal-backdrop");
+  const addressModalClose = document.getElementById("address-modal-close");
+  const addressModalCancel = document.getElementById("address-modal-cancel");
+  const addressModalTitle = document.getElementById("address-modal-title");
+  const addressModalMessage = document.getElementById("address-modal-message");
+  const addressEditId = document.getElementById("address-edit-id");
+  const addressLabel = document.getElementById("address-label");
+  const saveAddressButton = document.getElementById("save-address-button");
+
   const addressType = document.getElementById("address-type");
   const buildingName = document.getElementById("building-name");
   const apartmentNumber = document.getElementById("apartment-number");
@@ -898,6 +963,8 @@ let usernameEditMode = false;
 let emailLastChangedAt = null;
 let securityUnlockToken = "";
 let savedItemsUnsubscribe = null;
+let addressesUnsubscribe = null;
+let savedAddresses = [];
 let supportTicketsUnsubscribe = null;
 let supportTickets = [];
 let activeSupportFilter = "all";
@@ -1941,6 +2008,268 @@ function closeOrderDetailModal() {
   document.body.classList.remove("account-security-modal-open");
 }
 
+function stopAddressesSync() {
+  if (typeof addressesUnsubscribe === "function") {
+    addressesUnsubscribe();
+  }
+
+  addressesUnsubscribe = null;
+}
+
+function getAddressTypeLabel(type) {
+  switch (type) {
+    case "house":
+      return "House / Villa";
+    case "office":
+      return "Office";
+    default:
+      return "Apartment";
+  }
+}
+
+function getAddressPreview(address) {
+  const parts = [];
+
+  if (address.addressType === "apartment") {
+    if (address.buildingName) {
+      parts.push(address.buildingName);
+    }
+
+    if (address.apartmentNumber) {
+      parts.push("Apartment " + address.apartmentNumber);
+    }
+
+    if (address.floorNumber) {
+      parts.push("Floor " + address.floorNumber);
+    }
+  }
+
+  if (address.addressType === "house") {
+    if (address.houseNumber) {
+      parts.push("House / Villa " + address.houseNumber);
+    }
+  }
+
+  if (address.addressType === "office") {
+    if (address.officeName) {
+      parts.push(address.officeName);
+    }
+
+    if (address.companyName) {
+      parts.push(address.companyName);
+    }
+
+    if (address.floorNumber) {
+      parts.push("Floor " + address.floorNumber);
+    }
+  }
+
+  if (address.streetName) {
+    parts.push(address.streetName);
+  }
+
+  return parts.length ? parts.join(" · ") : "No address details saved";
+}
+
+function clearAddressForm() {
+  addressEditId.value = "";
+  addressLabel.value = "";
+  addressType.value = "apartment";
+  buildingName.value = "";
+  apartmentNumber.value = "";
+  floorNumber.value = "";
+  houseNumber.value = "";
+  officeName.value = "";
+  companyName.value = "";
+  streetName.value = "";
+  additionalInfo.value = "";
+  showMessage(addressModalMessage, "", "");
+  showAddressFields();
+}
+
+function openAddressModal(address) {
+  clearAddressForm();
+
+  if (address) {
+    addressEditId.value = address.id || "";
+    addressLabel.value = address.label || "";
+    addressType.value = address.addressType || "apartment";
+    buildingName.value = address.buildingName || "";
+    apartmentNumber.value = address.apartmentNumber || "";
+    floorNumber.value = address.floorNumber || "";
+    houseNumber.value = address.houseNumber || "";
+    officeName.value = address.officeName || "";
+    companyName.value = address.companyName || "";
+    streetName.value = address.streetName || "";
+    additionalInfo.value = address.additionalInfo || "";
+    addressModalTitle.textContent = "Edit Address";
+    saveAddressButton.textContent = "Save Changes";
+  } else {
+    addressModalTitle.textContent = "Add Address";
+    saveAddressButton.textContent = "Save Address";
+  }
+
+  showAddressFields();
+  addressModal.hidden = false;
+  document.body.classList.add("account-security-modal-open");
+
+  setTimeout(function () {
+    addressLabel.focus();
+  }, 50);
+}
+
+function closeAddressModal() {
+  addressModal.hidden = true;
+  clearAddressForm();
+  document.body.classList.remove("account-security-modal-open");
+}
+
+function getAddressFormData() {
+  return {
+    label: addressLabel.value.trim(),
+    addressType: addressType.value,
+    buildingName: buildingName.value.trim(),
+    apartmentNumber: apartmentNumber.value.trim(),
+    floorNumber: floorNumber.value.trim(),
+    houseNumber: houseNumber.value.trim(),
+    officeName: officeName.value.trim(),
+    companyName: companyName.value.trim(),
+    streetName: streetName.value.trim(),
+    additionalInfo: additionalInfo.value.trim()
+  };
+}
+
+function renderSavedAddresses() {
+  if (!addressesList || !addressesEmpty) {
+    return;
+  }
+
+  if (!savedAddresses.length) {
+    addressesList.innerHTML = "";
+    addressesEmpty.hidden = false;
+    return;
+  }
+
+  addressesEmpty.hidden = true;
+
+  addressesList.innerHTML = savedAddresses.map(function (address) {
+    return `
+      <article class="account-address-card">
+        <div class="account-address-card-text">
+          <span>${escapeHtml(getAddressTypeLabel(address.addressType))}</span>
+          <h3>${escapeHtml(address.label || "Saved Address")}</h3>
+          <p>${escapeHtml(getAddressPreview(address))}</p>
+        </div>
+
+        <div class="account-address-card-actions">
+          <button class="account-address-card-button" type="button" data-edit-address-id="${escapeHtml(address.id)}">
+            Edit
+          </button>
+
+          <button class="account-address-card-button danger" type="button" data-delete-address-id="${escapeHtml(address.id)}">
+            Remove
+          </button>
+        </div>
+      </article>
+    `;
+  }).join("");
+}
+
+function startAddressesSync(uid) {
+  stopAddressesSync();
+
+  if (!addressesList || !addressesEmpty) {
+    return;
+  }
+
+  savedAddresses = [];
+  renderSavedAddresses();
+
+  addressesUnsubscribe = onSnapshot(collection(db, "users", uid, "addresses"), function (snapshot) {
+    savedAddresses = snapshot.docs.map(function (addressDoc) {
+      return {
+        id: addressDoc.id,
+        ...addressDoc.data()
+      };
+    }).sort(function (a, b) {
+      const aTime = a.updatedAt && typeof a.updatedAt.toMillis === "function" ? a.updatedAt.toMillis() : 0;
+      const bTime = b.updatedAt && typeof b.updatedAt.toMillis === "function" ? b.updatedAt.toMillis() : 0;
+
+      return bTime - aTime;
+    });
+
+    renderSavedAddresses();
+  }, function () {
+    showMessage(addressesMessage, "Could not load saved addresses. Please refresh and try again.", "error");
+  });
+}
+
+async function saveAddress() {
+  if (!currentUser) {
+    return;
+  }
+
+  const addressData = getAddressFormData();
+
+  if (!addressData.label) {
+    showMessage(addressModalMessage, "Please name this address.", "error");
+    return;
+  }
+
+  if (!addressData.streetName) {
+    showMessage(addressModalMessage, "Please enter the street name.", "error");
+    return;
+  }
+
+  saveAddressButton.disabled = true;
+  saveAddressButton.textContent = "Saving...";
+  showMessage(addressModalMessage, "", "");
+
+  try {
+    const existingAddressId = addressEditId.value;
+
+    if (existingAddressId) {
+      await setDoc(doc(db, "users", currentUser.uid, "addresses", existingAddressId), {
+        ...addressData,
+        updatedAt: serverTimestamp()
+      }, { merge: true });
+    } else {
+      await addDoc(collection(db, "users", currentUser.uid, "addresses"), {
+        ...addressData,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      });
+    }
+
+    closeAddressModal();
+    showMessage(addressesMessage, "Address saved.", "success");
+  } catch (error) {
+    showMessage(addressModalMessage, "Could not save this address. Please try again.", "error");
+  } finally {
+    saveAddressButton.disabled = false;
+    saveAddressButton.textContent = addressEditId.value ? "Save Changes" : "Save Address";
+  }
+}
+
+async function deleteAddress(addressId) {
+  if (!currentUser || !addressId) {
+    return;
+  }
+
+  const confirmed = window.confirm("Remove this saved address?");
+
+  if (!confirmed) {
+    return;
+  }
+
+  try {
+    await deleteDoc(doc(db, "users", currentUser.uid, "addresses", addressId));
+    showMessage(addressesMessage, "Address removed.", "success");
+  } catch (error) {
+    showMessage(addressesMessage, "Could not remove this address. Please try again.", "error");
+  }
+}
+
 function showAddressFields() {
   const selectedType = addressType.value;
   const allAddressFields = document.querySelectorAll(".address-field");
@@ -2336,6 +2665,51 @@ document.querySelectorAll(".account-address-type-button").forEach(function (butt
   });
 });
 
+if (openAddressModalButton) {
+  openAddressModalButton.addEventListener("click", function () {
+    openAddressModal(null);
+  });
+}
+
+if (addressModalBackdrop) {
+  addressModalBackdrop.addEventListener("click", closeAddressModal);
+}
+
+if (addressModalClose) {
+  addressModalClose.addEventListener("click", closeAddressModal);
+}
+
+if (addressModalCancel) {
+  addressModalCancel.addEventListener("click", closeAddressModal);
+}
+
+if (saveAddressButton) {
+  saveAddressButton.addEventListener("click", saveAddress);
+}
+
+if (addressesList) {
+  addressesList.addEventListener("click", function (event) {
+    const editButton = event.target.closest("[data-edit-address-id]");
+    const deleteButton = event.target.closest("[data-delete-address-id]");
+
+    if (editButton) {
+      const address = savedAddresses.find(function (savedAddress) {
+        return savedAddress.id === editButton.dataset.editAddressId;
+      });
+
+      if (address) {
+        openAddressModal(address);
+      }
+
+      return;
+    }
+
+    if (deleteButton) {
+      deleteAddress(deleteButton.dataset.deleteAddressId);
+    }
+  });
+}
+
 accountUsernameEditButton.addEventListener("click", function () {
   if (getUsernameDaysLeft() > 0) {
     updateUsernameLockState();
@@ -2398,6 +2772,7 @@ onAuthStateChanged(auth, async function (user) {
   currentUser = user;
   accountEmail.value = user.email || "";
   startSavedItemsSync(user.uid);
+  startAddressesSync(user.uid);
   startSupportTicketsSync(user.uid);
   startOrderHistorySync(user.uid);
 
@@ -2479,15 +2854,6 @@ detailsForm.addEventListener("submit", async function (event) {
     email: currentUser.email || "",
     fullName: newUsername,
     phone: accountPhone.value.trim(),
-    addressType: addressType.value,
-    buildingName: buildingName.value.trim(),
-    apartmentNumber: apartmentNumber.value.trim(),
-    floorNumber: floorNumber.value.trim(),
-    houseNumber: houseNumber.value.trim(),
-    officeName: officeName.value.trim(),
-    companyName: companyName.value.trim(),
-    streetName: streetName.value.trim(),
-    additionalInfo: additionalInfo.value.trim(),
     updatedAt: serverTimestamp()
   };
 
@@ -3037,6 +3403,7 @@ if (!requestedEmail) {
 
   logoutButton.addEventListener("click", async function () {
     stopSavedItemsSync();
+    stopAddressesSync();
     stopSupportTicketsSync();
     stopOrderHistorySync();
     clearSecurityUnlock();
