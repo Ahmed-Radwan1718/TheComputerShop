@@ -6728,6 +6728,7 @@ body.account-security-modal-open {
   height: 100%;
   object-fit: contain;
   display: block;
+  border-radius: 18px;
 }
 
 .account-saved-item-info {
