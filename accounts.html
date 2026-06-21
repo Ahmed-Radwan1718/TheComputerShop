@@ -426,12 +426,119 @@
             <div class="account-panel-header">
               <p class="account-panel-eyebrow">Support History</p>
               <h2>Support Requests</h2>
-              <p>Your previous support requests and messages will appear here.</p>
+              <p>Create and track support requests for product questions, consultations, orders, warranty, and general help.</p>
             </div>
 
-            <div class="account-empty-state">
+            <div class="account-support-actions">
+              <button class="account-primary-button account-support-new-button" type="button" id="open-support-request-button">
+                Create Support Request
+              </button>
+            </div>
+
+            <div class="account-support-filters" id="support-ticket-filters">
+              <button class="account-support-filter active" type="button" data-support-filter="all">All</button>
+              <button class="account-support-filter" type="button" data-support-filter="open">Open</button>
+              <button class="account-support-filter" type="button" data-support-filter="pending">Pending</button>
+              <button class="account-support-filter" type="button" data-support-filter="answered">Answered</button>
+              <button class="account-support-filter" type="button" data-support-filter="resolved">Resolved</button>
+              <button class="account-support-filter" type="button" data-support-filter="closed">Closed</button>
+            </div>
+
+            <div class="account-support-loading" id="support-tickets-loading">
+              Loading support requests...
+            </div>
+
+            <div class="account-support-list" id="support-tickets-list"></div>
+
+            <div class="account-empty-state" id="support-tickets-empty">
               <h3>No support requests yet</h3>
-              <p>When support forms are connected to your account, requests will be stored here.</p>
+              <p>When you contact us about a build, product, order, warranty, or general question, your request will appear here.</p>
+            </div>
+
+            <p class="account-message" id="support-tickets-message" aria-live="polite"></p>
+
+            <div class="account-support-modal" id="support-request-modal" hidden>
+              <div class="account-support-modal-backdrop" id="support-request-modal-backdrop"></div>
+
+              <div class="account-support-modal-card" role="dialog" aria-modal="true" aria-labelledby="support-request-modal-title">
+                <button class="account-support-modal-close" type="button" id="support-request-modal-close" aria-label="Close support request popup">×</button>
+
+                <div class="account-support-modal-header">
+                  <p class="account-security-modal-eyebrow">Support Request</p>
+                  <h2 id="support-request-modal-title">Create Request</h2>
+                  <p>Tell us what you need help with. Your request will be saved to your account.</p>
+                </div>
+
+                <form class="account-form" id="support-request-form">
+                  <div class="account-field">
+                    <label for="support-request-category">Category</label>
+                    <select id="support-request-category" required>
+                      <option value="General Question">General Question</option>
+                      <option value="Product Question">Product Question</option>
+                      <option value="Build Consultation">Build Consultation</option>
+                      <option value="Order Help">Order Help</option>
+                      <option value="Warranty / Return">Warranty / Return</option>
+                    </select>
+                  </div>
+
+                  <div class="account-field">
+                    <label for="support-request-subject">Subject</label>
+                    <input type="text" id="support-request-subject" maxlength="90" required>
+                  </div>
+
+                  <div class="account-field">
+                    <label for="support-request-message">Message</label>
+                    <textarea id="support-request-message" rows="6" maxlength="1500" required></textarea>
+                  </div>
+
+                  <div class="account-security-modal-actions">
+                    <button class="account-security-modal-cancel" type="button" id="support-request-modal-cancel">
+                      Cancel
+                    </button>
+
+                    <button class="account-security-modal-continue" type="submit" id="support-request-submit">
+                      Submit Request
+                    </button>
+                  </div>
+
+                  <p class="account-message" id="support-request-form-message" aria-live="polite"></p>
+                </form>
+              </div>
+            </div>
+
+            <div class="account-support-modal" id="support-detail-modal" hidden>
+              <div class="account-support-modal-backdrop" id="support-detail-modal-backdrop"></div>
+
+              <div class="account-support-modal-card account-support-detail-card" role="dialog" aria-modal="true" aria-labelledby="support-detail-title">
+                <button class="account-support-modal-close" type="button" id="support-detail-modal-close" aria-label="Close support request details">×</button>
+
+                <div class="account-support-modal-header">
+                  <p class="account-security-modal-eyebrow" id="support-detail-category">Support Request</p>
+                  <h2 id="support-detail-title">Request Details</h2>
+                  <p id="support-detail-summary">View the conversation and reply to this support request.</p>
+                </div>
+
+                <div class="account-support-thread" id="support-detail-thread"></div>
+
+                <form class="account-form" id="support-reply-form">
+                  <div class="account-field">
+                    <label for="support-reply-message">Reply</label>
+                    <textarea id="support-reply-message" rows="4" maxlength="1500" required></textarea>
+                  </div>
+
+                  <div class="account-support-detail-actions">
+                    <button class="account-security-modal-cancel" type="button" id="support-mark-resolved-button">
+                      Mark Resolved
+                    </button>
+
+                    <button class="account-security-modal-continue" type="submit" id="support-reply-submit">
+                      Send Reply
+                    </button>
+                  </div>
+
+                  <p class="account-message" id="support-reply-message-status" aria-live="polite"></p>
+                </form>
+              </div>
             </div>
           </article>
 
@@ -568,10 +675,14 @@
     onAuthStateChanged,
     doc,
     collection,
+    addDoc,
     getDoc,
     setDoc,
+    updateDoc,
     deleteDoc,
     onSnapshot,
+    query,
+    where,
     serverTimestamp
   } = window.tcsAuth;
 
@@ -655,6 +766,37 @@ const passwordMessage = document.getElementById("password-message");
   const savedItemsEmpty = document.getElementById("account-saved-empty");
   const savedItemsMessage = document.getElementById("saved-items-message");
 
+  const openSupportRequestButton = document.getElementById("open-support-request-button");
+  const supportTicketFilters = document.getElementById("support-ticket-filters");
+  const supportTicketsLoading = document.getElementById("support-tickets-loading");
+  const supportTicketsList = document.getElementById("support-tickets-list");
+  const supportTicketsEmpty = document.getElementById("support-tickets-empty");
+  const supportTicketsMessage = document.getElementById("support-tickets-message");
+
+  const supportRequestModal = document.getElementById("support-request-modal");
+  const supportRequestModalBackdrop = document.getElementById("support-request-modal-backdrop");
+  const supportRequestModalClose = document.getElementById("support-request-modal-close");
+  const supportRequestModalCancel = document.getElementById("support-request-modal-cancel");
+  const supportRequestForm = document.getElementById("support-request-form");
+  const supportRequestCategory = document.getElementById("support-request-category");
+  const supportRequestSubject = document.getElementById("support-request-subject");
+  const supportRequestMessage = document.getElementById("support-request-message");
+  const supportRequestSubmit = document.getElementById("support-request-submit");
+  const supportRequestFormMessage = document.getElementById("support-request-form-message");
+
+  const supportDetailModal = document.getElementById("support-detail-modal");
+  const supportDetailModalBackdrop = document.getElementById("support-detail-modal-backdrop");
+  const supportDetailModalClose = document.getElementById("support-detail-modal-close");
+  const supportDetailCategory = document.getElementById("support-detail-category");
+  const supportDetailTitle = document.getElementById("support-detail-title");
+  const supportDetailSummary = document.getElementById("support-detail-summary");
+  const supportDetailThread = document.getElementById("support-detail-thread");
+  const supportReplyForm = document.getElementById("support-reply-form");
+  const supportReplyMessage = document.getElementById("support-reply-message");
+  const supportReplySubmit = document.getElementById("support-reply-submit");
+  const supportReplyMessageStatus = document.getElementById("support-reply-message-status");
+  const supportMarkResolvedButton = document.getElementById("support-mark-resolved-button");
+
   const twoFactorAppStatus = document.getElementById("two-factor-app-status");
   const twoFactorAppButton = document.getElementById("two-factor-app-button");
   const twoFactorEmailStatus = document.getElementById("two-factor-email-status");
@@ -681,6 +823,10 @@ let usernameEditMode = false;
 let emailLastChangedAt = null;
 let securityUnlockToken = "";
 let savedItemsUnsubscribe = null;
+let supportTicketsUnsubscribe = null;
+let supportTickets = [];
+let activeSupportFilter = "all";
+let activeSupportTicketId = "";
 let twoFactorSettings = {};
 const usernameCooldownDays = 14;
 const emailCooldownDays = 90;
@@ -1149,6 +1295,249 @@ function startSavedItemsSync(uid) {
   });
 }
 
+function getSupportStatusLabel(status) {
+  switch (status) {
+    case "open":
+      return "Open";
+    case "pending":
+      return "Pending";
+    case "answered":
+      return "Answered";
+    case "resolved":
+      return "Resolved";
+    case "closed":
+      return "Closed";
+    default:
+      return "Open";
+  }
+}
+
+function getSupportDate(value) {
+  if (!value) {
+    return "Not available";
+  }
+
+  if (typeof value.toDate === "function") {
+    return value.toDate().toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "short",
+      year: "numeric"
+    });
+  }
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "Not available";
+  }
+
+  return date.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric"
+  });
+}
+
+function getSupportTimeValue(ticket) {
+  if (ticket.updatedAt && typeof ticket.updatedAt.toMillis === "function") {
+    return ticket.updatedAt.toMillis();
+  }
+
+  if (ticket.createdAt && typeof ticket.createdAt.toMillis === "function") {
+    return ticket.createdAt.toMillis();
+  }
+
+  return 0;
+}
+
+function stopSupportTicketsSync() {
+  if (typeof supportTicketsUnsubscribe === "function") {
+    supportTicketsUnsubscribe();
+  }
+
+  supportTicketsUnsubscribe = null;
+}
+
+function renderSupportTickets() {
+  if (!supportTicketsList || !supportTicketsEmpty || !supportTicketsLoading) {
+    return;
+  }
+
+  supportTicketsLoading.hidden = true;
+
+  const visibleTickets = supportTickets.filter(function (ticket) {
+    return activeSupportFilter === "all" || ticket.status === activeSupportFilter;
+  });
+
+  if (!visibleTickets.length) {
+    supportTicketsList.innerHTML = "";
+    supportTicketsEmpty.hidden = false;
+    return;
+  }
+
+  supportTicketsEmpty.hidden = true;
+
+  supportTicketsList.innerHTML = visibleTickets.map(function (ticket) {
+    const lastMessage = Array.isArray(ticket.messages) && ticket.messages.length ? ticket.messages[ticket.messages.length - 1] : null;
+    const preview = lastMessage && lastMessage.message ? lastMessage.message : ticket.message || "";
+
+    return `
+      <article class="account-support-ticket-card" data-support-ticket-id="${escapeHtml(ticket.id)}">
+        <div class="account-support-ticket-top">
+          <div>
+            <span class="account-support-ticket-category">${escapeHtml(ticket.category || "Support")}</span>
+            <h3>${escapeHtml(ticket.subject || "Support Request")}</h3>
+          </div>
+
+          <span class="account-support-ticket-status ${escapeHtml(ticket.status || "open")}">
+            ${escapeHtml(getSupportStatusLabel(ticket.status || "open"))}
+          </span>
+        </div>
+
+        <p>${escapeHtml(preview)}</p>
+
+        <div class="account-support-ticket-meta">
+          <span>Submitted ${escapeHtml(getSupportDate(ticket.createdAt))}</span>
+          <span>Last update ${escapeHtml(getSupportDate(ticket.updatedAt || ticket.createdAt))}</span>
+        </div>
+
+        <button class="account-support-ticket-button" type="button">
+          View Request
+        </button>
+      </article>
+    `;
+  }).join("");
+}
+
+function startSupportTicketsSync(uid) {
+  stopSupportTicketsSync();
+
+  if (!supportTicketsList || !supportTicketsEmpty || !supportTicketsLoading) {
+    return;
+  }
+
+  supportTicketsLoading.hidden = false;
+  supportTicketsEmpty.hidden = true;
+  supportTicketsList.innerHTML = "";
+  showMessage(supportTicketsMessage, "", "");
+
+  const supportQuery = query(collection(db, "supportTickets"), where("userId", "==", uid));
+
+  supportTicketsUnsubscribe = onSnapshot(supportQuery, function (snapshot) {
+    supportTickets = snapshot.docs.map(function (ticketDoc) {
+      return {
+        id: ticketDoc.id,
+        ...ticketDoc.data()
+      };
+    }).sort(function (a, b) {
+      return getSupportTimeValue(b) - getSupportTimeValue(a);
+    });
+
+    renderSupportTickets();
+
+    if (activeSupportTicketId) {
+      const activeTicket = getActiveSupportTicket();
+
+      if (activeTicket) {
+        renderSupportDetail(activeTicket);
+      }
+    }
+  }, function () {
+    supportTicketsLoading.hidden = true;
+    supportTicketsEmpty.hidden = false;
+    showMessage(supportTicketsMessage, "Could not load support requests. Please refresh and try again.", "error");
+  });
+}
+
+function openSupportRequestModal() {
+  supportRequestForm.reset();
+  showMessage(supportRequestFormMessage, "", "");
+  supportRequestModal.hidden = false;
+  document.body.classList.add("account-security-modal-open");
+
+  setTimeout(function () {
+    supportRequestSubject.focus();
+  }, 50);
+}
+
+function closeSupportRequestModal() {
+  supportRequestModal.hidden = true;
+  supportRequestForm.reset();
+  showMessage(supportRequestFormMessage, "", "");
+
+  if (supportDetailModal.hidden) {
+    document.body.classList.remove("account-security-modal-open");
+  }
+}
+
+function getActiveSupportTicket() {
+  return supportTickets.find(function (ticket) {
+    return ticket.id === activeSupportTicketId;
+  }) || null;
+}
+
+function renderSupportDetail(ticket) {
+  const status = ticket.status || "open";
+  const messages = Array.isArray(ticket.messages) ? ticket.messages : [];
+
+  supportDetailCategory.textContent = ticket.category || "Support Request";
+  supportDetailTitle.textContent = ticket.subject || "Support Request";
+  supportDetailSummary.textContent = "Status: " + getSupportStatusLabel(status) + " · Submitted " + getSupportDate(ticket.createdAt);
+
+  supportDetailThread.innerHTML = messages.map(function (message) {
+    const senderLabel = message.sender === "admin" ? "The Computer Shop" : "You";
+
+    return `
+      <article class="account-support-message ${escapeHtml(message.sender || "customer")}">
+        <div class="account-support-message-head">
+          <strong>${escapeHtml(senderLabel)}</strong>
+          <span>${escapeHtml(getSupportDate(message.createdAt))}</span>
+        </div>
+
+        <p>${escapeHtml(message.message || "")}</p>
+      </article>
+    `;
+  }).join("");
+
+  const isClosed = status === "closed" || status === "resolved";
+
+  supportReplyMessage.disabled = isClosed;
+  supportReplySubmit.disabled = isClosed;
+  supportMarkResolvedButton.disabled = isClosed;
+
+  if (isClosed) {
+    supportReplyMessage.placeholder = "This request is already " + getSupportStatusLabel(status).toLowerCase() + ".";
+  } else {
+    supportReplyMessage.placeholder = "";
+  }
+}
+
+function openSupportDetail(ticketId) {
+  activeSupportTicketId = ticketId;
+  const ticket = getActiveSupportTicket();
+
+  if (!ticket) {
+    return;
+  }
+
+  supportReplyForm.reset();
+  showMessage(supportReplyMessageStatus, "", "");
+  renderSupportDetail(ticket);
+  supportDetailModal.hidden = false;
+  document.body.classList.add("account-security-modal-open");
+}
+
+function closeSupportDetailModal() {
+  supportDetailModal.hidden = true;
+  activeSupportTicketId = "";
+  supportReplyForm.reset();
+  showMessage(supportReplyMessageStatus, "", "");
+
+  if (supportRequestModal.hidden) {
+    document.body.classList.remove("account-security-modal-open");
+  }
+}
+
 function showAddressFields() {
   const selectedType = addressType.value;
   const allAddressFields = document.querySelectorAll(".address-field");
@@ -1606,6 +1995,7 @@ onAuthStateChanged(auth, async function (user) {
   currentUser = user;
   accountEmail.value = user.email || "";
   startSavedItemsSync(user.uid);
+  startSupportTicketsSync(user.uid);
 
   accountName.value = user.displayName || "";
   originalUsername = user.displayName || "";
@@ -2009,6 +2399,193 @@ if (!requestedEmail) {
     signOutEverywhere();
   });
 
+  if (openSupportRequestButton) {
+    openSupportRequestButton.addEventListener("click", openSupportRequestModal);
+  }
+
+  if (supportRequestModalBackdrop) {
+    supportRequestModalBackdrop.addEventListener("click", closeSupportRequestModal);
+  }
+
+  if (supportRequestModalClose) {
+    supportRequestModalClose.addEventListener("click", closeSupportRequestModal);
+  }
+
+  if (supportRequestModalCancel) {
+    supportRequestModalCancel.addEventListener("click", closeSupportRequestModal);
+  }
+
+  if (supportDetailModalBackdrop) {
+    supportDetailModalBackdrop.addEventListener("click", closeSupportDetailModal);
+  }
+
+  if (supportDetailModalClose) {
+    supportDetailModalClose.addEventListener("click", closeSupportDetailModal);
+  }
+
+  if (supportTicketFilters) {
+    supportTicketFilters.addEventListener("click", function (event) {
+      const filterButton = event.target.closest("[data-support-filter]");
+
+      if (!filterButton) {
+        return;
+      }
+
+      activeSupportFilter = filterButton.dataset.supportFilter;
+
+      supportTicketFilters.querySelectorAll("[data-support-filter]").forEach(function (button) {
+        button.classList.toggle("active", button === filterButton);
+      });
+
+      renderSupportTickets();
+    });
+  }
+
+  if (supportTicketsList) {
+    supportTicketsList.addEventListener("click", function (event) {
+      const ticketCard = event.target.closest("[data-support-ticket-id]");
+
+      if (!ticketCard) {
+        return;
+      }
+
+      openSupportDetail(ticketCard.dataset.supportTicketId);
+    });
+  }
+
+  if (supportRequestForm) {
+    supportRequestForm.addEventListener("submit", async function (event) {
+      event.preventDefault();
+
+      if (!currentUser) {
+        return;
+      }
+
+      const category = supportRequestCategory.value;
+      const subject = supportRequestSubject.value.trim();
+      const message = supportRequestMessage.value.trim();
+
+      if (!subject || !message) {
+        showMessage(supportRequestFormMessage, "Please enter a subject and message.", "error");
+        return;
+      }
+
+      supportRequestSubmit.disabled = true;
+      supportRequestSubmit.textContent = "Submitting...";
+      showMessage(supportRequestFormMessage, "", "");
+
+      try {
+        await addDoc(collection(db, "supportTickets"), {
+          userId: currentUser.uid,
+          userName: accountName.value.trim() || currentUser.displayName || "Customer",
+          userEmail: currentUser.email || "",
+          category: category,
+          subject: subject,
+          message: message,
+          status: "open",
+          lastMessageFrom: "customer",
+          messages: [
+            {
+              sender: "customer",
+              name: accountName.value.trim() || currentUser.displayName || "Customer",
+              email: currentUser.email || "",
+              message: message,
+              createdAt: new Date().toISOString()
+            }
+          ],
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp()
+        });
+
+        closeSupportRequestModal();
+        showMessage(supportTicketsMessage, "Support request submitted.", "success");
+      } catch (error) {
+        showMessage(supportRequestFormMessage, "Could not submit your request. Please try again.", "error");
+      } finally {
+        supportRequestSubmit.disabled = false;
+        supportRequestSubmit.textContent = "Submit Request";
+      }
+    });
+  }
+
+  if (supportReplyForm) {
+    supportReplyForm.addEventListener("submit", async function (event) {
+      event.preventDefault();
+
+      if (!currentUser || !activeSupportTicketId) {
+        return;
+      }
+
+      const ticket = getActiveSupportTicket();
+
+      if (!ticket) {
+        return;
+      }
+
+      const replyText = supportReplyMessage.value.trim();
+
+      if (!replyText) {
+        showMessage(supportReplyMessageStatus, "Please enter your reply.", "error");
+        return;
+      }
+
+      supportReplySubmit.disabled = true;
+      supportReplySubmit.textContent = "Sending...";
+      showMessage(supportReplyMessageStatus, "", "");
+
+      try {
+        const messages = Array.isArray(ticket.messages) ? ticket.messages : [];
+
+        await updateDoc(doc(db, "supportTickets", activeSupportTicketId), {
+          status: "open",
+          lastMessageFrom: "customer",
+          messages: messages.concat([
+            {
+              sender: "customer",
+              name: accountName.value.trim() || currentUser.displayName || "Customer",
+              email: currentUser.email || "",
+              message: replyText,
+              createdAt: new Date().toISOString()
+            }
+          ]),
+          updatedAt: serverTimestamp()
+        });
+
+        supportReplyForm.reset();
+        showMessage(supportReplyMessageStatus, "Reply sent.", "success");
+      } catch (error) {
+        showMessage(supportReplyMessageStatus, "Could not send your reply. Please try again.", "error");
+      } finally {
+        supportReplySubmit.disabled = false;
+        supportReplySubmit.textContent = "Send Reply";
+      }
+    });
+  }
+
+  if (supportMarkResolvedButton) {
+    supportMarkResolvedButton.addEventListener("click", async function () {
+      if (!currentUser || !activeSupportTicketId) {
+        return;
+      }
+
+      supportMarkResolvedButton.disabled = true;
+      showMessage(supportReplyMessageStatus, "", "");
+
+      try {
+        await updateDoc(doc(db, "supportTickets", activeSupportTicketId), {
+          status: "resolved",
+          updatedAt: serverTimestamp()
+        });
+
+        showMessage(supportReplyMessageStatus, "Request marked as resolved.", "success");
+      } catch (error) {
+        showMessage(supportReplyMessageStatus, "Could not mark this request as resolved.", "error");
+      } finally {
+        supportMarkResolvedButton.disabled = false;
+      }
+    });
+  }
+
   if (savedItemsList) {
     savedItemsList.addEventListener("click", async function (event) {
       const removeButton = event.target.closest("[data-remove-saved-id]");
@@ -2036,6 +2613,7 @@ if (!requestedEmail) {
 
   logoutButton.addEventListener("click", async function () {
     stopSavedItemsSync();
+    stopSupportTicketsSync();
     clearSecurityUnlock();
     await signOut(auth);
     window.location.href = "signup.html";
