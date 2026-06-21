@@ -160,8 +160,23 @@ if (floatingAccountWidget) {
         }
       });
 
+      function showLoggedOutAccountState() {
+        loginLink.hidden = false;
+        accountLink.hidden = true;
+        logoutButton.hidden = true;
+        accountGreeting.textContent = "";
+        accountGreeting.hidden = true;
+      }
+
       onAuthStateChanged(auth, async function (user) {
         closeAccountMenu();
+
+        const twoFactorIsPending = sessionStorage.getItem("tcs-login-2fa-pending") === "1";
+
+        if (twoFactorIsPending) {
+          showLoggedOutAccountState();
+          return;
+        }
 
         if (user) {
           loginLink.hidden = true;
@@ -183,11 +198,7 @@ if (floatingAccountWidget) {
           accountGreeting.textContent = "Hello, " + firstName;
           accountGreeting.hidden = false;
         } else {
-          loginLink.hidden = false;
-          accountLink.hidden = true;
-          logoutButton.hidden = true;
-          accountGreeting.textContent = "";
-          accountGreeting.hidden = true;
+          showLoggedOutAccountState();
         }
       });
 
