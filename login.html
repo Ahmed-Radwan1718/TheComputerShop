@@ -54,17 +54,66 @@
   </section>
 </main>
 
+<div class="auth-two-factor-panel" id="login-two-factor-panel" hidden>
+  <div class="auth-two-factor-card">
+    <div class="auth-two-factor-header">
+      <p class="auth-two-factor-eyebrow">Two-Factor Authentication</p>
+      <h2 id="login-two-factor-title">Enter Verification Code</h2>
+      <p id="login-two-factor-text">Enter the code required to finish signing in.</p>
+    </div>
+
+    <form class="auth-form" id="login-two-factor-form">
+      <div class="auth-field">
+        <label for="login-two-factor-code">Verification Code</label>
+        <input type="text" id="login-two-factor-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required>
+      </div>
+
+      <button class="auth-button" type="submit" id="login-two-factor-submit">
+        Continue
+      </button>
+
+      <button class="auth-two-factor-link-button" type="button" id="login-use-email-code" hidden>
+        Lost access to your authenticator app? Use email instead.
+      </button>
+
+      <button class="auth-two-factor-link-button muted" type="button" id="login-two-factor-cancel">
+        Cancel sign in
+      </button>
+
+      <p class="auth-message" id="login-two-factor-message" aria-live="polite"></p>
+    </form>
+  </div>
+</div>
+
 <script type="module">
   import "./auth.js";
 
   const {
     auth,
-    signInWithEmailAndPassword
+    db,
+    signInWithEmailAndPassword,
+    signOut,
+    doc,
+    getDoc
   } = window.tcsAuth;
 
   const loginForm = document.getElementById("login-form");
   const loginButton = document.getElementById("login-submit");
   const loginMessage = document.getElementById("login-message");
+
+  const twoFactorPanel = document.getElementById("login-two-factor-panel");
+  const twoFactorForm = document.getElementById("login-two-factor-form");
+  const twoFactorTitle = document.getElementById("login-two-factor-title");
+  const twoFactorText = document.getElementById("login-two-factor-text");
+  const twoFactorCode = document.getElementById("login-two-factor-code");
+  const twoFactorSubmit = document.getElementById("login-two-factor-submit");
+  const twoFactorMessage = document.getElementById("login-two-factor-message");
+  const useEmailCodeButton = document.getElementById("login-use-email-code");
+  const twoFactorCancelButton = document.getElementById("login-two-factor-cancel");
+
+  let pendingLoginUser = null;
+  let pendingTwoFactorSettings = {};
+  let activeTwoFactorMethod = "";
 
   function showMessage(message, type) {
     loginMessage.textContent = message;
@@ -72,6 +121,15 @@
 
     if (type) {
       loginMessage.classList.add(type);
+    }
+  }
+
+  function showTwoFactorMessage(message, type) {
+    twoFactorMessage.textContent = message;
+    twoFactorMessage.className = "auth-message";
+
+    if (type) {
+      twoFactorMessage.classList.add(type);
     }
   }
 
@@ -94,6 +152,145 @@
     }
   }
 
+  function getMaskedEmail(email) {
+    if (!email || !email.includes("@")) {
+      return "your email";
+    }
+
+    const parts = email.split("@");
+    const name = parts[0];
+    const domain = parts.slice(1).join("@");
+
+    if (name.length <= 2) {
+      return name.charAt(0) + "***@" + domain;
+    }
+
+    return name.charAt(0) + "***" + name.charAt(name.length - 1) + "@" + domain;
+  }
+
+  async function getLoginRequestHeaders() {
+    if (!pendingLoginUser) {
+      throw new Error("Missing login session.");
+    }
+
+    const idToken = await pendingLoginUser.getIdToken(true);
+
+    return {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + idToken
+    };
+  }
+
+  function finishLogin() {
+    showTwoFactorMessage("Logged in successfully.", "success");
+
+    setTimeout(function () {
+      window.location.href = "index.html";
+    }, 700);
+  }
+
+  function openTwoFactorPanel(method) {
+    activeTwoFactorMethod = method;
+    twoFactorCode.value = "";
+    showTwoFactorMessage("", "");
+    loginForm.hidden = true;
+
+    document.querySelectorAll(".auth-panel-footer").forEach(function (footer) {
+      footer.hidden = true;
+    });
+
+    twoFactorPanel.hidden = false;
+
+    if (method === "app") {
+      twoFactorTitle.textContent = "Enter Authenticator Code";
+      twoFactorText.textContent = "Open your authenticator app and enter the 6-digit code for The Computer Shop.";
+      useEmailCodeButton.hidden = !pendingTwoFactorSettings.emailEnabled;
+    } else {
+      twoFactorTitle.textContent = "Check Your Email";
+      twoFactorText.textContent = "Enter the 6-digit code sent to " + getMaskedEmail(pendingLoginUser && pendingLoginUser.email ? pendingLoginUser.email : "") + ".";
+      useEmailCodeButton.hidden = true;
+    }
+
+    setTimeout(function () {
+      twoFactorCode.focus();
+    }, 50);
+  }
+
+  async function sendLoginEmailCode() {
+    const response = await fetch("/api/send-security-code", {
+      method: "POST",
+      headers: await getLoginRequestHeaders(),
+      body: JSON.stringify({ reason: "login-email" })
+    });
+
+    const data = await response.json().catch(function () {
+      return {};
+    });
+
+    if (!response.ok) {
+      throw new Error(data.error || "Could not send email code.");
+    }
+
+    return data;
+  }
+
+  async function verifyEmailLoginCode(code) {
+    const response = await fetch("/api/verify-security-code", {
+      method: "POST",
+      headers: await getLoginRequestHeaders(),
+      body: JSON.stringify({ code: code })
+    });
+
+    const data = await response.json().catch(function () {
+      return {};
+    });
+
+    if (!response.ok) {
+      throw new Error(data.error || "The email code is incorrect.");
+    }
+
+    return data;
+  }
+
+  async function verifyAppLoginCode(code) {
+    const response = await fetch("/api/verify-login-authenticator", {
+      method: "POST",
+      headers: await getLoginRequestHeaders(),
+      body: JSON.stringify({ code: code })
+    });
+
+    const data = await response.json().catch(function () {
+      return {};
+    });
+
+    if (!response.ok) {
+      throw new Error(data.error || "The authenticator code is incorrect.");
+    }
+
+    return data;
+  }
+
+  async function requireTwoFactorForUser(user) {
+    const userDoc = await getDoc(doc(db, "users", user.uid));
+    const twoFactor = userDoc.exists() && userDoc.data().twoFactor ? userDoc.data().twoFactor : {};
+
+    pendingLoginUser = user;
+    pendingTwoFactorSettings = twoFactor;
+
+    if (twoFactor.appEnabled) {
+      openTwoFactorPanel("app");
+      return true;
+    }
+
+    if (twoFactor.emailEnabled) {
+      await sendLoginEmailCode();
+      openTwoFactorPanel("email");
+      return true;
+    }
+
+    return false;
+  }
+
   loginForm.addEventListener("submit", async function (event) {
     event.preventDefault();
 
@@ -105,7 +302,13 @@
     showMessage("", "");
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const credential = await signInWithEmailAndPassword(auth, email, password);
+      const needsTwoFactor = await requireTwoFactorForUser(credential.user);
+
+      if (needsTwoFactor) {
+        showMessage("", "");
+        return;
+      }
 
       showMessage("Logged in successfully.", "success");
 
@@ -114,10 +317,80 @@
       }, 800);
     } catch (error) {
       showMessage(getReadableAuthError(error), "error");
+      await signOut(auth).catch(function () {});
     } finally {
       loginButton.disabled = false;
       loginButton.textContent = "Log In";
     }
+  });
+
+  twoFactorCode.addEventListener("input", function () {
+    twoFactorCode.value = twoFactorCode.value.replace(/\D/g, "").slice(0, 6);
+  });
+
+  twoFactorForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const code = twoFactorCode.value.trim();
+
+    if (code.length !== 6) {
+      showTwoFactorMessage("Please enter the 6-digit code.", "error");
+      return;
+    }
+
+    twoFactorSubmit.disabled = true;
+    twoFactorSubmit.textContent = "Verifying...";
+    showTwoFactorMessage("", "");
+
+    try {
+      if (activeTwoFactorMethod === "app") {
+        await verifyAppLoginCode(code);
+      } else {
+        await verifyEmailLoginCode(code);
+      }
+
+      finishLogin();
+    } catch (error) {
+      showTwoFactorMessage(error.message || "The code is incorrect.", "error");
+      twoFactorCode.value = "";
+      twoFactorCode.focus();
+    } finally {
+      twoFactorSubmit.disabled = false;
+      twoFactorSubmit.textContent = "Continue";
+    }
+  });
+
+  useEmailCodeButton.addEventListener("click", async function () {
+    useEmailCodeButton.disabled = true;
+    useEmailCodeButton.textContent = "Sending email code...";
+    showTwoFactorMessage("", "");
+
+    try {
+      await sendLoginEmailCode();
+      openTwoFactorPanel("email");
+      showTwoFactorMessage("Email code sent.", "success");
+    } catch (error) {
+      showTwoFactorMessage(error.message || "Could not send email code.", "error");
+    } finally {
+      useEmailCodeButton.disabled = false;
+      useEmailCodeButton.textContent = "Lost access to your authenticator app? Use email instead.";
+    }
+  });
+
+  twoFactorCancelButton.addEventListener("click", async function () {
+    await signOut(auth).catch(function () {});
+    pendingLoginUser = null;
+    pendingTwoFactorSettings = {};
+    activeTwoFactorMethod = "";
+    twoFactorPanel.hidden = true;
+    loginForm.hidden = false;
+
+    document.querySelectorAll(".auth-panel-footer").forEach(function (footer) {
+      footer.hidden = false;
+    });
+
+    showTwoFactorMessage("", "");
+    showMessage("Sign in cancelled.", "error");
   });
 </script>
 
