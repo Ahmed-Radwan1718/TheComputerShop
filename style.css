@@ -2781,6 +2781,24 @@ body.nav-menu-open {
   opacity: 0.72;
 }
 
+.product-save-message {
+  grid-column: 1 / -1;
+  min-height: 20px;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.product-save-message.success {
+  color: rgba(185, 255, 202, 0.9);
+}
+
+.product-save-message.error {
+  color: rgba(255, 156, 156, 0.95);
+}
+
 .cart-transition-overlay {
   position: fixed;
   inset: 0;
@@ -6650,6 +6668,131 @@ body.account-security-modal-open {
   line-height: 1.75;
 }
 
+.account-saved-loading {
+  padding: 18px 0;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.account-saved-loading[hidden] {
+  display: none;
+}
+
+.account-saved-list {
+  display: grid;
+  gap: 14px;
+}
+
+.account-saved-list:empty {
+  display: none;
+}
+
+.account-saved-item {
+  padding: 18px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.105);
+  background: rgba(255, 255, 255, 0.045);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: center;
+}
+
+.account-saved-item-main,
+.account-saved-item-main:visited {
+  min-width: 0;
+  color: white;
+  text-decoration: none;
+  display: grid;
+  grid-template-columns: 118px minmax(0, 1fr);
+  gap: 18px;
+  align-items: center;
+}
+
+.account-saved-item-image-frame {
+  width: 118px;
+  aspect-ratio: 1 / 1;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.055);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.account-saved-item-image-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.account-saved-item-info {
+  min-width: 0;
+  display: grid;
+  gap: 7px;
+}
+
+.account-saved-item-info span {
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.account-saved-item-info h3 {
+  color: white;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.account-saved-item-info p {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.account-saved-item-info strong {
+  color: white;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.account-saved-remove-button {
+  min-height: 42px;
+  padding: 0 18px;
+  border: 1px solid rgba(255, 156, 156, 0.28);
+  border-radius: 999px;
+  background: rgba(255, 156, 156, 0.12);
+  color: rgba(255, 176, 176, 0.96);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.account-saved-remove-button:hover {
+  background: rgba(255, 156, 156, 0.18);
+  border-color: rgba(255, 156, 156, 0.42);
+}
+
+.account-saved-remove-button:disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
+}
+
 @media (max-width: 900px) {
   .account-page {
     padding-top: 88px;
@@ -6682,8 +6825,14 @@ body.account-security-modal-open {
   }
 
   .account-form-grid,
-  .account-status-grid {
+  .account-status-grid,
+  .account-saved-item,
+  .account-saved-item-main {
     grid-template-columns: 1fr;
+  }
+
+  .account-saved-item-image-frame {
+    width: 100%;
   }
 
   .account-primary-button {
