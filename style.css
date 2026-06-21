@@ -706,7 +706,7 @@ body {
   z-index: 90;
   width: min(1120px, calc(100% - 48px));
   min-height: 62px;
-  padding: 0 74px 0 24px;
+  padding: 0 14px 0 24px;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.11);
   background: rgba(24, 25, 24, 0.88);
@@ -5529,8 +5529,8 @@ body.nav-menu-open {
 
 .floating-account-widget {
   position: fixed;
-  top: 32px;
-  right: max(40px, calc((100vw - 1120px) / 2 + 16px));
+  top: 28px;
+  right: 34px;
   z-index: 1003;
   display: flex;
   align-items: center;
@@ -5650,6 +5650,24 @@ body.nav-menu-open {
 
 .floating-account-logout:hover {
   color: rgb(255, 120, 120);
+}
+
+@media (min-width: 901px) and (max-width: 1240px) {
+  .site-header {
+    padding-right: 74px;
+  }
+
+  .floating-account-widget {
+    top: 32px;
+    right: max(40px, calc((100vw - 1120px) / 2 + 16px));
+  }
+
+  .floating-account-greeting {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 }
 
 @media (max-width: 900px) {
