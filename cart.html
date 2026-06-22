@@ -93,22 +93,8 @@
 </footer>
 
 
-<script type="module">
-  import "./auth.js";
-
-  const {
-    auth,
-    db,
-    onAuthStateChanged,
-    doc,
-    collection,
-    addDoc,
-    getDoc,
-    setDoc,
-    deleteDoc,
-    onSnapshot,
-    serverTimestamp
-  } = window.tcsAuth;
+<script>
+  document.addEventListener("keydown", function (event) {
 
   const cartItems = document.getElementById("cart-items");
   const cartEmpty = document.getElementById("cart-empty");
