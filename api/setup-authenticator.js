@@ -12,7 +12,10 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const decodedUser = await getUserFromRequest(req);
+const decodedUser = await getUserFromRequest(req, {
+  checkRevoked: true,
+  requireCompletedTwoFactor: true
+});
 
     if (!decodedUser.email) {
       return res.status(400).json({ error: "No email address found on this account." });
