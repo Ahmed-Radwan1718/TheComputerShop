@@ -113,8 +113,10 @@ if (floatingAccountWidget) {
     const accountLink = document.getElementById("floating-account-link");
     const logoutButton = document.getElementById("floating-logout-button");
 
-    if (accountWidget && accountGreeting && accountButton && accountMenu && loginLink && accountLink && logoutButton && window.tcsAuth) {
-      const { auth, db, onAuthStateChanged, signOut, doc, getDoc } = window.tcsAuth;
+    if (accountWidget && accountGreeting && accountButton && accountMenu && loginLink && accountLink && logoutButton) {
+      const firebaseAuth = window.tcsAuth || {};
+      const auth = firebaseAuth.auth || null;
+      const signOut = firebaseAuth.signOut || null;
 
       function closeAccountMenu() {
         accountMenu.hidden = true;
@@ -136,6 +138,69 @@ if (floatingAccountWidget) {
         }
 
         return "there";
+      }
+
+      function showLoggedOutAccountState() {
+        loginLink.hidden = false;
+        accountLink.hidden = true;
+        logoutButton.hidden = true;
+        accountGreeting.textContent = "";
+        accountGreeting.hidden = true;
+      }
+
+      function showLoggedInAccountState(user) {
+        const firstName = getFirstName(user.fullName || "", user.email || "");
+
+        loginLink.hidden = true;
+        accountLink.hidden = false;
+        logoutButton.hidden = false;
+        accountGreeting.textContent = "Hello, " + firstName;
+        accountGreeting.hidden = false;
+      }
+
+      async function loadServerAccountState() {
+        closeAccountMenu();
+
+        const twoFactorIsPending = sessionStorage.getItem("tcs-login-2fa-pending") === "1";
+
+        if (twoFactorIsPending) {
+          showLoggedOutAccountState();
+          return;
+        }
+
+        try {
+          const response = await fetch("/api/me", {
+            method: "GET",
+            credentials: "same-origin",
+            headers: {
+              "Accept": "application/json"
+            }
+          });
+
+          const data = await response.json().catch(function () {
+            return {};
+          });
+
+          if (!response.ok || !data.signedIn || !data.user) {
+            showLoggedOutAccountState();
+            return;
+          }
+
+          showLoggedInAccountState(data.user);
+        } catch (error) {
+          showLoggedOutAccountState();
+        }
+      }
+
+      async function logoutServerSession() {
+        await fetch("/api/logout", {
+          method: "POST",
+          credentials: "same-origin",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({})
+        }).catch(function () {});
       }
 
       accountButton.addEventListener("click", function (event) {
@@ -160,53 +225,25 @@ if (floatingAccountWidget) {
         }
       });
 
-      function showLoggedOutAccountState() {
-        loginLink.hidden = false;
-        accountLink.hidden = true;
-        logoutButton.hidden = true;
-        accountGreeting.textContent = "";
-        accountGreeting.hidden = true;
-      }
-
-      onAuthStateChanged(auth, async function (user) {
-        closeAccountMenu();
-
-        const twoFactorIsPending = sessionStorage.getItem("tcs-login-2fa-pending") === "1";
-
-        if (twoFactorIsPending) {
-          showLoggedOutAccountState();
-          return;
-        }
-
-        if (user) {
-          loginLink.hidden = true;
-          accountLink.hidden = false;
-          logoutButton.hidden = false;
-
-          let firstName = getFirstName("", user.email || "");
-
-          try {
-            const userDoc = await getDoc(doc(db, "users", user.uid));
-
-            if (userDoc.exists()) {
-              firstName = getFirstName(userDoc.data().fullName || "", user.email || "");
-            }
-          } catch (error) {
-            firstName = getFirstName("", user.email || "");
-          }
-
-          accountGreeting.textContent = "Hello, " + firstName;
-          accountGreeting.hidden = false;
-        } else {
-          showLoggedOutAccountState();
-        }
-      });
-
       logoutButton.addEventListener("click", async function () {
-        await signOut(auth);
+        logoutButton.disabled = true;
+
+        await logoutServerSession();
+
+        if (auth && signOut) {
+          await signOut(auth).catch(function () {});
+        }
+
+        sessionStorage.removeItem("tcs-login-2fa-pending");
         closeAccountMenu();
+        showLoggedOutAccountState();
+
         window.location.href = "index.html";
       });
+
+      loadServerAccountState();
+
+      window.tcsReloadAccountHeader = loadServerAccountState;
     }
   `;
 
