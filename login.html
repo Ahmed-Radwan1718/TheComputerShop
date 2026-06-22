@@ -107,12 +107,8 @@
 
   const {
     auth,
-    db,
-    signInWithEmailAndPassword,
-    signOut,
-    onAuthStateChanged,
-    doc,
-    getDoc
+    signInWithCustomToken,
+    signOut
   } = window.tcsAuth;
 
   const loginForm = document.getElementById("login-form");
@@ -130,8 +126,8 @@
   const useEmailCodeButton = document.getElementById("login-use-email-code");
   const twoFactorCancelButton = document.getElementById("login-two-factor-cancel");
 
-  let pendingLoginUser = null;
   let pendingTwoFactorSettings = {};
+  let pendingMaskedEmail = "";
   let activeTwoFactorMethod = "";
   let twoFactorFlowActive = false;
 
@@ -155,54 +151,6 @@
     }
   }
 
-  function getReadableAuthError(error) {
-    switch (error.code) {
-      case "auth/invalid-email":
-        return "Please enter a valid email address.";
-      case "auth/user-disabled":
-        return "This account has been disabled.";
-      case "auth/invalid-credential":
-      case "auth/wrong-password":
-      case "auth/user-not-found":
-        return "Incorrect email or password.";
-      case "auth/too-many-requests":
-        return "Too many failed attempts. Please wait before trying again.";
-      case "auth/network-request-failed":
-        return "Network error. Please check your connection and try again.";
-      default:
-        return "Something went wrong. Please try again.";
-    }
-  }
-
-  function getMaskedEmail(email) {
-    if (!email || !email.includes("@")) {
-      return "your email";
-    }
-
-    const parts = email.split("@");
-    const name = parts[0];
-    const domain = parts.slice(1).join("@");
-
-    if (name.length <= 2) {
-      return name.charAt(0) + "***@" + domain;
-    }
-
-    return name.charAt(0) + "***" + name.charAt(name.length - 1) + "@" + domain;
-  }
-
-  async function getLoginRequestHeaders() {
-    if (!pendingLoginUser) {
-      throw new Error("Missing login session.");
-    }
-
-    const idToken = await pendingLoginUser.getIdToken(true);
-
-    return {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer " + idToken
-    };
-  }
-
   function markTwoFactorPending() {
     sessionStorage.setItem(pendingTwoFactorKey, "1");
   }
@@ -221,6 +169,27 @@
     }
 
     return "index.html";
+  }
+
+  async function syncFirebaseClientSession() {
+    const response = await fetch("/api/client-token", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({})
+    });
+
+    const data = await response.json().catch(function () {
+      return {};
+    });
+
+    if (!response.ok || !data.customToken) {
+      throw new Error(data.error || "Could not start account session.");
+    }
+
+    await signInWithCustomToken(auth, data.customToken);
   }
 
   function finishLogin() {
@@ -267,10 +236,10 @@
     if (method === "app") {
       twoFactorTitle.textContent = "Enter Authenticator Code";
       twoFactorText.textContent = "Open your authenticator app and enter the 6-digit code for The Computer Shop.";
-      useEmailCodeButton.hidden = !pendingTwoFactorSettings.emailEnabled;
+      useEmailCodeButton.hidden = !pendingTwoFactorSettings.email;
     } else {
       twoFactorTitle.textContent = "Check Your Email";
-      twoFactorText.textContent = "Enter the 6-digit code sent to " + getMaskedEmail(pendingLoginUser && pendingLoginUser.email ? pendingLoginUser.email : "") + ".";
+      twoFactorText.textContent = "Enter the 6-digit code sent to " + (pendingMaskedEmail || "your email") + ".";
       useEmailCodeButton.hidden = true;
     }
 
@@ -280,12 +249,14 @@
   }
 
   async function sendLoginEmailCode() {
-const response = await fetch("/api/send-security-code", {
-  method: "POST",
-  credentials: "same-origin",
-  headers: await getLoginRequestHeaders(),
-  body: JSON.stringify({ reason: "login-email" })
-});
+    const response = await fetch("/api/login-send-email-code", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({})
+    });
 
     const data = await response.json().catch(function () {
       return {};
@@ -299,12 +270,14 @@ const response = await fetch("/api/send-security-code", {
   }
 
   async function verifyEmailLoginCode(code) {
-const response = await fetch("/api/verify-security-code", {
-  method: "POST",
-  credentials: "same-origin",
-  headers: await getLoginRequestHeaders(),
-  body: JSON.stringify({ code: code })
-});
+    const response = await fetch("/api/login-verify-email-code", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ code: code })
+    });
 
     const data = await response.json().catch(function () {
       return {};
@@ -318,12 +291,14 @@ const response = await fetch("/api/verify-security-code", {
   }
 
   async function verifyAppLoginCode(code) {
-const response = await fetch("/api/verify-login-authenticator", {
-  method: "POST",
-  credentials: "same-origin",
-  headers: await getLoginRequestHeaders(),
-  body: JSON.stringify({ code: code })
-});
+    const response = await fetch("/api/login-verify-authenticator", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ code: code })
+    });
 
     const data = await response.json().catch(function () {
       return {};
@@ -336,25 +311,15 @@ const response = await fetch("/api/verify-login-authenticator", {
     return data;
   }
 
-  async function requireTwoFactorForUser(user) {
-    const userDoc = await getDoc(doc(db, "users", user.uid));
-    const twoFactor = userDoc.exists() && userDoc.data().twoFactor ? userDoc.data().twoFactor : {};
-
-    pendingLoginUser = user;
-    pendingTwoFactorSettings = twoFactor;
-
-    if (twoFactor.appEnabled) {
-      openTwoFactorPanel("app");
-      return true;
-    }
-
-    if (twoFactor.emailEnabled) {
-      await sendLoginEmailCode();
-      openTwoFactorPanel("email");
-      return true;
-    }
-
-    return false;
+  async function cancelServerLogin() {
+    await fetch("/api/logout", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({})
+    }).catch(function () {});
   }
 
   passwordVisibilityToggles.forEach(function (toggleButton) {
@@ -399,13 +364,48 @@ const response = await fetch("/api/verify-login-authenticator", {
     showMessage("", "");
 
     try {
-      const credential = await signInWithEmailAndPassword(auth, email, password);
-      const needsTwoFactor = await requireTwoFactorForUser(credential.user);
+      const response = await fetch("/api/login", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password
+        })
+      });
 
-      if (needsTwoFactor) {
-        showMessage("", "");
-        return;
+      const data = await response.json().catch(function () {
+        return {};
+      });
+
+      if (!response.ok) {
+        throw new Error(data.error || "Incorrect email or password.");
       }
+
+      if (data.requiresTwoFactor) {
+        pendingTwoFactorSettings = data.methods || {};
+        pendingMaskedEmail = data.maskedEmail || "";
+
+        if (pendingTwoFactorSettings.app) {
+          openTwoFactorPanel("app");
+          showMessage("", "");
+          return;
+        }
+
+        if (pendingTwoFactorSettings.email) {
+          await sendLoginEmailCode();
+          openTwoFactorPanel("email");
+          showMessage("", "");
+          showTwoFactorMessage("Email code sent.", "success");
+          return;
+        }
+
+        throw new Error("No two-factor method is available.");
+      }
+
+      await syncFirebaseClientSession();
 
       showMessage("Logged in successfully.", "success");
 
@@ -414,8 +414,9 @@ const response = await fetch("/api/verify-login-authenticator", {
       }, 800);
     } catch (error) {
       clearTwoFactorPending();
-      showMessage(getReadableAuthError(error), "error");
+      await cancelServerLogin();
       await signOut(auth).catch(function () {});
+      showMessage(error.message || "Something went wrong. Please try again.", "error");
     } finally {
       loginButton.disabled = false;
       loginButton.textContent = "Log In";
@@ -479,6 +480,7 @@ const response = await fetch("/api/verify-login-authenticator", {
         await verifyEmailLoginCode(code);
       }
 
+      await syncFirebaseClientSession();
       finishLogin();
     } catch (error) {
       showTwoFactorMessage(error.message || "The code is incorrect.", "error");
@@ -509,9 +511,10 @@ const response = await fetch("/api/verify-login-authenticator", {
 
   twoFactorCancelButton.addEventListener("click", async function () {
     clearTwoFactorPending();
+    await cancelServerLogin();
     await signOut(auth).catch(function () {});
-    pendingLoginUser = null;
     pendingTwoFactorSettings = {};
+    pendingMaskedEmail = "";
     activeTwoFactorMethod = "";
     twoFactorPanel.hidden = true;
     loginForm.hidden = false;
@@ -522,14 +525,6 @@ const response = await fetch("/api/verify-login-authenticator", {
 
     showTwoFactorMessage("", "");
     showMessage("Sign in cancelled.", "error");
-  });
-
-  onAuthStateChanged(auth, async function (user) {
-    if (user && sessionStorage.getItem(pendingTwoFactorKey) === "1" && !twoFactorFlowActive) {
-      clearTwoFactorPending();
-      await signOut(auth).catch(function () {});
-      showMessage("Sign in restarted because two-factor verification was not completed.", "error");
-    }
   });
 </script>
 
