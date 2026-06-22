@@ -3,76 +3,18 @@ const { authenticator } = require("otplib");
 
 const {
   getUserFromRequest,
-  isExpired
+  isExpired,
+  checkAttemptLock,
+  recordAttemptFailure,
+  clearAttemptFailures
 } = require("./_lib/securityHelpers");
 
-const MAX_2FA_ATTEMPTS = 3;
-const ATTEMPT_WINDOW_MS = 30 * 60 * 1000;
-const LOCKOUT_MS = 30 * 60 * 1000;
+const {
+  hasValidSecurityUnlockSession
+} = require("./_lib/securityUnlockHelpers");
 
 function cleanCode(code) {
   return String(code || "").replace(/\D/g, "");
-}
-
-function getAttemptRef(db, uid, purpose) {
-  return db.collection("twoFactorAttempts").doc(uid + "_" + purpose);
-}
-
-async function checkTwoFactorLock(db, uid, purpose) {
-  const ref = getAttemptRef(db, uid, purpose);
-  const doc = await ref.get();
-
-  if (!doc.exists) {
-    return;
-  }
-
-  const data = doc.data();
-  const lockedUntil = data.lockedUntil && data.lockedUntil.toDate ? data.lockedUntil.toDate() : null;
-  const resetAt = data.resetAt && data.resetAt.toDate ? data.resetAt.toDate() : null;
-
-  if (lockedUntil && lockedUntil.getTime() > Date.now()) {
-    const error = new Error("Too many incorrect codes. Please wait 30 minutes before trying again.");
-    error.statusCode = 429;
-    throw error;
-  }
-
-  if (resetAt && resetAt.getTime() <= Date.now()) {
-    await ref.delete().catch(function () {});
-  }
-}
-
-async function recordTwoFactorFailure(db, uid, purpose) {
-  const ref = getAttemptRef(db, uid, purpose);
-  const doc = await ref.get();
-
-  let attempts = 1;
-
-  if (doc.exists) {
-    const data = doc.data();
-    const resetAt = data.resetAt && data.resetAt.toDate ? data.resetAt.toDate() : null;
-
-    if (resetAt && resetAt.getTime() > Date.now()) {
-      attempts = Number(data.attempts || 0) + 1;
-    }
-  }
-
-  const updateData = {
-    attempts,
-    updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-    resetAt: admin.firestore.Timestamp.fromDate(new Date(Date.now() + ATTEMPT_WINDOW_MS))
-  };
-
-  if (attempts >= MAX_2FA_ATTEMPTS) {
-    updateData.lockedUntil = admin.firestore.Timestamp.fromDate(new Date(Date.now() + LOCKOUT_MS));
-  }
-
-  await ref.set(updateData, { merge: true });
-
-  return attempts >= MAX_2FA_ATTEMPTS;
-}
-
-async function clearTwoFactorFailures(db, uid, purpose) {
-  await getAttemptRef(db, uid, purpose).delete().catch(function () {});
 }
 
 module.exports = async function handler(req, res) {
@@ -86,6 +28,14 @@ module.exports = async function handler(req, res) {
       requireCompletedTwoFactor: true
     });
 
+    const hasSecurityUnlock = await hasValidSecurityUnlockSession(req, decodedUser.uid);
+
+    if (!hasSecurityUnlock) {
+      return res.status(403).json({
+        error: "Security session expired. Please verify again."
+      });
+    }
+
     const code = cleanCode((req.body || {}).code);
 
     if (!code || code.length !== 6) {
@@ -93,6 +43,9 @@ module.exports = async function handler(req, res) {
     }
 
     const db = admin.firestore();
+
+    await checkAttemptLock(db, decodedUser.uid, "setup_app");
+
     const setupRef = db.collection("authenticatorSetupSessions").doc(decodedUser.uid);
     const setupDoc = await setupRef.get();
 
@@ -103,11 +56,9 @@ module.exports = async function handler(req, res) {
     const setupData = setupDoc.data();
 
     if (isExpired(setupData.expiresAt)) {
-      await setupRef.delete();
+      await setupRef.delete().catch(function () {});
       return res.status(400).json({ error: "Authenticator setup expired. Please start again." });
     }
-
-    await checkTwoFactorLock(db, decodedUser.uid, "setup_app");
 
     authenticator.options = { window: 1 };
 
@@ -117,7 +68,7 @@ module.exports = async function handler(req, res) {
     });
 
     if (!verified) {
-      const locked = await recordTwoFactorFailure(db, decodedUser.uid, "setup_app");
+      const locked = await recordAttemptFailure(db, decodedUser.uid, "setup_app");
 
       return res.status(locked ? 429 : 400).json({
         error: locked
@@ -128,13 +79,14 @@ module.exports = async function handler(req, res) {
 
     const userRef = db.collection("users").doc(decodedUser.uid);
     const userDoc = await userRef.get();
-    const existingTwoFactor = userDoc.exists && userDoc.data().twoFactor ? userDoc.data().twoFactor : {};
+    const existingTwoFactor =
+      userDoc.exists && userDoc.data().twoFactor ? userDoc.data().twoFactor : {};
 
     delete existingTwoFactor.appSecret;
 
     await db.collection("twoFactorSecrets").doc(decodedUser.uid).set({
       appSecret: setupData.secret,
-      email: decodedUser.email || "",
+      email: setupData.email || "",
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
       updatedAt: admin.firestore.FieldValue.serverTimestamp()
     }, { merge: true });
@@ -143,19 +95,23 @@ module.exports = async function handler(req, res) {
       twoFactor: {
         ...existingTwoFactor,
         appEnabled: true,
-        appEnabledAt: admin.firestore.FieldValue.serverTimestamp()
+        appEnabledAt: admin.firestore.FieldValue.serverTimestamp(),
+        appUpdatedAt: admin.firestore.FieldValue.serverTimestamp()
       },
       updatedAt: admin.firestore.FieldValue.serverTimestamp()
     }, { merge: true });
 
     await userRef.update({
-      "twoFactor.appSecret": admin.firestore.FieldValue.delete()
+      "twoFactor.appSecret": admin.firestore.FieldValue.delete(),
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
     }).catch(function () {});
 
-    await setupRef.delete();
-    await clearTwoFactorFailures(db, decodedUser.uid, "setup_app");
+    await setupRef.delete().catch(function () {});
+    await clearAttemptFailures(db, decodedUser.uid, "setup_app");
 
-    return res.status(200).json({ success: true });
+    return res.status(200).json({
+      success: true
+    });
   } catch (error) {
     return res.status(error.statusCode || 500).json({
       error: error.message || "Could not verify authenticator setup."
