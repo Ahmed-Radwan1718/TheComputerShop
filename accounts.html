@@ -2164,6 +2164,70 @@ function getAddressFormData() {
   };
 }
 
+async function loadServerAddresses() {
+  const response = await fetch("/api/account-addresses", {
+    method: "GET",
+    credentials: "same-origin",
+    headers: {
+      "Accept": "application/json"
+    }
+  });
+
+  const data = await response.json().catch(function () {
+    return {};
+  });
+
+  if (!response.ok || !Array.isArray(data.addresses)) {
+    throw new Error(data.error || "Could not load saved addresses.");
+  }
+
+  return data.addresses;
+}
+
+async function saveServerAddress(addressData) {
+  const response = await fetch("/api/account-addresses", {
+    method: "POST",
+    credentials: "same-origin",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(addressData)
+  });
+
+  const data = await response.json().catch(function () {
+    return {};
+  });
+
+  if (!response.ok || !data.address) {
+    throw new Error(data.error || "Could not save this address.");
+  }
+
+  return data.address;
+}
+
+async function deleteServerAddress(addressId) {
+  const response = await fetch("/api/account-addresses", {
+    method: "DELETE",
+    credentials: "same-origin",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      addressId: addressId
+    })
+  });
+
+  const data = await response.json().catch(function () {
+    return {};
+  });
+
+  if (!response.ok) {
+    throw new Error(data.error || "Could not remove this address.");
+  }
+
+  return data;
+}
+
 function renderSavedAddresses() {
   if (!addressesList || !addressesEmpty) {
     return;
@@ -2200,7 +2264,7 @@ function renderSavedAddresses() {
   }).join("");
 }
 
-function startAddressesSync(uid) {
+async function startAddressesSync(uid) {
   stopAddressesSync();
 
   if (!addressesList || !addressesEmpty) {
@@ -2210,23 +2274,12 @@ function startAddressesSync(uid) {
   savedAddresses = [];
   renderSavedAddresses();
 
-  addressesUnsubscribe = onSnapshot(collection(db, "users", uid, "addresses"), function (snapshot) {
-    savedAddresses = snapshot.docs.map(function (addressDoc) {
-      return {
-        id: addressDoc.id,
-        ...addressDoc.data()
-      };
-    }).sort(function (a, b) {
-      const aTime = a.updatedAt && typeof a.updatedAt.toMillis === "function" ? a.updatedAt.toMillis() : 0;
-      const bTime = b.updatedAt && typeof b.updatedAt.toMillis === "function" ? b.updatedAt.toMillis() : 0;
-
-      return bTime - aTime;
-    });
-
+  try {
+    savedAddresses = await loadServerAddresses();
     renderSavedAddresses();
-  }, function () {
-    showMessage(addressesMessage, "Could not load saved addresses. Please refresh and try again.", "error");
-  });
+  } catch (error) {
+    showMessage(addressesMessage, error.message || "Could not load saved addresses. Please refresh and try again.", "error");
+  }
 }
 
 async function saveAddress() {
@@ -2253,23 +2306,24 @@ async function saveAddress() {
   try {
     const existingAddressId = addressEditId.value;
 
+    const savedAddress = await saveServerAddress({
+      addressId: existingAddressId || "",
+      ...addressData
+    });
+
     if (existingAddressId) {
-      await setDoc(doc(db, "users", currentUser.uid, "addresses", existingAddressId), {
-        ...addressData,
-        updatedAt: serverTimestamp()
-      }, { merge: true });
-    } else {
-      await addDoc(collection(db, "users", currentUser.uid, "addresses"), {
-        ...addressData,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp()
+      savedAddresses = savedAddresses.map(function (address) {
+        return address.id === existingAddressId ? savedAddress : address;
       });
+    } else {
+      savedAddresses = [savedAddress].concat(savedAddresses);
     }
 
+    renderSavedAddresses();
     closeAddressModal();
     showMessage(addressesMessage, "Address saved.", "success");
   } catch (error) {
-    showMessage(addressModalMessage, "Could not save this address. Please try again.", "error");
+    showMessage(addressModalMessage, error.message || "Could not save this address. Please try again.", "error");
   } finally {
     saveAddressButton.disabled = false;
     saveAddressButton.textContent = addressEditId.value ? "Save Changes" : "Save Address";
@@ -2288,10 +2342,14 @@ async function deleteAddress(addressId) {
   }
 
   try {
-    await deleteDoc(doc(db, "users", currentUser.uid, "addresses", addressId));
+    await deleteServerAddress(addressId);
+    savedAddresses = savedAddresses.filter(function (address) {
+      return address.id !== addressId;
+    });
+    renderSavedAddresses();
     showMessage(addressesMessage, "Address removed.", "success");
   } catch (error) {
-    showMessage(addressesMessage, "Could not remove this address. Please try again.", "error");
+    showMessage(addressesMessage, error.message || "Could not remove this address. Please try again.", "error");
   }
 }
 
