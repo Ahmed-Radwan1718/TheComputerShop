@@ -1,7 +1,12 @@
 const {
   clearSiteSessionCookie,
-  clearLoginChallenge
+  clearLoginChallenge,
+  clearLoginTwoFactorCookie
 } = require("./_lib/securityHelpers");
+
+const {
+  clearSecurityUnlockSession
+} = require("./_lib/securityUnlockHelpers");
 
 module.exports = async function handler(req, res) {
   if (req.method !== "POST") {
@@ -10,12 +15,15 @@ module.exports = async function handler(req, res) {
 
   try {
     await clearLoginChallenge(req, res).catch(function () {});
+    await clearSecurityUnlockSession(req, res).catch(function () {});
+    clearLoginTwoFactorCookie(res);
     clearSiteSessionCookie(res);
 
     return res.status(200).json({
       success: true
     });
   } catch (error) {
+    clearLoginTwoFactorCookie(res);
     clearSiteSessionCookie(res);
 
     return res.status(200).json({
