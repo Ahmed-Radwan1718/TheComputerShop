@@ -1253,6 +1253,13 @@ async function signOutEverywhere() {
     return;
   }
 
+  const unlocked = await ensureSecurityUnlocked();
+
+  if (!unlocked) {
+    openSecurityGateModal();
+    return;
+  }
+
   const confirmed = window.confirm("This will sign your account out from every device. Continue?");
 
   if (!confirmed) {
@@ -1266,6 +1273,7 @@ async function signOutEverywhere() {
   try {
     const response = await fetch("/api/sign-out-everywhere", {
       method: "POST",
+      credentials: "same-origin",
       headers: await getSecurityRequestHeaders(),
       body: JSON.stringify({})
     });
@@ -1279,7 +1287,11 @@ async function signOutEverywhere() {
     }
 
     clearSecurityUnlock();
-    await signOut(auth);
+    sessionStorage.removeItem("tcs-login-2fa-pending");
+    localStorage.removeItem("tcs-login-redirect");
+
+    await signOut(auth).catch(function () {});
+
     window.location.href = "login.html";
   } catch (error) {
     showMessage(signOutEverywhereMessage, error.message || "Could not sign out from all devices.", "error");
