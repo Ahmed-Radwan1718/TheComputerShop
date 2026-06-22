@@ -1184,8 +1184,11 @@ async function disableAuthenticatorApp() {
   try {
     const response = await fetch("/api/disable-authenticator", {
       method: "POST",
+      credentials: "same-origin",
       headers: await getSecurityRequestHeaders(),
-      body: JSON.stringify({ code: code })
+      body: JSON.stringify({
+        code: code
+      })
     });
 
     const data = await response.json().catch(function () {
