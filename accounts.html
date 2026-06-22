@@ -1162,6 +1162,19 @@ async function startAuthenticatorSetup() {
 }
 
 async function disableAuthenticatorApp() {
+  const codeInput = window.prompt("Enter your 6-digit authenticator app code to disable app 2FA.");
+
+  if (codeInput === null) {
+    return;
+  }
+
+  const code = String(codeInput || "").replace(/\D/g, "");
+
+  if (code.length !== 6) {
+    showMessage(twoFactorMessage, "Please enter a valid 6-digit authenticator code.", "error");
+    return;
+  }
+
   const confirmed = window.confirm("Disable authenticator app 2FA for this account?");
 
   if (!confirmed) {
@@ -1175,7 +1188,7 @@ async function disableAuthenticatorApp() {
     const response = await fetch("/api/disable-authenticator", {
       method: "POST",
       headers: await getSecurityRequestHeaders(),
-      body: JSON.stringify({})
+      body: JSON.stringify({ code: code })
     });
 
     const data = await response.json().catch(function () {
