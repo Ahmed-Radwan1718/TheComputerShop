@@ -6,7 +6,8 @@ const {
   getSessionHash,
   createRandomToken,
   getUserFromRequest,
-  isExpired
+  isExpired,
+  createLoginTwoFactorSession
 } = require("./_lib/securityHelpers");
 
 module.exports = async function handler(req, res) {
@@ -58,6 +59,15 @@ module.exports = async function handler(req, res) {
 
       return res.status(400).json({ error: "The security code is incorrect." });
     }
+
+    if (data.reason === "login-email") {
+  await createLoginTwoFactorSession(decodedUser.uid, res);
+  await codeRef.delete();
+
+  return res.status(200).json({
+    success: true
+  });
+}
 
     const unlockToken = createRandomToken();
     const sessionSalt = admin.firestore().collection("_").doc().id;
