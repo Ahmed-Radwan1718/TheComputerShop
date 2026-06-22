@@ -964,6 +964,7 @@ let usernameEditMode = false;
 let emailLastChangedAt = null;
 let securityUnlockToken = "";
 let savedItemsUnsubscribe = null;
+let savedItems = [];
 let addressesUnsubscribe = null;
 let savedAddresses = [];
 let supportTicketsUnsubscribe = null;
@@ -1387,6 +1388,49 @@ function stopSavedItemsSync() {
   savedItemsUnsubscribe = null;
 }
 
+async function loadServerSavedItems() {
+  const response = await fetch("/api/saved-items", {
+    method: "GET",
+    credentials: "same-origin",
+    headers: {
+      "Accept": "application/json"
+    }
+  });
+
+  const data = await response.json().catch(function () {
+    return {};
+  });
+
+  if (!response.ok || !Array.isArray(data.items)) {
+    throw new Error(data.error || "Could not load saved items.");
+  }
+
+  return data.items;
+}
+
+async function deleteServerSavedItem(savedItemId) {
+  const response = await fetch("/api/saved-items", {
+    method: "DELETE",
+    credentials: "same-origin",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      itemId: savedItemId
+    })
+  });
+
+  const data = await response.json().catch(function () {
+    return {};
+  });
+
+  if (!response.ok) {
+    throw new Error(data.error || "Could not remove this saved item.");
+  }
+
+  return data;
+}
+
 function renderSavedItems(items) {
   if (!savedItemsList || !savedItemsEmpty || !savedItemsLoading) {
     return;
@@ -1433,7 +1477,7 @@ function renderSavedItems(items) {
   }).join("");
 }
 
-function startSavedItemsSync(uid) {
+async function startSavedItemsSync(uid) {
   stopSavedItemsSync();
 
   if (!savedItemsList || !savedItemsEmpty || !savedItemsLoading) {
@@ -1445,24 +1489,15 @@ function startSavedItemsSync(uid) {
   savedItemsList.innerHTML = "";
   showMessage(savedItemsMessage, "", "");
 
-  const savedItemsRef = collection(db, "users", uid, "savedForLater");
-
-  savedItemsUnsubscribe = onSnapshot(savedItemsRef, function (snapshot) {
-    const savedItems = snapshot.docs.map(function (savedDoc) {
-      return {
-        docId: savedDoc.id,
-        ...savedDoc.data()
-      };
-    }).sort(function (a, b) {
-      return getSavedItemTime(b) - getSavedItemTime(a);
-    });
-
+  try {
+    savedItems = await loadServerSavedItems();
     renderSavedItems(savedItems);
-  }, function () {
+  } catch (error) {
+    savedItems = [];
     savedItemsLoading.hidden = true;
     savedItemsEmpty.hidden = false;
-    showMessage(savedItemsMessage, "Could not load saved items. Please refresh and try again.", "error");
-  });
+    showMessage(savedItemsMessage, error.message || "Could not load saved items. Please refresh and try again.", "error");
+  }
 }
 
 function getSupportStatusLabel(status) {
@@ -3699,16 +3734,25 @@ if (!requestedEmail) {
       event.preventDefault();
       event.stopPropagation();
 
+      const savedItemId = removeButton.dataset.removeSavedId;
+
       removeButton.disabled = true;
       removeButton.textContent = "Removing...";
       showMessage(savedItemsMessage, "", "");
 
       try {
-        await deleteDoc(doc(db, "users", currentUser.uid, "savedForLater", removeButton.dataset.removeSavedId));
+        await deleteServerSavedItem(savedItemId);
+
+        savedItems = savedItems.filter(function (item) {
+          return item.docId !== savedItemId;
+        });
+
+        renderSavedItems(savedItems);
+        showMessage(savedItemsMessage, "Saved item removed.", "success");
       } catch (error) {
         removeButton.disabled = false;
         removeButton.textContent = "Remove";
-        showMessage(savedItemsMessage, "Could not remove this saved item. Please try again.", "error");
+        showMessage(savedItemsMessage, error.message || "Could not remove this saved item. Please try again.", "error");
       }
     });
   }
