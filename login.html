@@ -280,11 +280,12 @@
   }
 
   async function sendLoginEmailCode() {
-    const response = await fetch("/api/send-security-code", {
-      method: "POST",
-      headers: await getLoginRequestHeaders(),
-      body: JSON.stringify({ reason: "login-email" })
-    });
+const response = await fetch("/api/send-security-code", {
+  method: "POST",
+  credentials: "same-origin",
+  headers: await getLoginRequestHeaders(),
+  body: JSON.stringify({ reason: "login-email" })
+});
 
     const data = await response.json().catch(function () {
       return {};
@@ -298,11 +299,12 @@
   }
 
   async function verifyEmailLoginCode(code) {
-    const response = await fetch("/api/verify-security-code", {
-      method: "POST",
-      headers: await getLoginRequestHeaders(),
-      body: JSON.stringify({ code: code })
-    });
+const response = await fetch("/api/verify-security-code", {
+  method: "POST",
+  credentials: "same-origin",
+  headers: await getLoginRequestHeaders(),
+  body: JSON.stringify({ code: code })
+});
 
     const data = await response.json().catch(function () {
       return {};
@@ -316,11 +318,12 @@
   }
 
   async function verifyAppLoginCode(code) {
-    const response = await fetch("/api/verify-login-authenticator", {
-      method: "POST",
-      headers: await getLoginRequestHeaders(),
-      body: JSON.stringify({ code: code })
-    });
+const response = await fetch("/api/verify-login-authenticator", {
+  method: "POST",
+  credentials: "same-origin",
+  headers: await getLoginRequestHeaders(),
+  body: JSON.stringify({ code: code })
+});
 
     const data = await response.json().catch(function () {
       return {};
