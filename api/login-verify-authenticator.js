@@ -5,6 +5,7 @@ const {
   getLoginChallenge,
   clearLoginChallenge,
   createSiteSessionForUid,
+  createLoginTwoFactorSession,
   checkAttemptLock,
   recordAttemptFailure,
   clearAttemptFailures,
@@ -76,6 +77,7 @@ module.exports = async function handler(req, res) {
 
     await clearAttemptFailures(db, uid, "server_login_app");
     await createSiteSessionForUid(uid, res);
+    await createLoginTwoFactorSession(uid, res);
     await clearLoginChallenge(req, res);
 
     return res.status(200).json({
