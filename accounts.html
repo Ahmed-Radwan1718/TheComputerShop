@@ -774,6 +774,7 @@
     auth,
     db,
     signOut,
+    signInWithCustomToken,
     sendEmailVerification,
     updatePassword,
     EmailAuthProvider,
@@ -2776,13 +2777,119 @@ function getDocWithTimeout(docRef, timeoutMs) {
   ]);
 }
 
+async function syncFirebaseClientSessionFromServer() {
+  const response = await fetch("/api/client-token", {
+    method: "POST",
+    credentials: "same-origin",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({})
+  });
+
+  const data = await response.json().catch(function () {
+    return {};
+  });
+
+  if (!response.ok || !data.customToken) {
+    throw new Error(data.error || "Could not restore account session.");
+  }
+
+  await signInWithCustomToken(auth, data.customToken);
+}
+
+async function getServerAccountProfile() {
+  const response = await fetch("/api/account-profile", {
+    method: "GET",
+    credentials: "same-origin",
+    headers: {
+      "Accept": "application/json"
+    }
+  });
+
+  const data = await response.json().catch(function () {
+    return {};
+  });
+
+  if (!response.ok || !data.profile) {
+    throw new Error(data.error || "Could not load account profile.");
+  }
+
+  return data.profile;
+}
+
+async function saveServerAccountProfile(profileData) {
+  const response = await fetch("/api/account-profile", {
+    method: "PATCH",
+    credentials: "same-origin",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(profileData)
+  });
+
+  const data = await response.json().catch(function () {
+    return {};
+  });
+
+  if (!response.ok || !data.profile) {
+    throw new Error(data.error || "Could not save account details.");
+  }
+
+  return data.profile;
+}
+
+function hydrateAccountProfileFromServer(profile, user) {
+  const safeProfile = profile || {};
+
+  const profileDataForStatus = {
+    phone: safeProfile.phone || "",
+    createdAt: safeProfile.createdAt || "",
+    updatedAt: safeProfile.updatedAt || ""
+  };
+
+  const statusUser = {
+    emailVerified: Boolean(safeProfile.emailVerified),
+    metadata: user && user.metadata ? user.metadata : {
+      creationTime: "",
+      lastSignInTime: ""
+    }
+  };
+
+  accountEmail.value = safeProfile.email || (user && user.email ? user.email : "");
+  accountName.value = safeProfile.fullName || (user && user.displayName ? user.displayName : "");
+  originalUsername = accountName.value;
+
+  usernameLastChangedAt = safeProfile.usernameLastChangedAt || null;
+  emailLastChangedAt = safeProfile.emailLastChangedAt || null;
+
+  accountPhone.value = safeProfile.phone || "";
+  addressType.value = "apartment";
+
+  accountHeaderText.textContent = "Welcome back, " + (safeProfile.fullName || "Customer") + ".";
+
+  twoFactorSettings = safeProfile.twoFactor || {};
+  updateTwoFactorUI();
+
+  updateAccountStatus(statusUser, profileDataForStatus);
+
+  statusEmailVerified.textContent = safeProfile.emailVerified ? "Verified" : "Not Verified";
+  sendEmailVerificationButton.hidden = Boolean(safeProfile.emailVerified);
+}
+
 onAuthStateChanged(auth, async function (user) {
   if (!user) {
-    window.location.href = "signup.html";
-    return;
+    try {
+      await syncFirebaseClientSessionFromServer();
+      return;
+    } catch (error) {
+      window.location.href = "login.html";
+      return;
+    }
   }
 
   currentUser = user;
+
   accountEmail.value = user.email || "";
   startSavedItemsSync(user.uid);
   startAddressesSync(user.uid);
@@ -2800,37 +2907,10 @@ onAuthStateChanged(auth, async function (user) {
   updateTwoFactorUI();
 
   try {
-    const userDocRef = doc(db, "users", user.uid);
-    const userDoc = await getDocWithTimeout(userDocRef, 7000);
-
-    if (userDoc.exists()) {
-      const data = userDoc.data();
-
-      updateAccountStatus(user, data);
-      twoFactorSettings = data.twoFactor || {};
-      updateTwoFactorUI();
-
-      accountName.value = data.fullName || "";
-      originalUsername = data.fullName || "";
-      usernameLastChangedAt = data.usernameLastChangedAt || null;
-      emailLastChangedAt = data.emailLastChangedAt || null;
-
-      accountPhone.value = data.phone || "";
-      addressType.value = data.addressType || "apartment";
-
-      buildingName.value = data.buildingName || "";
-      apartmentNumber.value = data.apartmentNumber || "";
-      floorNumber.value = data.floorNumber || "";
-      houseNumber.value = data.houseNumber || "";
-      officeName.value = data.officeName || "";
-      companyName.value = data.companyName || "";
-      streetName.value = data.streetName || "";
-      additionalInfo.value = data.additionalInfo || "";
-
-      accountHeaderText.textContent = "Welcome back, " + (data.fullName || "Customer") + ".";
-    }
+    const profile = await getServerAccountProfile();
+    hydrateAccountProfileFromServer(profile, user);
   } catch (error) {
-    showMessage(detailsMessage, "Some saved account details could not load, but you can still use the page.", "error");
+    showMessage(detailsMessage, error.message || "Some saved account details could not load, but you can still use the page.", "error");
   } finally {
     finishAccountLoading();
   }
@@ -2863,33 +2943,25 @@ detailsForm.addEventListener("submit", async function (event) {
   detailsButton.textContent = "Saving...";
   showMessage(detailsMessage, "", "");
 
-  const accountData = {
-    email: currentUser.email || "",
-    fullName: newUsername,
-    phone: accountPhone.value.trim(),
-    updatedAt: serverTimestamp()
-  };
-
-  if (usernameIsChanging) {
-    accountData.usernameLastChangedAt = serverTimestamp();
-  }
-
   try {
-    await setDoc(doc(db, "users", currentUser.uid), accountData, { merge: true });
+    const profile = await saveServerAccountProfile({
+      fullName: newUsername,
+      phone: accountPhone.value.trim()
+    });
 
     usernameEditMode = false;
-
-    if (usernameIsChanging) {
-      originalUsername = newUsername;
-      usernameLastChangedAt = new Date();
-      accountHeaderText.textContent = "Welcome back, " + newUsername + ".";
-    }
-
+    hydrateAccountProfileFromServer(profile, currentUser);
     updateUsernameLockState();
+
+    if (typeof window.tcsReloadAccountHeader === "function") {
+      window.tcsReloadAccountHeader();
+    }
 
     showMessage(detailsMessage, usernameIsChanging ? "Account details saved. Username can be changed again on " + getUsernameUnlockDateText() + "." : "Account details saved.", "success");
   } catch (error) {
-    showMessage(detailsMessage, "Could not save your details. Please try again.", "error");
+    accountName.value = originalUsername;
+    updateUsernameLockState();
+    showMessage(detailsMessage, error.message || "Could not save your details. Please try again.", "error");
   } finally {
     detailsButton.disabled = false;
     detailsButton.textContent = "Save Changes";
