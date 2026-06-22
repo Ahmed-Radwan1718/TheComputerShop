@@ -7170,10 +7170,10 @@ body.account-security-modal-open {
 .account-address-modal-card {
   position: relative;
   z-index: 1;
-  width: min(620px, 100%);
+  width: min(760px, 100%);
   max-height: calc(100vh - 48px);
   overflow-y: auto;
-  padding: 34px;
+  padding: 36px;
   border-radius: 26px;
   border: 1px solid rgba(255, 255, 255, 0.11);
   background: rgba(24, 25, 24, 0.96);
@@ -7204,43 +7204,16 @@ body.account-security-modal-open {
 .account-address-modal-header h2 {
   margin-bottom: 12px;
   color: white;
-  font-size: 30px;
+  font-size: 32px;
   font-weight: 700;
   line-height: 1.12;
   text-transform: uppercase;
 }
 
 .account-address-modal-header p {
-  max-width: 500px;
   color: rgba(255, 255, 255, 0.66);
-  font-size: 14px;
-  line-height: 1.7;
-}
-
-.account-address-modal .account-form {
-  display: grid;
-  gap: 20px;
-}
-
-.account-address-modal .account-form-grid {
-  grid-template-columns: 1fr;
-  gap: 16px;
-}
-
-.account-address-modal .account-address-type-options {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 10px;
-}
-
-.account-address-modal .account-address-type-button {
-  width: 100%;
-}
-
-.account-address-modal .account-security-modal-actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  font-size: 15px;
+  line-height: 1.75;
 }
 
 .account-status-grid {
