@@ -2655,18 +2655,18 @@ sendEmailVerificationButton.addEventListener("click", async function () {
   showMessage(detailsMessage, "", "");
 
   try {
-    await currentUser.reload();
+    const data = await sendServerEmailVerification();
 
-    if (currentUser.emailVerified) {
-      updateAccountStatus(currentUser, {});
+    if (data.alreadyVerified) {
+      const profile = await getServerAccountProfile();
+      hydrateAccountProfileFromServer(profile, currentUser);
       showMessage(detailsMessage, "Your email is already verified.", "success");
       return;
     }
 
-    await sendEmailVerification(currentUser);
-    showMessage(detailsMessage, "Verification email sent. Please check your inbox and spam folder.", "success");
+    showMessage(detailsMessage, data.message || "Verification email sent. Please check your inbox and spam folder.", "success");
   } catch (error) {
-    showMessage(detailsMessage, "Could not send verification email. Please try again.", "error");
+    showMessage(detailsMessage, error.message || "Could not send verification email. Please try again.", "error");
   } finally {
     sendEmailVerificationButton.disabled = false;
     sendEmailVerificationButton.textContent = "Send Verification Email";
@@ -2739,7 +2739,14 @@ accountUsernameEditButton.addEventListener("click", function () {
   accountName.select();
 });
 
-accountEmailEditButton.addEventListener("click", function () {
+accountEmailEditButton.addEventListener("click", async function () {
+  const unlocked = await ensureSecurityUnlocked();
+
+  if (!unlocked) {
+    openSecurityGateModal();
+    return;
+  }
+
   openEmailModal();
 });
 
@@ -2840,6 +2847,77 @@ async function saveServerAccountProfile(profileData) {
   }
 
   return data.profile;
+}
+
+async function sendServerEmailVerification() {
+  const response = await fetch("/api/send-email-verification", {
+    method: "POST",
+    credentials: "same-origin",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({})
+  });
+
+  const data = await response.json().catch(function () {
+    return {};
+  });
+
+  if (!response.ok) {
+    throw new Error(data.error || "Could not send verification email.");
+  }
+
+  return data;
+}
+
+async function startServerEmailChange(emailData) {
+  const response = await fetch("/api/change-email", {
+    method: "POST",
+    credentials: "same-origin",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      action: "start",
+      currentEmail: emailData.currentEmail,
+      newEmail: emailData.newEmail,
+      currentPassword: emailData.currentPassword
+    })
+  });
+
+  const data = await response.json().catch(function () {
+    return {};
+  });
+
+  if (!response.ok) {
+    throw new Error(data.error || "Could not send email verification code.");
+  }
+
+  return data;
+}
+
+async function confirmServerEmailChange(code) {
+  const response = await fetch("/api/change-email", {
+    method: "POST",
+    credentials: "same-origin",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      action: "confirm",
+      code: code
+    })
+  });
+
+  const data = await response.json().catch(function () {
+    return {};
+  });
+
+  if (!response.ok) {
+    throw new Error(data.error || "Could not confirm email change.");
+  }
+
+  return data;
 }
 
 function hydrateAccountProfileFromServer(profile, user) {
@@ -2989,6 +3067,14 @@ const emailDaysLeft = getEmailDaysLeft();
     return;
   }
 
+const unlocked = await ensureSecurityUnlocked();
+
+if (!unlocked) {
+  closeEmailModal();
+  openSecurityGateModal();
+  return;
+}
+
 if (!confirmedCurrentEmail) {
   showMessage(emailMessage, "Please enter your current email address.", "error");
   return;
@@ -3009,28 +3095,63 @@ if (!requestedEmail) {
     return;
   }
 
+  if (!currentPassword) {
+    showMessage(emailMessage, "Please enter your current password.", "error");
+    return;
+  }
+
   emailButton.disabled = true;
   emailButton.textContent = "Sending...";
   showMessage(emailMessage, "", "");
 
   try {
-    const credential = EmailAuthProvider.credential(currentUser.email || "", currentPassword);
+    await startServerEmailChange({
+      currentEmail: confirmedCurrentEmail,
+      newEmail: requestedEmail,
+      currentPassword: currentPassword
+    });
 
-    await reauthenticateWithCredential(currentUser, credential);
-    await verifyBeforeUpdateEmail(currentUser, requestedEmail);
+    const codeInput = window.prompt("Enter the 6-digit verification code sent to " + requestedEmail + ".");
 
-    await setDoc(doc(db, "users", currentUser.uid), {
-      emailLastChangedAt: serverTimestamp(),
-      emailChangePendingTo: requestedEmail,
-      updatedAt: serverTimestamp()
-    }, { merge: true });
+    if (codeInput === null) {
+      showMessage(emailMessage, "Verification code sent. Enter it when you are ready to confirm the email change.", "success");
+      return;
+    }
 
+    const code = String(codeInput || "").replace(/\D/g, "");
+
+    if (code.length !== 6) {
+      showMessage(emailMessage, "Please enter a valid 6-digit verification code.", "error");
+      return;
+    }
+
+    emailButton.textContent = "Confirming...";
+
+    await confirmServerEmailChange(code);
+
+    clearSecurityUnlock();
+
+    if (typeof syncFirebaseClientSessionFromServer === "function") {
+      await syncFirebaseClientSessionFromServer().catch(function () {});
+    }
+
+    const profile = await getServerAccountProfile();
+    hydrateAccountProfileFromServer(profile, auth.currentUser || currentUser);
+
+    currentUser = auth.currentUser || currentUser;
     emailLastChangedAt = new Date();
+
     emailForm.reset();
-    showMessage(emailMessage, "Verification email sent. Your email can be changed again on " + getEmailUnlockDateText() + ".", "success");
+    closeEmailModal();
     updateEmailLockState();
+
+    if (typeof window.tcsReloadAccountHeader === "function") {
+      window.tcsReloadAccountHeader();
+    }
+
+    showMessage(detailsMessage, "Email address changed successfully.", "success");
   } catch (error) {
-    showMessage(emailMessage, getReadableEmailError(error), "error");
+    showMessage(emailMessage, error.message || "Could not change email address. Please try again.", "error");
   } finally {
     if (getEmailDaysLeft() > 0) {
       updateEmailLockState();
