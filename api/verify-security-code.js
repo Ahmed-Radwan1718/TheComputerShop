@@ -3,12 +3,17 @@ const admin = require("./_lib/firebaseAdmin");
 
 const {
   getCodeHash,
-  getSessionHash,
-  createRandomToken,
   getUserFromRequest,
-  isExpired,
-  createLoginTwoFactorSession
+  isExpired
 } = require("./_lib/securityHelpers");
+
+const {
+  createSecurityUnlockSession
+} = require("./_lib/securityUnlockHelpers");
+
+function cleanCode(code) {
+  return String(code || "").replace(/\D/g, "");
+}
 
 module.exports = async function handler(req, res) {
   if (req.method !== "POST") {
@@ -16,11 +21,15 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const decodedUser = await getUserFromRequest(req);
-    const { code } = req.body || {};
+    const decodedUser = await getUserFromRequest(req, {
+      checkRevoked: true,
+      requireCompletedTwoFactor: true
+    });
 
-    if (!code) {
-      return res.status(400).json({ error: "Please enter the security code." });
+    const code = cleanCode((req.body || {}).code);
+
+    if (!code || code.length !== 6) {
+      return res.status(400).json({ error: "Please enter the 6-digit security code." });
     }
 
     const db = admin.firestore();
@@ -33,19 +42,26 @@ module.exports = async function handler(req, res) {
 
     const data = codeDoc.data();
 
+    if (data.reason !== "security-panel") {
+      await codeRef.delete().catch(function () {});
+      return res.status(400).json({ error: "Invalid security code." });
+    }
+
     if (isExpired(data.expiresAt)) {
-      await codeRef.delete();
+      await codeRef.delete().catch(function () {});
       return res.status(400).json({ error: "This security code expired. Please request a new one." });
     }
 
-    if ((data.attempts || 0) >= 5) {
-      await codeRef.delete();
-      return res.status(400).json({ error: "Too many attempts. Please request a new code." });
+    if ((data.attempts || 0) >= 3) {
+      await codeRef.delete().catch(function () {});
+      return res.status(429).json({
+        error: "Too many incorrect codes. Please request a new code after 30 minutes."
+      });
     }
 
-    const submittedHash = getCodeHash(decodedUser.uid, code.trim(), data.salt);
+    const submittedHash = getCodeHash(decodedUser.uid, code, data.salt);
 
-    const savedBuffer = Buffer.from(data.codeHash, "hex");
+    const savedBuffer = Buffer.from(data.codeHash || "", "hex");
     const submittedBuffer = Buffer.from(submittedHash, "hex");
 
     const codeMatches =
@@ -60,33 +76,17 @@ module.exports = async function handler(req, res) {
       return res.status(400).json({ error: "The security code is incorrect." });
     }
 
-    if (data.reason === "login-email") {
-  await createLoginTwoFactorSession(decodedUser.uid, res);
-  await codeRef.delete();
+    const unlockSession = await createSecurityUnlockSession(decodedUser.uid, res);
 
-  return res.status(200).json({
-    success: true
-  });
-}
-
-    const unlockToken = createRandomToken();
-    const sessionSalt = admin.firestore().collection("_").doc().id;
-    const sessionHash = getSessionHash(decodedUser.uid, unlockToken, sessionSalt);
-
-    await db.collection("securityPasswordSessions").doc(decodedUser.uid).set({
-      sessionHash,
-      salt: sessionSalt,
-      createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      expiresAt: admin.firestore.Timestamp.fromDate(new Date(Date.now() + 30 * 60 * 1000))
-    });
-
-    await codeRef.delete();
+    await codeRef.delete().catch(function () {});
 
     return res.status(200).json({
       success: true,
-      unlockToken
+      unlockUntil: unlockSession.unlockUntil
     });
   } catch (error) {
-    return res.status(500).json({ error: "Could not verify security code." });
+    return res.status(error.statusCode || 500).json({
+      error: "Could not verify security code."
+    });
   }
 };
