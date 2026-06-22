@@ -92,12 +92,7 @@
 
   const {
     auth,
-    db,
-    createUserWithEmailAndPassword,
-    sendEmailVerification,
-    doc,
-    setDoc,
-    serverTimestamp
+    signInWithCustomToken
   } = window.tcsAuth;
 
   const signupForm = document.getElementById("signup-form");
@@ -114,19 +109,25 @@
     }
   }
 
-  function getReadableAuthError(error) {
-    switch (error.code) {
-      case "auth/email-already-in-use":
-        return "An account already exists with this email address.";
-      case "auth/invalid-email":
-        return "Please enter a valid email address.";
-      case "auth/weak-password":
-        return "Please use a stronger password.";
-      case "auth/network-request-failed":
-        return "Network error. Please check your connection and try again.";
-      default:
-        return "Something went wrong. Please try again.";
+  async function syncFirebaseClientSession() {
+    const response = await fetch("/api/client-token", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({})
+    });
+
+    const data = await response.json().catch(function () {
+      return {};
+    });
+
+    if (!response.ok || !data.customToken) {
+      throw new Error(data.error || "Could not start account session.");
     }
+
+    await signInWithCustomToken(auth, data.customToken);
   }
 
   passwordVisibilityToggles.forEach(function (toggleButton) {
@@ -179,18 +180,30 @@
     showMessage("", "");
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-
-      await setDoc(doc(db, "users", user.uid), {
-        fullName: fullName,
-        phone: phone,
-        email: email,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp()
+      const response = await fetch("/api/signup", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          fullName: fullName,
+          phone: phone,
+          email: email,
+          password: password,
+          confirmPassword: confirmPassword
+        })
       });
 
-      await sendEmailVerification(user);
+      const data = await response.json().catch(function () {
+        return {};
+      });
+
+      if (!response.ok) {
+        throw new Error(data.error || "Could not create account. Please try again.");
+      }
+
+      await syncFirebaseClientSession();
 
       showMessage("Account created successfully. A verification email has been sent.", "success");
 
@@ -198,7 +211,7 @@
         window.location.href = "accounts.html";
       }, 1200);
     } catch (error) {
-      showMessage(getReadableAuthError(error), "error");
+      showMessage(error.message || "Something went wrong. Please try again.", "error");
     } finally {
       signupButton.disabled = false;
       signupButton.textContent = "Create Account";
