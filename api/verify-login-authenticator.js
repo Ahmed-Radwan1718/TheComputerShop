@@ -6,9 +6,9 @@ const {
   createLoginTwoFactorSession
 } = require("./_lib/securityHelpers");
 
-const MAX_2FA_ATTEMPTS = 5;
-const ATTEMPT_WINDOW_MS = 10 * 60 * 1000;
-const LOCKOUT_MS = 10 * 60 * 1000;
+const MAX_2FA_ATTEMPTS = 3;
+const ATTEMPT_WINDOW_MS = 30 * 60 * 1000;
+const LOCKOUT_MS = 30 * 60 * 1000;
 
 function cleanCode(code) {
   return String(code || "").replace(/\D/g, "");
@@ -31,7 +31,7 @@ async function checkTwoFactorLock(db, uid, purpose) {
   const resetAt = data.resetAt && data.resetAt.toDate ? data.resetAt.toDate() : null;
 
   if (lockedUntil && lockedUntil.getTime() > Date.now()) {
-    const error = new Error("Too many incorrect codes. Please wait 10 minutes before trying again.");
+    const error = new Error("Too many incorrect codes. Please wait 30 minutes before trying again.");
     error.statusCode = 429;
     throw error;
   }
@@ -158,7 +158,7 @@ module.exports = async function handler(req, res) {
 
       return res.status(locked ? 429 : 400).json({
         error: locked
-          ? "Too many incorrect codes. Please wait 10 minutes before trying again."
+          ? "Too many incorrect codes. Please wait 30 minutes before trying again."
           : "The authenticator code is incorrect."
       });
     }
