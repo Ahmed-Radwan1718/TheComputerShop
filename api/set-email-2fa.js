@@ -10,7 +10,10 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const decodedUser = await getUserFromRequest(req);
+const decodedUser = await getUserFromRequest(req, {
+  checkRevoked: true,
+  requireCompletedTwoFactor: true
+});
     const { enabled } = req.body || {};
 
     if (enabled && !decodedUser.email_verified) {
