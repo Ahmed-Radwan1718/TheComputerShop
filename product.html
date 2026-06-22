@@ -9743,32 +9743,8 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
   updateCartCount();
 </script>
 
-<script type="module">
-  import "./auth.js";
-
-  const {
-    auth,
-    db,
-    onAuthStateChanged,
-    doc,
-    collection,
-    getDoc,
-    setDoc,
-    onSnapshot,
-    serverTimestamp
-  } = window.tcsAuth;
-
+<script>
   let currentCartUser = null;
-  let cloudCartUnsubscribe = null;
-
-  function getLocalCart() {
-    return JSON.parse(localStorage.getItem("computerShopCart")) || [];
-  }
-
-  function saveLocalCart(cart) {
-    localStorage.setItem("computerShopCart", JSON.stringify(cart));
-    updateCartCountFromItems(cart);
-  }
 
   function updateCartCountFromItems(items) {
     const totalQuantity = items.reduce(function (total, item) {
@@ -9781,77 +9757,104 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
     });
   }
 
-  async function mergeLocalCartToCloud(user) {
-    const localCart = getLocalCart();
+  async function loadServerAccountStateForCart() {
+    try {
+      const response = await fetch("/api/me", {
+        method: "GET",
+        credentials: "same-origin",
+        headers: {
+          "Accept": "application/json"
+        }
+      });
 
-    if (!user || !localCart.length) {
-      return;
+      const data = await response.json().catch(function () {
+        return {};
+      });
+
+      if (!response.ok || !data.signedIn || !data.user) {
+        currentCartUser = null;
+        updateCartCountFromItems([]);
+        return null;
+      }
+
+      currentCartUser = data.user;
+      return data.user;
+    } catch (error) {
+      currentCartUser = null;
+      updateCartCountFromItems([]);
+      return null;
     }
+  }
 
-    await Promise.all(localCart.map(async function (item) {
-      const itemRef = doc(db, "users", user.uid, "cartItems", item.id);
-      const existingDoc = await getDoc(itemRef);
-      const existingQuantity = existingDoc.exists() ? Number(existingDoc.data().quantity || 0) : 0;
+  async function loadServerCartForProduct() {
+    try {
+      const response = await fetch("/api/cart", {
+        method: "GET",
+        credentials: "same-origin",
+        headers: {
+          "Accept": "application/json"
+        }
+      });
 
-      await setDoc(itemRef, {
-        ...item,
-        quantity: existingQuantity + Number(item.quantity || 1),
-        updatedAt: serverTimestamp(),
-        addedAt: existingDoc.exists() && existingDoc.data().addedAt ? existingDoc.data().addedAt : serverTimestamp()
-      }, { merge: true });
-    }));
+      const data = await response.json().catch(function () {
+        return {};
+      });
 
-    localStorage.removeItem("computerShopCart");
+      if (!response.ok || !Array.isArray(data.items)) {
+        updateCartCountFromItems([]);
+        return [];
+      }
+
+      updateCartCountFromItems(data.items);
+      return data.items;
+    } catch (error) {
+      updateCartCountFromItems([]);
+      return [];
+    }
   }
 
   window.addProductToSyncedCart = async function (product, quantityToAdd) {
-    const cleanQuantity = Number(quantityToAdd || 1);
+    const user = await loadServerAccountStateForCart();
 
-    if (!currentCartUser) {
+    if (!user) {
       localStorage.setItem("tcs-login-redirect", window.location.pathname.split("/").pop() + window.location.search);
       window.location.href = "login.html";
       throw new Error("login-required");
     }
 
-    const itemRef = doc(db, "users", currentCartUser.uid, "cartItems", product.id);
-    const existingDoc = await getDoc(itemRef);
-    const existingQuantity = existingDoc.exists() ? Number(existingDoc.data().quantity || 0) : 0;
+    const response = await fetch("/api/cart", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        item: product,
+        quantity: quantityToAdd
+      })
+    });
 
-    await setDoc(itemRef, {
-      ...product,
-      quantity: existingQuantity + cleanQuantity,
-      updatedAt: serverTimestamp(),
-      addedAt: existingDoc.exists() && existingDoc.data().addedAt ? existingDoc.data().addedAt : serverTimestamp()
-    }, { merge: true });
+    const data = await response.json().catch(function () {
+      return {};
+    });
+
+    if (!response.ok) {
+      throw new Error(data.error || "Could not add this product to cart.");
+    }
+
+    updateCartCountFromItems(Array.isArray(data.items) ? data.items : []);
+
+    if (typeof window.tcsRefreshCartCount === "function") {
+      window.tcsRefreshCartCount();
+    }
+
+    return data;
   };
 
-  onAuthStateChanged(auth, async function (user) {
-    currentCartUser = user || null;
-
-    if (typeof cloudCartUnsubscribe === "function") {
-      cloudCartUnsubscribe();
+  loadServerAccountStateForCart().then(function (user) {
+    if (user) {
+      loadServerCartForProduct();
     }
-
-    cloudCartUnsubscribe = null;
-
-    if (!user) {
-      localStorage.removeItem("computerShopCart");
-      updateCartCountFromItems([]);
-      return;
-    }
-
-    await mergeLocalCartToCloud(user);
-
-    cloudCartUnsubscribe = onSnapshot(collection(db, "users", user.uid, "cartItems"), function (snapshot) {
-      const cloudCart = snapshot.docs.map(function (cartDoc) {
-        return {
-          id: cartDoc.id,
-          ...cartDoc.data()
-        };
-      });
-
-      updateCartCountFromItems(cloudCart);
-    });
   });
 </script>
 
