@@ -15,8 +15,12 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const decodedUser = await getUserFromRequest(req);
-    const { reason } = req.body || {};
+const { reason } = req.body || {};
+
+const decodedUser = await getUserFromRequest(req, {
+  checkRevoked: true,
+  requireCompletedTwoFactor: !isLoginCode
+});
 
     if (!decodedUser.email) {
       return res.status(400).json({ error: "No email address found on this account." });
