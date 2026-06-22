@@ -250,4 +250,48 @@ if (floatingAccountWidget) {
   document.body.appendChild(accountAuthScript);
 }
 
+const cartCountScript = document.createElement("script");
+
+cartCountScript.textContent = `
+  (function () {
+    function updateHeaderCartCount(totalQuantity) {
+      document.querySelectorAll(".nav-cart-count").forEach(function (count) {
+        count.textContent = totalQuantity;
+        count.style.display = totalQuantity > 0 ? "block" : "none";
+      });
+    }
+
+    async function loadHeaderCartCount() {
+      try {
+        const response = await fetch("/api/cart", {
+          method: "GET",
+          credentials: "same-origin",
+          headers: {
+            "Accept": "application/json"
+          }
+        });
+
+        const data = await response.json().catch(function () {
+          return {};
+        });
+
+        if (!response.ok || !data.success) {
+          updateHeaderCartCount(0);
+          return;
+        }
+
+        updateHeaderCartCount(Number(data.itemCount || 0));
+      } catch (error) {
+        updateHeaderCartCount(0);
+      }
+    }
+
+    window.tcsRefreshCartCount = loadHeaderCartCount;
+
+    loadHeaderCartCount();
+  })();
+`;
+
+document.body.appendChild(cartCountScript);
+
 })();
