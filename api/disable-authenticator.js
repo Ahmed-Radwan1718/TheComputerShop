@@ -10,7 +10,10 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const decodedUser = await getUserFromRequest(req);
+const decodedUser = await getUserFromRequest(req, {
+  checkRevoked: true,
+  requireCompletedTwoFactor: true
+});
     const db = admin.firestore();
     const userRef = db.collection("users").doc(decodedUser.uid);
     const userDoc = await userRef.get();
