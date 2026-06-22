@@ -991,58 +991,61 @@ const securityUnlockMinutes = 30;
     }
   }
 
-function getSecurityStorageKey() {
-  return currentUser ? "tcs-security-unlocked-until-" + currentUser.uid : "";
-}
-
-function getSecurityTokenStorageKey() {
-  return currentUser ? "tcs-security-unlock-token-" + currentUser.uid : "";
-}
+let securityUnlockUntil = 0;
 
 function getSavedSecurityUnlockTime() {
-  const storageKey = getSecurityStorageKey();
-
-  if (!storageKey) {
-    return 0;
-  }
-
-  const savedValue = Number(localStorage.getItem(storageKey) || "0");
-  return Number.isFinite(savedValue) ? savedValue : 0;
+  return securityUnlockUntil;
 }
 
 function isSecurityUnlocked() {
   return getSavedSecurityUnlockTime() > Date.now();
 }
 
-function saveSecurityUnlock(unlockToken) {
-  const unlockUntil = Date.now() + securityUnlockMinutes * 60 * 1000;
-  const storageKey = getSecurityStorageKey();
-  const tokenStorageKey = getSecurityTokenStorageKey();
+async function refreshSecurityUnlockStatus() {
+  try {
+    const response = await fetch("/api/security-unlock-status", {
+      method: "GET",
+      credentials: "same-origin",
+      headers: {
+        "Accept": "application/json"
+      }
+    });
 
-  if (storageKey) {
-    localStorage.setItem(storageKey, String(unlockUntil));
+    const data = await response.json().catch(function () {
+      return {};
+    });
+
+    if (response.ok && data.unlocked) {
+      securityUnlockUntil = Date.now() + securityUnlockMinutes * 60 * 1000;
+      return true;
+    }
+  } catch (error) {}
+
+  securityUnlockUntil = 0;
+  return false;
+}
+
+async function ensureSecurityUnlocked() {
+  if (isSecurityUnlocked()) {
+    return true;
   }
 
-  if (tokenStorageKey && unlockToken) {
-    localStorage.setItem(tokenStorageKey, unlockToken);
+  return await refreshSecurityUnlockStatus();
+}
+
+function saveSecurityUnlock(unlockUntil) {
+  const unlockDate = unlockUntil ? new Date(unlockUntil) : null;
+
+  if (unlockDate && !Number.isNaN(unlockDate.getTime())) {
+    securityUnlockUntil = unlockDate.getTime();
+    return;
   }
 
-  securityUnlockToken = unlockToken || "";
+  securityUnlockUntil = Date.now() + securityUnlockMinutes * 60 * 1000;
 }
 
 function clearSecurityUnlock() {
-  const storageKey = getSecurityStorageKey();
-  const tokenStorageKey = getSecurityTokenStorageKey();
-
-  if (storageKey) {
-    localStorage.removeItem(storageKey);
-  }
-
-  if (tokenStorageKey) {
-    localStorage.removeItem(tokenStorageKey);
-  }
-
-  securityUnlockToken = "";
+  securityUnlockUntil = 0;
 }
 
 function getMaskedEmail(email) {
@@ -1062,15 +1065,8 @@ function getMaskedEmail(email) {
 }
 
 async function getSecurityRequestHeaders() {
-  if (!currentUser) {
-    throw new Error("missing-user");
-  }
-
-  const idToken = await currentUser.getIdToken(true);
-
   return {
-    "Content-Type": "application/json",
-    "Authorization": "Bearer " + idToken
+    "Content-Type": "application/json"
   };
 }
 
@@ -2519,12 +2515,16 @@ function updateUsernameLockState() {
   }
 
 document.querySelectorAll("[data-account-panel]").forEach(function (button) {
-  button.addEventListener("click", function () {
+  button.addEventListener("click", async function () {
     const panelName = button.dataset.accountPanel;
 
-    if (panelName === "security" && !isSecurityUnlocked()) {
-      openSecurityGateModal();
-      return;
+    if (panelName === "security") {
+      const unlocked = await ensureSecurityUnlocked();
+
+      if (!unlocked) {
+        openSecurityGateModal();
+        return;
+      }
     }
 
     switchPanel(panelName);
@@ -2614,7 +2614,7 @@ securityCodeForm.addEventListener("submit", async function (event) {
 
   try {
     const data = await verifySecurityPanelCode(code);
-    saveSecurityUnlock(data.unlockToken || "");
+    saveSecurityUnlock(data.unlockUntil || "");
     closeSecurityCodeModal();
     switchPanel("security");
   } catch (error) {
@@ -3040,7 +3040,7 @@ if (!requestedEmail) {
 
   function isValidNewPassword(password) {
     return (
-      password.length >= 7 &&
+      password.length >= 8 &&
       /[A-Za-z]/.test(password) &&
       /[0-9]/.test(password) &&
       !/\s/.test(password)
@@ -3087,8 +3087,10 @@ if (!requestedEmail) {
     updatePasswordConfirmButton();
   }
 
-  openPasswordModalButton.addEventListener("click", function () {
-    if (!isSecurityUnlocked()) {
+  openPasswordModalButton.addEventListener("click", async function () {
+    const unlocked = await ensureSecurityUnlocked();
+
+    if (!unlocked) {
       closePasswordModal();
       openSecurityGateModal();
       return;
@@ -3170,7 +3172,7 @@ if (!requestedEmail) {
     }
 
     if (!isValidNewPassword(newPassword)) {
-      showMessage(passwordMessage, "Password must be at least 7 characters and include at least 1 letter and 1 number, with no spaces.", "error");
+      showMessage(passwordMessage, "Password must be at least 8 characters and include at least 1 letter and 1 number, with no spaces.", "error");
       return;
     }
 
@@ -3179,10 +3181,29 @@ if (!requestedEmail) {
     showMessage(passwordMessage, "", "");
 
     try {
-      const credential = EmailAuthProvider.credential(currentUser.email || "", currentPassword);
+      const response = await fetch("/api/change-password", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: await getSecurityRequestHeaders(),
+        body: JSON.stringify({
+          currentPassword: currentPassword,
+          newPassword: newPassword
+        })
+      });
 
-      await reauthenticateWithCredential(currentUser, credential);
-      await updatePassword(currentUser, newPassword);
+      const data = await response.json().catch(function () {
+        return {};
+      });
+
+      if (!response.ok) {
+        throw new Error(data.error || "Could not change your password.");
+      }
+
+      clearSecurityUnlock();
+
+      if (typeof syncFirebaseClientSessionFromServer === "function") {
+        await syncFirebaseClientSessionFromServer().catch(function () {});
+      }
 
       showMessage(passwordMessage, "Password changed successfully.", "success");
       showMessage(passwordSectionMessage, "Password changed successfully.", "success");
@@ -3191,7 +3212,7 @@ if (!requestedEmail) {
         closePasswordModal();
       }, 900);
     } catch (error) {
-      showMessage(passwordMessage, getReadablePasswordError(error), "error");
+      showMessage(passwordMessage, error.message || "Could not change your password. Please try again.", "error");
     } finally {
       passwordButton.disabled = false;
       passwordButton.textContent = "Confirm";
