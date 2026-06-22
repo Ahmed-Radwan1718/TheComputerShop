@@ -2,7 +2,8 @@ const admin = require("./_lib/firebaseAdmin");
 const { authenticator } = require("otplib");
 
 const {
-  getUserFromRequest
+  getUserFromRequest,
+  createLoginTwoFactorSession
 } = require("./_lib/securityHelpers");
 
 module.exports = async function handler(req, res) {
@@ -42,7 +43,9 @@ module.exports = async function handler(req, res) {
       return res.status(400).json({ error: "The authenticator code is incorrect." });
     }
 
-    return res.status(200).json({ success: true });
+await createLoginTwoFactorSession(decodedUser.uid, res);
+
+return res.status(200).json({ success: true });
   } catch (error) {
     return res.status(500).json({ error: "Could not verify authenticator code." });
   }
