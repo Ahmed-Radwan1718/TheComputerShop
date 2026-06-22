@@ -9855,20 +9855,7 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
   });
 </script>
 
-<script type="module">
-  import "./auth.js";
-
-  const {
-    auth,
-    db,
-    onAuthStateChanged,
-    doc,
-    getDoc,
-    setDoc,
-    deleteDoc,
-    serverTimestamp
-  } = window.tcsAuth;
-
+<script>
   const saveForLaterButton = document.getElementById("save-for-later-button");
   const productSaveMessage = document.getElementById("product-save-message");
 
@@ -9905,20 +9892,10 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
       category: data.category || "Product",
       specsLine: data.specsLine || "",
       priceText: data.priceText || "Price coming soon",
-      priceNumber: data.priceNumber || null,
+      priceNumber: typeof data.priceNumber === "number" ? data.priceNumber : null,
       image: data.image || "",
       url: data.url || window.location.pathname + window.location.search
     };
-  }
-
-  function getSavedProductRef() {
-    const product = getCurrentSavedProduct();
-
-    if (!savedCurrentUser || !product) {
-      return null;
-    }
-
-    return doc(db, "users", savedCurrentUser.uid, "savedForLater", product.id);
   }
 
   function updateSaveButton() {
@@ -9934,39 +9911,128 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
     saveForLaterButton.textContent = productIsSaved ? "Saved for Later" : "Save for Later";
   }
 
+  async function loadServerAccountStateForSavedItems() {
+    try {
+      const response = await fetch("/api/me", {
+        method: "GET",
+        credentials: "same-origin",
+        headers: {
+          "Accept": "application/json"
+        }
+      });
+
+      const data = await response.json().catch(function () {
+        return {};
+      });
+
+      if (!response.ok || !data.signedIn || !data.user) {
+        savedCurrentUser = null;
+        return null;
+      }
+
+      savedCurrentUser = data.user;
+      return data.user;
+    } catch (error) {
+      savedCurrentUser = null;
+      return null;
+    }
+  }
+
+  async function checkServerSavedItem(itemId) {
+    const response = await fetch("/api/saved-items?itemId=" + encodeURIComponent(itemId), {
+      method: "GET",
+      credentials: "same-origin",
+      headers: {
+        "Accept": "application/json"
+      }
+    });
+
+    const data = await response.json().catch(function () {
+      return {};
+    });
+
+    if (!response.ok) {
+      throw new Error(data.error || "Could not check saved item.");
+    }
+
+    return Boolean(data.saved);
+  }
+
+  async function saveServerSavedItem(product) {
+    const response = await fetch("/api/saved-items", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        item: product
+      })
+    });
+
+    const data = await response.json().catch(function () {
+      return {};
+    });
+
+    if (!response.ok) {
+      throw new Error(data.error || "Could not save this product.");
+    }
+
+    return data;
+  }
+
+  async function deleteServerSavedItem(itemId) {
+    const response = await fetch("/api/saved-items", {
+      method: "DELETE",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        itemId: itemId
+      })
+    });
+
+    const data = await response.json().catch(function () {
+      return {};
+    });
+
+    if (!response.ok) {
+      throw new Error(data.error || "Could not remove this product.");
+    }
+
+    return data;
+  }
+
   async function refreshSavedState() {
     if (!saveForLaterButton) {
       return;
     }
 
-    if (!savedCurrentUser) {
+    const user = await loadServerAccountStateForSavedItems();
+
+    if (!user) {
       productIsSaved = false;
       updateSaveButton();
       return;
     }
 
-    const savedRef = getSavedProductRef();
+    const product = getCurrentSavedProduct();
 
-    if (!savedRef) {
+    if (!product || !product.id) {
       productIsSaved = false;
       updateSaveButton();
       return;
     }
 
     try {
-      const savedDoc = await getDoc(savedRef);
-      productIsSaved = savedDoc.exists();
+      productIsSaved = await checkServerSavedItem(product.id);
     } catch (error) {
       productIsSaved = false;
     }
 
     updateSaveButton();
   }
-
-  onAuthStateChanged(auth, async function (user) {
-    savedCurrentUser = user || null;
-    await refreshSavedState();
-  });
 
   document.addEventListener("click", function (event) {
     if (event.target.closest(".product-capacity-button")) {
@@ -9978,15 +10044,17 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
 
   if (saveForLaterButton) {
     saveForLaterButton.addEventListener("click", async function () {
-      if (!savedCurrentUser) {
+      const user = await loadServerAccountStateForSavedItems();
+
+      if (!user) {
+        localStorage.setItem("tcs-login-redirect", window.location.pathname.split("/").pop() + window.location.search);
         window.location.href = "login.html";
         return;
       }
 
       const product = getCurrentSavedProduct();
-      const savedRef = getSavedProductRef();
 
-      if (!product || !savedRef) {
+      if (!product || !product.id) {
         showProductSaveMessage("Could not save this product. Please refresh and try again.", "error");
         return;
       }
@@ -9996,28 +10064,25 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
 
       try {
         if (productIsSaved) {
-          await deleteDoc(savedRef);
+          await deleteServerSavedItem(product.id);
           productIsSaved = false;
           showProductSaveMessage("Removed from saved items.", "success");
         } else {
-          await setDoc(savedRef, {
-            ...product,
-            savedAt: serverTimestamp(),
-            updatedAt: serverTimestamp()
-          }, { merge: true });
-
+          await saveServerSavedItem(product);
           productIsSaved = true;
           showProductSaveMessage("Saved to your account.", "success");
         }
 
         updateSaveButton();
       } catch (error) {
-        showProductSaveMessage("Could not update saved items. Please try again.", "error");
+        showProductSaveMessage(error.message || "Could not update saved items. Please try again.", "error");
       } finally {
         saveForLaterButton.disabled = false;
         updateSaveButton();
       }
     });
+
+    refreshSavedState();
   }
 </script>
 
