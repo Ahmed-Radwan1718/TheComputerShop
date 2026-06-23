@@ -67,6 +67,7 @@
       <a href="graphics-cards.html" class="nav-menu-link">Graphics Card</a>
       <a href="cases.html" class="nav-menu-link">Case</a>
       <a href="power-supplies.html" class="nav-menu-link">Power Supply</a>
+      <a href="charging-and-power.html" class="nav-menu-link">Charging and Power</a>
       <a href="monitors.html" class="nav-menu-link">Monitor</a>
       <a href="accessories.html" class="nav-menu-link">Peripherals</a>
     </div>
