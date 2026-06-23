@@ -42,11 +42,12 @@ module.exports = async function handler(req, res) {
     const decodedUser = await getSessionUser(req);
 
     if (!decodedUser || !decodedUser.uid) {
-      return res.status(200).json({
-        authenticated: false,
-        loggedIn: false,
-        user: null
-      });
+return res.status(200).json({
+  signedIn: false,
+  authenticated: false,
+  loggedIn: false,
+  user: null
+});
     }
 
     const userRecord = await admin.auth().getUser(decodedUser.uid);
@@ -57,10 +58,11 @@ module.exports = async function handler(req, res) {
     const email = userRecord.email || userData.email || decodedUser.email || "";
     const firstName = getFirstName(fullName, email);
 
-    return res.status(200).json({
-      authenticated: true,
-      loggedIn: true,
-      user: {
+return res.status(200).json({
+  signedIn: true,
+  authenticated: true,
+  loggedIn: true,
+  user: {
         uid: decodedUser.uid,
         email,
         emailVerified: Boolean(userRecord.emailVerified),
@@ -70,10 +72,11 @@ module.exports = async function handler(req, res) {
       }
     });
   } catch (error) {
-    return res.status(200).json({
-      authenticated: false,
-      loggedIn: false,
-      user: null
-    });
+return res.status(200).json({
+  signedIn: false,
+  authenticated: false,
+  loggedIn: false,
+  user: null
+});
   }
 };
