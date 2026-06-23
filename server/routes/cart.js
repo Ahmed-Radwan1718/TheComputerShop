@@ -36,20 +36,23 @@ function formatMoney(value) {
 function serializeCartItem(itemDoc) {
   const data = itemDoc.data() || {};
   const quantity = Math.max(1, Math.min(99, Number(data.quantity || 1)));
-  const priceValue = getNumberValue(data.priceValue || data.price || data.priceText || 0);
+  const priceNumber = typeof data.priceNumber === "number" ? data.priceNumber : null;
+  const priceValue = priceNumber === null ? getNumberValue(data.priceValue || data.price || data.priceText || 0) : priceNumber;
 
   return {
     id: data.id || itemDoc.id,
     name: data.name || "Product",
     category: data.category || "",
+    specsLine: data.specsLine || "",
     url: data.url || "",
     image: data.image || "",
     price: data.price || data.priceText || formatMoney(priceValue),
     priceText: data.priceText || data.price || formatMoney(priceValue),
+    priceNumber,
     priceValue,
     quantity,
-    lineTotalValue: priceValue * quantity,
-    lineTotalText: formatMoney(priceValue * quantity)
+    lineTotalValue: priceNumber === null ? 0 : priceNumber * quantity,
+    lineTotalText: priceNumber === null ? "Final price to be confirmed" : formatMoney(priceNumber * quantity)
   };
 }
 
@@ -96,7 +99,12 @@ async function handleGet(req, res, uid) {
 
 async function handlePost(req, res, uid) {
   const body = req.body || {};
-  const product = body.product && typeof body.product === "object" ? body.product : body;
+  const product =
+    body.item && typeof body.item === "object"
+      ? body.item
+      : body.product && typeof body.product === "object"
+        ? body.product
+        : body;
 
   const itemId = cleanItemId(product.id || product.url || product.name);
   const quantityToAdd = Math.max(1, Math.min(99, Number(body.quantity || body.quantityToAdd || product.quantity || 1)));
@@ -122,9 +130,11 @@ async function handlePost(req, res, uid) {
       category: cleanString(product.category, 80),
       url: cleanString(product.url, 500),
       image: cleanString(product.image, 1000),
+      specsLine: cleanString(product.specsLine, 240),
       price: cleanString(product.price || product.priceText, 80),
       priceText: cleanString(product.priceText || product.price, 80),
-      priceValue: getNumberValue(product.priceValue || product.price || product.priceText),
+      priceNumber: typeof product.priceNumber === "number" ? product.priceNumber : null,
+      priceValue: getNumberValue(product.priceValue || product.priceNumber || product.price || product.priceText),
       quantity: newQuantity,
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
       createdAt: cartDoc.exists
