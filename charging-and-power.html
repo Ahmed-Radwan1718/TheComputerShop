@@ -140,8 +140,22 @@
       </div>
 
       <div class="signature-builds-grid">
-        <div id="component-filter-empty" style="grid-column: 1 / -1; padding: 28px; border-radius: 18px; background: rgba(255, 255, 255, 0.055); color: rgba(255, 255, 255, 0.72); font-size: 15px; line-height: 1.6;">
-          No charging and power products are listed yet.
+        <a href="product.html?product=anker-prime-20k-220w-power-bank-black-myth-wukong-edition" class="signature-build-card product-card-link" data-filter-tags="Anker Prime 20K 220W Power Bank Black Myth Wukong Edition USB-C USB-A Multi-Port 20,000 mAh 20000mAh">
+          <div class="signature-build-image-frame">
+            <img
+              src="https://res.cloudinary.com/dhtamisqn/image/upload/v1782256183/anker-prime-20k-220w-power-bank-black-myth-wukong-edition-1.jpg"
+              alt="Anker Prime 20K 220W Power Bank Black Myth Wukong Edition"
+              class="signature-build-image"
+            >
+          </div>
+
+          <h3>Anker Prime 20K 220W Power Bank</h3>
+          <p>Anker | 20,000 mAh | 220W</p>
+          <div class="signature-build-price">Price coming soon</div>
+        </a>
+
+        <div id="component-filter-empty" style="display: none; grid-column: 1 / -1; padding: 28px; border-radius: 18px; background: rgba(255, 255, 255, 0.055); color: rgba(255, 255, 255, 0.72); font-size: 15px; line-height: 1.6;">
+          No charging and power products match the selected filters or search.
         </div>
       </div>
     </section>
@@ -248,18 +262,62 @@
   function updateComponentFilters() {
     updateSelectedFilterChips();
 
+    const selectedGroups = Array.from(document.querySelectorAll(".filter-item"))
+      .map((filterItem) => {
+        return Array.from(filterItem.querySelectorAll("input[type='checkbox']:checked"))
+          .map((checkbox) => getCheckboxLabelText(checkbox));
+      })
+      .filter((group) => group.length > 0);
+
+    const searchQuery = getSearchQuery();
+    const normalizedSearchQuery = normalizeFilterValue(searchQuery);
+    const compactSearchQuery = compactFilterValue(searchQuery);
+    const searchWords = normalizedSearchQuery.split(" ").filter(Boolean);
+
+    const cards = Array.from(document.querySelectorAll(".signature-build-card"));
+    let visibleCards = 0;
+
+    cards.forEach((card) => {
+      const cardText = [
+        card.textContent || "",
+        card.getAttribute("data-filter-tags") || ""
+      ].join(" ");
+
+      const normalizedCardText = normalizeFilterValue(cardText);
+      const compactCardText = compactFilterValue(cardText);
+
+      const matchesFilters = selectedGroups.every((group) => {
+        return group.some((selectedValue) => {
+          const normalizedSelectedValue = normalizeFilterValue(selectedValue);
+          const compactSelectedValue = compactFilterValue(selectedValue);
+
+          return (
+            normalizedCardText.includes(normalizedSelectedValue) ||
+            compactCardText.includes(compactSelectedValue)
+          );
+        });
+      });
+
+      const matchesSearch =
+        !normalizedSearchQuery ||
+        normalizedCardText.includes(normalizedSearchQuery) ||
+        compactCardText.includes(compactSearchQuery) ||
+        searchWords.every((word) => normalizedCardText.includes(word));
+
+      const shouldShow = matchesFilters && matchesSearch;
+
+      card.style.display = shouldShow ? "" : "none";
+
+      if (shouldShow) {
+        visibleCards += 1;
+      }
+    });
+
     const emptyMessage = document.getElementById("component-filter-empty");
 
-    if (!emptyMessage) {
-      return;
+    if (emptyMessage) {
+      emptyMessage.style.display = visibleCards === 0 ? "block" : "none";
     }
-
-    const hasActiveFilters = getSelectedFilterCheckboxes().length > 0;
-    const hasSearchQuery = getSearchQuery().trim().length > 0;
-
-    emptyMessage.textContent = hasActiveFilters || hasSearchQuery
-      ? "No charging and power products match the selected filters or search."
-      : "No charging and power products are listed yet.";
   }
 
   document.querySelectorAll(".filter-toggle").forEach((button) => {
