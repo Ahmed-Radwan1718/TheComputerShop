@@ -259,9 +259,9 @@
   const products = {
     "anker-prime-20k-220w-power-bank-black-myth-wukong-edition": {
       id: "anker-prime-20k-220w-power-bank-black-myth-wukong-edition",
-      name: "Anker Prime 20K 220W Power Bank Black Myth Wukong Edition",
+      name: "Anker Prime 20K 220W Power Bank Black Myth: Wukong Edition",
       category: "Charging and Power",
-      specsLine: "Anker | 20,000 mAh | 220W",
+      specsLine: "Anker | 20,100mAh | 220W",
       priceText: "Insert price here",
       priceNumber: null,
       url: "product.html?product=anker-prime-20k-220w-power-bank-black-myth-wukong-edition",
@@ -270,31 +270,34 @@
       ],
       whoIsThisFor: "A high-output portable power bank for users who want fast charging for phones, tablets, handheld devices, travel setups, and USB-C laptop charging from one compact battery.",
       specs: [
-        ["Product Name", "Anker Prime 20K 220W Power Bank Black Myth Wukong Edition"],
+        ["Product Name", "Anker Prime 20K 220W Power Bank Black Myth: Wukong Edition"],
         ["Brand", "Anker"],
         ["Series", "Anker Prime"],
         ["Type", "Power Bank"],
-        ["Capacity", "20,000 mAh"],
+        ["Capacity", "20,100mAh"],
         ["Total Output", "Up to 220W"],
-        ["Charging Ports", "Multi-port USB-C / USB-A charging"],
-        ["Display", "Smart digital display"],
+        ["USB-C Output", "Up to 130W per USB-C port"],
+        ["USB-A Output", "Up to 22.5W"],
+        ["Ports", "2 x USB-C, 1 x USB-A"],
+        ["Power Allocation", "Automatically allocates power across connected devices"],
+        ["Display", "Smart display for battery level and port output"],
+        ["App Support", "Bluetooth monitoring through the Anker app"],
+        ["Built-in Cable", "No built-in USB-C cable"],
         ["Edition", "Black Myth: Wukong Edition"],
-        ["Color", "Black"],
-        ["Use Case", "Phones, tablets, handheld consoles, USB-C laptops, and travel charging"],
-        ["Warranty", "Store support and warranty where available"]
+        ["Color", "Black"]
       ],
       included: [
         {
-          title: "Power Bank",
-          text: "The Anker Prime 20K 220W Power Bank Black Myth Wukong Edition is included as the main product."
+          title: "Anker Prime Power Bank",
+          text: "The Anker Prime 20K 220W Power Bank Black Myth: Wukong Edition is included as the main product."
         },
         {
-          title: "Original Packaging",
-          text: "The product comes with its original box and packaging where available. Customers should keep the packaging for warranty and support purposes."
+          title: "USB-C Charging Cable",
+          text: "A USB-C charging cable is included when supplied with your stock or package. The power bank itself does not have a built-in cable."
         },
         {
-          title: "Included Accessories",
-          text: "Included accessories depend on the official package contents and may include charging cables, documentation, or manufacturer accessories when supplied."
+          title: "Documentation",
+          text: "Quick-start, safety, or warranty documentation is included when supplied in the official package."
         },
         {
           title: "Store Support",
@@ -9037,7 +9040,21 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
   };
 
   const productKey = new URLSearchParams(window.location.search).get("product") || "rtx-5090-aorus-master";
-  const currentProduct = products[productKey] || products["rtx-5090-aorus-master"];
+  const currentProduct = products[productKey];
+
+  if (!currentProduct) {
+    document.title = "Product not found - The Computer Shop";
+
+    const productTitle = document.querySelector(".product-title-block h1");
+    const productCategory = document.querySelector(".product-title-eyebrow");
+    const productSubtitle = document.querySelector(".product-purchase-subtitle");
+
+    if (productTitle) productTitle.textContent = "Product not found";
+    if (productCategory) productCategory.textContent = "Missing product";
+    if (productSubtitle) productSubtitle.textContent = "This product page could not be found. Please return to the products page.";
+
+    throw new Error(`Unknown product key: ${productKey}`);
+  }
 
   let selectedVariantKey = currentProduct.defaultVariant || null;
   let selectedHeatsinkKey = currentProduct.defaultHeatsinkOption || null;
