@@ -3744,9 +3744,6 @@ if (!requestedEmail) {
 
   if (supportMarkResolvedButton) {
     supportMarkResolvedButton.addEventListener("click", async function () {
-      if (!currentUser || !7bf9"
-  if (supportMarkResolvedButton) {
-    supportMarkResolvedButton.addEventListener("click", async function () {
       if (!currentUser || !activeSupportTicketId) {
         return;
       }
@@ -3812,8 +3809,18 @@ if (!requestedEmail) {
     stopSupportTicketsSync();
     stopOrderHistorySync();
     clearSecurityUnlock();
-    await signOut(auth);
-    window.location.href = "signup.html";
+
+    await fetch("/api/logout", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({})
+    }).catch(function () {});
+
+    sessionStorage.removeItem("tcs-login-2fa-pending");
+    window.location.href = "login.html";
   });
 
   document.addEventListener("keydown", function (event) {
