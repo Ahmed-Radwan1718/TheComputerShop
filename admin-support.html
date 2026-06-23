@@ -108,22 +108,7 @@
   </div>
 </div>
 
-<script type="module">
-  import "./auth.js";
-
-  const {
-    auth,
-    db,
-    onAuthStateChanged,
-    collection,
-    onSnapshot,
-    doc,
-    updateDoc,
-    serverTimestamp
-  } = window.tcsAuth;
-
-  const adminEmails = ["ahmedradwan21@gmail.com"];
-
+<script>
   const adminSupportLoading = document.getElementById("admin-support-loading");
   const adminSupportList = document.getElementById("admin-support-list");
   const adminSupportEmpty = document.getElementById("admin-support-empty");
@@ -148,7 +133,6 @@
   let tickets = [];
   let activeFilter = "all";
   let activeTicketId = "";
-  let unsubscribeTickets = null;
 
   function showMessage(element, message, type) {
     element.textContent = message;
@@ -173,14 +157,6 @@
       return "Not available";
     }
 
-    if (typeof value.toDate === "function") {
-      return value.toDate().toLocaleDateString("en-GB", {
-        day: "numeric",
-        month: "short",
-        year: "numeric"
-      });
-    }
-
     const date = new Date(value);
 
     if (Number.isNaN(date.getTime())) {
@@ -195,15 +171,8 @@
   }
 
   function getTicketTimeValue(ticket) {
-    if (ticket.updatedAt && typeof ticket.updatedAt.toMillis === "function") {
-      return ticket.updatedAt.toMillis();
-    }
-
-    if (ticket.createdAt && typeof ticket.createdAt.toMillis === "function") {
-      return ticket.createdAt.toMillis();
-    }
-
-    return 0;
+    const date = new Date(ticket.updatedAt || ticket.createdAt || 0);
+    return Number.isNaN(date.getTime()) ? 0 : date.getTime();
   }
 
   function getStatusLabel(status) {
@@ -326,44 +295,98 @@
     document.body.classList.remove("account-security-modal-open");
   }
 
-  onAuthStateChanged(auth, function (user) {
-    if (!user) {
-      window.location.href = "login.html";
-      return;
-    }
-
-    if (!adminEmails.includes(user.email || "")) {
-      adminSupportLoading.hidden = true;
-      adminSupportEmpty.hidden = false;
-      showMessage(adminSupportMessage, "You do not have permission to view this page.", "error");
-      return;
-    }
-
-    unsubscribeTickets = onSnapshot(collection(db, "supportTickets"), function (snapshot) {
-      tickets = snapshot.docs.map(function (ticketDoc) {
-        return {
-          id: ticketDoc.id,
-          ...ticketDoc.data()
-        };
-      }).sort(function (a, b) {
-        return getTicketTimeValue(b) - getTicketTimeValue(a);
-      });
-
-      renderTickets();
-
-      if (activeTicketId) {
-        const ticket = getActiveTicket();
-
-        if (ticket) {
-          renderTicketModal(ticket);
-        }
+  async function loadAdminTickets() {
+    const response = await fetch("/api/admin-support-tickets", {
+      method: "GET",
+      credentials: "same-origin",
+      headers: {
+        "Accept": "application/json"
       }
-    }, function () {
-      adminSupportLoading.hidden = true;
-      adminSupportEmpty.hidden = false;
-      showMessage(adminSupportMessage, "Could not load tickets. Check Firestore rules.", "error");
     });
-  });
+
+    const data = await response.json().catch(function () {
+      return {};
+    });
+
+    if (!response.ok || !Array.isArray(data.tickets)) {
+      throw new Error(data.error || "Could not load tickets.");
+    }
+
+    tickets = data.tickets.sort(function (a, b) {
+      return getTicketTimeValue(b) - getTicketTimeValue(a);
+    });
+
+    renderTickets();
+
+    if (activeTicketId) {
+      const ticket = getActiveTicket();
+
+      if (ticket) {
+        renderTicketModal(ticket);
+      }
+    }
+  }
+
+  async function updateAdminTicketStatus(ticketId, status) {
+    const response = await fetch("/api/admin-support-tickets", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        action: "status",
+        ticketId: ticketId,
+        status: status
+      })
+    });
+
+    const data = await response.json().catch(function () {
+      return {};
+    });
+
+    if (!response.ok || !data.ticket) {
+      throw new Error(data.error || "Could not save status.");
+    }
+
+    return data.ticket;
+  }
+
+  async function sendAdminTicketReply(ticketId, message) {
+    const response = await fetch("/api/admin-support-tickets", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        action: "reply",
+        ticketId: ticketId,
+        message: message
+      })
+    });
+
+    const data = await response.json().catch(function () {
+      return {};
+    });
+
+    if (!response.ok || !data.ticket) {
+      throw new Error(data.error || "Could not send reply.");
+    }
+
+    return data.ticket;
+  }
+
+  function replaceTicket(updatedTicket) {
+    tickets = tickets.map(function (ticket) {
+      return ticket.id === updatedTicket.id ? updatedTicket : ticket;
+    }).sort(function (a, b) {
+      return getTicketTimeValue(b) - getTicketTimeValue(a);
+    });
+
+    renderTickets();
+    renderTicketModal(updatedTicket);
+  }
 
   adminSupportFilters.addEventListener("click", function (event) {
     const filterButton = event.target.closest("[data-admin-support-filter]");
@@ -403,14 +426,11 @@
     showMessage(adminTicketReplyMessage, "", "");
 
     try {
-      await updateDoc(doc(db, "supportTickets", activeTicketId), {
-        status: adminTicketStatus.value,
-        updatedAt: serverTimestamp()
-      });
-
+      const updatedTicket = await updateAdminTicketStatus(activeTicketId, adminTicketStatus.value);
+      replaceTicket(updatedTicket);
       showMessage(adminTicketReplyMessage, "Status saved.", "success");
     } catch (error) {
-      showMessage(adminTicketReplyMessage, "Could not save status.", "error");
+      showMessage(adminTicketReplyMessage, error.message || "Could not save status.", "error");
     } finally {
       adminTicketSaveStatus.disabled = false;
     }
@@ -437,31 +457,22 @@
     showMessage(adminTicketReplyMessage, "", "");
 
     try {
-      const messages = Array.isArray(ticket.messages) ? ticket.messages : [];
-
-      await updateDoc(doc(db, "supportTickets", activeTicketId), {
-        status: "answered",
-        lastMessageFrom: "admin",
-        messages: messages.concat([
-          {
-            sender: "admin",
-            name: "The Computer Shop",
-            email: "ahmedradwan21@gmail.com",
-            message: replyText,
-            createdAt: new Date().toISOString()
-          }
-        ]),
-        updatedAt: serverTimestamp()
-      });
-
+      const updatedTicket = await sendAdminTicketReply(activeTicketId, replyText);
+      replaceTicket(updatedTicket);
       adminTicketReplyForm.reset();
       showMessage(adminTicketReplyMessage, "Reply sent.", "success");
     } catch (error) {
-      showMessage(adminTicketReplyMessage, "Could not send reply.", "error");
+      showMessage(adminTicketReplyMessage, error.message || "Could not send reply.", "error");
     } finally {
       adminTicketSendReply.disabled = false;
       adminTicketSendReply.textContent = "Send Reply";
     }
+  });
+
+  loadAdminTickets().catch(function (error) {
+    adminSupportLoading.hidden = true;
+    adminSupportEmpty.hidden = false;
+    showMessage(adminSupportMessage, error.message || "Could not load tickets.", "error");
   });
 </script>
 
