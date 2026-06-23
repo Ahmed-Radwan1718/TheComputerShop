@@ -1,0 +1,170 @@
+const admin = require("../_lib/firebaseAdmin");
+
+const {
+  getUserFromRequest
+} = require("../_lib/securityHelpers");
+
+const VALID_ADDRESS_TYPES = ["apartment", "house", "office"];
+
+function cleanString(value, maxLength) {
+  return String(value || "").trim().slice(0, maxLength);
+}
+
+function cleanAddressId(value) {
+  const addressId = cleanString(value, 120);
+
+  if (!addressId || addressId.includes("/")) {
+    return "";
+  }
+
+  if (!/^[a-zA-Z0-9_-]+$/.test(addressId)) {
+    return "";
+  }
+
+  return addressId;
+}
+
+function cleanAddressType(value) {
+  const addressType = cleanString(value, 30);
+  return VALID_ADDRESS_TYPES.includes(addressType) ? addressType : "apartment";
+}
+
+function serializeTimestamp(value) {
+  if (!value) {
+    return null;
+  }
+
+  if (typeof value.toDate === "function") {
+    return value.toDate().toISOString();
+  }
+
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? null : date.toISOString();
+}
+
+function serializeAddress(addressDoc) {
+  const data = addressDoc.data() || {};
+
+  return {
+    id: addressDoc.id,
+    label: data.label || "",
+    addressType: data.addressType || "apartment",
+    buildingName: data.buildingName || "",
+    apartmentNumber: data.apartmentNumber || "",
+    floorNumber: data.floorNumber || "",
+    houseNumber: data.houseNumber || "",
+    officeName: data.officeName || "",
+    companyName: data.companyName || "",
+    streetName: data.streetName || "",
+    additionalInfo: data.additionalInfo || "",
+    createdAt: serializeTimestamp(data.createdAt),
+    updatedAt: serializeTimestamp(data.updatedAt)
+  };
+}
+
+function cleanAddressData(body) {
+  return {
+    label: cleanString(body.label, 80),
+    addressType: cleanAddressType(body.addressType),
+    buildingName: cleanString(body.buildingName, 80),
+    apartmentNumber: cleanString(body.apartmentNumber, 40),
+    floorNumber: cleanString(body.floorNumber, 40),
+    houseNumber: cleanString(body.houseNumber, 40),
+    officeName: cleanString(body.officeName, 80),
+    companyName: cleanString(body.companyName, 80),
+    streetName: cleanString(body.streetName, 120),
+    additionalInfo: cleanString(body.additionalInfo, 500)
+  };
+}
+
+async function handleGet(req, res, uid) {
+  const snapshot = await admin.firestore()
+    .collection("users")
+    .doc(uid)
+    .collection("addresses")
+    .limit(50)
+    .get();
+
+  const addresses = snapshot.docs.map(serializeAddress);
+
+  return res.status(200).json({
+    success: true,
+    addresses
+  });
+}
+
+async function handlePost(req, res, uid) {
+  const db = admin.firestore();
+  const body = req.body || {};
+  const addressId = cleanAddressId(body.id || body.addressId);
+  const addressData = cleanAddressData(body);
+
+  if (!addressData.label || !addressData.streetName) {
+    return res.status(400).json({ error: "Please enter an address label and street name." });
+  }
+
+  const addressesRef = db.collection("users").doc(uid).collection("addresses");
+  const addressRef = addressId ? addressesRef.doc(addressId) : addressesRef.doc();
+  const existingDoc = await addressRef.get();
+
+  await addressRef.set({
+    ...addressData,
+    createdAt: existingDoc.exists
+      ? existingDoc.data().createdAt || admin.firestore.FieldValue.serverTimestamp()
+      : admin.firestore.FieldValue.serverTimestamp(),
+    updatedAt: admin.firestore.FieldValue.serverTimestamp()
+  }, { merge: true });
+
+  const savedDoc = await addressRef.get();
+
+  return res.status(200).json({
+    success: true,
+    address: serializeAddress(savedDoc)
+  });
+}
+
+async function handleDelete(req, res, uid) {
+  const addressId = cleanAddressId((req.body || {}).id || (req.body || {}).addressId || (req.query || {}).id);
+
+  if (!addressId) {
+    return res.status(400).json({ error: "Missing address id." });
+  }
+
+  await admin.firestore()
+    .collection("users")
+    .doc(uid)
+    .collection("addresses")
+    .doc(addressId)
+    .delete();
+
+  return res.status(200).json({
+    success: true
+  });
+}
+
+module.exports = async function handler(req, res) {
+  try {
+    const decodedUser = await getUserFromRequest(req, {
+      checkRevoked: true,
+      requireCompletedTwoFactor: true
+    });
+
+    if (req.method === "GET") {
+      return await handleGet(req, res, decodedUser.uid);
+    }
+
+    if (req.method === "POST") {
+      return await handlePost(req, res, decodedUser.uid);
+    }
+
+    if (req.method === "DELETE") {
+      return await handleDelete(req, res, decodedUser.uid);
+    }
+
+    return res.status(405).json({ error: "Method not allowed" });
+  } catch (error) {
+    return res.status(error.statusCode || 500).json({
+      error: error.message || "Could not process address request."
+    });
+  }
+};
