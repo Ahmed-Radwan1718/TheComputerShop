@@ -1552,7 +1552,8 @@ function getSupportTimeValue(ticket) {
     return ticket.createdAt.toMillis();
   }
 
-  return 0;
+  const date = new Date(ticket.updatedAt || ticket.createdAt || 0);
+  return Number.isNaN(date.getTime()) ? 0 : date.getTime();
 }
 
 function stopSupportTicketsSync() {
@@ -1561,6 +1562,101 @@ function stopSupportTicketsSync() {
   }
 
   supportTicketsUnsubscribe = null;
+}
+
+async function loadServerSupportTickets() {
+  const response = await fetch("/api/support-tickets", {
+    method: "GET",
+    credentials: "same-origin",
+    headers: {
+      "Accept": "application/json"
+    }
+  });
+
+  const data = await response.json().catch(function () {
+    return {};
+  });
+
+  if (!response.ok || !Array.isArray(data.tickets)) {
+    throw new Error(data.error || "Could not load support requests.");
+  }
+
+  return data.tickets;
+}
+
+async function createServerSupportTicket(ticketData) {
+  const response = await fetch("/api/support-tickets", {
+    method: "POST",
+    credentials: "same-origin",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      action: "create",
+      category: ticketData.category,
+      subject: ticketData.subject,
+      message: ticketData.message
+    })
+  });
+
+  const data = await response.json().catch(function () {
+    return {};
+  });
+
+  if (!response.ok || !data.ticket) {
+    throw new Error(data.error || "Could not submit your request.");
+  }
+
+  return data.ticket;
+}
+
+async function replyServerSupportTicket(ticketId, message) {
+  const response = await fetch("/api/support-tickets", {
+    method: "POST",
+    credentials: "same-origin",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      action: "reply",
+      ticketId: ticketId,
+      message: message
+    })
+  });
+
+  const data = await response.json().catch(function () {
+    return {};
+  });
+
+  if (!response.ok || !data.ticket) {
+    throw new Error(data.error || "Could not send your reply.");
+  }
+
+  return data.ticket;
+}
+
+async function resolveServerSupportTicket(ticketId) {
+  const response = await fetch("/api/support-tickets", {
+    method: "POST",
+    credentials: "same-origin",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      action: "resolve",
+      ticketId: ticketId
+    })
+  });
+
+  const data = await response.json().catch(function () {
+    return {};
+  });
+
+  if (!response.ok || !data.ticket) {
+    throw new Error(data.error || "Could not mark this request as resolved.");
+  }
+
+  return data.ticket;
 }
 
 function renderSupportTickets() {
@@ -1618,7 +1714,7 @@ function renderSupportTickets() {
   }).join("");
 }
 
-function startSupportTicketsSync(uid) {
+async function startSupportTicketsSync(uid) {
   stopSupportTicketsSync();
 
   if (!supportTicketsList || !supportTicketsEmpty || !supportTicketsLoading) {
@@ -1630,18 +1726,8 @@ function startSupportTicketsSync(uid) {
   supportTicketsList.innerHTML = "";
   showMessage(supportTicketsMessage, "", "");
 
-  const supportQuery = query(collection(db, "supportTickets"), where("userId", "==", uid));
-
-  supportTicketsUnsubscribe = onSnapshot(supportQuery, function (snapshot) {
-    supportTickets = snapshot.docs.map(function (ticketDoc) {
-      return {
-        id: ticketDoc.id,
-        ...ticketDoc.data()
-      };
-    }).sort(function (a, b) {
-      return getSupportTimeValue(b) - getSupportTimeValue(a);
-    });
-
+  try {
+    supportTickets = await loadServerSupportTickets();
     renderSupportTickets();
 
     if (activeSupportTicketId) {
@@ -1651,11 +1737,12 @@ function startSupportTicketsSync(uid) {
         renderSupportDetail(activeTicket);
       }
     }
-  }, function () {
+  } catch (error) {
+    supportTickets = [];
     supportTicketsLoading.hidden = true;
     supportTicketsEmpty.hidden = false;
-    showMessage(supportTicketsMessage, "Could not load support requests. Please refresh and try again.", "error");
-  });
+    showMessage(supportTicketsMessage, error.message || "Could not load support requests. Please refresh and try again.", "error");
+  }
 }
 
 function openSupportRequestModal() {
@@ -3623,32 +3710,19 @@ if (!requestedEmail) {
       showMessage(supportRequestFormMessage, "", "");
 
       try {
-        await addDoc(collection(db, "supportTickets"), {
-          userId: currentUser.uid,
-          userName: accountName.value.trim() || currentUser.displayName || "Customer",
-          userEmail: currentUser.email || "",
+        const ticket = await createServerSupportTicket({
           category: category,
           subject: subject,
-          message: message,
-          status: "open",
-          lastMessageFrom: "customer",
-          messages: [
-            {
-              sender: "customer",
-              name: accountName.value.trim() || currentUser.displayName || "Customer",
-              email: currentUser.email || "",
-              message: message,
-              createdAt: new Date().toISOString()
-            }
-          ],
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp()
+          message: message
         });
+
+        supportTickets = [ticket].concat(supportTickets);
+        renderSupportTickets();
 
         closeSupportRequestModal();
         showMessage(supportTicketsMessage, "Support request submitted.", "success");
       } catch (error) {
-        showMessage(supportRequestFormMessage, "Could not submit your request. Please try again.", "error");
+        showMessage(supportRequestFormMessage, error.message || "Could not submit your request. Please try again.", "error");
       } finally {
         supportRequestSubmit.disabled = false;
         supportRequestSubmit.textContent = "Submit Request";
@@ -3682,27 +3756,20 @@ if (!requestedEmail) {
       showMessage(supportReplyMessageStatus, "", "");
 
       try {
-        const messages = Array.isArray(ticket.messages) ? ticket.messages : [];
+        const updatedTicket = await replyServerSupportTicket(activeSupportTicketId, replyText);
 
-        await updateDoc(doc(db, "supportTickets", activeSupportTicketId), {
-          status: "open",
-          lastMessageFrom: "customer",
-          messages: messages.concat([
-            {
-              sender: "customer",
-              name: accountName.value.trim() || currentUser.displayName || "Customer",
-              email: currentUser.email || "",
-              message: replyText,
-              createdAt: new Date().toISOString()
-            }
-          ]),
-          updatedAt: serverTimestamp()
+        supportTickets = supportTickets.map(function (supportTicket) {
+          return supportTicket.id === updatedTicket.id ? updatedTicket : supportTicket;
+        }).sort(function (a, b) {
+          return getSupportTimeValue(b) - getSupportTimeValue(a);
         });
 
         supportReplyForm.reset();
+        renderSupportTickets();
+        renderSupportDetail(updatedTicket);
         showMessage(supportReplyMessageStatus, "Reply sent.", "success");
       } catch (error) {
-        showMessage(supportReplyMessageStatus, "Could not send your reply. Please try again.", "error");
+        showMessage(supportReplyMessageStatus, error.message || "Could not send your reply. Please try again.", "error");
       } finally {
         supportReplySubmit.disabled = false;
         supportReplySubmit.textContent = "Send Reply";
@@ -3710,6 +3777,9 @@ if (!requestedEmail) {
     });
   }
 
+  if (supportMarkResolvedButton) {
+    supportMarkResolvedButton.addEventListener("click", async function () {
+      if (!currentUser || !7bf9"
   if (supportMarkResolvedButton) {
     supportMarkResolvedButton.addEventListener("click", async function () {
       if (!currentUser || !activeSupportTicketId) {
@@ -3720,14 +3790,17 @@ if (!requestedEmail) {
       showMessage(supportReplyMessageStatus, "", "");
 
       try {
-        await updateDoc(doc(db, "supportTickets", activeSupportTicketId), {
-          status: "resolved",
-          updatedAt: serverTimestamp()
+        const updatedTicket = await resolveServerSupportTicket(activeSupportTicketId);
+
+        supportTickets = supportTickets.map(function (supportTicket) {
+          return supportTicket.id === updatedTicket.id ? updatedTicket : supportTicket;
         });
 
+        renderSupportTickets();
+        renderSupportDetail(updatedTicket);
         showMessage(supportReplyMessageStatus, "Request marked as resolved.", "success");
       } catch (error) {
-        showMessage(supportReplyMessageStatus, "Could not mark this request as resolved.", "error");
+        showMessage(supportReplyMessageStatus, error.message || "Could not mark this request as resolved.", "error");
       } finally {
         supportMarkResolvedButton.disabled = false;
       }
