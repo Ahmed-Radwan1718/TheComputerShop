@@ -160,23 +160,7 @@
   </section>
 </main>
 
-<script type="module">
-  import "./auth.js";
-
-  const {
-    auth,
-    db,
-    onAuthStateChanged,
-    doc,
-    collection,
-    addDoc,
-    getDoc,
-    setDoc,
-    deleteDoc,
-    onSnapshot,
-    serverTimestamp
-  } = window.tcsAuth;
-
+<script>
   const checkoutForm = document.getElementById("checkout-form");
   const checkoutName = document.getElementById("checkout-name");
   const checkoutEmail = document.getElementById("checkout-email");
@@ -202,8 +186,6 @@
   let currentCheckoutUser = null;
   let checkoutCartItems = [];
   let checkoutSavedAddresses = [];
-  let checkoutCartUnsubscribe = null;
-  let checkoutAddressesUnsubscribe = null;
 
   function showCheckoutMessage(message, type) {
     checkoutMessage.textContent = message;
@@ -223,35 +205,8 @@
       .replaceAll("'", "&#039;");
   }
 
-  function getLocalCart() {
-    return JSON.parse(localStorage.getItem("computerShopCart")) || [];
-  }
-
-  async function mergeLocalCartToCloud(user) {
-    const localCart = getLocalCart();
-
-    if (!user || !localCart.length) {
-      return;
-    }
-
-    await Promise.all(localCart.map(async function (item) {
-      const itemRef = doc(db, "users", user.uid, "cartItems", item.id);
-      const existingDoc = await getDoc(itemRef);
-      const existingQuantity = existingDoc.exists() ? Number(existingDoc.data().quantity || 0) : 0;
-
-      await setDoc(itemRef, {
-        ...item,
-        quantity: existingQuantity + Number(item.quantity || 1),
-        updatedAt: serverTimestamp(),
-        addedAt: existingDoc.exists() && existingDoc.data().addedAt ? existingDoc.data().addedAt : serverTimestamp()
-      }, { merge: true });
-    }));
-
-    localStorage.removeItem("computerShopCart");
-  }
-
   function getCartTotalValue(cart) {
-    const hasKnownPrices = cart.every(function (item) {
+    const hasKnownPrices = cart.length > 0 && cart.every(function (item) {
       return typeof item.priceNumber === "number";
     });
 
@@ -264,7 +219,20 @@
     }, 0);
   }
 
+  function updateCartCount(cart) {
+    const totalQuantity = cart.reduce(function (total, item) {
+      return total + Number(item.quantity || 0);
+    }, 0);
+
+    document.querySelectorAll(".nav-cart-count").forEach(function (count) {
+      count.textContent = totalQuantity;
+      count.style.display = totalQuantity > 0 ? "block" : "none";
+    });
+  }
+
   function renderCheckoutCart() {
+    updateCartCount(checkoutCartItems);
+
     if (!checkoutCartItems.length) {
       checkoutItems.innerHTML = `
         <div class="checkout-empty-cart">
@@ -305,6 +273,22 @@
     return address.label || "Saved Address";
   }
 
+  function showCheckoutAddressFields() {
+    const selectedType = checkoutAddressType.value;
+
+    document.querySelectorAll(".checkout-address-type-button").forEach(function (button) {
+      button.classList.toggle("active", button.dataset.checkoutAddressType === selectedType);
+    });
+
+    document.querySelectorAll(".checkout-address-field").forEach(function (field) {
+      field.hidden = true;
+    });
+
+    document.querySelectorAll(".checkout-address-" + selectedType).forEach(function (field) {
+      field.hidden = false;
+    });
+  }
+
   function fillCheckoutAddress(address) {
     if (!address) {
       return;
@@ -338,82 +322,89 @@
     }).join("");
   }
 
-  function startCheckoutAddressesSync(user) {
-    if (typeof checkoutAddressesUnsubscribe === "function") {
-      checkoutAddressesUnsubscribe();
+  function fillCheckoutProfile(profile) {
+    currentCheckoutUser = profile || null;
+
+    checkoutEmail.value = profile.email || "";
+    checkoutName.value = profile.fullName || "";
+    checkoutPhone.value = profile.phone || "";
+    checkoutAddressType.value = profile.addressType || "apartment";
+    checkoutBuildingName.value = profile.buildingName || "";
+    checkoutApartmentNumber.value = profile.apartmentNumber || "";
+    checkoutFloorNumber.value = profile.floorNumber || "";
+    checkoutHouseNumber.value = profile.houseNumber || "";
+    checkoutOfficeName.value = profile.officeName || "";
+    checkoutCompanyName.value = profile.companyName || "";
+    checkoutStreetName.value = profile.streetName || "";
+    checkoutAdditionalInfo.value = profile.additionalInfo || "";
+
+    showCheckoutAddressFields();
+  }
+
+  async function loadCheckoutData() {
+    const response = await fetch("/api/checkout", {
+      method: "GET",
+      credentials: "same-origin",
+      headers: {
+        "Accept": "application/json"
+      }
+    });
+
+    const data = await response.json().catch(function () {
+      return {};
+    });
+
+    if (!response.ok || !data.success) {
+      throw new Error(data.error || "Please log in again.");
     }
 
-    checkoutAddressesUnsubscribe = onSnapshot(collection(db, "users", user.uid, "addresses"), function (snapshot) {
-      checkoutSavedAddresses = snapshot.docs.map(function (addressDoc) {
-        return {
-          id: addressDoc.id,
-          ...addressDoc.data()
-        };
-      });
+    localStorage.removeItem("computerShopCart");
 
-      renderCheckoutSavedAddresses();
-    });
+    fillCheckoutProfile(data.profile || {});
+    checkoutCartItems = Array.isArray(data.cartItems) ? data.cartItems : [];
+    checkoutSavedAddresses = Array.isArray(data.addresses) ? data.addresses : [];
+
+    renderCheckoutCart();
+    renderCheckoutSavedAddresses();
+
+    if (typeof window.tcsRefreshCartCount === "function") {
+      window.tcsRefreshCartCount();
+    }
   }
 
-  function showCheckoutAddressFields() {
-    const selectedType = checkoutAddressType.value;
-
-    document.querySelectorAll(".checkout-address-type-button").forEach(function (button) {
-      button.classList.toggle("active", button.dataset.checkoutAddressType === selectedType);
+  async function submitCheckoutOrder() {
+    const response = await fetch("/api/checkout", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        fullName: checkoutName.value.trim(),
+        phone: checkoutPhone.value.trim(),
+        paymentMethod: checkoutPaymentMethod.value,
+        addressType: checkoutAddressType.value,
+        buildingName: checkoutBuildingName.value.trim(),
+        apartmentNumber: checkoutApartmentNumber.value.trim(),
+        floorNumber: checkoutFloorNumber.value.trim(),
+        houseNumber: checkoutHouseNumber.value.trim(),
+        officeName: checkoutOfficeName.value.trim(),
+        companyName: checkoutCompanyName.value.trim(),
+        streetName: checkoutStreetName.value.trim(),
+        additionalInfo: checkoutAdditionalInfo.value.trim(),
+        customerNote: checkoutCustomerNote.value.trim()
+      })
     });
 
-    document.querySelectorAll(".checkout-address-field").forEach(function (field) {
-      field.hidden = true;
+    const data = await response.json().catch(function () {
+      return {};
     });
 
-    document.querySelectorAll(".checkout-address-" + selectedType).forEach(function (field) {
-      field.hidden = false;
-    });
-  }
+    if (!response.ok || !data.success) {
+      throw new Error(data.error || "Could not place your order request.");
+    }
 
-  function createOrderNumber() {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-    const day = String(now.getDate()).padStart(2, "0");
-    const randomPart = Math.random().toString(36).slice(2, 6).toUpperCase();
-
-    return "TCS-" + year + month + day + "-" + randomPart;
-  }
-
-  async function clearCloudCart() {
-    await Promise.all(checkoutCartItems.map(function (item) {
-      return deleteDoc(doc(db, "users", currentCheckoutUser.uid, "cartItems", item.id));
-    }));
-  }
-
-  async function loadCheckoutUserDetails(user) {
-    checkoutEmail.value = user.email || "";
-    checkoutName.value = user.displayName || "";
-
-    try {
-      const userDoc = await getDoc(doc(db, "users", user.uid));
-
-      if (!userDoc.exists()) {
-        return;
-      }
-
-      const data = userDoc.data();
-
-      checkoutName.value = data.fullName || user.displayName || "";
-      checkoutPhone.value = data.phone || "";
-      checkoutAddressType.value = data.addressType || "apartment";
-      checkoutBuildingName.value = data.buildingName || "";
-      checkoutApartmentNumber.value = data.apartmentNumber || "";
-      checkoutFloorNumber.value = data.floorNumber || "";
-      checkoutHouseNumber.value = data.houseNumber || "";
-      checkoutOfficeName.value = data.officeName || "";
-      checkoutCompanyName.value = data.companyName || "";
-      checkoutStreetName.value = data.streetName || "";
-      checkoutAdditionalInfo.value = data.additionalInfo || "";
-
-      showCheckoutAddressFields();
-    } catch (error) {}
+    return data;
   }
 
   document.querySelectorAll(".checkout-address-type-button").forEach(function (button) {
@@ -440,6 +431,7 @@
     event.preventDefault();
 
     if (!currentCheckoutUser) {
+      localStorage.setItem("tcs-login-redirect", "checkout.html");
       window.location.href = "login.html";
       return;
     }
@@ -463,68 +455,14 @@
     showCheckoutMessage("", "");
 
     try {
-      const totalValue = getCartTotalValue(checkoutCartItems);
+      await submitCheckoutOrder();
 
-      const checkoutData = {
-        fullName: fullName,
-        phone: phone,
-        addressType: checkoutAddressType.value,
-        buildingName: checkoutBuildingName.value.trim(),
-        apartmentNumber: checkoutApartmentNumber.value.trim(),
-        floorNumber: checkoutFloorNumber.value.trim(),
-        houseNumber: checkoutHouseNumber.value.trim(),
-        officeName: checkoutOfficeName.value.trim(),
-        companyName: checkoutCompanyName.value.trim(),
-        streetName: streetName,
-        additionalInfo: checkoutAdditionalInfo.value.trim(),
-        updatedAt: serverTimestamp()
-      };
+      checkoutCartItems = [];
+      renderCheckoutCart();
 
-      await setDoc(doc(db, "users", currentCheckoutUser.uid), checkoutData, { merge: true });
-
-      await addDoc(collection(db, "orders"), {
-        orderNumber: createOrderNumber(),
-        userId: currentCheckoutUser.uid,
-        userName: fullName,
-        userEmail: currentCheckoutUser.email || "",
-        phone: phone,
-        paymentMethod: checkoutPaymentMethod.value,
-        addressType: checkoutAddressType.value,
-        buildingName: checkoutBuildingName.value.trim(),
-        apartmentNumber: checkoutApartmentNumber.value.trim(),
-        floorNumber: checkoutFloorNumber.value.trim(),
-        houseNumber: checkoutHouseNumber.value.trim(),
-        officeName: checkoutOfficeName.value.trim(),
-        companyName: checkoutCompanyName.value.trim(),
-        streetName: streetName,
-        additionalInfo: checkoutAdditionalInfo.value.trim(),
-        customerNote: checkoutCustomerNote.value.trim(),
-        items: checkoutCartItems.map(function (item) {
-          return {
-            id: item.id || "",
-            name: item.name || "Product",
-            category: item.category || "Product",
-            specsLine: item.specsLine || "",
-            priceText: item.priceText || "Price pending confirmation",
-            priceNumber: typeof item.priceNumber === "number" ? item.priceNumber : null,
-            image: item.image || "",
-            url: item.url || "",
-            quantity: Number(item.quantity || 1)
-          };
-        }),
-        itemCount: checkoutCartItems.reduce(function (total, item) {
-          return total + Number(item.quantity || 0);
-        }, 0),
-        totalValue: totalValue,
-        totalText: totalValue === null ? "Final price to be confirmed" : totalValue.toLocaleString() + " EGP",
-        status: "submitted",
-        paymentStatus: "not_paid",
-        adminNote: "",
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp()
-      });
-
-      await clearCloudCart();
+      if (typeof window.tcsRefreshCartCount === "function") {
+        window.tcsRefreshCartCount();
+      }
 
       showCheckoutMessage("Order request placed. Redirecting to your account...", "success");
 
@@ -532,41 +470,19 @@
         window.location.href = "accounts.html";
       }, 1000);
     } catch (error) {
-      showCheckoutMessage("Could not place your order request. Please try again.", "error");
+      showCheckoutMessage(error.message || "Could not place your order request. Please try again.", "error");
       checkoutSubmitButton.disabled = false;
       checkoutSubmitButton.textContent = "Place Order Request";
     }
   });
 
-  onAuthStateChanged(auth, async function (user) {
-    if (!user) {
-      localStorage.setItem("tcs-login-redirect", "checkout.html");
+  loadCheckoutData().catch(function (error) {
+    localStorage.setItem("tcs-login-redirect", "checkout.html");
+    showCheckoutMessage(error.message || "Please log in to checkout.", "error");
+
+    setTimeout(function () {
       window.location.href = "login.html";
-      return;
-    }
-
-    currentCheckoutUser = user;
-
-    await mergeLocalCartToCloud(user);
-    await loadCheckoutUserDetails(user);
-    startCheckoutAddressesSync(user);
-
-    if (typeof checkoutCartUnsubscribe === "function") {
-      checkoutCartUnsubscribe();
-    }
-
-    checkoutCartUnsubscribe = onSnapshot(collection(db, "users", user.uid, "cartItems"), function (snapshot) {
-      checkoutCartItems = snapshot.docs.map(function (cartDoc) {
-        return {
-          id: cartDoc.id,
-          ...cartDoc.data()
-        };
-      });
-
-      renderCheckoutCart();
-    }, function () {
-      showCheckoutMessage("Could not load your cart. Please refresh and try again.", "error");
-    });
+    }, 700);
   });
 
   showCheckoutAddressFields();
