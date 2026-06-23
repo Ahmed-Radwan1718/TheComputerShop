@@ -332,7 +332,11 @@ async function getLoginChallenge(req) {
   return {
     challengeId,
     ref: challengeRef,
-    data
+    data,
+    uid: data.uid || "",
+    email: data.email || "",
+    idToken: data.idToken || "",
+    twoFactor: data.twoFactor || {}
   };
 }
 
