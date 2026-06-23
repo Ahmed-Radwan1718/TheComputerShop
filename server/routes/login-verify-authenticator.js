@@ -82,11 +82,13 @@ async function clearFailures(uid) {
 }
 
 async function createCompatibleSiteSession(req, res, challenge) {
-  if (challenge.idToken && typeof createSiteSessionFromIdToken === "function") {
-    return await createSiteSessionFromIdToken(challenge.idToken, res);
+  if (!challenge.idToken) {
+    const error = new Error("Please log in again.");
+    error.statusCode = 401;
+    throw error;
   }
 
-  return await createSiteSessionForUid(challenge.uid, res);
+  return await createSiteSessionFromIdToken(challenge.idToken, res);
 }
 
 async function createCompatibleTwoFactorSession(req, res, uid) {
