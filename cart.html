@@ -94,8 +94,6 @@
 
 
 <script>
-  document.addEventListener("keydown", function (event) {
-
   const cartItems = document.getElementById("cart-items");
   const cartEmpty = document.getElementById("cart-empty");
   const cartSummary = document.getElementById("cart-summary");
@@ -357,16 +355,29 @@
   }
 
   async function removeCartItem(itemId) {
-    if (currentCartUser) {
-      await deleteDoc(doc(db, "users", currentCartUser.uid, "cartItems", itemId));
-      return;
-    }
-
-    const updatedCart = getLocalCart().filter(function (item) {
-      return item.id !== itemId;
+    const response = await fetch("/api/cart", {
+      method: "DELETE",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ id: itemId })
     });
 
-    saveLocalCart(updatedCart);
+    const data = await response.json().catch(function () {
+      return {};
+    });
+
+    if (!response.ok) {
+      throw new Error(data.error || "Could not remove this item.");
+    }
+
+    cloudCartItems = Array.isArray(data.items) ? data.items : [];
+    renderCart(cloudCartItems);
+
+    if (typeof window.tcsRefreshCartCount === "function") {
+      window.tcsRefreshCartCount();
+    }
   }
 
   cartItems.addEventListener("click", async function (event) {
@@ -406,45 +417,56 @@
     });
   }
 
-  onAuthStateChanged(auth, async function (user) {
-    currentCartUser = user || null;
-
-    if (typeof cloudCartUnsubscribe === "function") {
-      cloudCartUnsubscribe();
-    }
-
-    cloudCartUnsubscribe = null;
-
-    if (!user) {
-      localStorage.removeItem("computerShopCart");
-      localStorage.setItem("tcs-login-redirect", "cart.html");
-      renderCart([]);
-      window.location.href = "login.html";
-      return;
-    }
-
-    await mergeLocalCartToCloud(user);
-
-    cloudCartUnsubscribe = onSnapshot(collection(db, "users", user.uid, "cartItems"), function (snapshot) {
-      cloudCartItems = snapshot.docs.map(function (cartDoc) {
-        return {
-          id: cartDoc.id,
-          ...cartDoc.data()
-        };
-      }).sort(function (a, b) {
-        const aTime = a.updatedAt && typeof a.updatedAt.toMillis === "function" ? a.updatedAt.toMillis() : 0;
-        const bTime = b.updatedAt && typeof b.updatedAt.toMillis === "function" ? b.updatedAt.toMillis() : 0;
-
-        return bTime - aTime;
+  async function loadServerCartPage() {
+    try {
+      const accountResponse = await fetch("/api/me", {
+        method: "GET",
+        credentials: "same-origin",
+        headers: {
+          "Accept": "application/json"
+        }
       });
 
-      renderCart(cloudCartItems);
-    }, function () {
-      renderCart([]);
-    });
-  });
+      const accountData = await accountResponse.json().catch(function () {
+        return {};
+      });
 
-  renderCart(getLocalCart());
+      if (!accountResponse.ok || !accountData.signedIn || !accountData.user) {
+        currentCartUser = null;
+        localStorage.setItem("tcs-login-redirect", "cart.html");
+        renderCart([]);
+        window.location.href = "login.html";
+        return;
+      }
+
+      currentCartUser = accountData.user;
+
+      const cartResponse = await fetch("/api/cart", {
+        method: "GET",
+        credentials: "same-origin",
+        headers: {
+          "Accept": "application/json"
+        }
+      });
+
+      const cartData = await cartResponse.json().catch(function () {
+        return {};
+      });
+
+      if (!cartResponse.ok || !Array.isArray(cartData.items)) {
+        throw new Error(cartData.error || "Could not load your cart.");
+      }
+
+      cloudCartItems = cartData.items;
+      renderCart(cloudCartItems);
+    } catch (error) {
+      cloudCartItems = [];
+      renderCart([]);
+      showCartOrderMessage(error.message || "Could not load your cart. Please refresh and try again.", "error");
+    }
+  }
+
+  loadServerCartPage();
 </script>
 <script>
   document.addEventListener("keydown", function (event) {
