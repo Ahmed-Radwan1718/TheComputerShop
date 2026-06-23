@@ -87,13 +87,7 @@
   </section>
 </main>
 
-<script type="module">
-  import "./auth.js";
-
-  const {
-    auth,
-    signInWithCustomToken
-  } = window.tcsAuth;
+<script>
 
   const signupForm = document.getElementById("signup-form");
   const signupButton = document.getElementById("signup-submit");
@@ -110,24 +104,7 @@
   }
 
   async function syncFirebaseClientSession() {
-    const response = await fetch("/api/client-token", {
-      method: "POST",
-      credentials: "same-origin",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({})
-    });
-
-    const data = await response.json().catch(function () {
-      return {};
-    });
-
-    if (!response.ok || !data.customToken) {
-      throw new Error(data.error || "Could not start account session.");
-    }
-
-    await signInWithCustomToken(auth, data.customToken);
+    return;
   }
 
   passwordVisibilityToggles.forEach(function (toggleButton) {
