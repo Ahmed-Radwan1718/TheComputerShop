@@ -4,6 +4,13 @@ const {
   getUserFromRequest
 } = require("./_lib/securityHelpers");
 
+const {
+  getClientIp,
+  consumeRateLimit,
+  THIRTY_MINUTES_MS,
+  ONE_HOUR_MS
+} = require("./_lib/rateLimitHelpers");
+
 const VALID_CATEGORIES = [
   "General Question",
   "Product Question",
@@ -81,6 +88,18 @@ function getTicketTime(ticket) {
   return Number.isNaN(date.getTime()) ? 0 : date.getTime();
 }
 
+async function rateLimitSupportAction(req, uid) {
+  await consumeRateLimit({
+    bucket: "support-ticket-action",
+    keyParts: [uid, getClientIp(req)],
+    firstLimit: 10,
+    secondLimit: 20,
+    firstLockMs: THIRTY_MINUTES_MS,
+    secondLockMs: ONE_HOUR_MS,
+    errorMessage: "Too many support actions."
+  });
+}
+
 async function getUserIdentity(uid) {
   const db = admin.firestore();
   const userRecord = await admin.auth().getUser(uid);
@@ -118,6 +137,8 @@ async function handleGet(req, res, uid) {
 }
 
 async function handleCreate(req, res, uid) {
+  await rateLimitSupportAction(req, uid);
+
   const db = admin.firestore();
   const identity = await getUserIdentity(uid);
 
@@ -160,6 +181,8 @@ async function handleCreate(req, res, uid) {
 }
 
 async function handleReply(req, res, uid) {
+  await rateLimitSupportAction(req, uid);
+
   const db = admin.firestore();
   const identity = await getUserIdentity(uid);
   const ticketId = cleanTicketId((req.body || {}).ticketId);
@@ -225,6 +248,8 @@ async function handleReply(req, res, uid) {
 }
 
 async function handleResolve(req, res, uid) {
+  await rateLimitSupportAction(req, uid);
+
   const db = admin.firestore();
   const ticketId = cleanTicketId((req.body || {}).ticketId);
 
