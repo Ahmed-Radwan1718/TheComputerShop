@@ -103,8 +103,6 @@ if (floatingAccountWidget) {
   const accountAuthScript = document.createElement("script");
   accountAuthScript.type = "module";
   accountAuthScript.textContent = `
-    import "./auth.js";
-
     const accountWidget = document.getElementById("floating-account-widget");
     const accountGreeting = document.getElementById("floating-account-greeting");
     const accountButton = document.getElementById("floating-account-button");
@@ -114,9 +112,9 @@ if (floatingAccountWidget) {
     const logoutButton = document.getElementById("floating-logout-button");
 
     if (accountWidget && accountGreeting && accountButton && accountMenu && loginLink && accountLink && logoutButton) {
-      const firebaseAuth = window.tcsAuth || {};
-      const auth = firebaseAuth.auth || null;
-      const signOut = firebaseAuth.signOut || null;
+      const firebaseAuth = {};
+      const auth = null;
+      const signOut = null;
 
       function closeAccountMenu() {
         accountMenu.hidden = true;
@@ -230,9 +228,7 @@ if (floatingAccountWidget) {
 
         await logoutServerSession();
 
-        if (auth && signOut) {
-          await signOut(auth).catch(function () {});
-        }
+        // Firebase client session removed; server logout is the source of truth.
 
         sessionStorage.removeItem("tcs-login-2fa-pending");
         closeAccountMenu();
