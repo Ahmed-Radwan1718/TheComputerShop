@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+Disallow: /api/
+
+Sitemap: https://the-computer-shop.vercel.app/sitemap.xml
