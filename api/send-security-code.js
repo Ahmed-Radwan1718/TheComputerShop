@@ -7,22 +7,29 @@ const {
   getUserFromRequest
 } = require("./_lib/securityHelpers");
 
+const {
+  getClientIp,
+  consumeRateLimit,
+  THIRTY_MINUTES_MS,
+  ONE_HOUR_MS
+} = require("./_lib/rateLimitHelpers");
+
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 module.exports = async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
-
   try {
+    if (req.method !== "POST") {
+      return res.status(405).json({ error: "Method not allowed" });
+    }
+
     const decodedUser = await getUserFromRequest(req, {
       checkRevoked: true,
       requireCompletedTwoFactor: true
     });
 
-    const reason = (req.body || {}).reason || "security-panel";
+    const reason = String((req.body || {}).reason || "").trim();
 
-    if (reason !== "security-panel") {
+    if (reason && reason !== "security-panel") {
       return res.status(400).json({ error: "Invalid security code request." });
     }
 
@@ -38,16 +45,23 @@ module.exports = async function handler(req, res) {
     const existingCode = await codeRef.get();
 
     if (existingCode.exists) {
-      const data = existingCode.data();
-      const lastSentAt =
-        data.lastSentAt && data.lastSentAt.toDate
-          ? data.lastSentAt.toDate()
-          : null;
+      const data = existingCode.data() || {};
+      const lastSentAt = data.lastSentAt && data.lastSentAt.toDate ? data.lastSentAt.toDate() : null;
 
       if (lastSentAt && Date.now() - lastSentAt.getTime() < 60 * 1000) {
         return res.status(429).json({ error: "Please wait before requesting another code." });
       }
     }
+
+    await consumeRateLimit({
+      bucket: "security-code-send",
+      keyParts: [decodedUser.uid, getClientIp(req)],
+      firstLimit: 5,
+      secondLimit: 10,
+      firstLockMs: THIRTY_MINUTES_MS,
+      secondLockMs: ONE_HOUR_MS,
+      errorMessage: "Too many security codes requested."
+    });
 
     const code = createRandomCode();
     const salt = db.collection("_").doc().id;
@@ -82,7 +96,7 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({ success: true });
   } catch (error) {
     return res.status(error.statusCode || 500).json({
-      error: "Could not send security code."
+      error: error.message || "Could not send security code."
     });
   }
 };
