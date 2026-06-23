@@ -767,32 +767,7 @@
   </div>
 </div>
 
-<script type="module">
-  import "./auth.js";
-
-  const {
-    auth,
-    db,
-    signOut,
-    signInWithCustomToken,
-    sendEmailVerification,
-    updatePassword,
-    EmailAuthProvider,
-    reauthenticateWithCredential,
-    verifyBeforeUpdateEmail,
-    onAuthStateChanged,
-    doc,
-    collection,
-    addDoc,
-    getDoc,
-    setDoc,
-    updateDoc,
-    deleteDoc,
-    onSnapshot,
-    query,
-    where,
-    serverTimestamp
-  } = window.tcsAuth;
+<script>
 
   const accountLoading = document.getElementById("account-loading");
   const accountHeaderText = document.getElementById("account-header-text");
@@ -1291,7 +1266,7 @@ async function signOutEverywhere() {
     sessionStorage.removeItem("tcs-login-2fa-pending");
     localStorage.removeItem("tcs-login-redirect");
 
-    await signOut(auth).catch(function () {});
+    // Server already cleared the session.
 
     window.location.href = "login.html";
   } catch (error) {
@@ -2991,24 +2966,7 @@ function getDocWithTimeout(docRef, timeoutMs) {
 }
 
 async function syncFirebaseClientSessionFromServer() {
-  const response = await fetch("/api/client-token", {
-    method: "POST",
-    credentials: "same-origin",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({})
-  });
-
-  const data = await response.json().catch(function () {
-    return {};
-  });
-
-  if (!response.ok || !data.customToken) {
-    throw new Error(data.error || "Could not restore account session.");
-  }
-
-  await signInWithCustomToken(auth, data.customToken);
+  return;
 }
 
 async function getServerAccountProfile() {
@@ -3161,44 +3119,47 @@ function hydrateAccountProfileFromServer(profile, user) {
   sendEmailVerificationButton.hidden = Boolean(safeProfile.emailVerified);
 }
 
-onAuthStateChanged(auth, async function (user) {
-  if (!user) {
-    try {
-      await syncFirebaseClientSessionFromServer();
-      return;
-    } catch (error) {
-      window.location.href = "login.html";
-      return;
-    }
-  }
-
-  currentUser = user;
-
-  accountEmail.value = user.email || "";
-  startSavedItemsSync(user.uid);
-  startAddressesSync(user.uid);
-  startSupportTicketsSync(user.uid);
-  startOrderHistorySync(user.uid);
-
-  accountName.value = user.displayName || "";
-  originalUsername = user.displayName || "";
-  usernameLastChangedAt = null;
-  emailLastChangedAt = null;
-  addressType.value = "apartment";
-  accountHeaderText.textContent = "Welcome back.";
-  updateAccountStatus(user, {});
-  twoFactorSettings = {};
-  updateTwoFactorUI();
-
+async function initializeServerAccountPage() {
   try {
     const profile = await getServerAccountProfile();
-    hydrateAccountProfileFromServer(profile, user);
+
+    currentUser = {
+      uid: profile.uid || "",
+      email: profile.email || "",
+      displayName: profile.fullName || "",
+      emailVerified: Boolean(profile.emailVerified),
+      metadata: {
+        creationTime: profile.createdAt || "",
+        lastSignInTime: profile.updatedAt || ""
+      }
+    };
+
+    accountEmail.value = currentUser.email || "";
+    startSavedItemsSync(currentUser.uid);
+    startAddressesSync(currentUser.uid);
+    startSupportTicketsSync(currentUser.uid);
+    startOrderHistorySync(currentUser.uid);
+
+    accountName.value = currentUser.displayName || "";
+    originalUsername = currentUser.displayName || "";
+    usernameLastChangedAt = null;
+    emailLastChangedAt = null;
+    addressType.value = "apartment";
+    accountHeaderText.textContent = "Welcome back.";
+    updateAccountStatus(currentUser, {});
+    twoFactorSettings = {};
+    updateTwoFactorUI();
+
+    hydrateAccountProfileFromServer(profile, currentUser);
   } catch (error) {
-    showMessage(detailsMessage, error.message || "Some saved account details could not load, but you can still use the page.", "error");
+    window.location.href = "login.html";
+    return;
   } finally {
     finishAccountLoading();
   }
-});
+}
+
+initializeServerAccountPage();
 
 detailsForm.addEventListener("submit", async function (event) {
   event.preventDefault();
@@ -3334,14 +3295,20 @@ if (!requestedEmail) {
 
     clearSecurityUnlock();
 
-    if (typeof syncFirebaseClientSessionFromServer === "function") {
-      await syncFirebaseClientSessionFromServer().catch(function () {});
-    }
-
     const profile = await getServerAccountProfile();
-    hydrateAccountProfileFromServer(profile, auth.currentUser || currentUser);
 
-    currentUser = auth.currentUser || currentUser;
+    currentUser = {
+      uid: profile.uid || currentUser.uid || "",
+      email: profile.email || "",
+      displayName: profile.fullName || "",
+      emailVerified: Boolean(profile.emailVerified),
+      metadata: {
+        creationTime: profile.createdAt || "",
+        lastSignInTime: profile.updatedAt || ""
+      }
+    };
+
+    hydrateAccountProfileFromServer(profile, currentUser);
     emailLastChangedAt = new Date();
 
     emailForm.reset();
@@ -3528,9 +3495,7 @@ if (!requestedEmail) {
 
       clearSecurityUnlock();
 
-      if (typeof syncFirebaseClientSessionFromServer === "function") {
-        await syncFirebaseClientSessionFromServer().catch(function () {});
-      }
+      // Server session refreshed by /api/change-password.
 
       showMessage(passwordMessage, "Password changed successfully.", "success");
       showMessage(passwordSectionMessage, "Password changed successfully.", "success");
