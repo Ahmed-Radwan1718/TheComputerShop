@@ -1835,6 +1835,26 @@ function stopOrderHistorySync() {
   orderHistoryUnsubscribe = null;
 }
 
+async function loadServerOrderHistory() {
+  const response = await fetch("/api/account-orders", {
+    method: "GET",
+    credentials: "same-origin",
+    headers: {
+      "Accept": "application/json"
+    }
+  });
+
+  const data = await response.json().catch(function () {
+    return {};
+  });
+
+  if (!response.ok || !Array.isArray(data.orders)) {
+    throw new Error(data.error || "Could not load your order history.");
+  }
+
+  return data.orders;
+}
+
 function getOrderItemSummary(order) {
   const items = Array.isArray(order.items) ? order.items : [];
 
@@ -1905,7 +1925,7 @@ function renderOrderHistory() {
   }).join("");
 }
 
-function startOrderHistorySync(uid) {
+async function startOrderHistorySync(uid) {
   stopOrderHistorySync();
 
   if (!ordersList || !ordersEmpty || !ordersLoading) {
@@ -1917,18 +1937,8 @@ function startOrderHistorySync(uid) {
   ordersList.innerHTML = "";
   showMessage(ordersMessage, "", "");
 
-  const ordersQuery = query(collection(db, "orders"), where("userId", "==", uid));
-
-  orderHistoryUnsubscribe = onSnapshot(ordersQuery, function (snapshot) {
-    orderHistory = snapshot.docs.map(function (orderDoc) {
-      return {
-        id: orderDoc.id,
-        ...orderDoc.data()
-      };
-    }).sort(function (a, b) {
-      return getOrderTimeValue(b) - getOrderTimeValue(a);
-    });
-
+  try {
+    orderHistory = await loadServerOrderHistory();
     renderOrderHistory();
 
     if (activeOrderId) {
@@ -1938,11 +1948,12 @@ function startOrderHistorySync(uid) {
         renderOrderDetail(activeOrder);
       }
     }
-  }, function () {
+  } catch (error) {
+    orderHistory = [];
     ordersLoading.hidden = true;
     ordersEmpty.hidden = false;
-    showMessage(ordersMessage, "Could not load your order history. Please refresh and try again.", "error");
-  });
+    showMessage(ordersMessage, error.message || "Could not load your order history. Please refresh and try again.", "error");
+  }
 }
 
 function getActiveOrder() {
