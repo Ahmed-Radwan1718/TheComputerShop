@@ -82,18 +82,10 @@ async function clearFailures(uid) {
 
 async function createCompatibleSiteSession(req, res, challenge) {
   if (challenge.idToken && typeof createSiteSessionFromIdToken === "function") {
-    if (createSiteSessionFromIdToken.length >= 3) {
-      return await createSiteSessionFromIdToken(req, res, challenge.idToken);
-    }
-
-    return await createSiteSessionFromIdToken(res, challenge.idToken);
+    return await createSiteSessionFromIdToken(challenge.idToken, res);
   }
 
-  if (createSiteSessionForUid.length >= 3) {
-    return await createSiteSessionForUid(req, res, challenge.uid);
-  }
-
-  return await createSiteSessionForUid(res, challenge.uid);
+  return await createSiteSessionForUid(challenge.uid, res);
 }
 
 async function createCompatibleTwoFactorSession(req, res, uid) {
@@ -101,11 +93,7 @@ async function createCompatibleTwoFactorSession(req, res, uid) {
     return;
   }
 
-  if (createLoginTwoFactorSession.length >= 3) {
-    return await createLoginTwoFactorSession(req, res, uid);
-  }
-
-  return await createLoginTwoFactorSession(res, uid);
+  return await createLoginTwoFactorSession(uid, res);
 }
 
 async function clearCompatibleChallenge(req, res) {
