@@ -169,19 +169,11 @@ async function clearFailedLoginAttempts(email, ipAddress) {
 }
 
 async function createCompatibleSiteSession(req, res, idToken) {
-  if (createSiteSessionFromIdToken.length >= 3) {
-    return await createSiteSessionFromIdToken(req, res, idToken);
-  }
-
-  return await createSiteSessionFromIdToken(res, idToken);
+  return await createSiteSessionFromIdToken(idToken, res);
 }
 
 async function createCompatibleLoginChallenge(req, res, payload) {
-  if (createLoginChallenge.length >= 3) {
-    return await createLoginChallenge(req, res, payload);
-  }
-
-  return await createLoginChallenge(res, payload);
+  return await createLoginChallenge(payload.uid, res, payload);
 }
 
 function getSafeTwoFactorSettings(userData) {
