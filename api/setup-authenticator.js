@@ -1,6 +1,6 @@
 const admin = require("./_lib/firebaseAdmin");
-const { authenticator } = require("otplib");
 const QRCode = require("qrcode");
+const { authenticator } = require("otplib");
 
 const {
   getUserFromRequest
@@ -10,42 +10,63 @@ const {
   hasValidSecurityUnlockSession
 } = require("./_lib/securityUnlockHelpers");
 
-module.exports = async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
+const {
+  getClientIp,
+  consumeRateLimit,
+  THIRTY_MINUTES_MS,
+  ONE_HOUR_MS
+} = require("./_lib/rateLimitHelpers");
+
+async function hasSecurityUnlock(req, uid) {
+  if (hasValidSecurityUnlockSession.length >= 2) {
+    return await hasValidSecurityUnlockSession(req, uid);
   }
 
+  return await hasValidSecurityUnlockSession(req);
+}
+
+module.exports = async function handler(req, res) {
   try {
+    if (req.method !== "POST") {
+      return res.status(405).json({ error: "Method not allowed" });
+    }
+
     const decodedUser = await getUserFromRequest(req, {
       checkRevoked: true,
       requireCompletedTwoFactor: true
     });
 
-    const hasSecurityUnlock = await hasValidSecurityUnlockSession(req, decodedUser.uid);
+    const unlocked = await hasSecurityUnlock(req, decodedUser.uid);
 
-    if (!hasSecurityUnlock) {
-      return res.status(403).json({
-        error: "Security session expired. Please verify again."
-      });
+    if (!unlocked) {
+      return res.status(403).json({ error: "Please unlock the Security panel first." });
     }
+
+    await consumeRateLimit({
+      bucket: "setup-authenticator",
+      keyParts: [decodedUser.uid, getClientIp(req)],
+      firstLimit: 5,
+      secondLimit: 10,
+      firstLockMs: THIRTY_MINUTES_MS,
+      secondLockMs: ONE_HOUR_MS,
+      errorMessage: "Too many authenticator setup attempts."
+    });
 
     const userRecord = await admin.auth().getUser(decodedUser.uid);
     const email = userRecord.email || decodedUser.email || "";
 
     if (!email) {
-      return res.status(400).json({ error: "No email address found for this account." });
+      return res.status(400).json({ error: "No email address found on this account." });
     }
 
-    const db = admin.firestore();
     const secret = authenticator.generateSecret();
-    const issuer = "The Computer Shop";
-    const label = email;
+    const otpauthUrl = authenticator.keyuri(email, "The Computer Shop", secret);
+    const qrDataUrl = await QRCode.toDataURL(otpauthUrl, {
+      margin: 1,
+      width: 220
+    });
 
-    const otpauthUrl = authenticator.keyuri(label, issuer, secret);
-    const qrDataUrl = await QRCode.toDataURL(otpauthUrl);
-
-    await db.collection("authenticatorSetupSessions").doc(decodedUser.uid).set({
-      uid: decodedUser.uid,
+    await admin.firestore().collection("authenticatorSetupSessions").doc(decodedUser.uid).set({
       secret,
       email,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
