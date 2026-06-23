@@ -30,18 +30,30 @@ const routes = {
   "verify-security-code": require("../server/routes/verify-security-code")
 };
 
+function getRouteName(req) {
+  if (req.query && req.query.route) {
+    return Array.isArray(req.query.route)
+      ? req.query.route.join("/")
+      : String(req.query.route || "");
+  }
+
+  const rawUrl = String(req.url || "");
+  const pathOnly = rawUrl.split("?")[0];
+
+  return decodeURIComponent(pathOnly)
+    .replace(/^\/api\/?/, "")
+    .replace(/^\/+/, "")
+    .replace(/\/+$/, "");
+}
+
 module.exports = async function handler(req, res) {
-  const routeParts = req.query.route;
-
-  const routeName = Array.isArray(routeParts)
-    ? routeParts.join("/")
-    : String(routeParts || "");
-
+  const routeName = getRouteName(req);
   const routeHandler = routes[routeName];
 
   if (!routeHandler) {
     return res.status(404).json({
-      error: "API route not found."
+      error: "API route not found.",
+      route: routeName || "missing"
     });
   }
 
