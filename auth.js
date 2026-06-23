@@ -1,85 +1,10 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+/*
+  Firebase client access disabled.
 
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signInWithCustomToken,
-  signOut,
-  sendPasswordResetEmail,
-  sendEmailVerification,
-  updatePassword,
-  EmailAuthProvider,
-  reauthenticateWithCredential,
-  verifyBeforeUpdateEmail,
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+  This site now uses server-side authentication and server-side Firestore access
+  through Vercel /api/... routes.
 
-import {
-  getFirestore,
-  doc,
-  collection,
-  addDoc,
-  setDoc,
-  getDoc,
-  updateDoc,
-  deleteDoc,
-  onSnapshot,
-  query,
-  where,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+  Do not put Firebase client Auth or Firestore write logic back here.
+*/
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDQ75_dVpbAc_EEE_NrV0StR78KUxbL8p0",
-  authDomain: "the-computer-shop-aad6b.firebaseapp.com",
-  projectId: "the-computer-shop-aad6b",
-  storageBucket: "the-computer-shop-aad6b.firebasestorage.app",
-  messagingSenderId: "553614203519",
-  appId: "1:553614203519:web:6a87b04ae75abe4437bd4a",
-  measurementId: "G-XS15LLFV69"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-const pendingTwoFactorKey = "tcs-login-2fa-pending";
-
-onAuthStateChanged(auth, async function (user) {
-  const isLoginPage = window.location.pathname.endsWith("/login.html") || window.location.pathname.endsWith("login.html");
-
-  if (user && sessionStorage.getItem(pendingTwoFactorKey) === "1" && !isLoginPage) {
-    sessionStorage.removeItem(pendingTwoFactorKey);
-    await signOut(auth).catch(function () {});
-    window.location.href = "login.html";
-  }
-});
-
-window.tcsAuth = {
-  app,
-  auth,
-  db,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signInWithCustomToken,
-  signOut,
-  sendPasswordResetEmail,
-  sendEmailVerification,
-  updatePassword,
-  EmailAuthProvider,
-  reauthenticateWithCredential,
-  verifyBeforeUpdateEmail,
-  onAuthStateChanged,
-  doc,
-  collection,
-  addDoc,
-  setDoc,
-  getDoc,
-  updateDoc,
-  deleteDoc,
-  onSnapshot,
-  query,
-  where,
-  serverTimestamp
-};
+window.tcsAuth = Object.freeze({});
