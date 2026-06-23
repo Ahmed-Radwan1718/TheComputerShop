@@ -102,14 +102,7 @@
   </div>
 </div>
 
-<script type="module">
-  import "./auth.js";
-
-  const {
-    auth,
-    signInWithCustomToken,
-    signOut
-  } = window.tcsAuth;
+<script>
 
   const loginForm = document.getElementById("login-form");
   const loginButton = document.getElementById("login-submit");
@@ -172,24 +165,7 @@
   }
 
   async function syncFirebaseClientSession() {
-    const response = await fetch("/api/client-token", {
-      method: "POST",
-      credentials: "same-origin",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({})
-    });
-
-    const data = await response.json().catch(function () {
-      return {};
-    });
-
-    if (!response.ok || !data.customToken) {
-      throw new Error(data.error || "Could not start account session.");
-    }
-
-    await signInWithCustomToken(auth, data.customToken);
+    return;
   }
 
   function finishLogin() {
@@ -415,7 +391,7 @@
     } catch (error) {
       clearTwoFactorPending();
       await cancelServerLogin();
-      await signOut(auth).catch(function () {});
+      // Server session logout already handled.
       showMessage(error.message || "Something went wrong. Please try again.", "error");
     } finally {
       loginButton.disabled = false;
