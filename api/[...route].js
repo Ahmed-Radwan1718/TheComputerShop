@@ -53,7 +53,9 @@ module.exports = async function handler(req, res) {
   if (!routeHandler) {
     return res.status(404).json({
       error: "API route not found.",
-      route: routeName || "missing"
+      route: routeName || "missing",
+      url: req.url || "",
+      query: req.query || {}
     });
   }
 
