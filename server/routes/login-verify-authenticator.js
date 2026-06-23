@@ -26,11 +26,14 @@ function timestampToMillis(value) {
 }
 
 async function getSecret(uid) {
+  const db = admin.firestore();
+  const userDoc = await db.collection("users").doc(uid).get();
+  const userData = userDoc.exists ? userDoc.data() || {} : {};
+
   if (typeof getAuthenticatorSecret === "function") {
-    return await getAuthenticatorSecret(uid);
+    return await getAuthenticatorSecret(db, uid, userData);
   }
 
-  const db = admin.firestore();
   const secretDoc = await db.collection("twoFactorSecrets").doc(uid).get();
 
   if (secretDoc.exists) {
@@ -38,8 +41,6 @@ async function getSecret(uid) {
     return data.appSecret || data.secret || data.authenticatorSecret || "";
   }
 
-  const userDoc = await db.collection("users").doc(uid).get();
-  const userData = userDoc.exists ? userDoc.data() || {} : {};
   const twoFactor = userData.twoFactor || {};
 
   return twoFactor.appSecret || "";
