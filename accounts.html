@@ -800,6 +800,10 @@ const statusLastUpdated = document.getElementById("status-last-updated");
   const addressLabel = document.getElementById("address-label");
   const saveAddressButton = document.getElementById("save-address-button");
 
+  if (addressModal && addressModal.parentElement !== document.body) {
+    document.body.appendChild(addressModal);
+  }
+
   const addressType = document.getElementById("address-type");
   const buildingName = document.getElementById("building-name");
   const apartmentNumber = document.getElementById("apartment-number");
