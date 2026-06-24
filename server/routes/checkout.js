@@ -78,6 +78,7 @@ function serializeAddress(addressDoc) {
     companyName: data.companyName || "",
     streetName: data.streetName || "",
     additionalInfo: data.additionalInfo || "",
+    isDefault: Boolean(data.isDefault),
     createdAt: serializeTimestamp(data.createdAt),
     updatedAt: serializeTimestamp(data.updatedAt)
   };
@@ -130,7 +131,9 @@ async function getAddresses(uid) {
     .limit(50)
     .get();
 
-  return snapshot.docs.map(serializeAddress);
+  return snapshot.docs.map(serializeAddress).sort(function (first, second) {
+    return Number(Boolean(second.isDefault)) - Number(Boolean(first.isDefault));
+  });
 }
 
 function getCartSummary(cartItems) {
