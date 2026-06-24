@@ -56,6 +56,7 @@ function serializeAddress(addressDoc) {
     officeName: data.officeName || "",
     companyName: data.companyName || "",
     additionalInfo: data.additionalInfo || "",
+    isDefault: Boolean(data.isDefault),
     createdAt: serializeTimestamp(data.createdAt),
     updatedAt: serializeTimestamp(data.updatedAt)
   };
@@ -84,7 +85,9 @@ async function handleGet(req, res, uid) {
     .limit(50)
     .get();
 
-  const addresses = snapshot.docs.map(serializeAddress);
+  const addresses = snapshot.docs.map(serializeAddress).sort(function (first, second) {
+    return Number(Boolean(second.isDefault)) - Number(Boolean(first.isDefault));
+  });
 
   return res.status(200).json({
     success: true,
@@ -105,14 +108,39 @@ async function handlePost(req, res, uid) {
   const addressesRef = db.collection("users").doc(uid).collection("addresses");
   const addressRef = addressId ? addressesRef.doc(addressId) : addressesRef.doc();
   const existingDoc = await addressRef.get();
+  const firstAddressSnapshot = existingDoc.exists ? null : await addressesRef.limit(1).get();
+  const shouldMakeDefault = body.isDefault === true || body.isDefault === "true" || (firstAddressSnapshot && firstAddressSnapshot.empty);
 
-  await addressRef.set({
+  const saveData = {
     ...addressData,
     createdAt: existingDoc.exists
       ? existingDoc.data().createdAt || admin.firestore.FieldValue.serverTimestamp()
       : admin.firestore.FieldValue.serverTimestamp(),
     updatedAt: admin.firestore.FieldValue.serverTimestamp()
-  }, { merge: true });
+  };
+
+  if (shouldMakeDefault) {
+    const batch = db.batch();
+    const defaultSnapshot = await addressesRef.where("isDefault", "==", true).get();
+
+    defaultSnapshot.docs.forEach(function (defaultDoc) {
+      if (defaultDoc.id !== addressRef.id) {
+        batch.set(defaultDoc.ref, {
+          isDefault: false,
+          updatedAt: admin.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+      }
+    });
+
+    batch.set(addressRef, {
+      ...saveData,
+      isDefault: true
+    }, { merge: true });
+
+    await batch.commit();
+  } else {
+    await addressRef.set(saveData, { merge: true });
+  }
 
   const savedDoc = await addressRef.get();
 
@@ -129,12 +157,24 @@ async function handleDelete(req, res, uid) {
     return res.status(400).json({ error: "Missing address id." });
   }
 
-  await admin.firestore()
-    .collection("users")
-    .doc(uid)
-    .collection("addresses")
-    .doc(addressId)
-    .delete();
+  const db = admin.firestore();
+  const addressesRef = db.collection("users").doc(uid).collection("addresses");
+  const addressRef = addressesRef.doc(addressId);
+  const addressDoc = await addressRef.get();
+  const wasDefault = Boolean(addressDoc.exists && addressDoc.data().isDefault);
+
+  await addressRef.delete();
+
+  if (wasDefault) {
+    const nextAddressSnapshot = await addressesRef.limit(1).get();
+
+    if (!nextAddressSnapshot.empty) {
+      await nextAddressSnapshot.docs[0].ref.set({
+        isDefault: true,
+        updatedAt: admin.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+    }
+  }
 
   return res.status(200).json({
     success: true
