@@ -968,7 +968,8 @@ body {
     right: 14px;
     z-index: 1002;
     width: auto;
-    min-height: 58px;
+    height: 54px;
+    min-height: 54px;
     padding: 0 10px;
     border-radius: 999px;
     border: 1px solid rgba(255, 255, 255, 0.11);
@@ -978,7 +979,8 @@ body {
     -webkit-backdrop-filter: blur(18px);
     transform: none;
     display: grid;
-    grid-template-columns: 86px minmax(0, 1fr) 86px;
+    grid-template-columns: 80px minmax(0, 1fr) 80px;
+    grid-template-rows: 1fr;
     align-items: center;
     gap: 0;
   }
@@ -4876,12 +4878,15 @@ body.nav-menu-open {
   .site-header-logo,
   .site-header-logo:visited {
     grid-column: 2;
+    grid-row: 1;
+    align-self: center;
     justify-self: center;
     max-width: 100%;
     overflow: hidden;
     color: white;
     font-size: 15px;
     font-weight: 800;
+    line-height: 1;
     letter-spacing: -0.02em;
     text-align: center;
     text-overflow: ellipsis;
@@ -4895,6 +4900,8 @@ body.nav-menu-open {
 
   .site-header-actions {
     grid-column: 3;
+    grid-row: 1;
+    align-self: center;
     justify-self: end;
     gap: 0;
   }
@@ -4902,14 +4909,14 @@ body.nav-menu-open {
   .site-header-cart,
   .site-header-cart:visited {
     display: flex;
-    width: 42px;
-    height: 42px;
+    width: 38px;
+    height: 38px;
   }
 
   .site-header-cart img,
   .site-header .floating-account-button img {
-    width: 24px;
-    height: 24px;
+    width: 23px;
+    height: 23px;
   }
 
   .site-header .floating-account-widget {
@@ -4919,20 +4926,22 @@ body.nav-menu-open {
   }
 
   .site-header .floating-account-button {
-    width: 42px;
-    height: 42px;
+    width: 38px;
+    height: 38px;
   }
 
   .site-header .hamburger-toggle {
     grid-column: 1;
+    grid-row: 1;
     position: relative;
     left: auto;
     top: auto;
     z-index: 1;
     display: flex;
+    align-self: center;
     justify-self: start;
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
   }
 
   .site-header .hamburger-toggle span {
@@ -5459,38 +5468,46 @@ body.nav-menu-open {
   .site-header {
     left: 10px;
     right: 10px;
-    min-height: 56px;
+    height: 52px;
+    min-height: 52px;
     padding: 0 8px;
     border-radius: 999px;
     display: grid;
-    grid-template-columns: 82px minmax(0, 1fr) 82px;
+    grid-template-columns: 78px minmax(0, 1fr) 78px;
+    grid-template-rows: 1fr;
     column-gap: 0;
   }
 
   .site-header-logo,
   .site-header-logo:visited {
     grid-column: 2;
+    grid-row: 1;
     max-width: none;
     font-size: 14px;
+    line-height: 1;
     text-align: center;
   }
 
   .site-header-actions {
     grid-column: 3;
+    grid-row: 1;
+    align-self: center;
     justify-self: end;
   }
 
   .site-header-cart,
   .site-header-cart:visited,
   .site-header .floating-account-button {
-    width: 40px;
-    height: 40px;
+    width: 38px;
+    height: 38px;
   }
 
   .site-header .hamburger-toggle {
     grid-column: 1;
-    width: 42px;
-    height: 42px;
+    grid-row: 1;
+    align-self: center;
+    width: 40px;
+    height: 40px;
   }
 
   .site-header .hamburger-toggle span {
@@ -5552,12 +5569,15 @@ body.nav-menu-open {
     left: 10px;
     right: 10px;
     top: 10px;
-    min-height: 54px;
+    height: 50px;
+    min-height: 50px;
     padding: 0 8px;
-    grid-template-columns: 80px minmax(0, 1fr) 80px;
+    grid-template-columns: 76px minmax(0, 1fr) 76px;
   }
 
   .site-header-actions {
+    grid-row: 1;
+    align-self: center;
     gap: 0;
   }
 
@@ -5568,9 +5588,10 @@ body.nav-menu-open {
 
   .site-header-cart,
   .site-header-cart:visited,
+  .site-header .floating-account-button,
   .site-header .hamburger-toggle {
-    width: 42px;
-    height: 42px;
+    width: 38px;
+    height: 38px;
   }
 
   .nav-menu-overlay {
