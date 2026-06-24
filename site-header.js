@@ -20,9 +20,7 @@
     <span class="nav-cart-count">0</span>
   </a>
 
-  <button class="hamburger-toggle" type="button" aria-label="Open menu">
-
-  <button class="hamburger-toggle" type="button" aria-label="Open menu">
+  <button class="hamburger-toggle" type="button" aria-label="Open menu" aria-expanded="false">
     <span></span>
     <span></span>
     <span></span>
@@ -46,56 +44,54 @@
   </div>
 </div>
 
-<div class="nav-menu-overlay">
+<div class="nav-menu-overlay" aria-hidden="true">
   <div class="nav-menu-panel nav-menu-main active">
     <div class="nav-menu-links">
-      <a href="index.html" class="nav-menu-link">Home</a>
       <a href="signature-builds.html" class="nav-menu-link">Signature Builds</a>
-      <button class="nav-menu-button" type="button" id="open-components-menu">Components</button>
+      <a href="components.html" class="nav-menu-link">Components</a>
       <a href="consultation.html" class="nav-menu-link">Need a Custom PC?</a>
-    </div>
-  </div>
-
-  <div class="nav-menu-panel nav-menu-components">
-    <div class="nav-menu-links">
-      <button class="nav-menu-back" type="button" id="back-to-main-menu">Back</button>
-      <a href="cpus.html" class="nav-menu-link">CPU</a>
-      <a href="cpu-coolers.html" class="nav-menu-link">CPU Cooler</a>
-      <a href="motherboards.html" class="nav-menu-link">Motherboard</a>
-      <a href="memory.html" class="nav-menu-link">Memory</a>
-      <a href="storage.html" class="nav-menu-link">Storage</a>
-      <a href="graphics-cards.html" class="nav-menu-link">Graphics Card</a>
-      <a href="cases.html" class="nav-menu-link">Case</a>
-      <a href="power-supplies.html" class="nav-menu-link">Power Supply</a>
-      <a href="monitors.html" class="nav-menu-link">Monitor</a>
-      <a href="accessories.html" class="nav-menu-link">Peripherals</a>
-      <a href="charging-and-power.html" class="nav-menu-link">Charging and Power</a>
     </div>
   </div>
 </div>
 `;
 
   const menuButton = document.querySelector(".hamburger-toggle");
-  const mainMenu = document.querySelector(".nav-menu-main");
-  const componentsMenu = document.querySelector(".nav-menu-components");
-  const openComponentsButton = document.getElementById("open-components-menu");
-  const backButton = document.getElementById("back-to-main-menu");
+  const menuOverlay = document.querySelector(".nav-menu-overlay");
+  const menuLinks = document.querySelectorAll(".nav-menu-link");
 
-  if (menuButton && mainMenu && componentsMenu && openComponentsButton && backButton) {
+  function closeNavMenu() {
+    document.body.classList.remove("nav-menu-open");
+
+    if (menuButton) {
+      menuButton.setAttribute("aria-expanded", "false");
+    }
+
+    if (menuOverlay) {
+      menuOverlay.setAttribute("aria-hidden", "true");
+    }
+  }
+
+  if (menuButton && menuOverlay) {
     menuButton.addEventListener("click", () => {
-      document.body.classList.toggle("nav-menu-open");
-      mainMenu.classList.add("active");
-      componentsMenu.classList.remove("active");
+      const menuIsOpen = document.body.classList.toggle("nav-menu-open");
+      menuButton.setAttribute("aria-expanded", String(menuIsOpen));
+      menuOverlay.setAttribute("aria-hidden", String(!menuIsOpen));
     });
 
-    openComponentsButton.addEventListener("click", () => {
-      mainMenu.classList.remove("active");
-      componentsMenu.classList.add("active");
+    menuOverlay.addEventListener("click", function (event) {
+      if (event.target === menuOverlay) {
+        closeNavMenu();
+      }
     });
 
-    backButton.addEventListener("click", () => {
-      componentsMenu.classList.remove("active");
-      mainMenu.classList.add("active");
+    menuLinks.forEach(function (link) {
+      link.addEventListener("click", closeNavMenu);
+    });
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") {
+        closeNavMenu();
+      }
     });
   }
 const floatingAccountWidget = document.getElementById("floating-account-widget");
