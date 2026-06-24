@@ -15,10 +15,29 @@
     <a href="consultation.html">Need a Custom PC?</a>
   </nav>
 
-  <a href="cart.html" class="site-header-cart" aria-label="Cart">
-    <img src="cart-icon.png" alt="Cart">
-    <span class="nav-cart-count">0</span>
-  </a>
+  <div class="site-header-actions">
+    <a href="cart.html" class="site-header-cart" aria-label="Cart">
+      <img src="cart-icon.png" alt="Cart">
+      <span class="nav-cart-count">0</span>
+    </a>
+
+    <div class="floating-account-widget" id="floating-account-widget">
+      <span class="floating-account-greeting" id="floating-account-greeting" hidden></span>
+
+      <button class="floating-account-button" id="floating-account-button" type="button" aria-label="Open account menu" aria-expanded="false">
+        <img src="user-icon.png" alt="Account">
+      </button>
+
+      <div class="floating-account-menu" id="floating-account-menu" hidden>
+        <a href="login.html" class="floating-account-menu-link" id="floating-login-link">Login</a>
+        <a href="accounts.html" class="floating-account-menu-link" id="floating-account-link" hidden>Account</a>
+<button class="floating-account-menu-link floating-account-logout" id="floating-logout-button" type="button" hidden>
+  <img src="logout-icon.png" alt="">
+  <span>Logout</span>
+</button>
+      </div>
+    </div>
+  </div>
 
   <button class="hamburger-toggle" type="button" aria-label="Open menu" aria-expanded="false">
     <span></span>
@@ -26,23 +45,6 @@
     <span></span>
   </button>
 </header>
-
-<div class="floating-account-widget" id="floating-account-widget">
-  <span class="floating-account-greeting" id="floating-account-greeting" hidden></span>
-
-  <button class="floating-account-button" id="floating-account-button" type="button" aria-label="Open account menu" aria-expanded="false">
-    <img src="user-icon.png" alt="Account">
-  </button>
-
-  <div class="floating-account-menu" id="floating-account-menu" hidden>
-    <a href="login.html" class="floating-account-menu-link" id="floating-login-link">Login</a>
-    <a href="accounts.html" class="floating-account-menu-link" id="floating-account-link" hidden>Account</a>
-<button class="floating-account-menu-link floating-account-logout" id="floating-logout-button" type="button" hidden>
-  <img src="logout-icon.png" alt="">
-  <span>Logout</span>
-</button>
-  </div>
-</div>
 
 <div class="nav-menu-overlay" aria-hidden="true">
   <div class="nav-menu-panel nav-menu-main active">
