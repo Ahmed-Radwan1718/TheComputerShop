@@ -55,7 +55,6 @@ function serializeAddress(addressDoc) {
     houseNumber: data.houseNumber || "",
     officeName: data.officeName || "",
     companyName: data.companyName || "",
-    streetName: data.streetName || "",
     additionalInfo: data.additionalInfo || "",
     createdAt: serializeTimestamp(data.createdAt),
     updatedAt: serializeTimestamp(data.updatedAt)
@@ -72,7 +71,7 @@ function cleanAddressData(body) {
     houseNumber: cleanString(body.houseNumber, 40),
     officeName: cleanString(body.officeName, 80),
     companyName: cleanString(body.companyName, 80),
-    streetName: cleanString(body.streetName, 120),
+    streetName: "",
     additionalInfo: cleanString(body.additionalInfo, 500)
   };
 }
@@ -99,8 +98,8 @@ async function handlePost(req, res, uid) {
   const addressId = cleanAddressId(body.id || body.addressId);
   const addressData = cleanAddressData(body);
 
-  if (!addressData.label || !addressData.streetName) {
-    return res.status(400).json({ error: "Please enter an address label and street name." });
+  if (!addressData.label) {
+    return res.status(400).json({ error: "Please enter an address label." });
   }
 
   const addressesRef = db.collection("users").doc(uid).collection("addresses");
