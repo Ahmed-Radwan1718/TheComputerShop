@@ -7148,11 +7148,13 @@ body.account-security-modal-open {
 .account-address-modal {
   position: fixed;
   inset: 0;
-  z-index: 3400;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  z-index: 10000;
+  width: 100vw;
+  min-height: 100dvh;
   padding: 24px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
 }
 
 .account-address-modal[hidden] {
@@ -7160,24 +7162,24 @@ body.account-security-modal-open {
 }
 
 .account-address-modal-backdrop {
-  position: absolute;
+  position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.52);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(0, 0, 0, 0.62);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
 }
 
 .account-address-modal-card {
   position: relative;
   z-index: 1;
-  width: min(760px, 100%);
-  max-height: calc(100vh - 48px);
+  width: min(760px, calc(100vw - 48px));
+  max-height: min(820px, calc(100dvh - 48px));
   overflow-y: auto;
   padding: 36px;
   border-radius: 26px;
   border: 1px solid rgba(255, 255, 255, 0.11);
-  background: rgba(24, 25, 24, 0.96);
-  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.32);
+  background: rgba(24, 25, 24, 0.97);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.48);
 }
 
 .account-address-modal-close {
