@@ -7178,10 +7178,10 @@ body.account-security-modal-open {
   padding: 36px;
   border-radius: 26px;
   border: 1px solid rgba(255, 255, 255, 0.11);
-  background: rgba(24, 25, 24, 0.97);
+  background: #2a2b2a;
   box-shadow: 0 30px 90px rgba(0, 0, 0, 0.48);
   color-scheme: dark;
-  scrollbar-color: rgba(255, 255, 255, 0.55) rgba(24, 25, 24, 0.97);
+  scrollbar-color: rgba(255, 255, 255, 0.55) #2a2b2a;
   scrollbar-width: auto;
 }
 
