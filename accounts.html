@@ -130,7 +130,7 @@
 
               <div class="account-empty-state account-addresses-empty" id="account-addresses-empty">
                 <h3>No saved addresses yet</h3>
-                <p>Add addresses like Apartment 1, Villa in Sherouk, or Office so checkout is faster.</p>
+                <p>Add addresses like Zamalek Residence, New Cairo Villa, or Downtown Office so checkout is faster.</p>
               </div>
 
               <p class="account-message" id="account-addresses-message" aria-live="polite"></p>
@@ -153,7 +153,7 @@
                     <div class="account-form-grid">
                       <div class="account-field account-field-full">
                         <label for="address-label">Address Name</label>
-                        <input type="text" id="address-label" maxlength="60" placeholder="Apartment 1, Villa in Sherouk, Office" required>
+                        <input type="text" id="address-label" maxlength="60" placeholder="Zamalek Residence, New Cairo Villa, Downtown Office" required>
                       </div>
 
                       <div class="account-field account-field-full">
@@ -203,11 +203,6 @@
                       <div class="account-field address-field address-office">
                         <label for="company-name">Company Name</label>
                         <input type="text" id="company-name">
-                      </div>
-
-                      <div class="account-field">
-                        <label for="street-name">Street Name</label>
-                        <input type="text" id="street-name">
                       </div>
 
                       <div class="account-field account-field-full">
@@ -811,7 +806,6 @@ const statusLastUpdated = document.getElementById("status-last-updated");
   const houseNumber = document.getElementById("house-number");
   const officeName = document.getElementById("office-name");
   const companyName = document.getElementById("company-name");
-  const streetName = document.getElementById("street-name");
   const additionalInfo = document.getElementById("additional-info");
 
   const detailsForm = document.getElementById("account-details-form");
@@ -2201,10 +2195,6 @@ function getAddressPreview(address) {
     }
   }
 
-  if (address.streetName) {
-    parts.push(address.streetName);
-  }
-
   return parts.length ? parts.join(" · ") : "No address details saved";
 }
 
@@ -2217,9 +2207,8 @@ function clearAddressForm() {
   floorNumber.value = "";
   houseNumber.value = "";
   officeName.value = "";
-  companyName.value = "";
-  streetName.value = "";
-  additionalInfo.value = "";
+    companyName.value = "";
+    additionalInfo.value = "";
   showMessage(addressModalMessage, "", "");
   showAddressFields();
 }
@@ -2237,7 +2226,6 @@ function openAddressModal(address) {
     houseNumber.value = address.houseNumber || "";
     officeName.value = address.officeName || "";
     companyName.value = address.companyName || "";
-    streetName.value = address.streetName || "";
     additionalInfo.value = address.additionalInfo || "";
     addressModalTitle.textContent = "Edit Address";
     saveAddressButton.textContent = "Save Changes";
@@ -2271,7 +2259,6 @@ function getAddressFormData() {
     houseNumber: houseNumber.value.trim(),
     officeName: officeName.value.trim(),
     companyName: companyName.value.trim(),
-    streetName: streetName.value.trim(),
     additionalInfo: additionalInfo.value.trim()
   };
 }
@@ -2403,11 +2390,6 @@ async function saveAddress() {
 
   if (!addressData.label) {
     showMessage(addressModalMessage, "Please name this address.", "error");
-    return;
-  }
-
-  if (!addressData.streetName) {
-    showMessage(addressModalMessage, "Please enter the street name.", "error");
     return;
   }
 
