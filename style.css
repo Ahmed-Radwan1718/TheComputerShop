@@ -4810,18 +4810,18 @@ body.nav-menu-open {
   }
 
   body.nav-menu-open {
-    overflow: hidden;
+    overflow: auto;
   }
 
   .site-header {
     position: fixed;
     top: 14px;
     left: 14px;
-    right: 14px;
+    right: 70px;
     z-index: 1002;
     width: auto;
     min-height: 58px;
-    padding: 0 14px;
+    padding: 0 12px 0 18px;
     border-radius: 999px;
     border: 1px solid rgba(255, 255, 255, 0.11);
     background: rgba(24, 25, 24, 0.92);
@@ -4829,36 +4829,55 @@ body.nav-menu-open {
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
     transform: none;
-    display: grid;
-    grid-template-columns: 44px minmax(0, 1fr) 44px;
+    display: flex;
     align-items: center;
-    gap: 8px;
-  }
-
-  .site-header-nav {
-    display: none;
+    gap: 16px;
   }
 
   .site-header-logo,
   .site-header-logo:visited {
-    display: block;
+    flex: 0 0 auto;
+    max-width: 160px;
     overflow: hidden;
     color: white;
     font-size: 15px;
     font-weight: 800;
     letter-spacing: -0.02em;
-    text-align: center;
+    text-align: left;
     text-overflow: ellipsis;
     white-space: nowrap;
     text-decoration: none;
   }
 
+  .site-header-nav {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .site-header-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .site-header-nav > a,
+  .site-header-nav > a:visited {
+    flex: 0 0 auto;
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+
   .site-header-cart,
   .site-header-cart:visited {
+    flex: 0 0 42px;
     display: flex;
-    justify-self: end;
-    width: 44px;
-    height: 44px;
+    width: 42px;
+    height: 42px;
   }
 
   .site-header-cart img {
@@ -4866,72 +4885,9 @@ body.nav-menu-open {
     height: 24px;
   }
 
-  .site-header .hamburger-toggle {
-    position: static;
-    z-index: 1;
-    display: flex;
-    justify-self: start;
-    width: 44px;
-    height: 44px;
-  }
-
-  .hamburger-toggle span {
-    left: 7px;
-    width: 30px;
-    height: 2px;
-  }
-
-  .hamburger-toggle span:nth-child(1) {
-    top: 13px;
-  }
-
-  .hamburger-toggle span:nth-child(2) {
-    top: 21px;
-  }
-
-  .hamburger-toggle span:nth-child(3) {
-    top: 29px;
-  }
-
-  body.nav-menu-open .hamburger-toggle span:nth-child(1),
-  body.nav-menu-open .hamburger-toggle span:nth-child(3) {
-    top: 21px;
-  }
-
+  .site-header .hamburger-toggle,
   .nav-menu-overlay {
-    z-index: 1000;
-    align-items: stretch;
-    justify-content: stretch;
-    padding: 86px 16px 18px;
-    background: rgba(0, 0, 0, 0.5);
-  }
-
-  .nav-menu-panel {
-    align-items: stretch;
-    justify-content: stretch;
-    padding: 0;
-  }
-
-  .nav-menu-links {
-    width: 100%;
-    max-width: none;
-    padding: 22px;
-    border-radius: 28px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    background: rgba(30, 31, 30, 0.9);
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .nav-menu-link,
-  .nav-menu-link:visited,
-  .nav-menu-button,
-  .nav-menu-back {
-    min-height: 54px;
-    padding: 0 4px;
-    font-size: 26px;
-    line-height: 1.15;
-    text-align: left;
+    display: none;
   }
 
   .home-page,
@@ -5384,6 +5340,49 @@ body.nav-menu-open {
 }
 
 @media (max-width: 620px) {
+  .site-header {
+    right: 72px;
+    min-height: 82px;
+    padding: 8px 10px;
+    border-radius: 24px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 42px;
+    grid-template-areas:
+      "logo cart"
+      "nav nav";
+    column-gap: 8px;
+    row-gap: 2px;
+  }
+
+  .site-header-logo,
+  .site-header-logo:visited {
+    grid-area: logo;
+    max-width: none;
+    font-size: 14px;
+    text-align: left;
+  }
+
+  .site-header-nav {
+    grid-area: nav;
+    justify-content: flex-start;
+    gap: 12px;
+    padding: 0 2px 2px;
+  }
+
+  .site-header-nav > a,
+  .site-header-nav > a:visited {
+    font-size: 8.5px;
+    letter-spacing: 0.045em;
+  }
+
+  .site-header-cart,
+  .site-header-cart:visited {
+    grid-area: cart;
+    justify-self: end;
+    width: 42px;
+    height: 42px;
+  }
+
   .components-page-grid {
     grid-template-columns: 1fr;
   }
@@ -5435,16 +5434,10 @@ body.nav-menu-open {
 @media (max-width: 430px) {
   .site-header {
     left: 10px;
-    right: 10px;
+    right: 72px;
     top: 10px;
-    min-height: 54px;
-    padding: 0 62px 0 10px;
-    grid-template-columns: 42px minmax(0, 1fr) 42px;
-  }
-
-  .floating-account-widget {
-    top: 16px;
-    right: 18px;
+    min-height: 82px;
+    padding: 8px 10px;
   }
 
   .site-header-logo,
@@ -5452,27 +5445,25 @@ body.nav-menu-open {
     font-size: 14px;
   }
 
-  .site-header .hamburger-toggle,
+  .site-header-nav {
+    gap: 10px;
+  }
+
+  .site-header-nav > a,
+  .site-header-nav > a:visited {
+    font-size: 8px;
+    letter-spacing: 0.035em;
+  }
+
   .site-header-cart,
   .site-header-cart:visited {
     width: 42px;
     height: 42px;
   }
 
+  .site-header .hamburger-toggle,
   .nav-menu-overlay {
-    padding: 76px 10px 12px;
-  }
-
-  .nav-menu-links {
-    padding: 18px;
-    border-radius: 24px;
-  }
-
-  .nav-menu-link,
-  .nav-menu-link:visited,
-  .nav-menu-button,
-  .nav-menu-back {
-    font-size: 23px;
+    display: none;
   }
 
   .home-page,
