@@ -7090,10 +7090,22 @@ body.account-security-modal-open {
   gap: 18px;
 }
 
+.account-address-card.default {
+  border-color: rgba(255, 255, 255, 0.24);
+  background: rgba(255, 255, 255, 0.07);
+}
+
 .account-address-card-text {
   min-width: 0;
   display: grid;
   gap: 7px;
+}
+
+.account-address-card-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .account-address-card-text span {
@@ -7101,6 +7113,20 @@ body.account-security-modal-open {
   font-size: 11px;
   font-weight: 850;
   letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.account-address-default-badge {
+  min-height: 22px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #191a19;
+  display: inline-flex;
+  align-items: center;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
@@ -7137,6 +7163,12 @@ body.account-security-modal-open {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
+}
+
+.account-address-card-button.default {
+  border-color: rgba(255, 255, 255, 0.36);
+  background: rgba(255, 255, 255, 0.92);
+  color: #191a19;
 }
 
 .account-address-card-button.danger {
