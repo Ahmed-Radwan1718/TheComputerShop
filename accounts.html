@@ -2340,16 +2340,37 @@ function renderSavedAddresses() {
 
   addressesEmpty.hidden = true;
 
-  addressesList.innerHTML = savedAddresses.map(function (address) {
+  const orderedAddresses = savedAddresses.slice().sort(function (first, second) {
+    return Number(Boolean(second.isDefault)) - Number(Boolean(first.isDefault));
+  });
+
+  addressesList.innerHTML = orderedAddresses.map(function (address) {
+    const defaultBadge = address.isDefault
+      ? '<strong class="account-address-default-badge">Default</strong>'
+      : "";
+
+    const defaultButton = address.isDefault
+      ? ""
+      : `
+          <button class="account-address-card-button default" type="button" data-default-address-id="${escapeHtml(address.id)}">
+            Set Default
+          </button>
+        `;
+
     return `
-      <article class="account-address-card">
+      <article class="account-address-card${address.isDefault ? " default" : ""}">
         <div class="account-address-card-text">
-          <span>${escapeHtml(getAddressTypeLabel(address.addressType))}</span>
+          <div class="account-address-card-title-row">
+            <span>${escapeHtml(getAddressTypeLabel(address.addressType))}</span>
+            ${defaultBadge}
+          </div>
           <h3>${escapeHtml(address.label || "Saved Address")}</h3>
           <p>${escapeHtml(getAddressPreview(address))}</p>
         </div>
 
         <div class="account-address-card-actions">
+          ${defaultButton}
+
           <button class="account-address-card-button" type="button" data-edit-address-id="${escapeHtml(address.id)}">
             Edit
           </button>
@@ -2378,6 +2399,46 @@ async function startAddressesSync(uid) {
     renderSavedAddresses();
   } catch (error) {
     showMessage(addressesMessage, error.message || "Could not load saved addresses. Please refresh and try again.", "error");
+  }
+}
+
+async function setDefaultAddress(addressId) {
+  if (!currentUser || !addressId) {
+    return;
+  }
+
+  const selectedAddress = savedAddresses.find(function (address) {
+    return address.id === addressId;
+  });
+
+  if (!selectedAddress || selectedAddress.isDefault) {
+    return;
+  }
+
+  showMessage(addressesMessage, "", "");
+
+  try {
+    const savedAddress = await saveServerAddress({
+      addressId: selectedAddress.id,
+      ...selectedAddress,
+      isDefault: true
+    });
+
+    savedAddresses = savedAddresses.map(function (address) {
+      if (address.id === savedAddress.id) {
+        return savedAddress;
+      }
+
+      return {
+        ...address,
+        isDefault: false
+      };
+    });
+
+    renderSavedAddresses();
+    showMessage(addressesMessage, "Default address updated.", "success");
+  } catch (error) {
+    showMessage(addressesMessage, error.message || "Could not update your default address. Please try again.", "error");
   }
 }
 
@@ -2413,6 +2474,19 @@ async function saveAddress() {
       savedAddresses = [savedAddress].concat(savedAddresses);
     }
 
+    if (savedAddress.isDefault) {
+      savedAddresses = savedAddresses.map(function (address) {
+        if (address.id === savedAddress.id) {
+          return savedAddress;
+        }
+
+        return {
+          ...address,
+          isDefault: false
+        };
+      });
+    }
+
     renderSavedAddresses();
     closeAddressModal();
     showMessage(addressesMessage, "Address saved.", "success");
@@ -2437,9 +2511,7 @@ async function deleteAddress(addressId) {
 
   try {
     await deleteServerAddress(addressId);
-    savedAddresses = savedAddresses.filter(function (address) {
-      return address.id !== addressId;
-    });
+    savedAddresses = await loadServerAddresses();
     renderSavedAddresses();
     showMessage(addressesMessage, "Address removed.", "success");
   } catch (error) {
@@ -2870,8 +2942,14 @@ if (saveAddressButton) {
 
 if (addressesList) {
   addressesList.addEventListener("click", function (event) {
+    const defaultButton = event.target.closest("[data-default-address-id]");
     const editButton = event.target.closest("[data-edit-address-id]");
     const deleteButton = event.target.closest("[data-delete-address-id]");
+
+    if (defaultButton) {
+      setDefaultAddress(defaultButton.dataset.defaultAddressId);
+      return;
+    }
 
     if (editButton) {
       const address = savedAddresses.find(function (savedAddress) {
