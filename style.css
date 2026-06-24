@@ -754,6 +754,14 @@ body {
   color: white;
 }
 
+.site-header-actions {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
 .site-header-cart,
 .site-header-cart:visited {
   position: relative;
@@ -774,6 +782,36 @@ body {
 
 .site-header-cart:hover {
   opacity: 0.72;
+}
+
+.site-header .floating-account-widget {
+  position: relative;
+  top: auto;
+  right: auto;
+  z-index: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+
+.site-header .floating-account-greeting {
+  display: none;
+}
+
+.site-header .floating-account-button {
+  width: 42px;
+  height: 42px;
+}
+
+.site-header .floating-account-button img {
+  width: 26px;
+  height: 26px;
+}
+
+.site-header .floating-account-menu {
+  top: 52px;
+  right: 0;
 }
 
 .site-header .hamburger-toggle {
@@ -931,7 +969,7 @@ body {
     z-index: 1002;
     width: auto;
     min-height: 58px;
-    padding: 0 68px 0 14px;
+    padding: 0 10px;
     border-radius: 999px;
     border: 1px solid rgba(255, 255, 255, 0.11);
     background: rgba(24, 25, 24, 0.92);
@@ -940,9 +978,9 @@ body {
     -webkit-backdrop-filter: blur(18px);
     transform: none;
     display: grid;
-    grid-template-columns: 44px minmax(0, 1fr) 44px;
+    grid-template-columns: 86px minmax(0, 1fr) 86px;
     align-items: center;
-    gap: 8px;
+    gap: 0;
   }
 
   .site-header-nav {
@@ -4855,18 +4893,34 @@ body.nav-menu-open {
     display: none;
   }
 
-  .site-header-cart,
-  .site-header-cart:visited {
+  .site-header-actions {
     grid-column: 3;
     justify-self: end;
-    display: flex;
-    width: 44px;
-    height: 44px;
+    gap: 0;
   }
 
-  .site-header-cart img {
+  .site-header-cart,
+  .site-header-cart:visited {
+    display: flex;
+    width: 42px;
+    height: 42px;
+  }
+
+  .site-header-cart img,
+  .site-header .floating-account-button img {
     width: 24px;
     height: 24px;
+  }
+
+  .site-header .floating-account-widget {
+    position: relative;
+    top: auto;
+    right: auto;
+  }
+
+  .site-header .floating-account-button {
+    width: 42px;
+    height: 42px;
   }
 
   .site-header .hamburger-toggle {
@@ -5403,13 +5457,14 @@ body.nav-menu-open {
 
 @media (max-width: 620px) {
   .site-header {
-    right: 68px;
+    left: 10px;
+    right: 10px;
     min-height: 56px;
     padding: 0 8px;
     border-radius: 999px;
     display: grid;
-    grid-template-columns: 42px minmax(0, 1fr) 42px;
-    column-gap: 6px;
+    grid-template-columns: 82px minmax(0, 1fr) 82px;
+    column-gap: 0;
   }
 
   .site-header-logo,
@@ -5420,12 +5475,16 @@ body.nav-menu-open {
     text-align: center;
   }
 
-  .site-header-cart,
-  .site-header-cart:visited {
+  .site-header-actions {
     grid-column: 3;
     justify-self: end;
-    width: 42px;
-    height: 42px;
+  }
+
+  .site-header-cart,
+  .site-header-cart:visited,
+  .site-header .floating-account-button {
+    width: 40px;
+    height: 40px;
   }
 
   .site-header .hamburger-toggle {
@@ -5491,15 +5550,15 @@ body.nav-menu-open {
 @media (max-width: 430px) {
   .site-header {
     left: 10px;
-    right: 68px;
+    right: 10px;
     top: 10px;
     min-height: 54px;
     padding: 0 8px;
+    grid-template-columns: 80px minmax(0, 1fr) 80px;
   }
 
-  .floating-account-widget {
-    top: 16px;
-    right: 18px;
+  .site-header-actions {
+    gap: 0;
   }
 
   .site-header-logo,
