@@ -270,7 +270,7 @@
   }
 
   function getCheckoutAddressLabel(address) {
-    return address.label || "Saved Address";
+    return (address.label || "Saved Address") + (address.isDefault ? " (Default)" : "");
   }
 
   function showCheckoutAddressFields() {
@@ -313,13 +313,26 @@
 
     checkoutSavedAddressPicker.hidden = checkoutSavedAddresses.length === 0;
 
+    const orderedAddresses = checkoutSavedAddresses.slice().sort(function (first, second) {
+      return Number(Boolean(second.isDefault)) - Number(Boolean(first.isDefault));
+    });
+
+    const defaultAddress = orderedAddresses.find(function (address) {
+      return address.isDefault;
+    });
+
     checkoutSavedAddressSelect.innerHTML = `
       <option value="">Enter a new address</option>
-    ` + checkoutSavedAddresses.map(function (address) {
+    ` + orderedAddresses.map(function (address) {
       return `
         <option value="${escapeHtml(address.id)}">${escapeHtml(getCheckoutAddressLabel(address))}</option>
       `;
     }).join("");
+
+    if (defaultAddress) {
+      checkoutSavedAddressSelect.value = defaultAddress.id;
+      fillCheckoutAddress(defaultAddress);
+    }
   }
 
   function fillCheckoutProfile(profile) {
