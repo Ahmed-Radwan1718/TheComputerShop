@@ -31,6 +31,10 @@
       <div class="floating-account-menu" id="floating-account-menu" hidden>
         <a href="login.html" class="floating-account-menu-link" id="floating-login-link">Login</a>
         <a href="accounts.html" class="floating-account-menu-link" id="floating-account-link" hidden>Account</a>
+        <a href="accounts.html#saved" class="floating-account-menu-link" id="floating-saved-link" hidden>
+          <img src="saved-icon.png" alt="">
+          <span>Saved for Later</span>
+        </a>
 <button class="floating-account-menu-link floating-account-logout" id="floating-logout-button" type="button" hidden>
   <img src="logout-icon.png" alt="">
   <span>Logout</span>
@@ -109,9 +113,10 @@ if (floatingAccountWidget) {
     const accountMenu = document.getElementById("floating-account-menu");
     const loginLink = document.getElementById("floating-login-link");
     const accountLink = document.getElementById("floating-account-link");
+    const savedLink = document.getElementById("floating-saved-link");
     const logoutButton = document.getElementById("floating-logout-button");
 
-    if (accountWidget && accountGreeting && accountButton && accountPhoto && accountMenu && loginLink && accountLink && logoutButton) {
+    if (accountWidget && accountGreeting && accountButton && accountPhoto && accountMenu && loginLink && accountLink && savedLink && logoutButton) {
       const firebaseAuth = {};
       const auth = null;
       const signOut = null;
@@ -156,6 +161,7 @@ if (floatingAccountWidget) {
       function showLoggedOutAccountState() {
         loginLink.hidden = false;
         accountLink.hidden = true;
+        savedLink.hidden = true;
         logoutButton.hidden = true;
         accountGreeting.textContent = "";
         accountGreeting.hidden = true;
@@ -167,6 +173,7 @@ if (floatingAccountWidget) {
 
         loginLink.hidden = true;
         accountLink.hidden = false;
+        savedLink.hidden = false;
         logoutButton.hidden = false;
         accountGreeting.textContent = "Hello, " + firstName;
         accountGreeting.hidden = false;
@@ -227,6 +234,9 @@ if (floatingAccountWidget) {
           closeAccountMenu();
         }
       });
+
+      accountLink.addEventListener("click", closeAccountMenu);
+      savedLink.addEventListener("click", closeAccountMenu);
 
       document.addEventListener("click", function (event) {
         if (!accountWidget.contains(event.target)) {
