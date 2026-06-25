@@ -253,37 +253,6 @@
               <div class="account-divider"></div>
 
               <div class="account-panel-subheader">
-                <h3>Account Status</h3>
-              </div>
-
-              <div class="account-status-grid">
-<div class="account-status-card">
-  <span>Email Verified</span>
-  <strong id="status-email-verified">Checking...</strong>
-  <button class="account-status-button" type="button" id="send-email-verification-button" hidden>
-    Send Verification Email
-  </button>
-</div>
-
-<div class="account-status-card">
-  <span>Phone Number</span>
-  <strong id="status-phone-verified">Saved Detail</strong>
-</div>
-
-                <div class="account-status-card">
-                  <span>Member Since</span>
-                  <strong id="status-member-since">Checking...</strong>
-                </div>
-
-                <div class="account-status-card">
-                  <span>Last Updated</span>
-                  <strong id="status-last-updated">Checking...</strong>
-                </div>
-              </div>
-
-              <div class="account-divider"></div>
-
-              <div class="account-panel-subheader">
                 <h3>Connected Accounts</h3>
                 <p>View the sign-in methods currently connected to your account.</p>
               </div>
@@ -2758,16 +2727,28 @@ function updateAccountStatus(user, data) {
   const safeData = data || {};
   const connectedProviderIds = getConnectedProviderIds(safeData);
 
-  statusEmailVerified.textContent = user.emailVerified ? "Verified" : "Not Verified";
-  sendEmailVerificationButton.hidden = user.emailVerified;
+  if (statusEmailVerified) {
+    statusEmailVerified.textContent = user.emailVerified ? "Verified" : "Not Verified";
+  }
 
-  statusPhoneVerified.textContent = safeData.phone ? "Saved" : "Not Added";
+  if (sendEmailVerificationButton) {
+    sendEmailVerificationButton.hidden = user.emailVerified;
+  }
+
+  if (statusPhoneVerified) {
+    statusPhoneVerified.textContent = safeData.phone ? "Saved" : "Not Added";
+  }
 
   updateConnectedAccountStatus(connectedPasswordStatus, connectedPasswordBadge, connectedProviderIds.has("password"));
   updateConnectedAccountStatus(connectedGoogleStatus, connectedGoogleBadge, connectedProviderIds.has("google.com"));
 
-  statusMemberSince.textContent = getReadableDate(safeData.createdAt || user.metadata.creationTime);
-  statusLastUpdated.textContent = getReadableDate(safeData.updatedAt || user.metadata.lastSignInTime);
+  if (statusMemberSince) {
+    statusMemberSince.textContent = getReadableDate(safeData.createdAt || user.metadata.creationTime);
+  }
+
+  if (statusLastUpdated) {
+    statusLastUpdated.textContent = getReadableDate(safeData.updatedAt || user.metadata.lastSignInTime);
+  }
 }
 
 function getUsernameUnlockDate() {
@@ -3063,33 +3044,35 @@ securityCodeForm.addEventListener("submit", async function (event) {
     }
   });
 
-sendEmailVerificationButton.addEventListener("click", async function () {
-  if (!currentUser) {
-    return;
-  }
-
-  sendEmailVerificationButton.disabled = true;
-  sendEmailVerificationButton.textContent = "Sending...";
-  showMessage(detailsMessage, "", "");
-
-  try {
-    const data = await sendServerEmailVerification();
-
-    if (data.alreadyVerified) {
-      const profile = await getServerAccountProfile();
-      hydrateAccountProfileFromServer(profile, currentUser);
-      showMessage(detailsMessage, "Your email is already verified.", "success");
+if (sendEmailVerificationButton) {
+  sendEmailVerificationButton.addEventListener("click", async function () {
+    if (!currentUser) {
       return;
     }
 
-    showMessage(detailsMessage, data.message || "Verification email sent. Please check your inbox and spam folder.", "success");
-  } catch (error) {
-    showMessage(detailsMessage, error.message || "Could not send verification email. Please try again.", "error");
-  } finally {
-    sendEmailVerificationButton.disabled = false;
-    sendEmailVerificationButton.textContent = "Send Verification Email";
-  }
-});
+    sendEmailVerificationButton.disabled = true;
+    sendEmailVerificationButton.textContent = "Sending...";
+    showMessage(detailsMessage, "", "");
+
+    try {
+      const data = await sendServerEmailVerification();
+
+      if (data.alreadyVerified) {
+        const profile = await getServerAccountProfile();
+        hydrateAccountProfileFromServer(profile, currentUser);
+        showMessage(detailsMessage, "Your email is already verified.", "success");
+        return;
+      }
+
+      showMessage(detailsMessage, data.message || "Verification email sent. Please check your inbox and spam folder.", "success");
+    } catch (error) {
+      showMessage(detailsMessage, error.message || "Could not send verification email. Please try again.", "error");
+    } finally {
+      sendEmailVerificationButton.disabled = false;
+      sendEmailVerificationButton.textContent = "Send Verification Email";
+    }
+  });
+}
 
 
 
@@ -3471,9 +3454,6 @@ function hydrateAccountProfileFromServer(profile, user) {
   updateTwoFactorUI();
 
   updateAccountStatus(statusUser, profileDataForStatus);
-
-  statusEmailVerified.textContent = safeProfile.emailVerified ? "Verified" : "Not Verified";
-  sendEmailVerificationButton.hidden = Boolean(safeProfile.emailVerified);
 }
 
 async function initializeServerAccountPage() {
