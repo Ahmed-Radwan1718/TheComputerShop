@@ -6613,12 +6613,9 @@ body.nav-menu-open {
 }
 
 .account-profile-photo-remove-button {
-  min-height: 48px;
-  padding: 0 22px;
   border-color: rgba(255, 145, 152, 0.42);
   background: rgba(92, 55, 60, 0.58);
   color: #ffc4c9;
-  font-size: 14px;
 }
 
 .account-profile-photo-remove-button:hover {
