@@ -1,10 +1,12 @@
 const admin = require("../_lib/firebaseAdmin");
+const { v2: cloudinary } = require("cloudinary");
 
 const {
   getUserFromRequest
 } = require("../_lib/securityHelpers");
 
 const USERNAME_COOLDOWN_MS = 14 * 24 * 60 * 60 * 1000;
+const PROFILE_PHOTO_MAX_DATA_URL_LENGTH = 2 * 1024 * 1024;
 
 function cleanString(value, maxLength) {
   return String(value || "").trim().slice(0, maxLength);
@@ -54,6 +56,73 @@ function getSafeTwoFactor(twoFactor) {
   };
 }
 
+function configureCloudinary() {
+  const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+  const apiKey = process.env.CLOUDINARY_API_KEY;
+  const apiSecret = process.env.CLOUDINARY_API_SECRET;
+
+  if (!cloudName || !apiKey || !apiSecret) {
+    const error = new Error("Profile photo uploads are not configured.");
+    error.statusCode = 500;
+    throw error;
+  }
+
+  cloudinary.config({
+    cloud_name: cloudName,
+    api_key: apiKey,
+    api_secret: apiSecret,
+    secure: true
+  });
+}
+
+function getProfilePhotoDataUrl(value) {
+  const dataUrl = String(value || "").trim();
+
+  if (!dataUrl) {
+    return "";
+  }
+
+  if (dataUrl.length > PROFILE_PHOTO_MAX_DATA_URL_LENGTH) {
+    const error = new Error("Profile photo is too large. Please choose a smaller image.");
+    error.statusCode = 413;
+    throw error;
+  }
+
+  if (!/^data:image\/(jpeg|jpg|png|webp);base64,[A-Za-z0-9+/=]+$/i.test(dataUrl)) {
+    const error = new Error("Please choose a valid image file.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  return dataUrl;
+}
+
+async function uploadProfilePhoto(uid, dataUrl) {
+  const safeDataUrl = getProfilePhotoDataUrl(dataUrl);
+
+  if (!safeDataUrl) {
+    return "";
+  }
+
+  configureCloudinary();
+
+  const result = await cloudinary.uploader.upload(safeDataUrl, {
+    folder: "the-computer-shop/profile-photos",
+    public_id: uid,
+    overwrite: true,
+    invalidate: true,
+    resource_type: "image"
+  });
+
+  if (!result || !result.secure_url) {
+    const error = new Error("Could not upload profile photo.");
+    error.statusCode = 500;
+    throw error;
+  }
+
+  return result.secure_url;
+}
+
 async function getProfile(uid) {
   const userRecord = await admin.auth().getUser(uid);
   const userDoc = await admin.firestore().collection("users").doc(uid).get();
@@ -64,6 +133,7 @@ async function getProfile(uid) {
     email: userRecord.email || data.email || "",
     emailVerified: Boolean(userRecord.emailVerified),
     fullName: data.fullName || userRecord.displayName || "",
+    photoURL: data.photoURL || userRecord.photoURL || "",
     phone: data.phone || "",
     twoFactor: getSafeTwoFactor(data.twoFactor),
     usernameLastChangedAt: serializeTimestamp(data.usernameLastChangedAt),
@@ -91,6 +161,7 @@ async function handlePatch(req, res, uid) {
 
   const fullName = cleanString((req.body || {}).fullName, 80);
   const phone = cleanString((req.body || {}).phone, 30);
+  const profilePhotoDataUrl = getProfilePhotoDataUrl((req.body || {}).profilePhotoDataUrl);
 
   if (!fullName) {
     return res.status(400).json({ error: "Please enter your name." });
@@ -109,11 +180,22 @@ async function handlePatch(req, res, uid) {
     }
   }
 
+  let photoURL = data.photoURL || "";
+
+  if (profilePhotoDataUrl) {
+    photoURL = await uploadProfilePhoto(uid, profilePhotoDataUrl);
+  }
+
   const updateData = {
     fullName,
     phone,
     updatedAt: admin.firestore.FieldValue.serverTimestamp()
   };
+
+  if (profilePhotoDataUrl && photoURL) {
+    updateData.photoURL = photoURL;
+    updateData.profilePhotoUpdatedAt = admin.firestore.FieldValue.serverTimestamp();
+  }
 
   if (nameChanged) {
     updateData.usernameLastChangedAt = admin.firestore.FieldValue.serverTimestamp();
@@ -121,10 +203,18 @@ async function handlePatch(req, res, uid) {
 
   await userRef.set(updateData, { merge: true });
 
+  const authUpdateData = {};
+
   if (nameChanged) {
-    await admin.auth().updateUser(uid, {
-      displayName: fullName
-    });
+    authUpdateData.displayName = fullName;
+  }
+
+  if (profilePhotoDataUrl && photoURL) {
+    authUpdateData.photoURL = photoURL;
+  }
+
+  if (Object.keys(authUpdateData).length) {
+    await admin.auth().updateUser(uid, authUpdateData);
   }
 
   const profile = await getProfile(uid);
