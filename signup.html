@@ -22,8 +22,14 @@
         </p>
       </div>
 
-      <div class="auth-panel">
-        <form class="auth-form" id="signup-form">
+        <div class="auth-panel">
+          <form class="auth-form" id="signup-form">
+            <button class="auth-google-button" type="button" id="google-signup-button">
+              <span class="auth-google-icon" aria-hidden="true">G</span>
+              <span>Continue with Google</span>
+            </button>
+
+            <div class="auth-divider"><span>or create with email</span></div>
           <div class="auth-field">
             <label for="signup-name">Full Name</label>
             <input type="text" id="signup-name" autocomplete="name" required>
@@ -87,12 +93,19 @@
   </section>
 </main>
 
-<script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+  import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 
   const signupForm = document.getElementById("signup-form");
   const signupButton = document.getElementById("signup-submit");
   const signupMessage = document.getElementById("signup-message");
+  const googleSignupButton = document.getElementById("google-signup-button");
+  const googleSignupButtonLabel = googleSignupButton ? googleSignupButton.innerHTML : "";
   const passwordVisibilityToggles = document.querySelectorAll(".auth-password-visibility-toggle");
+
+  let firebaseClientApp = null;
+  let firebaseClientAuth = null;
 
   function showMessage(message, type) {
     signupMessage.textContent = message;
@@ -103,8 +116,51 @@
     }
   }
 
+  async function getFirebaseClientAuth() {
+    if (firebaseClientAuth) {
+      return firebaseClientAuth;
+    }
+
+    const response = await fetch("/api/client-token", {
+      method: "GET",
+      credentials: "same-origin",
+      headers: {
+        "Accept": "application/json"
+      }
+    });
+
+    const data = await response.json().catch(function () {
+      return {};
+    });
+
+    if (!response.ok || !data.firebase) {
+      throw new Error(data.error || "Google sign-in is not configured yet.");
+    }
+
+    firebaseClientApp = firebaseClientApp || initializeApp(data.firebase);
+    firebaseClientAuth = getAuth(firebaseClientApp);
+
+    return firebaseClientAuth;
+  }
+
   async function syncFirebaseClientSession() {
     return;
+  }
+
+  function getGoogleSignupErrorMessage(error) {
+    if (error && error.code === "auth/popup-closed-by-user") {
+      return "Google sign-in was closed before it finished.";
+    }
+
+    if (error && error.code === "auth/account-exists-with-different-credential") {
+      return "An account already exists with this email. Please log in with your existing method first.";
+    }
+
+    if (error && error.code === "auth/popup-blocked") {
+      return "Your browser blocked the Google sign-in popup. Please allow popups and try again.";
+    }
+
+    return error.message || "Google sign-in failed. Please try again.";
   }
 
   passwordVisibilityToggles.forEach(function (toggleButton) {
@@ -137,6 +193,59 @@
       }
     });
   });
+
+  if (googleSignupButton) {
+    googleSignupButton.addEventListener("click", async function () {
+      googleSignupButton.disabled = true;
+      googleSignupButton.textContent = "Opening Google...";
+      showMessage("", "");
+
+      try {
+        const auth = await getFirebaseClientAuth();
+        const provider = new GoogleAuthProvider();
+
+        provider.setCustomParameters({
+          prompt: "select_account"
+        });
+
+        const result = await signInWithPopup(auth, provider);
+        const idToken = await result.user.getIdToken();
+
+        const response = await fetch("/api/signup", {
+          method: "POST",
+          credentials: "same-origin",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            provider: "google",
+            idToken: idToken
+          })
+        });
+
+        const data = await response.json().catch(function () {
+          return {};
+        });
+
+        if (!response.ok) {
+          throw new Error(data.error || "Could not finish Google sign-in.");
+        }
+
+        await signOut(auth).catch(function () {});
+
+        showMessage("Signed in with Google successfully.", "success");
+
+        setTimeout(function () {
+          window.location.href = "accounts.html";
+        }, 800);
+      } catch (error) {
+        showMessage(getGoogleSignupErrorMessage(error), "error");
+      } finally {
+        googleSignupButton.disabled = false;
+        googleSignupButton.innerHTML = googleSignupButtonLabel;
+      }
+    });
+  }
 
   signupForm.addEventListener("submit", async function (event) {
     event.preventDefault();
