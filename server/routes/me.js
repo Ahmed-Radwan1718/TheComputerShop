@@ -56,6 +56,7 @@ return res.status(200).json({
 
     const fullName = userData.fullName || userRecord.displayName || "";
     const email = userRecord.email || userData.email || decodedUser.email || "";
+    const photoURL = userData.photoURL || userRecord.photoURL || "";
     const firstName = getFirstName(fullName, email);
 
 return res.status(200).json({
@@ -68,6 +69,7 @@ return res.status(200).json({
         emailVerified: Boolean(userRecord.emailVerified),
         displayName: fullName,
         fullName,
+        photoURL,
         firstName
       }
     });
