@@ -778,12 +778,6 @@ body {
   height: 26px;
   display: block;
   object-fit: contain;
-  filter:
-    brightness(0) invert(1)
-    drop-shadow(0.55px 0 0 #ffffff)
-    drop-shadow(-0.55px 0 0 #ffffff)
-    drop-shadow(0 0.55px 0 #ffffff)
-    drop-shadow(0 -0.55px 0 #ffffff);
 }
 
 .site-header-cart:hover {
@@ -5879,7 +5873,6 @@ body.nav-menu-open {
   height: 16px;
   display: block;
   object-fit: contain;
-  filter: brightness(0) invert(1);
 }
 
 .floating-account-logout {
