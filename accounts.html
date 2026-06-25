@@ -2677,6 +2677,26 @@ function showAddressFields() {
     }
   }
 
+  function getAccountPanelFromHash() {
+    const panelName = window.location.hash.replace("#", "").trim();
+
+    if (panelName && document.getElementById("account-panel-" + panelName)) {
+      return panelName;
+    }
+
+    return "details";
+  }
+
+  function syncAccountPanelFromHash() {
+    const panelName = getAccountPanelFromHash();
+
+    if (panelName === "security") {
+      return;
+    }
+
+    switchPanel(panelName);
+  }
+
 function getDateFromFirestoreValue(value) {
   if (!value) {
     return null;
@@ -2919,8 +2939,15 @@ document.querySelectorAll("[data-account-panel]").forEach(function (button) {
     }
 
     switchPanel(panelName);
+
+    if (panelName !== "security" && window.location.hash !== "#" + panelName) {
+      history.replaceState(null, "", "#" + panelName);
+    }
   });
 });
+
+window.addEventListener("hashchange", syncAccountPanelFromHash);
+syncAccountPanelFromHash();
 
 securityGateModalContinue.addEventListener("click", async function () {
   if (!currentUser) {
