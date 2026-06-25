@@ -3262,7 +3262,8 @@ function updateAccountPhotoPreview(profile, user) {
   const safeProfile = profile || {};
   const fullName = safeProfile.fullName || (user && user.displayName ? user.displayName : "");
   const email = safeProfile.email || (user && user.email ? user.email : "");
-  const photoURL = String(safeProfile.photoURL || (user && user.photoURL ? user.photoURL : "") || "").trim();
+  const savedPhotoURL = String(safeProfile.photoURL || (user && user.photoURL ? user.photoURL : "") || "").trim();
+  const photoURL = removeProfilePhotoOnSave ? "" : savedPhotoURL;
 
   accountPhotoInitial.textContent = getProfileInitials(fullName, email);
 
@@ -3442,11 +3443,16 @@ if (accountPhotoChooseButton && accountPhotoInput) {
 
     try {
       pendingProfilePhotoDataUrl = await resizeProfilePhotoFile(file);
+      removeProfilePhotoOnSave = false;
 
       if (accountPhotoPreview && accountPhotoInitial) {
         accountPhotoPreview.src = pendingProfilePhotoDataUrl;
         accountPhotoPreview.hidden = false;
         accountPhotoInitial.hidden = true;
+      }
+
+      if (accountPhotoRemoveButton) {
+        accountPhotoRemoveButton.hidden = false;
       }
 
       showMessage(detailsMessage, "Profile photo selected. Save changes to sync it to your account.", "success");
@@ -3459,6 +3465,35 @@ if (accountPhotoChooseButton && accountPhotoInput) {
       accountPhotoChooseButton.disabled = false;
       detailsButton.disabled = false;
     }
+  });
+}
+
+if (accountPhotoRemoveButton) {
+  accountPhotoRemoveButton.addEventListener("click", function () {
+    const hasSavedPhoto = Boolean(currentUser && currentUser.photoURL);
+    const hasPendingPhoto = Boolean(pendingProfilePhotoDataUrl);
+
+    if (!hasSavedPhoto && !hasPendingPhoto) {
+      return;
+    }
+
+    const confirmed = window.confirm("Remove your profile photo? This will delete it from your account when you save changes.");
+
+    if (!confirmed) {
+      return;
+    }
+
+    pendingProfilePhotoDataUrl = "";
+    removeProfilePhotoOnSave = hasSavedPhoto;
+    accountPhotoInput.value = "";
+
+    updateAccountPhotoPreview({
+      fullName: accountName.value,
+      email: accountEmail.value,
+      photoURL: ""
+    }, currentUser);
+
+    showMessage(detailsMessage, "Profile photo will be removed. Save changes to confirm.", "success");
   });
 }
 
