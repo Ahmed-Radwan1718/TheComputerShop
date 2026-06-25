@@ -1148,17 +1148,20 @@ async function sendSecurityPanelCode() {
   });
 
   if (!response.ok) {
-    throw new Error(data.error || "Could not send security code.");
+    throw new Error(data.error || "Could not start security verification.");
   }
 
   return data;
 }
 
-async function verifySecurityPanelCode(code) {
+async function verifySecurityPanelCode(code, method) {
   const response = await fetch("/api/verify-security-code", {
     method: "POST",
     headers: await getSecurityRequestHeaders(),
-    body: JSON.stringify({ code: code })
+    body: JSON.stringify({
+      code: code,
+      method: method || "email"
+    })
   });
 
   const data = await response.json().catch(function () {
@@ -1388,6 +1391,12 @@ function updateSecurityCodeSubmitState() {
 }
 
 function openSecurityGateModal() {
+  const securityGateModalText = securityGateModal.querySelector(".account-security-modal-header p:last-child");
+
+  if (securityGateModalText) {
+    securityGateModalText.textContent = "To open your Security panel, confirm it is you with your authenticator app when available, or an email code.";
+  }
+
   showMessage(securityGateMessage, "", "");
   securityGateModal.hidden = false;
   document.body.classList.add("account-security-modal-open");
@@ -1403,10 +1412,28 @@ function closeSecurityGateModal() {
   showMessage(securityGateMessage, "", "");
 }
 
-function openSecurityCodeModal() {
+function openSecurityCodeModal(method) {
+  const verificationMethod = method === "authenticator" ? "authenticator" : "email";
+  const securityCodeModalTitle = document.getElementById("security-code-modal-title");
+
+  securityCodeModal.dataset.securityMethod = verificationMethod;
   clearSecurityCodeInputs();
   showMessage(securityCodeMessage, "", "");
-  securityCodeModalText.textContent = "Enter the 6-digit security code we sent to " + getMaskedEmail(currentUser && currentUser.email ? currentUser.email : "") + ".";
+
+  if (verificationMethod === "authenticator") {
+    if (securityCodeModalTitle) {
+      securityCodeModalTitle.textContent = "Enter Authenticator Code";
+    }
+
+    securityCodeModalText.textContent = "Enter the 6-digit code from your authenticator app.";
+  } else {
+    if (securityCodeModalTitle) {
+      securityCodeModalTitle.textContent = "Check Your Inbox";
+    }
+
+    securityCodeModalText.textContent = "Enter the 6-digit security code we sent to " + getMaskedEmail(currentUser && currentUser.email ? currentUser.email : "") + ".";
+  }
+
   securityCodeModal.hidden = false;
   document.body.classList.add("account-security-modal-open");
 
@@ -2939,15 +2966,17 @@ securityGateModalContinue.addEventListener("click", async function () {
   }
 
   securityGateModalContinue.disabled = true;
-  securityGateModalContinue.textContent = "Sending...";
+  securityGateModalContinue.textContent = "Checking...";
   showMessage(securityGateMessage, "", "");
 
   try {
-    await sendSecurityPanelCode();
+    const data = await sendSecurityPanelCode();
+    const method = data.method === "authenticator" ? "authenticator" : "email";
+
     closeSecurityGateModal();
-    openSecurityCodeModal();
+    openSecurityCodeModal(method);
   } catch (error) {
-    showMessage(securityGateMessage, error.message || "Could not send security code.", "error");
+    showMessage(securityGateMessage, error.message || "Could not start security verification.", "error");
   } finally {
     securityGateModalContinue.disabled = false;
     securityGateModalContinue.textContent = "Continue";
@@ -3004,9 +3033,14 @@ securityCodeForm.addEventListener("submit", async function (event) {
   event.preventDefault();
 
   const code = getSecurityCodeValue();
+  const method = securityCodeModal.dataset.securityMethod || "email";
 
   if (code.length !== 6) {
-    showMessage(securityCodeMessage, "Please enter the 6-digit security code.", "error");
+    showMessage(
+      securityCodeMessage,
+      method === "authenticator" ? "Please enter your 6-digit authenticator code." : "Please enter the 6-digit security code.",
+      "error"
+    );
     return;
   }
 
@@ -3015,12 +3049,16 @@ securityCodeForm.addEventListener("submit", async function (event) {
   showMessage(securityCodeMessage, "", "");
 
   try {
-    const data = await verifySecurityPanelCode(code);
+    const data = await verifySecurityPanelCode(code, method);
     saveSecurityUnlock(data.unlockUntil || "");
     closeSecurityCodeModal();
     switchPanel("security");
   } catch (error) {
-    showMessage(securityCodeMessage, error.message || "The security code is incorrect.", "error");
+    showMessage(
+      securityCodeMessage,
+      error.message || (method === "authenticator" ? "The authenticator code is incorrect." : "The security code is incorrect."),
+      "error"
+    );
     clearSecurityCodeInputs();
 
     if (securityCodeInputs[0]) {
