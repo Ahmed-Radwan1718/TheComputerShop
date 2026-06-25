@@ -252,6 +252,7 @@ async function createLoginChallenge(uid, res, details) {
     salt,
     email: details && details.email ? details.email : "",
     idToken: details && details.idToken ? details.idToken : "",
+    mode: details && details.mode ? details.mode : "",
     twoFactor: details && details.twoFactor ? details.twoFactor : {},
     createdAt: admin.firestore.FieldValue.serverTimestamp(),
     expiresAt: admin.firestore.Timestamp.fromDate(
@@ -337,6 +338,7 @@ async function getLoginChallenge(req) {
     uid: data.uid || "",
     email: data.email || "",
     idToken: data.idToken || "",
+    mode: data.mode || "",
     twoFactor: data.twoFactor || {}
   };
 }
