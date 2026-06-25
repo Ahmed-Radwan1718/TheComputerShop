@@ -1840,15 +1840,14 @@ body.nav-menu-open {
   transition:
     max-height 0.42s ease,
     opacity 0.28s ease,
-    transform 0.28s ease,
     padding 0.42s ease;
 }
 
 .filter-item.open .filter-content {
-  max-height: 420px;
+  max-height: 560px;
   opacity: 1;
   transform: translateY(0);
-  padding: 8px 0 24px 0;
+  padding: 8px 0 30px 0;
 }
 
 .filter-item.open .chevron {
