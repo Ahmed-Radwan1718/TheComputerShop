@@ -4,7 +4,8 @@ const { Resend } = require("resend");
 const {
   getCodeHash,
   createRandomCode,
-  getUserFromRequest
+  getUserFromRequest,
+  getAuthenticatorSecret
 } = require("../_lib/securityHelpers");
 
 const {
@@ -15,6 +16,22 @@ const {
 } = require("../_lib/rateLimitHelpers");
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+
+async function getSecurityPanelMethod(db, uid) {
+  const userDoc = await db.collection("users").doc(uid).get();
+  const userData = userDoc.exists ? userDoc.data() || {} : {};
+  const twoFactor = userData.twoFactor || {};
+
+  if (twoFactor.appEnabled && typeof getAuthenticatorSecret === "function") {
+    const secret = await getAuthenticatorSecret(db, uid, userData);
+
+    if (secret) {
+      return "authenticator";
+    }
+  }
+
+  return "email";
+}
 
 module.exports = async function handler(req, res) {
   try {
@@ -33,6 +50,16 @@ module.exports = async function handler(req, res) {
       return res.status(400).json({ error: "Invalid security code request." });
     }
 
+    const db = admin.firestore();
+    const method = await getSecurityPanelMethod(db, decodedUser.uid);
+
+    if (method === "authenticator") {
+      return res.status(200).json({
+        success: true,
+        method: "authenticator"
+      });
+    }
+
     const userRecord = await admin.auth().getUser(decodedUser.uid);
     const email = userRecord.email || decodedUser.email || "";
 
@@ -40,7 +67,6 @@ module.exports = async function handler(req, res) {
       return res.status(400).json({ error: "No email address found on this account." });
     }
 
-    const db = admin.firestore();
     const codeRef = db.collection("securityPasswordCodes").doc(decodedUser.uid);
     const existingCode = await codeRef.get();
 
@@ -93,10 +119,13 @@ module.exports = async function handler(req, res) {
       `
     });
 
-    return res.status(200).json({ success: true });
+    return res.status(200).json({
+      success: true,
+      method: "email"
+    });
   } catch (error) {
     return res.status(error.statusCode || 500).json({
-      error: error.message || "Could not send security code."
+      error: error.message || "Could not start security verification."
     });
   }
 };
