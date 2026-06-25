@@ -15,6 +15,21 @@ function cleanCode(value) {
   return String(value || "").trim().replace(/\D/g, "");
 }
 
+function maskEmail(email) {
+  const cleanValue = String(email || "").trim().toLowerCase();
+  const parts = cleanValue.split("@");
+
+  if (parts.length !== 2) {
+    return cleanValue || "your email";
+  }
+
+  const name = parts[0];
+  const domain = parts[1];
+  const visibleName = name.length <= 2 ? name.charAt(0) : name.slice(0, 2);
+
+  return visibleName + "***@" + domain;
+}
+
 function getChallengeId(challenge) {
   return String(
     challenge.challengeId ||
@@ -36,18 +51,10 @@ function timestampToMillis(value) {
 
 async function createCompatibleSiteSession(req, res, challenge) {
   if (challenge.idToken && typeof createSiteSessionFromIdToken === "function") {
-    if (createSiteSessionFromIdToken.length >= 3) {
-      return await createSiteSessionFromIdToken(req, res, challenge.idToken);
-    }
-
-    return await createSiteSessionFromIdToken(res, challenge.idToken);
+    return await createSiteSessionFromIdToken(challenge.idToken, res);
   }
 
-  if (createSiteSessionForUid.length >= 3) {
-    return await createSiteSessionForUid(req, res, challenge.uid);
-  }
-
-  return await createSiteSessionForUid(res, challenge.uid);
+  return await createSiteSessionForUid(challenge.uid, res);
 }
 
 async function createCompatibleTwoFactorSession(req, res, uid) {
@@ -55,11 +62,7 @@ async function createCompatibleTwoFactorSession(req, res, uid) {
     return;
   }
 
-  if (createLoginTwoFactorSession.length >= 3) {
-    return await createLoginTwoFactorSession(req, res, uid);
-  }
-
-  return await createLoginTwoFactorSession(res, uid);
+  return await createLoginTwoFactorSession(uid, res);
 }
 
 async function clearCompatibleChallenge(req, res) {
@@ -87,8 +90,9 @@ module.exports = async function handler(req, res) {
     }
 
     const twoFactor = challenge.twoFactor || {};
+    const passwordlessLogin = challenge.mode === "passwordless";
 
-    if (!twoFactor.emailEnabled) {
+    if (!passwordlessLogin && !twoFactor.emailEnabled) {
       return res.status(400).json({ error: "Email verification is not enabled for this login." });
     }
 
@@ -146,12 +150,28 @@ module.exports = async function handler(req, res) {
     }
 
     await codeRef.delete().catch(function () {});
+
+    if (passwordlessLogin && twoFactor.appEnabled) {
+      return res.status(200).json({
+        success: true,
+        requiresTwoFactor: true,
+        twoFactorRequired: true,
+        maskedEmail: maskEmail(challenge.email),
+        methods: {
+          app: true,
+          email: false
+        }
+      });
+    }
+
     await createCompatibleSiteSession(req, res, challenge);
     await createCompatibleTwoFactorSession(req, res, challenge.uid);
     await clearCompatibleChallenge(req, res);
 
     return res.status(200).json({
-      success: true
+      success: true,
+      requiresTwoFactor: false,
+      twoFactorRequired: false
     });
   } catch (error) {
     return res.status(error.statusCode || 500).json({
