@@ -765,6 +765,7 @@ body {
 .site-header-cart,
 .site-header-cart:visited {
   position: relative;
+  color: white;
   text-decoration: none;
   display: flex;
   align-items: center;
@@ -773,11 +774,20 @@ body {
   transition: opacity 0.2s ease;
 }
 
-.site-header-cart img {
+.site-header-cart img,
+.site-header-cart-icon {
   width: 26px;
   height: 26px;
   display: block;
   object-fit: contain;
+}
+
+.site-header-cart-icon {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .site-header-cart:hover {
@@ -1034,7 +1044,8 @@ body {
     height: 44px;
   }
 
-  .site-header-cart img {
+  .site-header-cart img,
+  .site-header-cart-icon {
     width: 24px;
     height: 24px;
   }
@@ -4936,6 +4947,7 @@ body.nav-menu-open {
   }
 
   .site-header-cart img,
+  .site-header-cart-icon,
   .site-header .floating-account-button img {
     width: 23px;
     height: 23px;
