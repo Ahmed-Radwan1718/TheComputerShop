@@ -25,15 +25,15 @@ function timestampToMillis(value) {
 }
 
 async function createCompatibleSecurityUnlock(req, res, uid) {
-  if (createSecurityUnlockSession.length >= 3) {
-    return await createSecurityUnlockSession(req, res, uid);
+  const safeUid = String(uid || "").trim();
+
+  if (!safeUid) {
+    const error = new Error("Please log in again.");
+    error.statusCode = 401;
+    throw error;
   }
 
-  if (createSecurityUnlockSession.length >= 2) {
-    return await createSecurityUnlockSession(res, uid);
-  }
-
-  return await createSecurityUnlockSession(res);
+  return await createSecurityUnlockSession(safeUid, res);
 }
 
 module.exports = async function handler(req, res) {
