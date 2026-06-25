@@ -6034,6 +6034,40 @@ body.nav-menu-open {
   flex: 0 0 24px;
 }
 
+.auth-login-options {
+  display: grid;
+  gap: 12px;
+}
+
+.auth-passwordless-button {
+  width: 100%;
+  min-height: 52px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.075);
+  color: white;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.auth-passwordless-button:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.auth-passwordless-button:disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
+}
+
 .auth-divider {
   display: flex;
   align-items: center;
