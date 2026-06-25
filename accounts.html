@@ -74,7 +74,7 @@
 
                 <div class="account-profile-photo-actions">
                   <h3>Profile Photo</h3>
-                  <p>Upload a square photo for your account. It will sync anywhere you sign in.</p>
+                  <p>Choose an image up to 4MB, crop it, and save it to sync across your devices.</p>
 
                   <input type="file" id="account-photo-input" accept="image/png,image/jpeg,image/webp" hidden>
 
@@ -680,6 +680,42 @@
   </section>
 </main>
 
+<div class="account-photo-crop-modal" id="account-photo-crop-modal" hidden>
+  <div class="account-photo-crop-backdrop" id="account-photo-crop-backdrop"></div>
+
+  <div class="account-photo-crop-card" role="dialog" aria-modal="true" aria-labelledby="account-photo-crop-title">
+    <button class="account-photo-crop-close" type="button" id="account-photo-crop-close" aria-label="Close photo crop popup">×</button>
+
+    <div class="account-photo-crop-header">
+      <p class="account-panel-eyebrow">Profile Photo</p>
+      <h2 id="account-photo-crop-title">Crop Your Photo</h2>
+      <p>Drag the image and adjust zoom until the square preview looks right.</p>
+    </div>
+
+    <div class="account-photo-crop-stage" id="account-photo-crop-stage">
+      <img src="" alt="Selected profile photo" id="account-photo-crop-image">
+      <div class="account-photo-crop-frame"></div>
+    </div>
+
+    <div class="account-photo-crop-control">
+      <label for="account-photo-crop-zoom">Zoom</label>
+      <input type="range" id="account-photo-crop-zoom" min="1" max="3" step="0.01" value="1">
+    </div>
+
+    <div class="account-photo-crop-actions">
+      <button class="account-photo-crop-cancel" type="button" id="account-photo-crop-cancel">
+        Cancel
+      </button>
+
+      <button class="account-photo-crop-use" type="button" id="account-photo-crop-use">
+        Use Photo
+      </button>
+    </div>
+
+    <p class="account-message" id="account-photo-crop-message" aria-live="polite"></p>
+  </div>
+</div>
+
 <div class="account-email-modal" id="email-change-modal" hidden>
   <div class="account-email-modal-backdrop" id="email-change-modal-backdrop"></div>
 
@@ -789,6 +825,15 @@ const accountPhotoPreview = document.getElementById("account-photo-preview");
 const accountPhotoInitial = document.getElementById("account-photo-initial");
 const accountPhotoInput = document.getElementById("account-photo-input");
 const accountPhotoChooseButton = document.getElementById("account-photo-choose-button");
+const accountPhotoCropModal = document.getElementById("account-photo-crop-modal");
+const accountPhotoCropBackdrop = document.getElementById("account-photo-crop-backdrop");
+const accountPhotoCropClose = document.getElementById("account-photo-crop-close");
+const accountPhotoCropCancel = document.getElementById("account-photo-crop-cancel");
+const accountPhotoCropUse = document.getElementById("account-photo-crop-use");
+const accountPhotoCropStage = document.getElementById("account-photo-crop-stage");
+const accountPhotoCropImage = document.getElementById("account-photo-crop-image");
+const accountPhotoCropZoom = document.getElementById("account-photo-crop-zoom");
+const accountPhotoCropMessage = document.getElementById("account-photo-crop-message");
 const accountName = document.getElementById("account-name");
 const accountUsernameNote = document.getElementById("account-username-note");
 const accountUsernameEditButton = document.getElementById("account-username-edit-button");
@@ -954,6 +999,20 @@ const passwordMessage = document.getElementById("password-message");
 
 let currentUser = null;
 let pendingProfilePhotoDataUrl = "";
+let profilePhotoCropObjectUrl = "";
+let profilePhotoCropState = {
+  dragging: false,
+  startX: 0,
+  startY: 0,
+  originX: 0,
+  originY: 0,
+  x: 0,
+  y: 0,
+  zoom: 1,
+  baseScale: 1,
+  naturalWidth: 0,
+  naturalHeight: 0
+};
 let originalUsername = "";
 let usernameLastChangedAt = null;
 let usernameEditMode = false;
