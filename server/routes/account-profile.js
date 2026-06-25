@@ -6,7 +6,7 @@ const {
 } = require("../_lib/securityHelpers");
 
 const USERNAME_COOLDOWN_MS = 14 * 24 * 60 * 60 * 1000;
-const PROFILE_PHOTO_MAX_DATA_URL_LENGTH = 2 * 1024 * 1024;
+const PROFILE_PHOTO_MAX_DATA_URL_LENGTH = 750 * 1024;
 
 function cleanString(value, maxLength) {
   return String(value || "").trim().slice(0, maxLength);
@@ -111,6 +111,7 @@ async function uploadProfilePhoto(uid, dataUrl) {
     public_id: uid,
     overwrite: true,
     invalidate: true,
+    unique_filename: false,
     resource_type: "image"
   });
 
