@@ -25,7 +25,7 @@
       <span class="floating-account-greeting" id="floating-account-greeting" hidden></span>
 
       <button class="floating-account-button" id="floating-account-button" type="button" aria-label="Open account menu" aria-expanded="false">
-        <img src="user-icon.png" alt="Account">
+        <img src="user-icon.png" alt="Account" id="floating-account-photo">
       </button>
 
       <div class="floating-account-menu" id="floating-account-menu" hidden>
@@ -105,12 +105,13 @@ if (floatingAccountWidget) {
     const accountWidget = document.getElementById("floating-account-widget");
     const accountGreeting = document.getElementById("floating-account-greeting");
     const accountButton = document.getElementById("floating-account-button");
+    const accountPhoto = document.getElementById("floating-account-photo");
     const accountMenu = document.getElementById("floating-account-menu");
     const loginLink = document.getElementById("floating-login-link");
     const accountLink = document.getElementById("floating-account-link");
     const logoutButton = document.getElementById("floating-logout-button");
 
-    if (accountWidget && accountGreeting && accountButton && accountMenu && loginLink && accountLink && logoutButton) {
+    if (accountWidget && accountGreeting && accountButton && accountPhoto && accountMenu && loginLink && accountLink && logoutButton) {
       const firebaseAuth = {};
       const auth = null;
       const signOut = null;
@@ -137,12 +138,28 @@ if (floatingAccountWidget) {
         return "there";
       }
 
+      function setAccountPhoto(photoURL) {
+        const safePhotoURL = String(photoURL || "").trim();
+
+        if (safePhotoURL) {
+          accountPhoto.src = safePhotoURL;
+          accountPhoto.alt = "Account profile photo";
+          accountPhoto.classList.add("has-profile-photo");
+          return;
+        }
+
+        accountPhoto.src = "user-icon.png";
+        accountPhoto.alt = "Account";
+        accountPhoto.classList.remove("has-profile-photo");
+      }
+
       function showLoggedOutAccountState() {
         loginLink.hidden = false;
         accountLink.hidden = true;
         logoutButton.hidden = true;
         accountGreeting.textContent = "";
         accountGreeting.hidden = true;
+        setAccountPhoto("");
       }
 
       function showLoggedInAccountState(user) {
@@ -153,6 +170,7 @@ if (floatingAccountWidget) {
         logoutButton.hidden = false;
         accountGreeting.textContent = "Hello, " + firstName;
         accountGreeting.hidden = false;
+        setAccountPhoto(user.photoURL || "");
       }
 
       async function loadServerAccountState() {
