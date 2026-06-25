@@ -56,6 +56,39 @@ function getSafeTwoFactor(twoFactor) {
   };
 }
 
+function getConnectedProviders(userRecord, userData) {
+  const data = userData && typeof userData === "object" ? userData : {};
+  const authProvider = String(data.authProvider || "").toLowerCase();
+  const providerIds = new Set();
+
+  (userRecord.providerData || []).forEach(function (provider) {
+    if (provider && provider.providerId) {
+      providerIds.add(provider.providerId);
+    }
+  });
+
+  if (authProvider === "google") {
+    providerIds.add("google.com");
+  }
+
+  if (userRecord.email && authProvider !== "google" && !providerIds.has("google.com")) {
+    providerIds.add("password");
+  }
+
+  return [
+    {
+      id: "password",
+      label: "Email & Password",
+      connected: providerIds.has("password")
+    },
+    {
+      id: "google.com",
+      label: "Google",
+      connected: providerIds.has("google.com")
+    }
+  ];
+}
+
 function configureCloudinary() {
   const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
   const apiKey = process.env.CLOUDINARY_API_KEY;
@@ -146,6 +179,7 @@ async function getProfile(uid) {
     photoURL: data.photoURL || userRecord.photoURL || "",
     phone: data.phone || "",
     twoFactor: getSafeTwoFactor(data.twoFactor),
+    connectedProviders: getConnectedProviders(userRecord, data),
     usernameLastChangedAt: serializeTimestamp(data.usernameLastChangedAt),
     emailLastChangedAt: serializeTimestamp(data.emailLastChangedAt),
     emailChangePendingTo: data.emailChangePendingTo || "",
