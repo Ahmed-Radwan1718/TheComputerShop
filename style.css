@@ -932,8 +932,27 @@ body {
     gap: 30px;
   }
 
+  .home-signature-preview-grid.is-mobile-carousel-ready .home-signature-preview-card {
+    display: none;
+  }
+
+  .home-signature-preview-grid.is-mobile-carousel-ready .home-signature-preview-card.is-active {
+    display: block;
+    animation: homeSignaturePreviewCardIn 0.36s ease;
+  }
+
   .home-signature-preview-card img {
     height: 260px;
+  }
+
+  @keyframes homeSignaturePreviewCardIn {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
   }
 
   .home-support-section {
