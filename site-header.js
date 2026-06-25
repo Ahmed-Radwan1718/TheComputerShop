@@ -17,11 +17,7 @@
 
   <div class="site-header-actions">
     <a href="cart.html" class="site-header-cart" aria-label="Cart">
-      <svg class="site-header-cart-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        <path d="M4.5 5h2.15l2.15 10.1a1.45 1.45 0 0 0 1.42 1.15h6.58a1.45 1.45 0 0 0 1.36-.95l2.04-5.9H8.05"></path>
-        <circle cx="10.5" cy="20" r="1.15"></circle>
-        <circle cx="17.25" cy="20" r="1.15"></circle>
-      </svg>
+      <img src="cart-icon.png" alt="Cart">
       <span class="nav-cart-count">0</span>
     </a>
 
