@@ -5873,6 +5873,13 @@ body.nav-menu-open {
   height: 16px;
   display: block;
   object-fit: contain;
+  opacity: 0.62;
+  filter: brightness(0) invert(1);
+  transition: opacity 0.2s ease;
+}
+
+.floating-account-menu-link:hover img {
+  opacity: 1;
 }
 
 .floating-account-logout {
@@ -5880,6 +5887,7 @@ body.nav-menu-open {
 }
 
 .floating-account-logout img {
+  opacity: 0.95;
   filter: brightness(0) saturate(100%) invert(82%) sepia(19%) saturate(933%) hue-rotate(306deg) brightness(102%) contrast(101%);
 }
 
