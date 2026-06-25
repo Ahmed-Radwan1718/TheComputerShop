@@ -410,6 +410,58 @@
 </script>
 
 <script>
+  const signaturePreviewGrid = document.querySelector(".home-signature-preview-grid");
+  const signaturePreviewCards = document.querySelectorAll(".home-signature-preview-card");
+  const signaturePreviewMedia = window.matchMedia("(max-width: 900px)");
+  let signaturePreviewIndex = 0;
+  let signaturePreviewTimer;
+
+  function showSignaturePreviewCard(index) {
+    signaturePreviewCards.forEach((card, cardIndex) => {
+      card.classList.toggle("is-active", cardIndex === index);
+    });
+  }
+
+  function stopSignaturePreviewCycle() {
+    clearInterval(signaturePreviewTimer);
+  }
+
+  function startSignaturePreviewCycle() {
+    stopSignaturePreviewCycle();
+
+    signaturePreviewTimer = setInterval(() => {
+      signaturePreviewIndex = (signaturePreviewIndex + 1) % signaturePreviewCards.length;
+      showSignaturePreviewCard(signaturePreviewIndex);
+    }, 7000);
+  }
+
+  function syncSignaturePreviewCarousel() {
+    if (!signaturePreviewGrid || !signaturePreviewCards.length) {
+      return;
+    }
+
+    signaturePreviewGrid.classList.add("is-mobile-carousel-ready");
+    showSignaturePreviewCard(signaturePreviewIndex);
+
+    if (signaturePreviewMedia.matches && signaturePreviewCards.length > 1) {
+      startSignaturePreviewCycle();
+    } else {
+      stopSignaturePreviewCycle();
+    }
+  }
+
+  if (signaturePreviewGrid && signaturePreviewCards.length) {
+    syncSignaturePreviewCarousel();
+
+    if (signaturePreviewMedia.addEventListener) {
+      signaturePreviewMedia.addEventListener("change", syncSignaturePreviewCarousel);
+    } else {
+      signaturePreviewMedia.addListener(syncSignaturePreviewCarousel);
+    }
+  }
+</script>
+
+<script>
   const customProcessSteps = document.querySelectorAll(".home-custom-process-step");
 
   if (customProcessSteps.length) {
