@@ -5760,6 +5760,12 @@ body.nav-menu-open {
   filter: brightness(0) invert(1);
 }
 
+.floating-account-button img.has-profile-photo {
+  border-radius: 999px;
+  object-fit: cover;
+  filter: none;
+}
+
 .floating-account-button:hover {
   opacity: 0.72;
 }
@@ -6509,6 +6515,98 @@ body.nav-menu-open {
 .account-form {
   display: grid;
   gap: 20px;
+}
+
+.account-profile-photo-section {
+  padding: 18px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  background: rgba(255, 255, 255, 0.045);
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.account-profile-photo-preview-wrap {
+  width: 96px;
+  height: 96px;
+  flex: 0 0 96px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.09);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.account-profile-photo-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.account-profile-photo-preview[hidden],
+.account-profile-photo-initial[hidden] {
+  display: none;
+}
+
+.account-profile-photo-initial {
+  color: white;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+}
+
+.account-profile-photo-actions {
+  display: grid;
+  gap: 8px;
+}
+
+.account-profile-photo-actions h3 {
+  color: white;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.account-profile-photo-actions p {
+  max-width: 520px;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.account-profile-photo-button {
+  width: fit-content;
+  min-height: 40px;
+  padding: 0 16px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  background: transparent;
+  color: white;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.account-profile-photo-button:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.34);
+}
+
+.account-profile-photo-button:disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
 }
 
 .account-form-grid {
