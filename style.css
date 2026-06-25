@@ -5820,7 +5820,7 @@ body.nav-menu-open {
   position: absolute;
   top: 52px;
   right: 0;
-  min-width: 156px;
+  min-width: 198px;
   padding: 8px;
   border-radius: 18px;
   border: 1px solid rgba(255, 255, 255, 0.11);
