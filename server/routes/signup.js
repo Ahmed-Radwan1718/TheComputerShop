@@ -2,7 +2,8 @@ const admin = require("../_lib/firebaseAdmin");
 const { Resend } = require("resend");
 
 const {
-  createSiteSessionForUid
+  createSiteSessionForUid,
+  createSiteSessionFromIdToken
 } = require("../_lib/securityHelpers");
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -36,7 +37,15 @@ async function createCompatibleSiteSession(req, res, uid) {
     return await createSiteSessionForUid(req, res, uid);
   }
 
-  return await createSiteSessionForUid(res, uid);
+  return await createSiteSessionForUid(uid, res);
+}
+
+async function createCompatibleIdTokenSession(req, res, idToken) {
+  if (createSiteSessionFromIdToken.length >= 3) {
+    return await createSiteSessionFromIdToken(req, res, idToken);
+  }
+
+  return await createSiteSessionFromIdToken(idToken, res);
 }
 
 async function checkSignupRateLimit(email) {
@@ -64,6 +73,62 @@ module.exports = async function handler(req, res) {
   try {
     if (req.method !== "POST") {
       return res.status(405).json({ error: "Method not allowed" });
+    }
+
+    const provider = cleanString((req.body || {}).provider, 30);
+    const idToken = cleanString((req.body || {}).idToken, 4000);
+
+    if (provider === "google") {
+      if (!idToken) {
+        return res.status(400).json({ error: "Google sign-in could not be verified." });
+      }
+
+      const decodedToken = await admin.auth().verifyIdToken(idToken);
+      const signInProvider =
+        decodedToken.firebase && decodedToken.firebase.sign_in_provider
+          ? decodedToken.firebase.sign_in_provider
+          : "";
+
+      if (signInProvider !== "google.com") {
+        return res.status(400).json({ error: "Please sign in with Google." });
+      }
+
+      const userRecord = await admin.auth().getUser(decodedToken.uid);
+      const email = cleanEmail(userRecord.email || decodedToken.email);
+      const fullName = cleanString(userRecord.displayName || decodedToken.name || email.split("@")[0], 80);
+      const photoURL = cleanString(userRecord.photoURL || decodedToken.picture, 600);
+
+      if (!email) {
+        return res.status(400).json({ error: "Google account email is required." });
+      }
+
+      const userRef = admin.firestore().collection("users").doc(decodedToken.uid);
+      const userDoc = await userRef.get();
+      const existingUser = userDoc.exists ? userDoc.data() || {} : {};
+
+      await userRef.set({
+        fullName: existingUser.fullName || fullName,
+        phone: existingUser.phone || "",
+        email,
+        photoURL: existingUser.photoURL || photoURL,
+        authProvider: "google",
+        emailVerified: Boolean(userRecord.emailVerified || decodedToken.email_verified),
+        createdAt: existingUser.createdAt || admin.firestore.FieldValue.serverTimestamp(),
+        updatedAt: admin.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+
+      await createCompatibleIdTokenSession(req, res, idToken);
+
+      return res.status(200).json({
+        success: true,
+        user: {
+          uid: decodedToken.uid,
+          email,
+          displayName: existingUser.fullName || fullName,
+          emailVerified: Boolean(userRecord.emailVerified || decodedToken.email_verified),
+          photoURL: existingUser.photoURL || photoURL
+        }
+      });
     }
 
     const fullName = cleanString((req.body || {}).fullName, 80);
