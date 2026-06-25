@@ -3,13 +3,19 @@ const { Resend } = require("resend");
 
 const {
   createSiteSessionForUid,
-  createSiteSessionFromIdToken
+  createSiteSessionFromIdToken,
+  getCodeHash,
+  createRandomCode,
+  createRandomToken
 } = require("../_lib/securityHelpers");
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const WINDOW_MS = 30 * 60 * 1000;
 const MAX_ATTEMPTS = 5;
+const SIGNUP_CODE_TTL_MS = 10 * 60 * 1000;
+const SIGNUP_CODE_RESEND_MS = 60 * 1000;
+const SIGNUP_CODE_MAX_ATTEMPTS = 5;
 
 function cleanString(value, maxLength) {
   return String(value || "").trim().slice(0, maxLength);
@@ -67,6 +73,117 @@ async function checkSignupRateLimit(email) {
     windowStartedAt: oldWindow ? admin.firestore.FieldValue.serverTimestamp() : data.windowStartedAt,
     updatedAt: admin.firestore.FieldValue.serverTimestamp()
   }, { merge: true });
+}
+
+function getSignupCodeRef(email) {
+  const safeId = email.replace(/[^\w.-]/g, "_");
+  return admin.firestore().collection("pendingSignupEmailCodes").doc(safeId);
+}
+
+async function ensureEmailCanCreateAccount(email) {
+  try {
+    await admin.auth().getUserByEmail(email);
+
+    const error = new Error("This email is already used by another account.");
+    error.statusCode = 409;
+    throw error;
+  } catch (error) {
+    if (error.code === "auth/user-not-found") {
+      return;
+    }
+
+    throw error;
+  }
+}
+
+async function sendSignupVerificationCode(email, fullName) {
+  const ref = getSignupCodeRef(email);
+  const existingDoc = await ref.get();
+  const existingData = existingDoc.exists ? existingDoc.data() || {} : {};
+  const lastSentAtMs = timestampToMillis(existingData.lastSentAt);
+
+  if (lastSentAtMs && Date.now() - lastSentAtMs < SIGNUP_CODE_RESEND_MS) {
+    const error = new Error("Please wait a minute before requesting another verification code.");
+    error.statusCode = 429;
+    throw error;
+  }
+
+  const code = createRandomCode();
+  const salt = createRandomToken();
+  const expiresAtMs = Date.now() + SIGNUP_CODE_TTL_MS;
+
+  await ref.set({
+    email,
+    codeHash: getCodeHash(email, code, salt),
+    salt,
+    attempts: 0,
+    createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    lastSentAt: admin.firestore.FieldValue.serverTimestamp(),
+    expiresAt: new Date(expiresAtMs)
+  }, { merge: false });
+
+  await resend.emails.send({
+    from: process.env.SECURITY_EMAIL_FROM,
+    to: email,
+    subject: "Verify your Computer Shop email",
+    html: `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+        <h2>Verify your email address</h2>
+        <p>Hi ${fullName || "there"}, enter this code to finish creating your The Computer Shop account.</p>
+        <p style="font-size: 28px; font-weight: 700; letter-spacing: 6px;">${code}</p>
+        <p>This code expires in 10 minutes. Your account will not be created unless this code is verified.</p>
+      </div>
+    `
+  });
+}
+
+async function verifySignupVerificationCode(email, code) {
+  if (!/^\d{6}$/.test(code)) {
+    const error = new Error("Enter the 6-digit verification code.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const ref = getSignupCodeRef(email);
+  const doc = await ref.get();
+
+  if (!doc.exists) {
+    const error = new Error("Please request a new verification code.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const data = doc.data() || {};
+  const expiresAtMs = timestampToMillis(data.expiresAt);
+
+  if (!expiresAtMs || Date.now() > expiresAtMs) {
+    await ref.delete();
+
+    const error = new Error("That verification code expired. Please request a new one.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  if (Number(data.attempts || 0) >= SIGNUP_CODE_MAX_ATTEMPTS) {
+    await ref.delete();
+
+    const error = new Error("Too many wrong codes. Please request a new verification code.");
+    error.statusCode = 429;
+    throw error;
+  }
+
+  if (getCodeHash(email, code, data.salt || "") !== data.codeHash) {
+    await ref.set({
+      attempts: Number(data.attempts || 0) + 1,
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+
+    const error = new Error("That verification code is not correct.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  return ref;
 }
 
 module.exports = async function handler(req, res) {
@@ -135,53 +252,54 @@ module.exports = async function handler(req, res) {
     const phone = cleanString((req.body || {}).phone, 30);
     const email = cleanEmail((req.body || {}).email);
     const password = cleanPassword((req.body || {}).password);
+    const confirmPassword = cleanPassword((req.body || {}).confirmPassword);
+    const verificationCode = cleanString((req.body || {}).verificationCode, 12).replace(/\D/g, "").slice(0, 6);
 
-    if (!fullName || !email || !password) {
+    if (!fullName || !email || !password || !confirmPassword) {
       return res.status(400).json({ error: "Please complete all required fields." });
+    }
+
+    if (password !== confirmPassword) {
+      return res.status(400).json({ error: "Passwords do not match." });
     }
 
     if (password.length < 8 || !/[A-Za-z]/.test(password) || !/\d/.test(password) || /\s/.test(password)) {
       return res.status(400).json({ error: "Password must be at least 8 characters and include letters and numbers." });
     }
 
-    await checkSignupRateLimit(email);
+    await ensureEmailCanCreateAccount(email);
+
+    if (!verificationCode) {
+      await checkSignupRateLimit(email);
+      await sendSignupVerificationCode(email, fullName);
+
+      return res.status(200).json({
+        success: true,
+        requiresEmailVerification: true,
+        message: "Check your inbox for the 6-digit code. Your account will be created after verification."
+      });
+    }
+
+    const signupCodeRef = await verifySignupVerificationCode(email, verificationCode);
 
     const userRecord = await admin.auth().createUser({
       email,
       password,
       displayName: fullName,
-      emailVerified: false
+      emailVerified: true
     });
 
     await admin.firestore().collection("users").doc(userRecord.uid).set({
       fullName,
       phone,
       email,
+      authProvider: "password",
+      emailVerified: true,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
       updatedAt: admin.firestore.FieldValue.serverTimestamp()
     });
 
-    const verificationLink = await admin.auth().generateEmailVerificationLink(email);
-
-    await resend.emails.send({
-      from: process.env.SECURITY_EMAIL_FROM,
-      to: email,
-      subject: "Verify your Computer Shop email",
-      html: `
-        <div style="font-family: Arial, sans-serif; line-height: 1.6;">
-          <h2>Verify your email address</h2>
-          <p>Welcome to The Computer Shop. Click below to verify your email.</p>
-          <p>
-            <a href="${verificationLink}" style="display: inline-block; padding: 12px 18px; background: #2563eb; color: #ffffff; text-decoration: none; border-radius: 8px;">
-              Verify Email
-            </a>
-          </p>
-          <p>If the button does not work, copy and paste this link into your browser:</p>
-          <p style="word-break: break-all;">${verificationLink}</p>
-        </div>
-      `
-    });
-
+    await signupCodeRef.delete();
     await createCompatibleSiteSession(req, res, userRecord.uid);
 
     return res.status(200).json({
@@ -190,7 +308,7 @@ module.exports = async function handler(req, res) {
         uid: userRecord.uid,
         email,
         displayName: fullName,
-        emailVerified: false
+        emailVerified: true
       }
     });
   } catch (error) {
