@@ -300,6 +300,53 @@
     };
   }
 
+  function createUgreenNasProduct(product) {
+    return {
+      id: product.id,
+      name: product.name,
+      category: "NAS Storage",
+      specsLine: product.specsLine,
+      priceText: "Insert price here",
+      priceNumber: null,
+      url: `product.html?product=${product.id}`,
+      images: [product.image],
+      whoIsThisFor: product.whoIsThisFor,
+      specs: [
+        ["Product Name", product.name],
+        ["Accessory Type", "NAS Storage"],
+        ["Brand", "UGREEN"],
+        ["Series", "NASync"],
+        ["Model", product.model],
+        ["Drive Bays", product.driveBays],
+        ["Maximum Storage", product.maximumStorage],
+        ["Processor", product.processor],
+        ["Memory", product.memory],
+        ["Networking", product.networking],
+        ["Ports", product.ports],
+        ["Operating System", "UGOS Pro"],
+        ...(product.extraSpecs || [])
+      ],
+      included: [
+        {
+          title: "NAS Unit",
+          text: `The ${product.name} diskless NAS enclosure is included as the main accessory. Storage drives are sold separately unless your stock package says otherwise.`
+        },
+        {
+          title: "Power Adapter",
+          text: "A compatible power adapter is included when supplied with the official package."
+        },
+        {
+          title: "Ethernet Cable and Accessories",
+          text: "Ethernet cable, drive screws, tray keys, or setup accessories are included when supplied with the official package."
+        },
+        {
+          title: "Store Support",
+          text: "Purchases include store support, setup guidance, and free lifetime troubleshooting and diagnosis for products bought from The Computer Shop."
+        }
+      ]
+    };
+  }
+
   const products = {
     "anker-prime-20k-220w-power-bank-black-myth-wukong-edition": {
       id: "anker-prime-20k-220w-power-bank-black-myth-wukong-edition",
@@ -9977,6 +10024,118 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
       image: "https://res.cloudinary.com/dhtamisqn/image/upload/v1782397604/UGREEN_Zapix_Charger_GaN_Desktop_Fast_6-port_100W.jpg",
       whoIsThisFor: "A desktop charging hub for users who want one station for phones, tablets, earbuds, smartwatches, and light USB-C laptop charging.",
       extraSpecs: [["Use Case", "Desktop multi-device charging"], ["Technology", "GaN fast charging"], ["Safety", "Built-in protection features"]]
+    }),
+
+    "ugreen-nasync-dxp8800-plus": createUgreenNasProduct({
+      id: "ugreen-nasync-dxp8800-plus",
+      name: "UGREEN NASync DXP8800 Plus",
+      model: "DXP8800 Plus",
+      specsLine: "UGREEN NASync | 8-Bay | 272TB",
+      driveBays: "8 x SATA bays, 2 x M.2 NVMe slots",
+      maximumStorage: "Up to 272TB",
+      processor: "12th Gen Intel Core i5-1235U 10-core CPU",
+      memory: "8GB DDR5, expandable to 64GB",
+      networking: "2 x 10GbE LAN",
+      ports: "2 x Thunderbolt 4, USB 3.2 Gen 2, HDMI 8K, SD card slot, PCIe x4",
+      image: "https://res.cloudinary.com/dhtamisqn/image/upload/v1782397914/UGREEN_NASync_DXP8800Plus.jpg",
+      whoIsThisFor: "A high-capacity 8-bay NAS for creators, teams, and power users who need fast shared storage, dual 10GbE networking, Thunderbolt 4, and room for large media libraries.",
+      extraSpecs: [["RAID Support", "JBOD, Basic, RAID 0, RAID 1, RAID 5, RAID 6, RAID 10"], ["Use Case", "Team storage, media libraries, backup, Docker, and high-speed file sharing"]]
+    }),
+
+    "ugreen-nasync-dxp2800": createUgreenNasProduct({
+      id: "ugreen-nasync-dxp2800",
+      name: "UGREEN NASync DXP2800",
+      model: "DXP2800",
+      specsLine: "UGREEN NASync | 2-Bay | 80TB",
+      driveBays: "2 x SATA bays, 2 x M.2 NVMe slots",
+      maximumStorage: "Up to 80TB",
+      processor: "12th Gen Intel N100 quad-core CPU",
+      memory: "8GB DDR5",
+      networking: "1 x 2.5GbE LAN",
+      ports: "USB-C, USB-A, HDMI 4K, 2.5GbE LAN",
+      image: "https://res.cloudinary.com/dhtamisqn/image/upload/v1782397913/UGREEN_NASync_DXP2800.jpg",
+      whoIsThisFor: "A compact 2-bay NAS for home users, creators, and small offices that want private cloud storage, automatic backups, media streaming, and faster-than-gigabit networking.",
+      extraSpecs: [["System Type", "Diskless NAS enclosure"], ["Media Features", "4K HDMI output and AI-powered photo management"], ["Storage Drives", "Compatible with 3.5-inch and 2.5-inch SATA drives plus M.2 SSDs"]]
+    }),
+
+    "ugreen-nasync-dxp480t-plus": createUgreenNasProduct({
+      id: "ugreen-nasync-dxp480t-plus",
+      name: "UGREEN NASync DXP480T Plus",
+      model: "DXP480T Plus",
+      specsLine: "UGREEN NASync | All-Flash | 32TB",
+      driveBays: "4 x M.2 NVMe SSD slots",
+      maximumStorage: "Up to 32TB all-flash storage",
+      processor: "12th Gen Intel Core i5-1235U 10-core CPU",
+      memory: "8GB DDR5, expandable to 64GB",
+      networking: "1 x 10GbE LAN, Wi-Fi 6",
+      ports: "Thunderbolt 4, 10GbE LAN, HDMI 8K, USB ports",
+      image: "https://res.cloudinary.com/dhtamisqn/image/upload/v1782397913/UGREEN_NASync_DXP480T.jpg",
+      whoIsThisFor: "An all-flash NAS for creators and editors who need quiet, compact, high-speed storage for active projects, media libraries, and remote access.",
+      extraSpecs: [["Storage Type", "NVMe all-flash"], ["Peak Network Speed", "10GbE supports up to 1250MB/s theoretical transfer speed"], ["Use Case", "Video editing, high-speed media work, and SSD-based shared storage"]]
+    }),
+
+    "ugreen-nasync-dh2300": createUgreenNasProduct({
+      id: "ugreen-nasync-dh2300",
+      name: "UGREEN NASync DH2300",
+      model: "DH2300",
+      specsLine: "UGREEN NASync | 2-Bay | 64TB",
+      driveBays: "2 x SATA bays",
+      maximumStorage: "Up to 64TB",
+      processor: "Rockchip RK3576 8-core processor",
+      memory: "4GB LPDDR4X",
+      networking: "1 x 1GbE LAN",
+      ports: "1 x USB-C, 2 x USB-A, 1GbE LAN, HDMI 4K",
+      image: "https://res.cloudinary.com/dhtamisqn/image/upload/v1782397913/UGREEN_NASync_DH2300.jpg",
+      whoIsThisFor: "A beginner-friendly 2-bay NAS for families and home users who want easy private cloud storage, backups, photo organization, and media access.",
+      extraSpecs: [["AI Performance", "6 TOPS local AI processing"], ["System Storage", "32GB internal storage for UGOS Pro"], ["RAID Support", "JBOD, Basic, RAID 0, RAID 1"]]
+    }),
+
+    "ugreen-nasync-dxp6800-pro": createUgreenNasProduct({
+      id: "ugreen-nasync-dxp6800-pro",
+      name: "UGREEN NASync DXP6800 Pro",
+      model: "DXP6800 Pro",
+      specsLine: "UGREEN NASync | 6-Bay | 208TB",
+      driveBays: "6 x SATA bays, 2 x M.2 NVMe slots",
+      maximumStorage: "Up to 208TB",
+      processor: "12th Gen Intel Core i5-1235U 10-core CPU",
+      memory: "8GB DDR5, expandable to 64GB",
+      networking: "2 x 10GbE LAN",
+      ports: "2 x Thunderbolt 4, HDMI 8K, SD card slot, USB 3.2, USB 2.0",
+      image: "https://res.cloudinary.com/dhtamisqn/image/upload/v1782397908/UGREEN_NASync_DXP6800Pro.jpg",
+      whoIsThisFor: "A powerful 6-bay NAS for small teams, creators, and advanced home labs that need fast networking, Thunderbolt 4, expandable memory, and large storage pools.",
+      extraSpecs: [["RAID Support", "JBOD, Basic, RAID 0, RAID 1, RAID 5, RAID 6, RAID 10"], ["Use Case", "Team collaboration, shared media storage, backups, and high-speed file transfers"]]
+    }),
+
+    "ugreen-nasync-dh4300-plus": createUgreenNasProduct({
+      id: "ugreen-nasync-dh4300-plus",
+      name: "UGREEN NASync DH4300 Plus",
+      model: "DH4300 Plus",
+      specsLine: "UGREEN NASync | 4-Bay | 128TB",
+      driveBays: "4 x SATA bays",
+      maximumStorage: "Up to 128TB",
+      processor: "Rockchip RK3588 8-core processor",
+      memory: "8GB LPDDR4X",
+      networking: "1 x 2.5GbE LAN",
+      ports: "USB-C, USB-A, HDMI, 2.5GbE LAN",
+      image: "https://res.cloudinary.com/dhtamisqn/image/upload/v1782397907/UGREEN_NASync_DH4300_Plus.jpg",
+      whoIsThisFor: "A starter-friendly 4-bay NAS for home and small office users who want larger local backup capacity, photo management, and private cloud access.",
+      extraSpecs: [["AI Performance", "6 TOPS local AI processing"], ["M.2 Storage", "Not supported"], ["RAID Support", "JBOD, Basic, RAID 0, RAID 1, RAID 5, RAID 6, RAID 10"]]
+    }),
+
+    "ugreen-nasync-dxp4800-plus": createUgreenNasProduct({
+      id: "ugreen-nasync-dxp4800-plus",
+      name: "UGREEN NASync DXP4800 Plus",
+      model: "DXP4800 Plus",
+      specsLine: "UGREEN NASync | 4-Bay | 144TB",
+      driveBays: "4 x SATA bays, 2 x M.2 NVMe slots",
+      maximumStorage: "Up to 144TB",
+      processor: "Intel Pentium Gold 8505 5-core CPU",
+      memory: "8GB DDR5, expandable to 64GB",
+      networking: "1 x 10GbE LAN, 1 x 2.5GbE LAN",
+      ports: "USB-C 10Gbps, USB-A, SD card slot, HDMI 4K, Ethernet",
+      image: "https://res.cloudinary.com/dhtamisqn/image/upload/v1782397907/UGREEN_NASync_DXP4800Plus.jpg",
+      whoIsThisFor: "A versatile 4-bay NAS for freelancers, creators, and small offices that need fast 10GbE transfers, SSD caching, automatic backups, and private cloud storage.",
+      extraSpecs: [["Storage Drives", "Compatible with 3.5-inch and 2.5-inch SATA drives plus M.2 SSDs"], ["Transfer Speed", "10GbE supports up to 1250MB/s theoretical transfer speed"], ["RAID Support", "JBOD, Basic, RAID 0, RAID 1, RAID 5, RAID 6, RAID 10"]]
     })
   };
 
