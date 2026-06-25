@@ -9899,9 +9899,13 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
     };
   };
 
-  const visibleProductThumbnailLimit = 8;
+  const productMobileThumbnailQuery = window.matchMedia("(max-width: 900px)");
   let activeProductImageIndex = 0;
   let visibleProductThumbnailStart = 0;
+
+  function getVisibleProductThumbnailLimit() {
+    return productMobileThumbnailQuery.matches ? 3 : 4;
+  }
 
   function updateProductCarouselCounter(product) {
     const counter = document.getElementById("product-carousel-counter");
@@ -9915,6 +9919,8 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
   }
 
   function getProductThumbnailWindowStart(activeIndex, totalImages) {
+    const visibleProductThumbnailLimit = getVisibleProductThumbnailLimit();
+
     if (totalImages <= visibleProductThumbnailLimit) {
       return 0;
     }
@@ -9941,6 +9947,8 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
       return;
     }
 
+    const visibleProductThumbnailLimit = getVisibleProductThumbnailLimit();
+
     activeProductImageIndex = Math.max(0, Math.min(activeIndex, productImages.length - 1));
     visibleProductThumbnailStart = getProductThumbnailWindowStart(activeProductImageIndex, productImages.length);
 
@@ -9963,6 +9971,16 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
     }).join("");
 
     setupProductThumbnailClicks();
+  }
+
+  function rerenderProductThumbnailsForViewport() {
+    renderProductThumbnails(currentProduct, activeProductImageIndex);
+  }
+
+  if (typeof productMobileThumbnailQuery.addEventListener === "function") {
+    productMobileThumbnailQuery.addEventListener("change", rerenderProductThumbnailsForViewport);
+  } else if (typeof productMobileThumbnailQuery.addListener === "function") {
+    productMobileThumbnailQuery.addListener(rerenderProductThumbnailsForViewport);
   }
 
   function renderProductPage(product) {
