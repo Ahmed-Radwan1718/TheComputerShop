@@ -42,9 +42,17 @@
             </div>
           </div>
 
-          <button class="auth-button" type="submit" id="login-submit">
-            Log In
-          </button>
+          <div class="auth-login-options">
+            <button class="auth-button" type="submit" id="login-submit">
+              Log In
+            </button>
+
+            <div class="auth-divider"><span>or</span></div>
+
+            <button class="auth-passwordless-button" type="button" id="login-passwordless-button">
+              Email Me a Sign-In Code
+            </button>
+          </div>
 
           <p class="auth-message" id="login-message" aria-live="polite"></p>
         </form>
@@ -106,6 +114,7 @@
 
   const loginForm = document.getElementById("login-form");
   const loginButton = document.getElementById("login-submit");
+  const passwordlessLoginButton = document.getElementById("login-passwordless-button");
   const loginMessage = document.getElementById("login-message");
   const passwordVisibilityToggles = document.querySelectorAll(".auth-password-visibility-toggle");
 
@@ -224,14 +233,21 @@
     }, 50);
   }
 
-  async function sendLoginEmailCode() {
+  async function sendLoginEmailCode(email) {
+    const requestBody = {};
+    const cleanEmail = String(email || "").trim();
+
+    if (cleanEmail) {
+      requestBody.email = cleanEmail;
+    }
+
     const response = await fetch("/api/login-send-email-code", {
       method: "POST",
       credentials: "same-origin",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({})
+      body: JSON.stringify(requestBody)
     });
 
     const data = await response.json().catch(function () {
@@ -329,13 +345,56 @@
     });
   });
 
+  function setPrimaryLoginControlsDisabled(disabled) {
+    loginButton.disabled = disabled;
+
+    if (passwordlessLoginButton) {
+      passwordlessLoginButton.disabled = disabled;
+    }
+  }
+
+  async function startPasswordlessLogin() {
+    const emailInput = document.getElementById("login-email");
+    const email = emailInput.value.trim();
+
+    if (!email) {
+      showMessage("Please enter your email address first.", "error");
+      emailInput.focus();
+      return;
+    }
+
+    setPrimaryLoginControlsDisabled(true);
+    passwordlessLoginButton.textContent = "Sending Code...";
+    showMessage("", "");
+
+    try {
+      const data = await sendLoginEmailCode(email);
+
+      pendingTwoFactorSettings = data.methods || {
+        app: false,
+        email: true
+      };
+      pendingMaskedEmail = data.maskedEmail || email;
+
+      openTwoFactorPanel("email");
+      showTwoFactorMessage("If an account exists with that email, a code has been sent.", "success");
+    } catch (error) {
+      clearTwoFactorPending();
+      await cancelServerLogin();
+      showMessage(error.message || "Could not send a sign-in code. Please try again.", "error");
+    } finally {
+      setPrimaryLoginControlsDisabled(false);
+      passwordlessLoginButton.textContent = "Email Me a Sign-In Code";
+    }
+  }
+
   loginForm.addEventListener("submit", async function (event) {
     event.preventDefault();
 
     const email = document.getElementById("login-email").value.trim();
     const password = document.getElementById("login-password").value;
 
-    loginButton.disabled = true;
+    setPrimaryLoginControlsDisabled(true);
     loginButton.textContent = "Logging In...";
     showMessage("", "");
 
@@ -371,7 +430,8 @@
         }
 
         if (pendingTwoFactorSettings.email) {
-          await sendLoginEmailCode();
+          const emailCodeData = await sendLoginEmailCode();
+          pendingMaskedEmail = emailCodeData.maskedEmail || pendingMaskedEmail;
           openTwoFactorPanel("email");
           showMessage("", "");
           showTwoFactorMessage("Email code sent.", "success");
@@ -394,10 +454,14 @@
       // Server session logout already handled.
       showMessage(error.message || "Something went wrong. Please try again.", "error");
     } finally {
-      loginButton.disabled = false;
+      setPrimaryLoginControlsDisabled(false);
       loginButton.textContent = "Log In";
     }
   });
+
+  if (passwordlessLoginButton) {
+    passwordlessLoginButton.addEventListener("click", startPasswordlessLogin);
+  }
 
   twoFactorCodeInputs.forEach(function (input, index) {
     input.addEventListener("input", function () {
@@ -450,10 +514,23 @@
     showTwoFactorMessage("", "");
 
     try {
+      let data = {};
+
       if (activeTwoFactorMethod === "app") {
-        await verifyAppLoginCode(code);
+        data = await verifyAppLoginCode(code);
       } else {
-        await verifyEmailLoginCode(code);
+        data = await verifyEmailLoginCode(code);
+      }
+
+      if (data.requiresTwoFactor && data.methods && data.methods.app) {
+        pendingTwoFactorSettings = {
+          app: true,
+          email: false
+        };
+        pendingMaskedEmail = data.maskedEmail || pendingMaskedEmail;
+        openTwoFactorPanel("app");
+        showTwoFactorMessage("Email verified. Enter your authenticator app code to finish signing in.", "success");
+        return;
       }
 
       await syncFirebaseClientSession();
@@ -474,7 +551,8 @@
     showTwoFactorMessage("", "");
 
     try {
-      await sendLoginEmailCode();
+      const data = await sendLoginEmailCode();
+      pendingMaskedEmail = data.maskedEmail || pendingMaskedEmail;
       openTwoFactorPanel("email");
       showTwoFactorMessage("Email code sent.", "success");
     } catch (error) {
@@ -488,7 +566,6 @@
   twoFactorCancelButton.addEventListener("click", async function () {
     clearTwoFactorPending();
     await cancelServerLogin();
-    await signOut(auth).catch(function () {});
     pendingTwoFactorSettings = {};
     pendingMaskedEmail = "";
     activeTwoFactorMethod = "";
