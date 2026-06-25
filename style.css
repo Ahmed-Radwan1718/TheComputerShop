@@ -4974,20 +4974,20 @@ body.nav-menu-open {
   }
 
   .site-header .hamburger-toggle span:nth-child(1) {
-    top: 13px;
+    top: calc(50% - 9px);
   }
 
   .site-header .hamburger-toggle span:nth-child(2) {
-    top: 21px;
+    top: calc(50% - 1px);
   }
 
   .site-header .hamburger-toggle span:nth-child(3) {
-    top: 29px;
+    top: calc(50% + 7px);
   }
 
   body.nav-menu-open .site-header .hamburger-toggle span:nth-child(1),
   body.nav-menu-open .site-header .hamburger-toggle span:nth-child(3) {
-    top: 21px;
+    top: calc(50% - 1px);
   }
 
   .nav-menu-overlay {
