@@ -124,6 +124,15 @@ async function uploadProfilePhoto(uid, dataUrl) {
   return result.secure_url;
 }
 
+async function deleteProfilePhoto(uid) {
+  configureCloudinary();
+
+  await cloudinary.uploader.destroy("the-computer-shop/profile-photos/" + uid, {
+    invalidate: true,
+    resource_type: "image"
+  });
+}
+
 async function getProfile(uid) {
   const userRecord = await admin.auth().getUser(uid);
   const userDoc = await admin.firestore().collection("users").doc(uid).get();
