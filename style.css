@@ -6563,6 +6563,12 @@ body.nav-menu-open {
   gap: 8px;
 }
 
+.account-profile-photo-button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
 .account-profile-photo-actions h3 {
   color: white;
   font-size: 18px;
