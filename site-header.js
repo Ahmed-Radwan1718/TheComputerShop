@@ -30,10 +30,7 @@
 
       <div class="floating-account-menu" id="floating-account-menu" hidden>
         <a href="login.html" class="floating-account-menu-link" id="floating-login-link">Login</a>
-        <a href="accounts.html" class="floating-account-menu-link" id="floating-account-link" hidden>
-          <img src="user-icon.png" alt="">
-          <span>Account</span>
-        </a>
+        <a href="accounts.html" class="floating-account-menu-link" id="floating-account-link" hidden>Account</a>
         <a href="accounts.html#saved" class="floating-account-menu-link" id="floating-saved-link" hidden>
           <img src="saved-icon.png" alt="">
           <span>Saved for Later</span>
