@@ -1,8 +1,10 @@
 const admin = require("../_lib/firebaseAdmin");
+const { authenticator } = require("otplib");
 
 const {
   getCodeHash,
-  getUserFromRequest
+  getUserFromRequest,
+  getAuthenticatorSecret
 } = require("../_lib/securityHelpers");
 
 const {
@@ -36,6 +38,69 @@ async function createCompatibleSecurityUnlock(req, res, uid) {
   return await createSecurityUnlockSession(safeUid, res);
 }
 
+async function getSecurityPanelMethod(db, uid) {
+  const userDoc = await db.collection("users").doc(uid).get();
+  const userData = userDoc.exists ? userDoc.data() || {} : {};
+  const twoFactor = userData.twoFactor || {};
+
+  if (twoFactor.appEnabled && typeof getAuthenticatorSecret === "function") {
+    const secret = await getAuthenticatorSecret(db, uid, userData);
+
+    if (secret) {
+      return {
+        method: "authenticator",
+        secret
+      };
+    }
+  }
+
+  return {
+    method: "email",
+    secret: ""
+  };
+}
+
+function getAuthenticatorAttemptRef(uid) {
+  return admin.firestore().collection("twoFactorAttempts").doc(uid + "_security_panel_app");
+}
+
+async function checkAuthenticatorAttemptLock(uid) {
+  const ref = getAuthenticatorAttemptRef(uid);
+  const doc = await ref.get();
+
+  if (!doc.exists) {
+    return;
+  }
+
+  const data = doc.data() || {};
+  const lockedUntilMs = timestampToMillis(data.lockedUntil);
+
+  if (lockedUntilMs && lockedUntilMs > Date.now()) {
+    const error = new Error("Too many wrong authenticator codes. Please try again later.");
+    error.statusCode = 429;
+    throw error;
+  }
+}
+
+async function recordAuthenticatorFailure(uid) {
+  const ref = getAuthenticatorAttemptRef(uid);
+  const doc = await ref.get();
+  const data = doc.exists ? doc.data() || {} : {};
+  const attempts = Number(data.attempts || 0) + 1;
+
+  await ref.set({
+    attempts,
+    lockedUntil: attempts >= 3
+      ? admin.firestore.Timestamp.fromDate(new Date(Date.now() + LOCKOUT_MS))
+      : null,
+    updatedAt: admin.firestore.FieldValue.serverTimestamp()
+  }, { merge: true });
+}
+
+async function clearAuthenticatorFailures(uid) {
+  await getAuthenticatorAttemptRef(uid).delete().catch(function () {});
+}
+
 module.exports = async function handler(req, res) {
   try {
     if (req.method !== "POST") {
@@ -50,10 +115,36 @@ module.exports = async function handler(req, res) {
     const code = cleanCode((req.body || {}).code);
 
     if (!/^\d{6}$/.test(code)) {
-      return res.status(400).json({ error: "Please enter the 6-digit security code." });
+      return res.status(400).json({ error: "Please enter the 6-digit verification code." });
     }
 
     const db = admin.firestore();
+    const verification = await getSecurityPanelMethod(db, decodedUser.uid);
+
+    if (verification.method === "authenticator") {
+      await checkAuthenticatorAttemptLock(decodedUser.uid);
+
+      authenticator.options = { window: 1 };
+
+      const valid = authenticator.check(code, verification.secret);
+
+      if (!valid) {
+        await recordAuthenticatorFailure(decodedUser.uid);
+        return res.status(401).json({ error: "Invalid authenticator code." });
+      }
+
+      await clearAuthenticatorFailures(decodedUser.uid);
+      await db.collection("securityPasswordCodes").doc(decodedUser.uid).delete().catch(function () {});
+
+      const unlockResult = await createCompatibleSecurityUnlock(req, res, decodedUser.uid);
+
+      return res.status(200).json({
+        success: true,
+        method: "authenticator",
+        unlockUntil: unlockResult && unlockResult.unlockUntil ? unlockResult.unlockUntil : null
+      });
+    }
+
     const codeRef = db.collection("securityPasswordCodes").doc(decodedUser.uid);
     const codeDoc = await codeRef.get();
 
@@ -96,6 +187,7 @@ module.exports = async function handler(req, res) {
 
     return res.status(200).json({
       success: true,
+      method: "email",
       unlockUntil: unlockResult && unlockResult.unlockUntil ? unlockResult.unlockUntil : null
     });
   } catch (error) {
