@@ -5290,15 +5290,17 @@ body.nav-menu-open {
   }
 
   .product-title-block {
-    margin-bottom: 20px;
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto 20px;
     padding-left: 0;
-    text-align: center;
+    text-align: left;
   }
 
   .product-title-block h1 {
     max-width: 100%;
-    margin-left: auto;
-    margin-right: auto;
+    margin-left: 0;
+    margin-right: 0;
     font-size: 31px;
     line-height: 1.08;
   }
@@ -5406,7 +5408,19 @@ body.nav-menu-open {
   }
 
   .product-specifications-section {
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto;
     padding: 0 22px 70px;
+    transform: none;
+  }
+
+  .product-specifications-inner,
+  .product-specifications-table {
+    width: 100%;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .product-specifications-header h2 {
