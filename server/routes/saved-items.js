@@ -78,7 +78,11 @@ async function handleGet(req, res, uid) {
 
 async function handlePost(req, res, uid) {
   const body = req.body || {};
-  const product = body.product && typeof body.product === "object" ? body.product : body;
+  const product = body.product && typeof body.product === "object"
+    ? body.product
+    : body.item && typeof body.item === "object"
+      ? body.item
+      : body;
   const itemId = cleanItemId(product.id || product.url || product.name);
 
   if (!itemId) {
