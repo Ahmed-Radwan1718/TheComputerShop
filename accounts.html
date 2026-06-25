@@ -78,9 +78,15 @@
 
                   <input type="file" id="account-photo-input" accept="image/png,image/jpeg,image/webp" hidden>
 
-                  <button class="account-profile-photo-button" type="button" id="account-photo-choose-button">
-                    Choose Photo
-                  </button>
+                  <div class="account-profile-photo-button-row">
+                    <button class="account-profile-photo-button" type="button" id="account-photo-choose-button">
+                      Choose Photo
+                    </button>
+
+                    <button class="account-profile-photo-remove-button" type="button" id="account-photo-remove-button" hidden>
+                      Remove Photo
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -825,6 +831,7 @@ const accountPhotoPreview = document.getElementById("account-photo-preview");
 const accountPhotoInitial = document.getElementById("account-photo-initial");
 const accountPhotoInput = document.getElementById("account-photo-input");
 const accountPhotoChooseButton = document.getElementById("account-photo-choose-button");
+const accountPhotoRemoveButton = document.getElementById("account-photo-remove-button");
 const accountPhotoCropModal = document.getElementById("account-photo-crop-modal");
 const accountPhotoCropBackdrop = document.getElementById("account-photo-crop-backdrop");
 const accountPhotoCropClose = document.getElementById("account-photo-crop-close");
@@ -999,6 +1006,7 @@ const passwordMessage = document.getElementById("password-message");
 
 let currentUser = null;
 let pendingProfilePhotoDataUrl = "";
+let removeProfilePhotoOnSave = false;
 let profilePhotoCropObjectUrl = "";
 let profilePhotoCropState = {
   dragging: false,
@@ -3262,12 +3270,21 @@ function updateAccountPhotoPreview(profile, user) {
     accountPhotoPreview.src = photoURL;
     accountPhotoPreview.hidden = false;
     accountPhotoInitial.hidden = true;
+
+    if (accountPhotoRemoveButton) {
+      accountPhotoRemoveButton.hidden = false;
+    }
+
     return;
   }
 
   accountPhotoPreview.removeAttribute("src");
   accountPhotoPreview.hidden = true;
   accountPhotoInitial.hidden = false;
+
+  if (accountPhotoRemoveButton) {
+    accountPhotoRemoveButton.hidden = !pendingProfilePhotoDataUrl;
+  }
 }
 
 function resizeProfilePhotoFile(file) {
@@ -3346,6 +3363,7 @@ function hydrateAccountProfileFromServer(profile, user) {
   addressType.value = "apartment";
 
   pendingProfilePhotoDataUrl = "";
+  removeProfilePhotoOnSave = false;
   updateAccountPhotoPreview(safeProfile, user);
 
   if (currentUser) {
@@ -3479,6 +3497,8 @@ detailsForm.addEventListener("submit", async function (event) {
 
     if (pendingProfilePhotoDataUrl) {
       profileData.profilePhotoDataUrl = pendingProfilePhotoDataUrl;
+    } else if (removeProfilePhotoOnSave) {
+      profileData.removeProfilePhoto = true;
     }
 
     const profile = await saveServerAccountProfile(profileData);
