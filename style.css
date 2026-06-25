@@ -6029,15 +6029,9 @@ body.nav-menu-open {
 .auth-google-icon {
   width: 24px;
   height: 24px;
-  border-radius: 999px;
-  background: #ffffff;
-  color: #111111;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 15px;
-  font-weight: 900;
-  line-height: 1;
+  display: block;
+  object-fit: contain;
+  flex: 0 0 24px;
 }
 
 .auth-divider {
