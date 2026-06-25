@@ -172,6 +172,7 @@ async function handlePatch(req, res, uid) {
   const fullName = cleanString((req.body || {}).fullName, 80);
   const phone = cleanString((req.body || {}).phone, 30);
   const profilePhotoDataUrl = getProfilePhotoDataUrl((req.body || {}).profilePhotoDataUrl);
+  const removeProfilePhoto = Boolean((req.body || {}).removeProfilePhoto) && !profilePhotoDataUrl;
 
   if (!fullName) {
     return res.status(400).json({ error: "Please enter your name." });
@@ -194,6 +195,9 @@ async function handlePatch(req, res, uid) {
 
   if (profilePhotoDataUrl) {
     photoURL = await uploadProfilePhoto(uid, profilePhotoDataUrl);
+  } else if (removeProfilePhoto) {
+    await deleteProfilePhoto(uid);
+    photoURL = "";
   }
 
   const updateData = {
@@ -205,6 +209,9 @@ async function handlePatch(req, res, uid) {
   if (profilePhotoDataUrl && photoURL) {
     updateData.photoURL = photoURL;
     updateData.profilePhotoUpdatedAt = admin.firestore.FieldValue.serverTimestamp();
+  } else if (removeProfilePhoto) {
+    updateData.photoURL = admin.firestore.FieldValue.delete();
+    updateData.profilePhotoDeletedAt = admin.firestore.FieldValue.serverTimestamp();
   }
 
   if (nameChanged) {
@@ -221,6 +228,8 @@ async function handlePatch(req, res, uid) {
 
   if (profilePhotoDataUrl && photoURL) {
     authUpdateData.photoURL = photoURL;
+  } else if (removeProfilePhoto) {
+    authUpdateData.photoURL = null;
   }
 
   if (Object.keys(authUpdateData).length) {
