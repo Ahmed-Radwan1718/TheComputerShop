@@ -281,6 +281,35 @@
                 </div>
               </div>
 
+              <div class="account-divider"></div>
+
+              <div class="account-panel-subheader">
+                <h3>Connected Accounts</h3>
+                <p>View the sign-in methods currently connected to your account.</p>
+              </div>
+
+              <div class="account-connected-grid">
+                <div class="account-connected-account-card" id="connected-password-card">
+                  <div class="account-connected-account-main">
+                    <span>Email & Password</span>
+                    <strong id="connected-password-status">Checking...</strong>
+                    <p>Use your email address and password to sign in.</p>
+                  </div>
+
+                  <span class="account-connected-badge" id="connected-password-badge">Checking</span>
+                </div>
+
+                <div class="account-connected-account-card" id="connected-google-card">
+                  <div class="account-connected-account-main">
+                    <span>Google</span>
+                    <strong id="connected-google-status">Checking...</strong>
+                    <p>Use your Google account to sign in faster.</p>
+                  </div>
+
+                  <span class="account-connected-badge" id="connected-google-badge">Checking</span>
+                </div>
+              </div>
+
               <button class="account-primary-button" type="submit" id="save-account-details">
                 Save Changes
               </button>
@@ -853,6 +882,10 @@ const sendEmailVerificationButton = document.getElementById("send-email-verifica
 const statusPhoneVerified = document.getElementById("status-phone-verified");
 const statusMemberSince = document.getElementById("status-member-since");
 const statusLastUpdated = document.getElementById("status-last-updated");
+const connectedPasswordStatus = document.getElementById("connected-password-status");
+const connectedPasswordBadge = document.getElementById("connected-password-badge");
+const connectedGoogleStatus = document.getElementById("connected-google-status");
+const connectedGoogleBadge = document.getElementById("connected-google-badge");
 
   const openAddressModalButton = document.getElementById("open-address-modal-button");
   const addressesList = document.getElementById("account-addresses-list");
@@ -2675,14 +2708,43 @@ function getReadableDate(value) {
   });
 }
 
+function getConnectedProviderIds(data) {
+  return new Set(
+    (Array.isArray(data.connectedProviders) ? data.connectedProviders : [])
+      .filter(function (provider) {
+        return provider && provider.connected && provider.id;
+      })
+      .map(function (provider) {
+        return provider.id;
+      })
+  );
+}
+
+function updateConnectedAccountStatus(statusElement, badgeElement, connected) {
+  if (!statusElement || !badgeElement) {
+    return;
+  }
+
+  statusElement.textContent = connected ? "Connected" : "Not Connected";
+  badgeElement.textContent = connected ? "Connected" : "Not Connected";
+  badgeElement.classList.toggle("is-connected", connected);
+  badgeElement.classList.toggle("is-not-connected", !connected);
+}
+
 function updateAccountStatus(user, data) {
+  const safeData = data || {};
+  const connectedProviderIds = getConnectedProviderIds(safeData);
+
   statusEmailVerified.textContent = user.emailVerified ? "Verified" : "Not Verified";
   sendEmailVerificationButton.hidden = user.emailVerified;
 
-  statusPhoneVerified.textContent = data.phone ? "Saved" : "Not Added";
+  statusPhoneVerified.textContent = safeData.phone ? "Saved" : "Not Added";
 
-  statusMemberSince.textContent = getReadableDate(data.createdAt || user.metadata.creationTime);
-  statusLastUpdated.textContent = getReadableDate(data.updatedAt || user.metadata.lastSignInTime);
+  updateConnectedAccountStatus(connectedPasswordStatus, connectedPasswordBadge, connectedProviderIds.has("password"));
+  updateConnectedAccountStatus(connectedGoogleStatus, connectedGoogleBadge, connectedProviderIds.has("google.com"));
+
+  statusMemberSince.textContent = getReadableDate(safeData.createdAt || user.metadata.creationTime);
+  statusLastUpdated.textContent = getReadableDate(safeData.updatedAt || user.metadata.lastSignInTime);
 }
 
 function getUsernameUnlockDate() {
@@ -3342,7 +3404,8 @@ function hydrateAccountProfileFromServer(profile, user) {
   const profileDataForStatus = {
     phone: safeProfile.phone || "",
     createdAt: safeProfile.createdAt || "",
-    updatedAt: safeProfile.updatedAt || ""
+    updatedAt: safeProfile.updatedAt || "",
+    connectedProviders: Array.isArray(safeProfile.connectedProviders) ? safeProfile.connectedProviders : []
   };
 
   const statusUser = {
