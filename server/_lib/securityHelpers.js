@@ -16,9 +16,14 @@ const LOGIN_2FA_COOKIE_NAME = IS_PRODUCTION
   ? "__Host-tcs_login_2fa"
   : "tcs_login_2fa";
 
+const TRUSTED_LOGIN_BROWSER_COOKIE_NAME = IS_PRODUCTION
+  ? "__Host-tcs_trusted_login_browser"
+  : "tcs_trusted_login_browser";
+
 const SITE_SESSION_EXPIRES_MS = 5 * 24 * 60 * 60 * 1000;
 const LOGIN_CHALLENGE_EXPIRES_MS = 10 * 60 * 1000;
 const LOGIN_2FA_SESSION_MINUTES = 30;
+const TRUSTED_LOGIN_BROWSER_EXPIRES_MS = 14 * 24 * 60 * 60 * 1000;
 
 const MAX_2FA_ATTEMPTS = 3;
 const ATTEMPT_WINDOW_MS = 30 * 60 * 1000;
@@ -58,6 +63,13 @@ function getLoginTwoFactorSessionHash(uid, token, salt) {
   return crypto
     .createHmac("sha256", getSecuritySecret())
     .update("login-2fa:" + uid + ":" + token + ":" + salt)
+    .digest("hex");
+}
+
+function getTrustedLoginBrowserHash(uid, token, salt) {
+  return crypto
+    .createHmac("sha256", getSecuritySecret())
+    .update("trusted-login-browser:" + uid + ":" + token + ":" + salt)
     .digest("hex");
 }
 
@@ -434,6 +446,93 @@ async function hasValidLoginTwoFactorSession(req, uid) {
   );
 }
 
+async function createTrustedLoginBrowser(uid, req, res) {
+  const db = admin.firestore();
+  const browserRef = db.collection("trustedLoginBrowsers").doc();
+  const browserId = browserRef.id;
+  const browserToken = createRandomToken();
+  const salt = db.collection("_").doc().id;
+  const browserHash = getTrustedLoginBrowserHash(uid, browserToken, salt);
+
+  await browserRef.set({
+    uid,
+    browserHash,
+    salt,
+    createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    lastUsedAt: admin.firestore.FieldValue.serverTimestamp(),
+    expiresAt: admin.firestore.Timestamp.fromDate(
+      new Date(Date.now() + TRUSTED_LOGIN_BROWSER_EXPIRES_MS)
+    )
+  });
+
+  setCookie(
+    res,
+    TRUSTED_LOGIN_BROWSER_COOKIE_NAME,
+    browserId + "." + browserToken,
+    Math.floor(TRUSTED_LOGIN_BROWSER_EXPIRES_MS / 1000)
+  );
+
+  return {
+    browserId
+  };
+}
+
+async function hasValidTrustedLoginBrowser(req, uid) {
+  const cookieValue = getCookie(req, TRUSTED_LOGIN_BROWSER_COOKIE_NAME);
+
+  if (!cookieValue || !cookieValue.includes(".")) {
+    return false;
+  }
+
+  const parts = cookieValue.split(".");
+  const browserId = parts[0];
+  const browserToken = parts.slice(1).join(".");
+
+  if (!browserId || !browserToken) {
+    return false;
+  }
+
+  const db = admin.firestore();
+  const browserRef = db.collection("trustedLoginBrowsers").doc(browserId);
+  const browserDoc = await browserRef.get();
+
+  if (!browserDoc.exists) {
+    return false;
+  }
+
+  const data = browserDoc.data() || {};
+
+  if (data.uid !== uid) {
+    return false;
+  }
+
+  if (isExpired(data.expiresAt)) {
+    await browserRef.delete().catch(function () {});
+    return false;
+  }
+
+  const submittedHash = getTrustedLoginBrowserHash(uid, browserToken, data.salt);
+
+  const savedBuffer = Buffer.from(data.browserHash || "", "hex");
+  const submittedBuffer = Buffer.from(submittedHash, "hex");
+
+  const valid =
+    savedBuffer.length === submittedBuffer.length &&
+    crypto.timingSafeEqual(savedBuffer, submittedBuffer);
+
+  if (valid) {
+    await browserRef.set({
+      lastUsedAt: admin.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+  }
+
+  return valid;
+}
+
+function clearTrustedLoginBrowserCookie(res) {
+  clearCookie(res, TRUSTED_LOGIN_BROWSER_COOKIE_NAME);
+}
+
 async function userRequiresTwoFactor(uid) {
   const db = admin.firestore();
   const userDoc = await db.collection("users").doc(uid).get();
@@ -444,7 +543,7 @@ async function userRequiresTwoFactor(uid) {
 
   const twoFactor = userDoc.data().twoFactor || {};
 
-  return Boolean(twoFactor.appEnabled || twoFactor.emailEnabled);
+  return Boolean(twoFactor.appEnabled);
 }
 
 async function getUserFromRequest(req, options) {
@@ -624,6 +723,9 @@ module.exports = {
   createLoginTwoFactorSession,
   clearLoginTwoFactorCookie,
   hasValidLoginTwoFactorSession,
+  createTrustedLoginBrowser,
+  hasValidTrustedLoginBrowser,
+  clearTrustedLoginBrowserCookie,
 
   checkAttemptLock,
   recordAttemptFailure,
