@@ -267,7 +267,9 @@
                       <p>Use your email address and password to sign in.</p>
                     </div>
 
-                    <span class="account-connected-badge" id="connected-password-badge">Checking</span>
+                    <div class="account-connected-actions">
+                      <span class="account-connected-badge" id="connected-password-badge">Checking</span>
+                    </div>
                   </div>
 
                   <div class="account-connected-account-card" id="connected-google-card">
@@ -280,7 +282,10 @@
                       <p>Use your Google account to sign in faster.</p>
                     </div>
 
-                    <span class="account-connected-badge" id="connected-google-badge">Checking</span>
+                    <div class="account-connected-actions">
+                      <span class="account-connected-badge" id="connected-google-badge">Checking</span>
+                      <button class="account-connected-action-button" type="button" id="connected-google-action" data-provider="google" hidden>Connect</button>
+                    </div>
                   </div>
 
                   <div class="account-connected-account-card" id="connected-github-card">
@@ -293,7 +298,10 @@
                       <p>Use your GitHub account to sign in faster.</p>
                     </div>
 
-                    <span class="account-connected-badge" id="connected-github-badge">Checking</span>
+                    <div class="account-connected-actions">
+                      <span class="account-connected-badge" id="connected-github-badge">Checking</span>
+                      <button class="account-connected-action-button" type="button" id="connected-github-action" data-provider="github" hidden>Connect</button>
+                    </div>
                   </div>
 
                   <div class="account-connected-account-card" id="connected-facebook-card">
@@ -306,7 +314,10 @@
                       <p>Use your Facebook account to sign in faster.</p>
                     </div>
 
-                    <span class="account-connected-badge" id="connected-facebook-badge">Checking</span>
+                    <div class="account-connected-actions">
+                      <span class="account-connected-badge" id="connected-facebook-badge">Checking</span>
+                      <button class="account-connected-action-button" type="button" id="connected-facebook-action" data-provider="facebook" hidden>Connect</button>
+                    </div>
                   </div>
                 </div>
 
@@ -851,7 +862,9 @@
   </div>
 </div>
 
-<script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+  import { FacebookAuthProvider, GithubAuthProvider, GoogleAuthProvider, getAuth, linkWithPopup, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 
   const accountLoading = document.getElementById("account-loading");
   const accountHeaderText = document.getElementById("account-header-text");
@@ -886,10 +899,13 @@ const connectedPasswordStatus = document.getElementById("connected-password-stat
 const connectedPasswordBadge = document.getElementById("connected-password-badge");
 const connectedGoogleStatus = document.getElementById("connected-google-status");
 const connectedGoogleBadge = document.getElementById("connected-google-badge");
+const connectedGoogleAction = document.getElementById("connected-google-action");
 const connectedGithubStatus = document.getElementById("connected-github-status");
 const connectedGithubBadge = document.getElementById("connected-github-badge");
+const connectedGithubAction = document.getElementById("connected-github-action");
 const connectedFacebookStatus = document.getElementById("connected-facebook-status");
 const connectedFacebookBadge = document.getElementById("connected-facebook-badge");
+const connectedFacebookAction = document.getElementById("connected-facebook-action");
 
   const openAddressModalButton = document.getElementById("open-address-modal-button");
   const addressesList = document.getElementById("account-addresses-list");
@@ -1042,6 +1058,8 @@ const passwordMessage = document.getElementById("password-message");
   const logoutButton = document.getElementById("account-logout-sidebar");
 
 let currentUser = null;
+let firebaseClientApp = null;
+let firebaseClientAuth = null;
 let pendingProfilePhotoDataUrl = "";
 let removeProfilePhotoOnSave = false;
 let profilePhotoCropObjectUrl = "";
@@ -2774,7 +2792,7 @@ function getConnectedProviderIds(data) {
   );
 }
 
-function updateConnectedAccountStatus(statusElement, badgeElement, connected) {
+function updateConnectedAccountStatus(statusElement, badgeElement, actionButton, connected, providerName) {
   if (!statusElement || !badgeElement) {
     return;
   }
@@ -2783,6 +2801,17 @@ function updateConnectedAccountStatus(statusElement, badgeElement, connected) {
   badgeElement.textContent = connected ? "Connected" : "Not Connected";
   badgeElement.classList.toggle("is-connected", connected);
   badgeElement.classList.toggle("is-not-connected", !connected);
+
+  if (!actionButton) {
+    return;
+  }
+
+  actionButton.hidden = false;
+  actionButton.disabled = false;
+  actionButton.textContent = connected ? "Disconnect" : "Connect";
+  actionButton.classList.toggle("is-disconnect", connected);
+  actionButton.classList.toggle("is-connect", !connected);
+  actionButton.setAttribute("aria-label", (connected ? "Disconnect " : "Connect ") + providerName);
 }
 
 function updateAccountStatus(user, data) {
@@ -2801,10 +2830,10 @@ function updateAccountStatus(user, data) {
     statusPhoneVerified.textContent = safeData.phone ? "Saved" : "Not Added";
   }
 
-  updateConnectedAccountStatus(connectedPasswordStatus, connectedPasswordBadge, connectedProviderIds.has("password"));
-  updateConnectedAccountStatus(connectedGoogleStatus, connectedGoogleBadge, connectedProviderIds.has("google.com"));
-  updateConnectedAccountStatus(connectedGithubStatus, connectedGithubBadge, connectedProviderIds.has("github.com"));
-  updateConnectedAccountStatus(connectedFacebookStatus, connectedFacebookBadge, connectedProviderIds.has("facebook.com"));
+  updateConnectedAccountStatus(connectedPasswordStatus, connectedPasswordBadge, null, connectedProviderIds.has("password"), "Email & Password");
+  updateConnectedAccountStatus(connectedGoogleStatus, connectedGoogleBadge, connectedGoogleAction, connectedProviderIds.has("google.com"), "Google");
+  updateConnectedAccountStatus(connectedGithubStatus, connectedGithubBadge, connectedGithubAction, connectedProviderIds.has("github.com"), "GitHub");
+  updateConnectedAccountStatus(connectedFacebookStatus, connectedFacebookBadge, connectedFacebookAction, connectedProviderIds.has("facebook.com"), "Facebook");
 
   if (statusMemberSince) {
     statusMemberSince.textContent = getReadableDate(safeData.createdAt || user.metadata.creationTime);
@@ -3269,8 +3298,115 @@ function getDocWithTimeout(docRef, timeoutMs) {
   ]);
 }
 
+async function getFirebaseClientAuth() {
+  const response = await fetch("/api/client-token", {
+    method: "GET",
+    credentials: "same-origin",
+    headers: {
+      "Accept": "application/json"
+    }
+  });
+
+  const data = await response.json().catch(function () {
+    return {};
+  });
+
+  if (!response.ok || !data.firebase) {
+    throw new Error(data.error || "Could not open account connection.");
+  }
+
+  if (!firebaseClientApp) {
+    firebaseClientApp = initializeApp(data.firebase);
+  }
+
+  if (!firebaseClientAuth) {
+    firebaseClientAuth = getAuth(firebaseClientApp);
+  }
+
+  if (data.customToken) {
+    await signInWithCustomToken(firebaseClientAuth, data.customToken);
+  }
+
+  return firebaseClientAuth;
+}
+
 async function syncFirebaseClientSessionFromServer() {
-  return;
+  return await getFirebaseClientAuth();
+}
+
+function getConnectedProviderConfig(providerKey) {
+  const configs = {
+    google: {
+      name: "Google",
+      createProvider: function () {
+        const provider = new GoogleAuthProvider();
+
+        provider.setCustomParameters({
+          prompt: "select_account"
+        });
+
+        return provider;
+      }
+    },
+    github: {
+      name: "GitHub",
+      createProvider: function () {
+        const provider = new GithubAuthProvider();
+        provider.addScope("user:email");
+        return provider;
+      }
+    },
+    facebook: {
+      name: "Facebook",
+      createProvider: function () {
+        const provider = new FacebookAuthProvider();
+        provider.addScope("email");
+        return provider;
+      }
+    }
+  };
+
+  return configs[providerKey] || null;
+}
+
+function getProviderActionButton(providerKey) {
+  if (providerKey === "google") {
+    return connectedGoogleAction;
+  }
+
+  if (providerKey === "github") {
+    return connectedGithubAction;
+  }
+
+  if (providerKey === "facebook") {
+    return connectedFacebookAction;
+  }
+
+  return null;
+}
+
+function getProviderActionErrorMessage(error, providerName) {
+  if (error && error.code === "auth/popup-closed-by-user") {
+    return providerName + " connection was closed before it finished.";
+  }
+
+  if (error && error.code === "auth/popup-blocked") {
+    return "Your browser blocked the " + providerName + " popup. Please allow popups and try again.";
+  }
+
+  if (
+    error &&
+    (error.code === "auth/credential-already-in-use" ||
+      error.code === "auth/account-exists-with-different-credential")
+  ) {
+    return "That " + providerName + " account is already connected to another Computer Shop account.";
+  }
+
+  if (error && error.code === "auth/provider-already-linked") {
+    return providerName + " is already connected.";
+  }
+
+  return error.message || "Could not update " + providerName + ". Please try again.";
 }
 
 async function getServerAccountProfile() {
@@ -3312,6 +3448,154 @@ async function saveServerAccountProfile(profileData) {
   }
 
   return data.profile;
+}
+
+async function saveServerProviderConnection(providerKey, action) {
+  const response = await fetch("/api/account-profile", {
+    method: "PATCH",
+    credentials: "same-origin",
+    headers: await getSecurityRequestHeaders(),
+    body: JSON.stringify({
+      providerAction: action,
+      provider: providerKey
+    })
+  });
+
+  const data = await response.json().catch(function () {
+    return {};
+  });
+
+  if (!response.ok || !data.profile) {
+    throw new Error(data.error || "Could not update connected account.");
+  }
+
+  return data.profile;
+}
+
+function refreshAccountProviderProfile(profile) {
+  currentUser = {
+    uid: profile.uid || (currentUser && currentUser.uid ? currentUser.uid : ""),
+    email: profile.email || "",
+    displayName: profile.fullName || "",
+    emailVerified: Boolean(profile.emailVerified),
+    metadata: {
+      creationTime: profile.createdAt || "",
+      lastSignInTime: profile.updatedAt || ""
+    }
+  };
+
+  hydrateAccountProfileFromServer(profile, currentUser);
+
+  if (typeof window.tcsReloadAccountHeader === "function") {
+    window.tcsReloadAccountHeader();
+  }
+}
+
+function setProviderButtonBusy(button, text) {
+  if (!button) {
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = text;
+}
+
+async function connectAccountProvider(providerKey) {
+  if (!currentUser) {
+    return;
+  }
+
+  const config = getConnectedProviderConfig(providerKey);
+  const button = getProviderActionButton(providerKey);
+
+  if (!config || !button) {
+    return;
+  }
+
+  setProviderButtonBusy(button, "Opening...");
+  showMessage(detailsMessage, "", "");
+
+  try {
+    const auth = await syncFirebaseClientSessionFromServer();
+
+    if (!auth.currentUser) {
+      throw new Error("Please log in again before connecting " + config.name + ".");
+    }
+
+    await linkWithPopup(auth.currentUser, config.createProvider());
+
+    const profile = await saveServerProviderConnection(providerKey, "connect");
+    refreshAccountProviderProfile(profile);
+    showMessage(detailsMessage, config.name + " connected.", "success");
+  } catch (error) {
+    showMessage(detailsMessage, getProviderActionErrorMessage(error, config.name), "error");
+  } finally {
+    button.disabled = false;
+    button.textContent = button.classList.contains("is-disconnect") ? "Disconnect" : "Connect";
+  }
+}
+
+async function disconnectAccountProvider(providerKey) {
+  if (!currentUser) {
+    return;
+  }
+
+  const config = getConnectedProviderConfig(providerKey);
+  const button = getProviderActionButton(providerKey);
+
+  if (!config || !button) {
+    return;
+  }
+
+  const unlocked = await ensureSecurityUnlocked();
+
+  if (!unlocked) {
+    openSecurityGateModal();
+    return;
+  }
+
+  const confirmed = window.confirm("Disconnect " + config.name + " from your Computer Shop account?");
+
+  if (!confirmed) {
+    return;
+  }
+
+  setProviderButtonBusy(button, "Disconnecting...");
+  showMessage(detailsMessage, "", "");
+
+  try {
+    const profile = await saveServerProviderConnection(providerKey, "disconnect");
+    const auth = await syncFirebaseClientSessionFromServer().catch(function () {
+      return null;
+    });
+
+    if (auth && auth.currentUser) {
+      await auth.currentUser.reload().catch(function () {});
+    }
+
+    refreshAccountProviderProfile(profile);
+    showMessage(detailsMessage, config.name + " disconnected.", "success");
+  } catch (error) {
+    showMessage(detailsMessage, getProviderActionErrorMessage(error, config.name), "error");
+  } finally {
+    button.disabled = false;
+    button.textContent = button.classList.contains("is-disconnect") ? "Disconnect" : "Connect";
+  }
+}
+
+function handleConnectedAccountAction(providerKey) {
+  const button = getProviderActionButton(providerKey);
+
+  if (!button) {
+    return;
+  }
+
+  if (button.classList.contains("is-disconnect")) {
+    disconnectAccountProvider(providerKey);
+    return;
+  }
+
+  connectAccountProvider(providerKey);
 }
 
 async function sendServerEmailVerification() {
@@ -3572,6 +3856,16 @@ async function initializeServerAccountPage() {
 }
 
 initializeServerAccountPage();
+
+[connectedGoogleAction, connectedGithubAction, connectedFacebookAction].forEach(function (button) {
+  if (!button) {
+    return;
+  }
+
+  button.addEventListener("click", function () {
+    handleConnectedAccountAction(button.dataset.provider);
+  });
+});
 
 if (accountPhotoChooseButton && accountPhotoInput) {
   accountPhotoChooseButton.addEventListener("click", function () {
