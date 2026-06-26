@@ -195,9 +195,21 @@ module.exports = async function handler(req, res) {
     const provider = cleanString((req.body || {}).provider, 30);
     const idToken = cleanString((req.body || {}).idToken, 4000);
 
-    if (provider === "google") {
+    if (provider === "google" || provider === "github") {
+      const providerConfig = provider === "github"
+        ? {
+            name: "GitHub",
+            firebaseProviderId: "github.com",
+            authProvider: "github"
+          }
+        : {
+            name: "Google",
+            firebaseProviderId: "google.com",
+            authProvider: "google"
+          };
+
       if (!idToken) {
-        return res.status(400).json({ error: "Google sign-in could not be verified." });
+        return res.status(400).json({ error: providerConfig.name + " sign-in could not be verified." });
       }
 
       const decodedToken = await admin.auth().verifyIdToken(idToken);
@@ -206,30 +218,34 @@ module.exports = async function handler(req, res) {
           ? decodedToken.firebase.sign_in_provider
           : "";
 
-      if (signInProvider !== "google.com") {
-        return res.status(400).json({ error: "Please sign in with Google." });
+      if (signInProvider !== providerConfig.firebaseProviderId) {
+        return res.status(400).json({ error: "Please sign in with " + providerConfig.name + "." });
       }
 
       const userRecord = await admin.auth().getUser(decodedToken.uid);
       const email = cleanEmail(userRecord.email || decodedToken.email);
-      const fullName = cleanString(userRecord.displayName || decodedToken.name || email.split("@")[0], 80);
+      const fullName = cleanString(
+        userRecord.displayName || decodedToken.name || email.split("@")[0] || providerConfig.name + " User",
+        80
+      );
       const photoURL = cleanString(userRecord.photoURL || decodedToken.picture, 600);
 
       if (!email) {
-        return res.status(400).json({ error: "Google account email is required." });
+        return res.status(400).json({ error: providerConfig.name + " account email is required." });
       }
 
       const userRef = admin.firestore().collection("users").doc(decodedToken.uid);
       const userDoc = await userRef.get();
       const existingUser = userDoc.exists ? userDoc.data() || {} : {};
+      const emailVerified = Boolean(userRecord.emailVerified || decodedToken.email_verified);
 
       await userRef.set({
         fullName: existingUser.fullName || fullName,
         phone: existingUser.phone || "",
         email,
         photoURL: existingUser.photoURL || photoURL,
-        authProvider: "google",
-        emailVerified: Boolean(userRecord.emailVerified || decodedToken.email_verified),
+        authProvider: existingUser.authProvider || providerConfig.authProvider,
+        emailVerified,
         createdAt: existingUser.createdAt || admin.firestore.FieldValue.serverTimestamp(),
         updatedAt: admin.firestore.FieldValue.serverTimestamp()
       }, { merge: true });
@@ -242,7 +258,7 @@ module.exports = async function handler(req, res) {
           uid: decodedToken.uid,
           email,
           displayName: existingUser.fullName || fullName,
-          emailVerified: Boolean(userRecord.emailVerified || decodedToken.email_verified),
+          emailVerified,
           photoURL: existingUser.photoURL || photoURL
         }
       });
