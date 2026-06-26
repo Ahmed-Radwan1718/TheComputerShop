@@ -6,7 +6,8 @@ const {
   clearLoginChallenge,
   createSiteSessionFromIdToken,
   createSiteSessionForUid,
-  createLoginTwoFactorSession
+  createLoginTwoFactorSession,
+  hasValidTrustedLoginBrowser
 } = require("../_lib/securityHelpers");
 
 const LOCKOUT_MS = 30 * 60 * 1000;
@@ -152,16 +153,20 @@ module.exports = async function handler(req, res) {
     await codeRef.delete().catch(function () {});
 
     if (passwordlessLogin && twoFactor.appEnabled) {
-      return res.status(200).json({
-        success: true,
-        requiresTwoFactor: true,
-        twoFactorRequired: true,
-        maskedEmail: maskEmail(challenge.email),
-        methods: {
-          app: true,
-          email: false
-        }
-      });
+      const trustedBrowser = await hasValidTrustedLoginBrowser(req, challenge.uid);
+
+      if (!trustedBrowser) {
+        return res.status(200).json({
+          success: true,
+          requiresTwoFactor: true,
+          twoFactorRequired: true,
+          maskedEmail: maskEmail(challenge.email),
+          methods: {
+            app: true,
+            email: false
+          }
+        });
+      }
     }
 
     await createCompatibleSiteSession(req, res, challenge);
