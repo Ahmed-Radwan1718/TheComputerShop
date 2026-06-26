@@ -110,28 +110,6 @@
   </div>
 </div>
 
-<div class="auth-two-factor-panel" id="login-trust-browser-modal" hidden>
-  <div class="auth-two-factor-card">
-    <div class="auth-two-factor-header">
-      <p class="auth-two-factor-eyebrow">Trusted Browser</p>
-      <h2>Trust This Browser?</h2>
-      <p>Skip authenticator app codes on this browser for 14 days. Only choose this on a browser you control.</p>
-    </div>
-
-    <div class="auth-form" id="login-trust-browser-panel">
-      <button class="auth-button" type="button" id="login-trust-browser-yes">
-        Trust This Browser
-      </button>
-
-      <button class="auth-two-factor-link-button muted" type="button" id="login-trust-browser-no">
-        Do Not Trust This Browser
-      </button>
-
-      <p class="auth-message" id="login-trust-browser-message" aria-live="polite"></p>
-    </div>
-  </div>
-</div>
-
 <script>
 
   const loginForm = document.getElementById("login-form");
@@ -149,17 +127,11 @@
   const twoFactorMessage = document.getElementById("login-two-factor-message");
   const useEmailCodeButton = document.getElementById("login-use-email-code");
   const twoFactorCancelButton = document.getElementById("login-two-factor-cancel");
-  const trustBrowserModal = document.getElementById("login-trust-browser-modal");
-  const trustBrowserPanel = document.getElementById("login-trust-browser-panel");
-  const trustBrowserYesButton = document.getElementById("login-trust-browser-yes");
-  const trustBrowserNoButton = document.getElementById("login-trust-browser-no");
-  const trustBrowserMessage = document.getElementById("login-trust-browser-message");
 
   let pendingTwoFactorSettings = {};
   let pendingMaskedEmail = "";
   let activeTwoFactorMethod = "";
   let twoFactorFlowActive = false;
-  let pendingVerifiedAuthenticatorCode = "";
 
   const pendingTwoFactorKey = "tcs-login-2fa-pending";
 
@@ -178,15 +150,6 @@
 
     if (type) {
       twoFactorMessage.classList.add(type);
-    }
-  }
-
-  function showTrustBrowserMessage(message, type) {
-    trustBrowserMessage.textContent = message;
-    trustBrowserMessage.className = "auth-message";
-
-    if (type) {
-      trustBrowserMessage.classList.add(type);
     }
   }
 
@@ -216,9 +179,7 @@
 
   function finishLogin() {
     clearTwoFactorPending();
-    pendingVerifiedAuthenticatorCode = "";
     showTwoFactorMessage("Logged in successfully.", "success");
-    showTrustBrowserMessage("Logged in successfully.", "success");
 
     setTimeout(function () {
       window.location.href = getLoginRedirectTarget();
@@ -248,13 +209,9 @@
     twoFactorFlowActive = true;
     markTwoFactorPending();
     clearTwoFactorCodeInputs();
-    pendingVerifiedAuthenticatorCode = "";
     showTwoFactorMessage("", "");
-    showTrustBrowserMessage("", "");
     loginForm.hidden = true;
     twoFactorForm.hidden = false;
-    trustBrowserModal.hidden = true;
-    trustBrowserPanel.hidden = false;
 
     document.querySelectorAll(".auth-panel-footer").forEach(function (footer) {
       footer.hidden = true;
@@ -326,24 +283,14 @@
     return data;
   }
 
-  async function verifyAppLoginCode(code, trustBrowser) {
-    const requestBody = {};
-
-    if (code) {
-      requestBody.code = code;
-    }
-
-    if (typeof trustBrowser === "boolean") {
-      requestBody.trustBrowser = trustBrowser;
-    }
-
+  async function verifyAppLoginCode(code) {
     const response = await fetch("/api/login-verify-authenticator", {
       method: "POST",
       credentials: "same-origin",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(requestBody)
+      body: JSON.stringify({ code: code })
     });
 
     const data = await response.json().catch(function () {
@@ -366,36 +313,6 @@
       },
       body: JSON.stringify({})
     }).catch(function () {});
-  }
-
-  function showTrustBrowserPanel() {
-    twoFactorPanel.hidden = true;
-    twoFactorForm.hidden = false;
-    trustBrowserModal.hidden = false;
-    trustBrowserPanel.hidden = false;
-    showTwoFactorMessage("", "");
-    showTrustBrowserMessage("", "");
-
-    setTimeout(function () {
-      trustBrowserYesButton.focus();
-    }, 50);
-  }
-
-  async function finishTrustBrowserChoice(trustBrowser) {
-    trustBrowserYesButton.disabled = true;
-    trustBrowserNoButton.disabled = true;
-    showTrustBrowserMessage("", "");
-
-    try {
-      await verifyAppLoginCode("", trustBrowser);
-      await syncFirebaseClientSession();
-      finishLogin();
-    } catch (error) {
-      showTrustBrowserMessage(error.message || "Could not finish sign in. Please try again.", "error");
-    } finally {
-      trustBrowserYesButton.disabled = false;
-      trustBrowserNoButton.disabled = false;
-    }
   }
 
   passwordVisibilityToggles.forEach(function (toggleButton) {
@@ -617,12 +534,6 @@
         return;
       }
 
-      if (data.trustBrowserPromptRequired || data.requiresTrustedBrowserChoice) {
-        pendingVerifiedAuthenticatorCode = "";
-        showTrustBrowserPanel();
-        return;
-      }
-
       await syncFirebaseClientSession();
       finishLogin();
     } catch (error) {
@@ -653,25 +564,14 @@
     }
   });
 
-  trustBrowserYesButton.addEventListener("click", function () {
-    finishTrustBrowserChoice(true);
-  });
-
-  trustBrowserNoButton.addEventListener("click", function () {
-    finishTrustBrowserChoice(false);
-  });
-
   twoFactorCancelButton.addEventListener("click", async function () {
     clearTwoFactorPending();
     await cancelServerLogin();
     pendingTwoFactorSettings = {};
     pendingMaskedEmail = "";
     activeTwoFactorMethod = "";
-    pendingVerifiedAuthenticatorCode = "";
     twoFactorPanel.hidden = true;
     twoFactorForm.hidden = false;
-    trustBrowserModal.hidden = true;
-    trustBrowserPanel.hidden = false;
     loginForm.hidden = false;
 
     document.querySelectorAll(".auth-panel-footer").forEach(function (footer) {
@@ -679,7 +579,6 @@
     });
 
     showTwoFactorMessage("", "");
-    showTrustBrowserMessage("", "");
     showMessage("Sign in cancelled.", "error");
   });
 </script>
