@@ -71,7 +71,15 @@ function getConnectedProviders(userRecord, userData) {
     providerIds.add("google.com");
   }
 
-  if (userRecord.email && authProvider !== "google" && !providerIds.has("google.com")) {
+  if (authProvider === "github") {
+    providerIds.add("github.com");
+  }
+
+  if (authProvider === "facebook") {
+    providerIds.add("facebook.com");
+  }
+
+  if (authProvider === "password" || (userRecord.email && !authProvider && providerIds.size === 0)) {
     providerIds.add("password");
   }
 
@@ -85,6 +93,16 @@ function getConnectedProviders(userRecord, userData) {
       id: "google.com",
       label: "Google",
       connected: providerIds.has("google.com")
+    },
+    {
+      id: "github.com",
+      label: "GitHub",
+      connected: providerIds.has("github.com")
+    },
+    {
+      id: "facebook.com",
+      label: "Facebook",
+      connected: providerIds.has("facebook.com")
     }
   ];
 }
