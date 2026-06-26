@@ -33,6 +33,11 @@
               <span>Continue with GitHub</span>
             </button>
 
+            <button class="auth-google-button" type="button" id="facebook-signup-button">
+              <img class="auth-google-icon" src="facebook-logo.png" alt="" aria-hidden="true">
+              <span>Continue with Facebook</span>
+            </button>
+
             <div class="auth-divider"><span>or create with email</span></div>
           <div class="auth-field">
             <label for="signup-name">Full Name</label>
@@ -134,7 +139,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-  import { getAuth, GithubAuthProvider, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+  import { getAuth, FacebookAuthProvider, GithubAuthProvider, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 
   const signupForm = document.getElementById("signup-form");
   const signupButton = document.getElementById("signup-submit");
@@ -143,6 +148,8 @@
   const googleSignupButtonLabel = googleSignupButton ? googleSignupButton.innerHTML : "";
   const githubSignupButton = document.getElementById("github-signup-button");
   const githubSignupButtonLabel = githubSignupButton ? githubSignupButton.innerHTML : "";
+  const facebookSignupButton = document.getElementById("facebook-signup-button");
+  const facebookSignupButtonLabel = facebookSignupButton ? facebookSignupButton.innerHTML : "";
   const passwordVisibilityToggles = document.querySelectorAll(".auth-password-visibility-toggle");
   const authPanelFooter = document.querySelector(".auth-panel-footer");
   const signupVerificationPanel = document.getElementById("signup-email-verification-panel");
@@ -397,6 +404,16 @@
       startProviderSignup(githubSignupButton, githubSignupButtonLabel, "GitHub", "github", function () {
         const provider = new GithubAuthProvider();
         provider.addScope("user:email");
+        return provider;
+      });
+    });
+  }
+
+  if (facebookSignupButton) {
+    facebookSignupButton.addEventListener("click", function () {
+      startProviderSignup(facebookSignupButton, facebookSignupButtonLabel, "Facebook", "facebook", function () {
+        const provider = new FacebookAuthProvider();
+        provider.addScope("email");
         return provider;
       });
     });
