@@ -15,21 +15,53 @@
     <section class="cart-layout">
       <div class="cart-main">
         <div class="cart-header">
-          <h1>Your cart</h1>
+          <p class="cart-panel-eyebrow">Cart</p>
+          <h1>Your Cart</h1>
           <p class="cart-order-note">
-            No payment is collected through the website. Checkout submits an order request, and we will contact you to confirm availability, final price, configuration, and delivery details before proceeding.
+            Review your selected parts and builds before sending an order request. No payment is collected online.
           </p>
         </div>
 
         <div id="cart-items" class="cart-items"></div>
 
         <div id="cart-empty" class="cart-empty">
-          <h2>Your cart is empty</h2>
-          <p>Explore our Signature Builds or request a custom PC tailored to your needs.</p>
+          <div class="cart-empty-panel">
+            <div class="cart-empty-heading-row">
+              <div class="cart-empty-icon">
+                <img src="cart-icon.png" alt="" aria-hidden="true">
+              </div>
 
-          <div class="cart-empty-actions">
-            <a href="signature-builds.html" class="cart-empty-button">Browse Signature Builds</a>
-            <a href="consultation.html" class="cart-empty-link">Request Custom PC</a>
+              <div>
+                <p class="cart-empty-eyebrow">Build Queue</p>
+                <h2>Your cart is empty</h2>
+                <p>Start with a ready build, browse individual components, or request a custom PC tailored to your setup.</p>
+              </div>
+            </div>
+
+            <div class="cart-empty-options">
+              <a href="signature-builds.html" class="cart-empty-option">
+                <span>Ready Builds</span>
+                <strong>Browse Signature Builds</strong>
+                <p>Choose a complete PC configuration prepared for common budgets and use cases.</p>
+              </a>
+
+              <a href="components.html" class="cart-empty-option">
+                <span>Components</span>
+                <strong>Shop PC Parts</strong>
+                <p>Pick the exact graphics card, processor, memory, storage, or case you need.</p>
+              </a>
+
+              <a href="consultation.html" class="cart-empty-option">
+                <span>Custom PC</span>
+                <strong>Request Consultation</strong>
+                <p>Tell us what you play, create, or run, and we will help shape the build.</p>
+              </a>
+            </div>
+
+            <div class="cart-empty-actions">
+              <a href="signature-builds.html" class="cart-empty-button">Browse Signature Builds</a>
+              <a href="consultation.html" class="cart-empty-link">Request Custom PC</a>
+            </div>
           </div>
         </div>
       </div>
@@ -141,6 +173,12 @@
 
     updateCartCount(cart);
     cartItems.innerHTML = "";
+
+    const cartLayout = cartEmpty.closest(".cart-layout");
+
+    if (cartLayout) {
+      cartLayout.classList.toggle("cart-layout-is-empty", cart.length === 0);
+    }
 
     if (cart.length === 0) {
       cartEmpty.style.display = "block";
