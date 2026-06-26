@@ -1,5 +1,24 @@
+const admin = require("../_lib/firebaseAdmin");
+
+const {
+  getOptionalSiteSessionUser
+} = require("../_lib/securityHelpers");
+
 function cleanString(value) {
   return String(value || "").trim();
+}
+
+async function getFirebaseAccountToken(req) {
+  const decodedUser = await getOptionalSiteSessionUser(req, {
+    checkRevoked: true,
+    requireCompletedTwoFactor: true
+  });
+
+  if (!decodedUser || !decodedUser.uid) {
+    return "";
+  }
+
+  return await admin.auth().createCustomToken(decodedUser.uid);
 }
 
 module.exports = async function handler(req, res) {
@@ -16,7 +35,9 @@ module.exports = async function handler(req, res) {
     return res.status(500).json({ error: "Firebase client configuration is not complete." });
   }
 
-  res.setHeader("Cache-Control", "public, max-age=300, s-maxage=300");
+  const customToken = await getFirebaseAccountToken(req);
+
+  res.setHeader("Cache-Control", "private, no-store");
 
   return res.status(200).json({
     firebase: {
@@ -27,6 +48,7 @@ module.exports = async function handler(req, res) {
       storageBucket: cleanString(process.env.FIREBASE_STORAGE_BUCKET),
       messagingSenderId: cleanString(process.env.FIREBASE_MESSAGING_SENDER_ID),
       measurementId: cleanString(process.env.FIREBASE_MEASUREMENT_ID)
-    }
+    },
+    customToken
   });
 };
