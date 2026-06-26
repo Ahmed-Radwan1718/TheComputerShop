@@ -4133,30 +4133,29 @@ body.nav-menu-open {
 
 .cart-panel-eyebrow {
   margin-bottom: 12px;
-  color: rgba(255, 255, 255, 0.44);
+  color: rgba(255, 255, 255, 0.58);
   font-size: 12px;
-  font-weight: 850;
-  letter-spacing: 0.14em;
+  font-weight: 800;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
 .cart-header h1 {
   margin-bottom: 12px;
   color: white;
-  font-size: 44px;
-  font-weight: 800;
+  font-size: 46px;
+  font-weight: 700;
   line-height: 1.08;
-  letter-spacing: 0;
   text-transform: uppercase;
 }
 
 .cart-order-note {
   max-width: 720px;
   margin-bottom: 30px;
-  color: rgba(255, 255, 255, 0.66);
-  font-size: 15px;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 16px;
   font-weight: 400;
-  line-height: 1.75;
+  line-height: 1.6;
 }
 
 .cart-items {
@@ -4300,21 +4299,20 @@ body.nav-menu-open {
 .cart-empty-eyebrow,
 .cart-empty-option span {
   margin-bottom: 8px;
-  color: rgba(255, 255, 255, 0.42);
+  color: rgba(255, 255, 255, 0.58);
   display: block;
-  font-size: 11px;
-  font-weight: 850;
-  letter-spacing: 0.14em;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
 .cart-empty h2 {
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   color: white;
-  font-size: 28px;
-  font-weight: 800;
+  font-size: 32px;
+  font-weight: 700;
   line-height: 1.12;
-  letter-spacing: 0;
   text-transform: uppercase;
 }
 
