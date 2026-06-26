@@ -369,8 +369,8 @@
   }
 
   function showTrustBrowserPanel() {
-    twoFactorPanel.hidden = false;
-    twoFactorForm.hidden = true;
+    twoFactorPanel.hidden = true;
+    twoFactorForm.hidden = false;
     trustBrowserModal.hidden = false;
     trustBrowserPanel.hidden = false;
     showTwoFactorMessage("", "");
@@ -387,7 +387,7 @@
     showTrustBrowserMessage("", "");
 
     try {
-      await verifyAppLoginCode(pendingVerifiedAuthenticatorCode, trustBrowser);
+      await verifyAppLoginCode("", trustBrowser);
       await syncFirebaseClientSession();
       finishLogin();
     } catch (error) {
@@ -618,7 +618,7 @@
       }
 
       if (data.trustBrowserPromptRequired || data.requiresTrustedBrowserChoice) {
-        pendingVerifiedAuthenticatorCode = activeTwoFactorMethod === "app" ? code : "";
+        pendingVerifiedAuthenticatorCode = "";
         showTrustBrowserPanel();
         return;
       }
