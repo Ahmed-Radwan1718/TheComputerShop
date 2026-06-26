@@ -34,7 +34,7 @@
               <div>
                 <p class="cart-empty-eyebrow">Build Queue</p>
                 <h2>Your cart is empty</h2>
-                <p>Start with a ready build, browse individual components, or request a custom PC tailored to your setup.</p>
+                <p>Start with a ready build or request a custom PC tailored to your setup.</p>
               </div>
             </div>
 
@@ -157,12 +157,12 @@
     const cartLayout = cartEmpty.closest(".cart-layout");
 
     if (cartLayout) {
-      cartLayout.classList.toggle("cart-layout-is-empty", cart.length === 0);
+      cartLayout.classList.remove("cart-layout-is-empty");
     }
 
     if (cart.length === 0) {
       cartEmpty.style.display = "block";
-      cartSummary.style.display = "none";
+      cartSummary.style.display = "block";
       cartTotal.textContent = "0 EGP";
       return;
     }
