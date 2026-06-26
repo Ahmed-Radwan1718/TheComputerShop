@@ -7,6 +7,7 @@ const {
   createSiteSessionFromIdToken,
   createSiteSessionForUid,
   createLoginTwoFactorSession,
+  createTrustedLoginBrowser,
   getAuthenticatorSecret
 } = require("../_lib/securityHelpers");
 
@@ -26,11 +27,11 @@ function timestampToMillis(value) {
 }
 
 async function getSecret(uid) {
-  if (typeof getAuthenticatorSecret === "function") {
-    return await getAuthenticatorSecret(uid);
-  }
-
   const db = admin.firestore();
+
+  if (typeof getAuthenticatorSecret === "function") {
+    return await getAuthenticatorSecret(db, uid);
+  }
   const secretDoc = await db.collection("twoFactorSecrets").doc(uid).get();
 
   if (secretDoc.exists) {
@@ -78,18 +79,10 @@ async function clearFailures(uid) {
 
 async function createCompatibleSiteSession(req, res, challenge) {
   if (challenge.idToken && typeof createSiteSessionFromIdToken === "function") {
-    if (createSiteSessionFromIdToken.length >= 3) {
-      return await createSiteSessionFromIdToken(req, res, challenge.idToken);
-    }
-
-    return await createSiteSessionFromIdToken(res, challenge.idToken);
+    return await createSiteSessionFromIdToken(challenge.idToken, res);
   }
 
-  if (createSiteSessionForUid.length >= 3) {
-    return await createSiteSessionForUid(req, res, challenge.uid);
-  }
-
-  return await createSiteSessionForUid(res, challenge.uid);
+  return await createSiteSessionForUid(challenge.uid, res);
 }
 
 async function createCompatibleTwoFactorSession(req, res, uid) {
@@ -112,6 +105,30 @@ async function clearCompatibleChallenge(req, res) {
   return await clearLoginChallenge(res);
 }
 
+function hasTrustBrowserChoice(req) {
+  return Object.prototype.hasOwnProperty.call(req.body || {}, "trustBrowser");
+}
+
+function cleanTrustBrowserChoice(value) {
+  return value === true || value === "true" || value === "1";
+}
+
+async function finishLogin(req, res, challenge, trustBrowser) {
+  await createCompatibleSiteSession(req, res, challenge);
+  await createCompatibleTwoFactorSession(req, res, challenge.uid);
+
+  if (trustBrowser && typeof createTrustedLoginBrowser === "function") {
+    await createTrustedLoginBrowser(challenge.uid, req, res);
+  }
+
+  await clearCompatibleChallenge(req, res);
+
+  return res.status(200).json({
+    success: true,
+    trustedBrowser: Boolean(trustBrowser)
+  });
+}
+
 module.exports = async function handler(req, res) {
   try {
     if (req.method !== "POST") {
@@ -128,6 +145,15 @@ module.exports = async function handler(req, res) {
 
     if (!twoFactor.appEnabled) {
       return res.status(400).json({ error: "Authenticator app is not enabled for this login." });
+    }
+
+    if (challenge.data && challenge.data.appVerified) {
+      return await finishLogin(
+        req,
+        res,
+        challenge,
+        cleanTrustBrowserChoice((req.body || {}).trustBrowser)
+      );
     }
 
     const code = cleanCode((req.body || {}).code);
@@ -154,11 +180,26 @@ module.exports = async function handler(req, res) {
     }
 
     await clearFailures(challenge.uid);
-    await createCompatibleSiteSession(req, res, challenge);
-    await createCompatibleTwoFactorSession(req, res, challenge.uid);
-    await clearCompatibleChallenge(req, res);
 
-    return res.status(200).json({ success: true });
+    if (hasTrustBrowserChoice(req)) {
+      return await finishLogin(
+        req,
+        res,
+        challenge,
+        cleanTrustBrowserChoice((req.body || {}).trustBrowser)
+      );
+    }
+
+    await challenge.ref.set({
+      appVerified: true,
+      appVerifiedAt: admin.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+
+    return res.status(200).json({
+      success: true,
+      requiresTrustedBrowserChoice: true,
+      trustBrowserDays: 14
+    });
   } catch (error) {
     return res.status(error.statusCode || 500).json({
       error: error.message || "Could not verify authenticator code."
