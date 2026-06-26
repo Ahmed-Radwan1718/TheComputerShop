@@ -233,7 +233,7 @@ module.exports = async function handler(req, res) {
     const userDoc = await admin.firestore().collection("users").doc(uid).get();
     const userData = userDoc.exists ? userDoc.data() || {} : {};
     const twoFactor = getSafeTwoFactorSettings(userData);
-    const requiresTwoFactor = twoFactor.appEnabled || twoFactor.emailEnabled;
+    const requiresTwoFactor = twoFactor.appEnabled;
 
     if (requiresTwoFactor) {
       await createCompatibleLoginChallenge(req, res, {
