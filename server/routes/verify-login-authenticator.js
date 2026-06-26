@@ -88,11 +88,7 @@ async function createCompatibleSiteSession(req, res, challenge) {
 async function createCompatibleTwoFactorSession(req, res, uid) {
   if (typeof createLoginTwoFactorSession !== "function") return;
 
-  if (createLoginTwoFactorSession.length >= 3) {
-    return await createLoginTwoFactorSession(req, res, uid);
-  }
-
-  return await createLoginTwoFactorSession(res, uid);
+  return await createLoginTwoFactorSession(uid, res);
 }
 
 async function clearCompatibleChallenge(req, res) {
