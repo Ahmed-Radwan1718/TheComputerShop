@@ -195,19 +195,26 @@ module.exports = async function handler(req, res) {
     const provider = cleanString((req.body || {}).provider, 30);
     const idToken = cleanString((req.body || {}).idToken, 4000);
 
-    if (provider === "google" || provider === "github") {
-      const providerConfig = provider === "github"
-        ? {
-            name: "GitHub",
-            firebaseProviderId: "github.com",
-            authProvider: "github"
-          }
-        : {
-            name: "Google",
-            firebaseProviderId: "google.com",
-            authProvider: "google"
-          };
+    const providerConfigs = {
+      google: {
+        name: "Google",
+        firebaseProviderId: "google.com",
+        authProvider: "google"
+      },
+      github: {
+        name: "GitHub",
+        firebaseProviderId: "github.com",
+        authProvider: "github"
+      },
+      facebook: {
+        name: "Facebook",
+        firebaseProviderId: "facebook.com",
+        authProvider: "facebook"
+      }
+    };
+    const providerConfig = providerConfigs[provider];
 
+    if (providerConfig) {
       if (!idToken) {
         return res.status(400).json({ error: providerConfig.name + " sign-in could not be verified." });
       }
