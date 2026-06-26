@@ -107,6 +107,25 @@
 
       <p class="auth-message" id="login-two-factor-message" aria-live="polite"></p>
     </form>
+
+    <div class="auth-form" id="login-trust-browser-panel" hidden>
+      <div class="auth-field">
+        <label>Trust This Browser?</label>
+        <p class="auth-message">
+          Skip authenticator app codes on this browser for 14 days. Only choose this on a browser you control.
+        </p>
+      </div>
+
+      <button class="auth-button" type="button" id="login-trust-browser-yes">
+        Trust This Browser
+      </button>
+
+      <button class="auth-two-factor-link-button muted" type="button" id="login-trust-browser-no">
+        Do Not Trust This Browser
+      </button>
+
+      <p class="auth-message" id="login-trust-browser-message" aria-live="polite"></p>
+    </div>
   </div>
 </div>
 
@@ -127,6 +146,10 @@
   const twoFactorMessage = document.getElementById("login-two-factor-message");
   const useEmailCodeButton = document.getElementById("login-use-email-code");
   const twoFactorCancelButton = document.getElementById("login-two-factor-cancel");
+  const trustBrowserPanel = document.getElementById("login-trust-browser-panel");
+  const trustBrowserYesButton = document.getElementById("login-trust-browser-yes");
+  const trustBrowserNoButton = document.getElementById("login-trust-browser-no");
+  const trustBrowserMessage = document.getElementById("login-trust-browser-message");
 
   let pendingTwoFactorSettings = {};
   let pendingMaskedEmail = "";
@@ -150,6 +173,15 @@
 
     if (type) {
       twoFactorMessage.classList.add(type);
+    }
+  }
+
+  function showTrustBrowserMessage(message, type) {
+    trustBrowserMessage.textContent = message;
+    trustBrowserMessage.className = "auth-message";
+
+    if (type) {
+      trustBrowserMessage.classList.add(type);
     }
   }
 
@@ -180,6 +212,7 @@
   function finishLogin() {
     clearTwoFactorPending();
     showTwoFactorMessage("Logged in successfully.", "success");
+    showTrustBrowserMessage("Logged in successfully.", "success");
 
     setTimeout(function () {
       window.location.href = getLoginRedirectTarget();
@@ -210,7 +243,10 @@
     markTwoFactorPending();
     clearTwoFactorCodeInputs();
     showTwoFactorMessage("", "");
+    showTrustBrowserMessage("", "");
     loginForm.hidden = true;
+    twoFactorForm.hidden = false;
+    trustBrowserPanel.hidden = true;
 
     document.querySelectorAll(".auth-panel-footer").forEach(function (footer) {
       footer.hidden = true;
@@ -282,14 +318,24 @@
     return data;
   }
 
-  async function verifyAppLoginCode(code) {
+  async function verifyAppLoginCode(code, trustBrowser) {
+    const requestBody = {};
+
+    if (code) {
+      requestBody.code = code;
+    }
+
+    if (typeof trustBrowser === "boolean") {
+      requestBody.trustBrowser = trustBrowser;
+    }
+
     const response = await fetch("/api/login-verify-authenticator", {
       method: "POST",
       credentials: "same-origin",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ code: code })
+      body: JSON.stringify(requestBody)
     });
 
     const data = await response.json().catch(function () {
@@ -312,6 +358,36 @@
       },
       body: JSON.stringify({})
     }).catch(function () {});
+  }
+
+  function showTrustBrowserPanel() {
+    twoFactorForm.hidden = true;
+    trustBrowserPanel.hidden = false;
+    twoFactorTitle.textContent = "Trust This Browser?";
+    twoFactorText.textContent = "Choose whether to skip authenticator app codes on this browser for the next 14 days.";
+    showTwoFactorMessage("", "");
+    showTrustBrowserMessage("", "");
+
+    setTimeout(function () {
+      trustBrowserYesButton.focus();
+    }, 50);
+  }
+
+  async function finishTrustBrowserChoice(trustBrowser) {
+    trustBrowserYesButton.disabled = true;
+    trustBrowserNoButton.disabled = true;
+    showTrustBrowserMessage("", "");
+
+    try {
+      await verifyAppLoginCode("", trustBrowser);
+      await syncFirebaseClientSession();
+      finishLogin();
+    } catch (error) {
+      showTrustBrowserMessage(error.message || "Could not finish sign in. Please try again.", "error");
+    } finally {
+      trustBrowserYesButton.disabled = false;
+      trustBrowserNoButton.disabled = false;
+    }
   }
 
   passwordVisibilityToggles.forEach(function (toggleButton) {
@@ -533,6 +609,11 @@
         return;
       }
 
+      if (data.requiresTrustedBrowserChoice) {
+        showTrustBrowserPanel();
+        return;
+      }
+
       await syncFirebaseClientSession();
       finishLogin();
     } catch (error) {
@@ -563,6 +644,14 @@
     }
   });
 
+  trustBrowserYesButton.addEventListener("click", function () {
+    finishTrustBrowserChoice(true);
+  });
+
+  trustBrowserNoButton.addEventListener("click", function () {
+    finishTrustBrowserChoice(false);
+  });
+
   twoFactorCancelButton.addEventListener("click", async function () {
     clearTwoFactorPending();
     await cancelServerLogin();
@@ -570,6 +659,8 @@
     pendingMaskedEmail = "";
     activeTwoFactorMethod = "";
     twoFactorPanel.hidden = true;
+    twoFactorForm.hidden = false;
+    trustBrowserPanel.hidden = true;
     loginForm.hidden = false;
 
     document.querySelectorAll(".auth-panel-footer").forEach(function (footer) {
@@ -577,6 +668,7 @@
     });
 
     showTwoFactorMessage("", "");
+    showTrustBrowserMessage("", "");
     showMessage("Sign in cancelled.", "error");
   });
 </script>
