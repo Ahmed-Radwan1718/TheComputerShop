@@ -5,8 +5,30 @@ const {
   getUserFromRequest
 } = require("../_lib/securityHelpers");
 
+const {
+  hasValidSecurityUnlockSession
+} = require("../_lib/securityUnlockHelpers");
+
 const USERNAME_COOLDOWN_MS = 14 * 24 * 60 * 60 * 1000;
 const PROFILE_PHOTO_MAX_DATA_URL_LENGTH = 750 * 1024;
+
+const PROVIDER_CONFIGS = {
+  google: {
+    id: "google.com",
+    name: "Google",
+    authProvider: "google"
+  },
+  github: {
+    id: "github.com",
+    name: "GitHub",
+    authProvider: "github"
+  },
+  facebook: {
+    id: "facebook.com",
+    name: "Facebook",
+    authProvider: "facebook"
+  }
+};
 
 function cleanString(value, maxLength) {
   return String(value || "").trim().slice(0, maxLength);
@@ -42,6 +64,24 @@ function timestampToMillis(value) {
   return Number.isNaN(date.getTime()) ? 0 : date.getTime();
 }
 
+async function hasSecurityUnlock(req, uid) {
+  if (hasValidSecurityUnlockSession.length >= 2) {
+    return await hasValidSecurityUnlockSession(req, uid);
+  }
+
+  return await hasValidSecurityUnlockSession(req);
+}
+
+async function requireSecurityUnlock(req, uid) {
+  const unlocked = await hasSecurityUnlock(req, uid);
+
+  if (!unlocked) {
+    const error = new Error("Please unlock the Security panel first.");
+    error.statusCode = 403;
+    throw error;
+  }
+}
+
 function getSafeTwoFactor(twoFactor) {
   const data = twoFactor && typeof twoFactor === "object" ? twoFactor : {};
 
@@ -56,9 +96,7 @@ function getSafeTwoFactor(twoFactor) {
   };
 }
 
-function getConnectedProviders(userRecord, userData) {
-  const data = userData && typeof userData === "object" ? userData : {};
-  const authProvider = String(data.authProvider || "").toLowerCase();
+function getUserProviderIds(userRecord) {
   const providerIds = new Set();
 
   (userRecord.providerData || []).forEach(function (provider) {
@@ -66,6 +104,13 @@ function getConnectedProviders(userRecord, userData) {
       providerIds.add(provider.providerId);
     }
   });
+
+  return providerIds;
+}
+
+function addAuthProviderFallback(providerIds, userRecord, userData) {
+  const data = userData && typeof userData === "object" ? userData : {};
+  const authProvider = String(data.authProvider || "").toLowerCase();
 
   if (authProvider === "google") {
     providerIds.add("google.com");
@@ -82,6 +127,32 @@ function getConnectedProviders(userRecord, userData) {
   if (authProvider === "password" || (userRecord.email && !authProvider && providerIds.size === 0)) {
     providerIds.add("password");
   }
+
+  return providerIds;
+}
+
+function getFallbackAuthProvider(providerIds) {
+  if (providerIds.has("password")) {
+    return "password";
+  }
+
+  if (providerIds.has("google.com")) {
+    return "google";
+  }
+
+  if (providerIds.has("github.com")) {
+    return "github";
+  }
+
+  if (providerIds.has("facebook.com")) {
+    return "facebook";
+  }
+
+  return "";
+}
+
+function getConnectedProviders(userRecord, userData) {
+  const providerIds = addAuthProviderFallback(getUserProviderIds(userRecord), userRecord, userData);
 
   return [
     {
@@ -206,6 +277,96 @@ async function getProfile(uid) {
   };
 }
 
+async function handleProviderAction(req, res, uid, userData) {
+  const action = cleanString((req.body || {}).providerAction, 30).toLowerCase();
+  const providerKey = cleanString((req.body || {}).provider, 30).toLowerCase();
+  const providerConfig = PROVIDER_CONFIGS[providerKey];
+
+  if (!providerConfig) {
+    return res.status(400).json({ error: "Invalid connected account provider." });
+  }
+
+  const db = admin.firestore();
+  const userRef = db.collection("users").doc(uid);
+
+  if (action === "connect") {
+    const userRecord = await admin.auth().getUser(uid);
+    const providerIds = getUserProviderIds(userRecord);
+
+    if (!providerIds.has(providerConfig.id)) {
+      return res.status(400).json({ error: "Please finish connecting " + providerConfig.name + " first." });
+    }
+
+    const connectedAccounts = {};
+    connectedAccounts[providerKey + "ConnectedAt"] = admin.firestore.FieldValue.serverTimestamp();
+
+    const updateData = {
+      connectedAccounts,
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    };
+
+    if (!cleanString(userData.authProvider, 30)) {
+      updateData.authProvider = providerConfig.authProvider;
+    }
+
+    await userRef.set(updateData, { merge: true });
+
+    const profile = await getProfile(uid);
+
+    return res.status(200).json({
+      success: true,
+      profile
+    });
+  }
+
+  if (action === "disconnect") {
+    await requireSecurityUnlock(req, uid);
+
+    const userRecord = await admin.auth().getUser(uid);
+    const providerIds = addAuthProviderFallback(getUserProviderIds(userRecord), userRecord, userData);
+
+    if (!providerIds.has(providerConfig.id)) {
+      return res.status(400).json({ error: providerConfig.name + " is already disconnected." });
+    }
+
+    if (providerIds.size <= 1) {
+      return res.status(400).json({ error: "Connect another sign-in method before disconnecting " + providerConfig.name + "." });
+    }
+
+    await admin.auth().updateUser(uid, {
+      providersToUnlink: [providerConfig.id]
+    });
+
+    providerIds.delete(providerConfig.id);
+
+    const connectedAccounts = {};
+    connectedAccounts[providerKey + "DisconnectedAt"] = admin.firestore.FieldValue.serverTimestamp();
+
+    const fallbackAuthProvider = getFallbackAuthProvider(providerIds);
+    const updateData = {
+      connectedAccounts,
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    };
+
+    if (fallbackAuthProvider) {
+      updateData.authProvider = fallbackAuthProvider;
+    } else {
+      updateData.authProvider = admin.firestore.FieldValue.delete();
+    }
+
+    await userRef.set(updateData, { merge: true });
+
+    const profile = await getProfile(uid);
+
+    return res.status(200).json({
+      success: true,
+      profile
+    });
+  }
+
+  return res.status(400).json({ error: "Invalid connected account action." });
+}
+
 async function handleGet(req, res, uid) {
   const profile = await getProfile(uid);
 
@@ -220,6 +381,11 @@ async function handlePatch(req, res, uid) {
   const userRef = db.collection("users").doc(uid);
   const userDoc = await userRef.get();
   const data = userDoc.exists ? userDoc.data() || {} : {};
+  const providerAction = cleanString((req.body || {}).providerAction, 30).toLowerCase();
+
+  if (providerAction) {
+    return await handleProviderAction(req, res, uid, data);
+  }
 
   const fullName = cleanString((req.body || {}).fullName, 80);
   const phone = cleanString((req.body || {}).phone, 30);
