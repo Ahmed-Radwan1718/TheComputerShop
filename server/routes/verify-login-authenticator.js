@@ -7,7 +7,6 @@ const {
   createSiteSessionFromIdToken,
   createSiteSessionForUid,
   createLoginTwoFactorSession,
-  createTrustedLoginBrowser,
   getAuthenticatorSecret
 } = require("../_lib/securityHelpers");
 
@@ -101,28 +100,12 @@ async function clearCompatibleChallenge(req, res) {
   return await clearLoginChallenge(res);
 }
 
-function hasTrustBrowserChoice(req) {
-  return Object.prototype.hasOwnProperty.call(req.body || {}, "trustBrowser");
-}
-
-function cleanTrustBrowserChoice(value) {
-  return value === true || value === "true" || value === "1";
-}
-
-async function finishLogin(req, res, challenge, trustBrowser) {
+async function finishLogin(req, res, challenge) {
   await createCompatibleSiteSession(req, res, challenge);
   await createCompatibleTwoFactorSession(req, res, challenge.uid);
-
-  if (trustBrowser && typeof createTrustedLoginBrowser === "function") {
-    await createTrustedLoginBrowser(challenge.uid, req, res);
-  }
-
   await clearCompatibleChallenge(req, res);
 
-  return res.status(200).json({
-    success: true,
-    trustedBrowser: Boolean(trustBrowser)
-  });
+  return res.status(200).json({ success: true });
 }
 
 module.exports = async function handler(req, res) {
@@ -141,24 +124,6 @@ module.exports = async function handler(req, res) {
 
     if (!twoFactor.appEnabled) {
       return res.status(400).json({ error: "Authenticator app is not enabled for this login." });
-    }
-
-    if (challenge.data && challenge.data.appVerified) {
-      if (!hasTrustBrowserChoice(req)) {
-        return res.status(200).json({
-          success: true,
-          requiresTrustedBrowserChoice: true,
-          trustBrowserPromptRequired: true,
-          trustBrowserDays: 14
-        });
-      }
-
-      return await finishLogin(
-        req,
-        res,
-        challenge,
-        cleanTrustBrowserChoice((req.body || {}).trustBrowser)
-      );
     }
 
     const code = cleanCode((req.body || {}).code);
@@ -186,26 +151,7 @@ module.exports = async function handler(req, res) {
 
     await clearFailures(challenge.uid);
 
-    if (hasTrustBrowserChoice(req)) {
-      return await finishLogin(
-        req,
-        res,
-        challenge,
-        cleanTrustBrowserChoice((req.body || {}).trustBrowser)
-      );
-    }
-
-    await challenge.ref.set({
-      appVerified: true,
-      appVerifiedAt: admin.firestore.FieldValue.serverTimestamp()
-    }, { merge: true });
-
-    return res.status(200).json({
-      success: true,
-      requiresTrustedBrowserChoice: true,
-      trustBrowserPromptRequired: true,
-      trustBrowserDays: 14
-    });
+    return await finishLogin(req, res, challenge);
   } catch (error) {
     return res.status(error.statusCode || 500).json({
       error: error.message || "Could not verify authenticator code."
