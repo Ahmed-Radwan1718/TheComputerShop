@@ -107,15 +107,18 @@
 
       <p class="auth-message" id="login-two-factor-message" aria-live="polite"></p>
     </form>
+  </div>
+</div>
 
-    <div class="auth-form" id="login-trust-browser-panel" hidden>
-      <div class="auth-field">
-        <label>Trust This Browser?</label>
-        <p class="auth-message">
-          Skip authenticator app codes on this browser for 14 days. Only choose this on a browser you control.
-        </p>
-      </div>
+<div class="auth-two-factor-panel" id="login-trust-browser-modal" hidden>
+  <div class="auth-two-factor-card">
+    <div class="auth-two-factor-header">
+      <p class="auth-two-factor-eyebrow">Trusted Browser</p>
+      <h2>Trust This Browser?</h2>
+      <p>Skip authenticator app codes on this browser for 14 days. Only choose this on a browser you control.</p>
+    </div>
 
+    <div class="auth-form" id="login-trust-browser-panel">
       <button class="auth-button" type="button" id="login-trust-browser-yes">
         Trust This Browser
       </button>
@@ -146,6 +149,7 @@
   const twoFactorMessage = document.getElementById("login-two-factor-message");
   const useEmailCodeButton = document.getElementById("login-use-email-code");
   const twoFactorCancelButton = document.getElementById("login-two-factor-cancel");
+  const trustBrowserModal = document.getElementById("login-trust-browser-modal");
   const trustBrowserPanel = document.getElementById("login-trust-browser-panel");
   const trustBrowserYesButton = document.getElementById("login-trust-browser-yes");
   const trustBrowserNoButton = document.getElementById("login-trust-browser-no");
@@ -246,7 +250,8 @@
     showTrustBrowserMessage("", "");
     loginForm.hidden = true;
     twoFactorForm.hidden = false;
-    trustBrowserPanel.hidden = true;
+    trustBrowserModal.hidden = true;
+    trustBrowserPanel.hidden = false;
 
     document.querySelectorAll(".auth-panel-footer").forEach(function (footer) {
       footer.hidden = true;
@@ -361,10 +366,10 @@
   }
 
   function showTrustBrowserPanel() {
-    twoFactorForm.hidden = true;
+    twoFactorPanel.hidden = true;
+    twoFactorForm.hidden = false;
+    trustBrowserModal.hidden = false;
     trustBrowserPanel.hidden = false;
-    twoFactorTitle.textContent = "Trust This Browser?";
-    twoFactorText.textContent = "Choose whether to skip authenticator app codes on this browser for the next 14 days.";
     showTwoFactorMessage("", "");
     showTrustBrowserMessage("", "");
 
@@ -660,7 +665,8 @@
     activeTwoFactorMethod = "";
     twoFactorPanel.hidden = true;
     twoFactorForm.hidden = false;
-    trustBrowserPanel.hidden = true;
+    trustBrowserModal.hidden = true;
+    trustBrowserPanel.hidden = false;
     loginForm.hidden = false;
 
     document.querySelectorAll(".auth-panel-footer").forEach(function (footer) {
