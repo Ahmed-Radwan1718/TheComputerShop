@@ -159,6 +159,7 @@
   let pendingMaskedEmail = "";
   let activeTwoFactorMethod = "";
   let twoFactorFlowActive = false;
+  let pendingVerifiedAuthenticatorCode = "";
 
   const pendingTwoFactorKey = "tcs-login-2fa-pending";
 
@@ -215,6 +216,7 @@
 
   function finishLogin() {
     clearTwoFactorPending();
+    pendingVerifiedAuthenticatorCode = "";
     showTwoFactorMessage("Logged in successfully.", "success");
     showTrustBrowserMessage("Logged in successfully.", "success");
 
@@ -246,6 +248,7 @@
     twoFactorFlowActive = true;
     markTwoFactorPending();
     clearTwoFactorCodeInputs();
+    pendingVerifiedAuthenticatorCode = "";
     showTwoFactorMessage("", "");
     showTrustBrowserMessage("", "");
     loginForm.hidden = true;
@@ -366,8 +369,8 @@
   }
 
   function showTrustBrowserPanel() {
-    twoFactorPanel.hidden = true;
-    twoFactorForm.hidden = false;
+    twoFactorPanel.hidden = false;
+    twoFactorForm.hidden = true;
     trustBrowserModal.hidden = false;
     trustBrowserPanel.hidden = false;
     showTwoFactorMessage("", "");
@@ -384,7 +387,7 @@
     showTrustBrowserMessage("", "");
 
     try {
-      await verifyAppLoginCode("", trustBrowser);
+      await verifyAppLoginCode(pendingVerifiedAuthenticatorCode, trustBrowser);
       await syncFirebaseClientSession();
       finishLogin();
     } catch (error) {
@@ -614,7 +617,8 @@
         return;
       }
 
-      if (data.requiresTrustedBrowserChoice) {
+      if (data.trustBrowserPromptRequired || data.requiresTrustedBrowserChoice) {
+        pendingVerifiedAuthenticatorCode = activeTwoFactorMethod === "app" ? code : "";
         showTrustBrowserPanel();
         return;
       }
@@ -663,6 +667,7 @@
     pendingTwoFactorSettings = {};
     pendingMaskedEmail = "";
     activeTwoFactorMethod = "";
+    pendingVerifiedAuthenticatorCode = "";
     twoFactorPanel.hidden = true;
     twoFactorForm.hidden = false;
     trustBrowserModal.hidden = true;
