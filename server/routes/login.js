@@ -4,7 +4,9 @@ const admin = require("../_lib/firebaseAdmin");
 const {
   signInWithPassword,
   createSiteSessionFromIdToken,
-  createLoginChallenge
+  createLoginChallenge,
+  createLoginTwoFactorSession,
+  hasValidTrustedLoginBrowser
 } = require("../_lib/securityHelpers");
 
 const LOGIN_ATTEMPT_WINDOW_MS = 24 * 60 * 60 * 1000;
@@ -176,6 +178,14 @@ async function createCompatibleLoginChallenge(req, res, payload) {
   return await createLoginChallenge(payload.uid, res, payload);
 }
 
+async function createCompatibleTwoFactorSession(req, res, uid) {
+  if (typeof createLoginTwoFactorSession !== "function") {
+    return;
+  }
+
+  return await createLoginTwoFactorSession(uid, res);
+}
+
 function getSafeTwoFactorSettings(userData) {
   const twoFactor = userData && userData.twoFactor && typeof userData.twoFactor === "object"
     ? userData.twoFactor
@@ -236,6 +246,26 @@ module.exports = async function handler(req, res) {
     const requiresTwoFactor = twoFactor.appEnabled;
 
     if (requiresTwoFactor) {
+      const trustedBrowser = await hasValidTrustedLoginBrowser(req, uid);
+
+      if (trustedBrowser) {
+        await createCompatibleSiteSession(req, res, loginResult.idToken);
+        await createCompatibleTwoFactorSession(req, res, uid);
+
+        return res.status(200).json({
+          success: true,
+          requiresTwoFactor: false,
+          twoFactorRequired: false,
+          trustedBrowser: true,
+          user: {
+            uid,
+            email: userRecord.email || email,
+            emailVerified: Boolean(userRecord.emailVerified),
+            displayName: userRecord.displayName || userData.fullName || ""
+          }
+        });
+      }
+
       await createCompatibleLoginChallenge(req, res, {
         uid,
         email: userRecord.email || email,
