@@ -6366,10 +6366,6 @@ body.nav-menu-open {
   display: none;
 }
 
-#login-trust-browser-modal {
-  z-index: 3400;
-}
-
 .auth-two-factor-card {
   width: min(500px, 100%);
   padding: 30px;
