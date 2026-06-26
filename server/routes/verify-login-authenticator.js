@@ -194,6 +194,7 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({
       success: true,
       requiresTrustedBrowserChoice: true,
+      trustBrowserPromptRequired: true,
       trustBrowserDays: 14
     });
   } catch (error) {
