@@ -7807,6 +7807,7 @@ body.account-security-modal-open {
 }
 
 .account-connected-badge {
+  width: 128px;
   min-height: 30px;
   padding: 0 12px;
   border-radius: 999px;
@@ -7832,8 +7833,9 @@ body.account-security-modal-open {
 }
 
 .account-connected-action-button {
-  min-height: 32px;
-  padding: 0 13px;
+  width: 128px;
+  min-height: 30px;
+  padding: 0 12px;
   border-radius: 999px;
   font-family: inherit;
   font-size: 10px;
