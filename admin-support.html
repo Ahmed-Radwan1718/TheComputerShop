@@ -8,10 +8,10 @@
 </head>
 <body oncontextmenu="return false;">
 
-<div id="site-header-root"></div>
+<div id="site-header-root" hidden></div>
 <script src="site-header.js"></script>
 
-<main class="account-page">
+<main class="account-page" id="admin-dashboard-main" hidden>
   <section class="account-section">
     <div class="account-section-inner">
       <div class="account-header">
@@ -79,6 +79,20 @@
             </div>
 
             <p class="account-message" id="admin-support-message" aria-live="polite"></p>
+          </div>
+        </article>
+      </section>
+    </div>
+  </section>
+</main>
+
+<main class="account-page" id="admin-access-denied" hidden>
+  <section class="account-section">
+    <div class="account-section-inner">
+      <section class="account-content">
+        <article class="account-panel active">
+          <div class="account-panel-header">
+            <h2>You do not have access to view this page.</h2>
           </div>
         </article>
       </section>
@@ -208,6 +222,9 @@
 </div>
 
 <script>
+  const siteHeaderRoot = document.getElementById("site-header-root");
+  const adminDashboardMain = document.getElementById("admin-dashboard-main");
+  const adminAccessDenied = document.getElementById("admin-access-denied");
   const adminDashboardTabs = document.getElementById("admin-dashboard-tabs");
   const adminOrdersPanel = document.getElementById("admin-orders-panel");
   const adminSupportPanel = document.getElementById("admin-support-panel");
@@ -270,6 +287,22 @@
     if (type) {
       element.classList.add(type);
     }
+  }
+
+  function showAdminDashboard() {
+    siteHeaderRoot.hidden = false;
+    adminDashboardMain.hidden = false;
+    adminAccessDenied.hidden = true;
+  }
+
+  function showAdminAccessDenied() {
+    siteHeaderRoot.hidden = true;
+    adminDashboardMain.hidden = true;
+    adminAccessDenied.hidden = false;
+    adminOrderModal.hidden = true;
+    adminTicketModal.hidden = true;
+    document.body.classList.remove("account-security-modal-open");
+    document.title = "Access Denied - The Computer Shop";
   }
 
   function escapeHtml(value) {
@@ -626,6 +659,12 @@
       return {};
     });
 
+    if (response.status === 401 || response.status === 403) {
+      const error = new Error("You do not have access to view this page.");
+      error.adminAccessDenied = true;
+      throw error;
+    }
+
     if (!response.ok || !Array.isArray(data.orders)) {
       throw new Error(data.error || "Could not load orders.");
     }
@@ -929,17 +968,27 @@
     }
   });
 
-  loadAdminOrders().catch(function (error) {
-    adminOrderLoading.hidden = true;
-    adminOrderEmpty.hidden = false;
-    showMessage(adminOrderMessage, error.message || "Could not load orders.", "error");
-  });
+  loadAdminOrders()
+    .then(function () {
+      showAdminDashboard();
 
-  loadAdminTickets().catch(function (error) {
-    adminSupportLoading.hidden = true;
-    adminSupportEmpty.hidden = false;
-    showMessage(adminSupportMessage, error.message || "Could not load tickets.", "error");
-  });
+      return loadAdminTickets().catch(function (error) {
+        adminSupportLoading.hidden = true;
+        adminSupportEmpty.hidden = false;
+        showMessage(adminSupportMessage, error.message || "Could not load tickets.", "error");
+      });
+    })
+    .catch(function (error) {
+      if (error && error.adminAccessDenied) {
+        showAdminAccessDenied();
+        return;
+      }
+
+      showAdminDashboard();
+      adminOrderLoading.hidden = true;
+      adminOrderEmpty.hidden = false;
+      showMessage(adminOrderMessage, error.message || "Could not load orders.", "error");
+    });
 </script>
 
 </body>
