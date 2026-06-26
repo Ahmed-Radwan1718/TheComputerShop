@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Support - The Computer Shop</title>
+  <title>Admin Dashboard - The Computer Shop</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body oncontextmenu="return false;">
@@ -16,44 +16,143 @@
     <div class="account-section-inner">
       <div class="account-header">
         <p class="account-eyebrow">Admin</p>
-        <h1>Support Inbox</h1>
-        <p id="admin-support-header-text">View customer requests, reply to tickets, and update their status.</p>
+        <h1>Admin Dashboard</h1>
+        <p id="admin-support-header-text">Review order requests, manage customer support, and update request status.</p>
       </div>
 
       <section class="account-content">
         <article class="account-panel active">
           <div class="account-panel-header">
-            <p class="account-panel-eyebrow">All Tickets</p>
-            <h2>Customer Support</h2>
-            <p>New customer inquiries appear here automatically after they submit a support request.</p>
+            <h2>Control Dashboard</h2>
+            <p>Order requests and customer support messages appear here automatically.</p>
           </div>
 
-          <div class="account-support-filters" id="admin-support-filters">
-            <button class="account-support-filter active" type="button" data-admin-support-filter="all">All</button>
-            <button class="account-support-filter" type="button" data-admin-support-filter="open">Open</button>
-            <button class="account-support-filter" type="button" data-admin-support-filter="pending">Pending</button>
-            <button class="account-support-filter" type="button" data-admin-support-filter="answered">Answered</button>
-            <button class="account-support-filter" type="button" data-admin-support-filter="resolved">Resolved</button>
-            <button class="account-support-filter" type="button" data-admin-support-filter="closed">Closed</button>
+          <div class="account-support-filters" id="admin-dashboard-tabs">
+            <button class="account-support-filter active" type="button" data-admin-panel="orders">Orders</button>
+            <button class="account-support-filter" type="button" data-admin-panel="support">Support</button>
           </div>
 
-          <div class="account-support-loading" id="admin-support-loading">
-            Loading support tickets...
+          <div class="admin-dashboard-panel" id="admin-orders-panel">
+            <div class="account-support-filters" id="admin-order-filters">
+              <button class="account-support-filter active" type="button" data-admin-order-filter="all">All</button>
+              <button class="account-support-filter" type="button" data-admin-order-filter="submitted">Submitted</button>
+              <button class="account-support-filter" type="button" data-admin-order-filter="reviewing">Reviewing</button>
+              <button class="account-support-filter" type="button" data-admin-order-filter="quoted">Quoted</button>
+              <button class="account-support-filter" type="button" data-admin-order-filter="confirmed">Confirmed</button>
+              <button class="account-support-filter" type="button" data-admin-order-filter="fulfilled">Fulfilled</button>
+              <button class="account-support-filter" type="button" data-admin-order-filter="canceled">Canceled</button>
+            </div>
+
+            <div class="account-support-loading" id="admin-order-loading">
+              Loading order requests...
+            </div>
+
+            <div class="account-support-list" id="admin-order-list"></div>
+
+            <div class="account-empty-state" id="admin-order-empty">
+              <h3>No orders yet</h3>
+              <p>Customer order requests will appear here after checkout.</p>
+            </div>
+
+            <p class="account-message" id="admin-order-message" aria-live="polite"></p>
           </div>
 
-          <div class="account-support-list" id="admin-support-list"></div>
+          <div class="admin-dashboard-panel" id="admin-support-panel" hidden>
+            <div class="account-support-filters" id="admin-support-filters">
+              <button class="account-support-filter active" type="button" data-admin-support-filter="all">All</button>
+              <button class="account-support-filter" type="button" data-admin-support-filter="open">Open</button>
+              <button class="account-support-filter" type="button" data-admin-support-filter="pending">Pending</button>
+              <button class="account-support-filter" type="button" data-admin-support-filter="answered">Answered</button>
+              <button class="account-support-filter" type="button" data-admin-support-filter="resolved">Resolved</button>
+              <button class="account-support-filter" type="button" data-admin-support-filter="closed">Closed</button>
+            </div>
 
-          <div class="account-empty-state" id="admin-support-empty">
-            <h3>No tickets yet</h3>
-            <p>Customer support requests will appear here after they submit them.</p>
+            <div class="account-support-loading" id="admin-support-loading">
+              Loading support tickets...
+            </div>
+
+            <div class="account-support-list" id="admin-support-list"></div>
+
+            <div class="account-empty-state" id="admin-support-empty">
+              <h3>No tickets yet</h3>
+              <p>Customer support requests will appear here after they submit them.</p>
+            </div>
+
+            <p class="account-message" id="admin-support-message" aria-live="polite"></p>
           </div>
-
-          <p class="account-message" id="admin-support-message" aria-live="polite"></p>
         </article>
       </section>
     </div>
   </section>
 </main>
+
+<div class="account-support-modal" id="admin-order-modal" hidden>
+  <div class="account-support-modal-backdrop" id="admin-order-modal-backdrop"></div>
+
+  <div class="account-support-modal-card account-support-detail-card" role="dialog" aria-modal="true" aria-labelledby="admin-order-title">
+    <button class="account-support-modal-close" type="button" id="admin-order-modal-close" aria-label="Close order">×</button>
+
+    <div class="account-support-modal-header">
+      <p class="account-security-modal-eyebrow" id="admin-order-category">Order Request</p>
+      <h2 id="admin-order-title">Order Details</h2>
+      <p id="admin-order-summary">Review the customer request and update its status.</p>
+    </div>
+
+    <div class="account-form-grid">
+      <div class="account-field">
+        <label for="admin-order-status">Order Status</label>
+        <select id="admin-order-status">
+          <option value="submitted">Submitted</option>
+          <option value="reviewing">Reviewing</option>
+          <option value="quoted">Quoted</option>
+          <option value="confirmed">Confirmed</option>
+          <option value="fulfilled">Fulfilled</option>
+          <option value="canceled">Canceled</option>
+        </select>
+      </div>
+
+      <div class="account-field">
+        <label for="admin-order-payment-status">Payment Status</label>
+        <select id="admin-order-payment-status">
+          <option value="not_paid">Not Paid</option>
+          <option value="pending">Pending</option>
+          <option value="paid">Paid</option>
+          <option value="refunded">Refunded</option>
+        </select>
+      </div>
+
+      <div class="account-field">
+        <label>Customer</label>
+        <input type="text" id="admin-order-customer" readonly>
+      </div>
+
+      <div class="account-field">
+        <label>Phone</label>
+        <input type="text" id="admin-order-phone" readonly>
+      </div>
+
+      <div class="account-field account-field-full">
+        <label>Delivery Address</label>
+        <input type="text" id="admin-order-address" readonly>
+      </div>
+    </div>
+
+    <div class="account-support-thread" id="admin-order-items"></div>
+
+    <div class="account-field">
+      <label for="admin-order-note">Admin Note</label>
+      <textarea id="admin-order-note" rows="4" maxlength="1500"></textarea>
+    </div>
+
+    <div class="account-support-detail-actions">
+      <button class="account-security-modal-cancel" type="button" id="admin-order-save">
+        Save Order
+      </button>
+    </div>
+
+    <p class="account-message" id="admin-order-modal-message" aria-live="polite"></p>
+  </div>
+</div>
 
 <div class="account-support-modal" id="admin-ticket-modal" hidden>
   <div class="account-support-modal-backdrop" id="admin-ticket-modal-backdrop"></div>
@@ -109,11 +208,37 @@
 </div>
 
 <script>
+  const adminDashboardTabs = document.getElementById("admin-dashboard-tabs");
+  const adminOrdersPanel = document.getElementById("admin-orders-panel");
+  const adminSupportPanel = document.getElementById("admin-support-panel");
+
+  const adminOrderLoading = document.getElementById("admin-order-loading");
+  const adminOrderList = document.getElementById("admin-order-list");
+  const adminOrderEmpty = document.getElementById("admin-order-empty");
+  const adminOrderMessage = document.getElementById("admin-order-message");
+  const adminOrderFilters = document.getElementById("admin-order-filters");
+
   const adminSupportLoading = document.getElementById("admin-support-loading");
   const adminSupportList = document.getElementById("admin-support-list");
   const adminSupportEmpty = document.getElementById("admin-support-empty");
   const adminSupportMessage = document.getElementById("admin-support-message");
   const adminSupportFilters = document.getElementById("admin-support-filters");
+
+  const adminOrderModal = document.getElementById("admin-order-modal");
+  const adminOrderModalBackdrop = document.getElementById("admin-order-modal-backdrop");
+  const adminOrderModalClose = document.getElementById("admin-order-modal-close");
+  const adminOrderCategory = document.getElementById("admin-order-category");
+  const adminOrderTitle = document.getElementById("admin-order-title");
+  const adminOrderSummary = document.getElementById("admin-order-summary");
+  const adminOrderStatus = document.getElementById("admin-order-status");
+  const adminOrderPaymentStatus = document.getElementById("admin-order-payment-status");
+  const adminOrderCustomer = document.getElementById("admin-order-customer");
+  const adminOrderPhone = document.getElementById("admin-order-phone");
+  const adminOrderAddress = document.getElementById("admin-order-address");
+  const adminOrderItems = document.getElementById("admin-order-items");
+  const adminOrderNote = document.getElementById("admin-order-note");
+  const adminOrderSave = document.getElementById("admin-order-save");
+  const adminOrderModalMessage = document.getElementById("admin-order-modal-message");
 
   const adminTicketModal = document.getElementById("admin-ticket-modal");
   const adminTicketModalBackdrop = document.getElementById("admin-ticket-modal-backdrop");
@@ -130,8 +255,12 @@
   const adminTicketSaveStatus = document.getElementById("admin-ticket-save-status");
   const adminTicketReplyMessage = document.getElementById("admin-ticket-reply-message");
 
+  let orders = [];
   let tickets = [];
+  let activeAdminPanel = "orders";
+  let activeOrderFilter = "all";
   let activeFilter = "all";
+  let activeOrderId = "";
   let activeTicketId = "";
 
   function showMessage(element, message, type) {
@@ -152,7 +281,7 @@
       .replaceAll("'", "&#039;");
   }
 
-  function getTicketDate(value) {
+  function getAdminDate(value) {
     if (!value) {
       return "Not available";
     }
@@ -170,8 +299,17 @@
     });
   }
 
+  function getTicketDate(value) {
+    return getAdminDate(value);
+  }
+
   function getTicketTimeValue(ticket) {
     const date = new Date(ticket.updatedAt || ticket.createdAt || 0);
+    return Number.isNaN(date.getTime()) ? 0 : date.getTime();
+  }
+
+  function getOrderTimeValue(order) {
+    const date = new Date(order.updatedAt || order.createdAt || 0);
     return Number.isNaN(date.getTime()) ? 0 : date.getTime();
   }
 
@@ -192,10 +330,122 @@
     }
   }
 
+  function getOrderStatusLabel(status) {
+    switch (status) {
+      case "reviewing":
+        return "Reviewing";
+      case "quoted":
+        return "Quoted";
+      case "confirmed":
+        return "Confirmed";
+      case "fulfilled":
+        return "Fulfilled";
+      case "canceled":
+        return "Canceled";
+      default:
+        return "Submitted";
+    }
+  }
+
+  function getPaymentStatusLabel(status) {
+    switch (status) {
+      case "pending":
+        return "Pending";
+      case "paid":
+        return "Paid";
+      case "refunded":
+        return "Refunded";
+      default:
+        return "Not Paid";
+    }
+  }
+
+  function getOrderMoneyText(order) {
+    if (order.totalText) {
+      return order.totalText;
+    }
+
+    return Number(order.totalValue || 0).toLocaleString("en-US") + " EGP";
+  }
+
+  function getOrderAddressText(order) {
+    const parts = [
+      order.companyName,
+      order.officeName,
+      order.buildingName,
+      order.houseNumber ? "House " + order.houseNumber : "",
+      order.apartmentNumber ? "Apartment " + order.apartmentNumber : "",
+      order.floorNumber ? "Floor " + order.floorNumber : "",
+      order.streetName,
+      order.additionalInfo
+    ].filter(Boolean);
+
+    return parts.join(", ") || "No address saved";
+  }
+
+  function getOrderItems(order) {
+    return Array.isArray(order.items) ? order.items : [];
+  }
+
+  function getActiveOrder() {
+    return orders.find(function (order) {
+      return order.id === activeOrderId;
+    }) || null;
+  }
+
   function getActiveTicket() {
     return tickets.find(function (ticket) {
       return ticket.id === activeTicketId;
     }) || null;
+  }
+
+  function renderOrders() {
+    adminOrderLoading.hidden = true;
+
+    const visibleOrders = orders.filter(function (order) {
+      return activeOrderFilter === "all" || order.status === activeOrderFilter;
+    });
+
+    if (!visibleOrders.length) {
+      adminOrderList.innerHTML = "";
+      adminOrderEmpty.hidden = false;
+      return;
+    }
+
+    adminOrderEmpty.hidden = true;
+
+    adminOrderList.innerHTML = visibleOrders.map(function (order) {
+      const itemCount = Number(order.itemCount || getOrderItems(order).length || 0);
+      const itemText = itemCount + " item" + (itemCount === 1 ? "" : "s");
+
+      return `
+        <article class="account-support-ticket-card" data-admin-order-id="${escapeHtml(order.id)}">
+          <div class="account-support-ticket-top">
+            <div>
+              <span class="account-support-ticket-category">${escapeHtml(order.orderNumber || "Order Request")}</span>
+              <h3>${escapeHtml(order.userName || order.userEmail || "Customer Order")}</h3>
+            </div>
+
+            <span class="account-support-ticket-status ${escapeHtml(order.status || "submitted")}">
+              ${escapeHtml(getOrderStatusLabel(order.status || "submitted"))}
+            </span>
+          </div>
+
+          <p>${escapeHtml(itemText + " · " + getOrderMoneyText(order))}</p>
+
+          <div class="account-support-ticket-meta">
+            <span>${escapeHtml(order.userEmail || "")}</span>
+            <span>${escapeHtml(order.phone || "")}</span>
+            <span>Payment: ${escapeHtml(getPaymentStatusLabel(order.paymentStatus || "not_paid"))}</span>
+            <span>Submitted ${escapeHtml(getAdminDate(order.createdAt))}</span>
+          </div>
+
+          <button class="account-support-ticket-button" type="button">
+            Open Order
+          </button>
+        </article>
+      `;
+    }).join("");
   }
 
   function renderTickets() {
@@ -246,6 +496,52 @@
     }).join("");
   }
 
+  function renderOrderModal(order) {
+    const items = getOrderItems(order);
+
+    adminOrderCategory.textContent = order.orderNumber || "Order Request";
+    adminOrderTitle.textContent = order.userName || "Customer Order";
+    adminOrderSummary.textContent = "Submitted " + getAdminDate(order.createdAt) + " · Total: " + getOrderMoneyText(order);
+    adminOrderStatus.value = order.status || "submitted";
+    adminOrderPaymentStatus.value = order.paymentStatus || "not_paid";
+    adminOrderCustomer.value = (order.userName || "Customer") + " · " + (order.userEmail || "");
+    adminOrderPhone.value = order.phone || "Not provided";
+    adminOrderAddress.value = getOrderAddressText(order);
+    adminOrderNote.value = order.adminNote || "";
+
+    adminOrderItems.innerHTML = items.length ? items.map(function (item) {
+      const quantity = Number(item.quantity || 1);
+      const lineTotal = item.lineTotalText || item.priceText || item.price || "";
+
+      return `
+        <article class="account-support-message">
+          <div class="account-support-message-head">
+            <strong>${escapeHtml(item.name || "Product")}</strong>
+            <span>${escapeHtml(quantity + " x " + (item.priceText || item.price || ""))}</span>
+          </div>
+
+          <p>${escapeHtml(lineTotal)}</p>
+        </article>
+      `;
+    }).join("") : `
+      <article class="account-support-message">
+        <p>No item details saved for this order.</p>
+      </article>
+    `;
+
+    if (order.customerNote) {
+      adminOrderItems.innerHTML += `
+        <article class="account-support-message">
+          <div class="account-support-message-head">
+            <strong>Customer Note</strong>
+          </div>
+
+          <p>${escapeHtml(order.customerNote)}</p>
+        </article>
+      `;
+    }
+  }
+
   function renderTicketModal(ticket) {
     const messages = Array.isArray(ticket.messages) ? ticket.messages : [];
 
@@ -271,6 +567,28 @@
     }).join("");
   }
 
+  function openOrder(orderId) {
+    activeOrderId = orderId;
+
+    const order = getActiveOrder();
+
+    if (!order) {
+      return;
+    }
+
+    showMessage(adminOrderModalMessage, "", "");
+    renderOrderModal(order);
+    adminOrderModal.hidden = false;
+    document.body.classList.add("account-security-modal-open");
+  }
+
+  function closeOrderModal() {
+    adminOrderModal.hidden = true;
+    activeOrderId = "";
+    showMessage(adminOrderModalMessage, "", "");
+    document.body.classList.remove("account-security-modal-open");
+  }
+
   function openTicket(ticketId) {
     activeTicketId = ticketId;
 
@@ -293,6 +611,38 @@
     adminTicketReplyForm.reset();
     showMessage(adminTicketReplyMessage, "", "");
     document.body.classList.remove("account-security-modal-open");
+  }
+
+  async function loadAdminOrders() {
+    const response = await fetch("/api/admin-support-tickets?type=orders", {
+      method: "GET",
+      credentials: "same-origin",
+      headers: {
+        "Accept": "application/json"
+      }
+    });
+
+    const data = await response.json().catch(function () {
+      return {};
+    });
+
+    if (!response.ok || !Array.isArray(data.orders)) {
+      throw new Error(data.error || "Could not load orders.");
+    }
+
+    orders = data.orders.sort(function (a, b) {
+      return getOrderTimeValue(b) - getOrderTimeValue(a);
+    });
+
+    renderOrders();
+
+    if (activeOrderId) {
+      const order = getActiveOrder();
+
+      if (order) {
+        renderOrderModal(order);
+      }
+    }
   }
 
   async function loadAdminTickets() {
@@ -352,6 +702,33 @@
     return data.ticket;
   }
 
+  async function updateAdminOrder(orderId, status, paymentStatus, adminNote) {
+    const response = await fetch("/api/admin-support-tickets", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        action: "order-update",
+        orderId: orderId,
+        status: status,
+        paymentStatus: paymentStatus,
+        adminNote: adminNote
+      })
+    });
+
+    const data = await response.json().catch(function () {
+      return {};
+    });
+
+    if (!response.ok || !data.order) {
+      throw new Error(data.error || "Could not save order.");
+    }
+
+    return data.order;
+  }
+
   async function sendAdminTicketReply(ticketId, message) {
     const response = await fetch("/api/admin-support-tickets", {
       method: "POST",
@@ -377,6 +754,17 @@
     return data.ticket;
   }
 
+  function replaceOrder(updatedOrder) {
+    orders = orders.map(function (order) {
+      return order.id === updatedOrder.id ? updatedOrder : order;
+    }).sort(function (a, b) {
+      return getOrderTimeValue(b) - getOrderTimeValue(a);
+    });
+
+    renderOrders();
+    renderOrderModal(updatedOrder);
+  }
+
   function replaceTicket(updatedTicket) {
     tickets = tickets.map(function (ticket) {
       return ticket.id === updatedTicket.id ? updatedTicket : ticket;
@@ -387,6 +775,39 @@
     renderTickets();
     renderTicketModal(updatedTicket);
   }
+
+  adminDashboardTabs.addEventListener("click", function (event) {
+    const panelButton = event.target.closest("[data-admin-panel]");
+
+    if (!panelButton) {
+      return;
+    }
+
+    activeAdminPanel = panelButton.dataset.adminPanel;
+
+    adminDashboardTabs.querySelectorAll("[data-admin-panel]").forEach(function (button) {
+      button.classList.toggle("active", button === panelButton);
+    });
+
+    adminOrdersPanel.hidden = activeAdminPanel !== "orders";
+    adminSupportPanel.hidden = activeAdminPanel !== "support";
+  });
+
+  adminOrderFilters.addEventListener("click", function (event) {
+    const filterButton = event.target.closest("[data-admin-order-filter]");
+
+    if (!filterButton) {
+      return;
+    }
+
+    activeOrderFilter = filterButton.dataset.adminOrderFilter;
+
+    adminOrderFilters.querySelectorAll("[data-admin-order-filter]").forEach(function (button) {
+      button.classList.toggle("active", button === filterButton);
+    });
+
+    renderOrders();
+  });
 
   adminSupportFilters.addEventListener("click", function (event) {
     const filterButton = event.target.closest("[data-admin-support-filter]");
@@ -404,6 +825,16 @@
     renderTickets();
   });
 
+  adminOrderList.addEventListener("click", function (event) {
+    const orderCard = event.target.closest("[data-admin-order-id]");
+
+    if (!orderCard) {
+      return;
+    }
+
+    openOrder(orderCard.dataset.adminOrderId);
+  });
+
   adminSupportList.addEventListener("click", function (event) {
     const ticketCard = event.target.closest("[data-admin-ticket-id]");
 
@@ -414,8 +845,37 @@
     openTicket(ticketCard.dataset.adminTicketId);
   });
 
+  adminOrderModalBackdrop.addEventListener("click", closeOrderModal);
+  adminOrderModalClose.addEventListener("click", closeOrderModal);
   adminTicketModalBackdrop.addEventListener("click", closeTicketModal);
   adminTicketModalClose.addEventListener("click", closeTicketModal);
+
+  adminOrderSave.addEventListener("click", async function () {
+    if (!activeOrderId) {
+      return;
+    }
+
+    adminOrderSave.disabled = true;
+    adminOrderSave.textContent = "Saving...";
+    showMessage(adminOrderModalMessage, "", "");
+
+    try {
+      const updatedOrder = await updateAdminOrder(
+        activeOrderId,
+        adminOrderStatus.value,
+        adminOrderPaymentStatus.value,
+        adminOrderNote.value.trim()
+      );
+
+      replaceOrder(updatedOrder);
+      showMessage(adminOrderModalMessage, "Order saved.", "success");
+    } catch (error) {
+      showMessage(adminOrderModalMessage, error.message || "Could not save order.", "error");
+    } finally {
+      adminOrderSave.disabled = false;
+      adminOrderSave.textContent = "Save Order";
+    }
+  });
 
   adminTicketSaveStatus.addEventListener("click", async function () {
     if (!activeTicketId) {
@@ -467,6 +927,12 @@
       adminTicketSendReply.disabled = false;
       adminTicketSendReply.textContent = "Send Reply";
     }
+  });
+
+  loadAdminOrders().catch(function (error) {
+    adminOrderLoading.hidden = true;
+    adminOrderEmpty.hidden = false;
+    showMessage(adminOrderMessage, error.message || "Could not load orders.", "error");
   });
 
   loadAdminTickets().catch(function (error) {
