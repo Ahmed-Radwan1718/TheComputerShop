@@ -144,6 +144,15 @@ module.exports = async function handler(req, res) {
     }
 
     if (challenge.data && challenge.data.appVerified) {
+      if (!hasTrustBrowserChoice(req)) {
+        return res.status(200).json({
+          success: true,
+          requiresTrustedBrowserChoice: true,
+          trustBrowserPromptRequired: true,
+          trustBrowserDays: 14
+        });
+      }
+
       return await finishLogin(
         req,
         res,
