@@ -8444,6 +8444,122 @@ body.account-security-modal-open {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.account-support-ticket-button:hover {
+  background: rgba(255, 255, 255, 0.13);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.admin-dashboard-panel {
+  display: grid;
+  gap: 18px;
+}
+
+.admin-dashboard-panel[hidden] {
+  display: none;
+}
+
+#admin-dashboard-tabs {
+  margin-top: 0;
+  margin-bottom: 22px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.095);
+  gap: 10px;
+}
+
+#admin-order-filters,
+#admin-support-filters {
+  margin-top: 0;
+  gap: 10px;
+}
+
+.admin-dashboard-panel .account-support-list {
+  gap: 18px;
+}
+
+.admin-dashboard-panel .account-support-ticket-card {
+  padding: 24px 26px;
+  border-radius: 20px;
+  gap: 16px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.admin-dashboard-panel .account-support-ticket-top {
+  gap: 18px;
+  align-items: center;
+}
+
+.admin-dashboard-panel .account-support-ticket-category {
+  margin-bottom: 10px;
+  color: rgba(255, 255, 255, 0.48);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.admin-dashboard-panel .account-support-ticket-card h3 {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.admin-dashboard-panel .account-support-ticket-card p {
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.admin-dashboard-panel .account-support-ticket-meta {
+  gap: 8px 22px;
+  color: rgba(255, 255, 255, 0.48);
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.admin-dashboard-panel .account-support-ticket-button {
+  margin-top: 4px;
+}
+
+.account-support-ticket-status.submitted,
+.account-support-ticket-status.reviewing {
+  background: rgba(255, 214, 140, 0.12);
+  color: rgba(255, 218, 150, 0.96);
+}
+
+.account-support-ticket-status.quoted {
+  background: rgba(145, 190, 255, 0.12);
+  color: rgba(170, 205, 255, 0.96);
+}
+
+.account-support-ticket-status.confirmed,
+.account-support-ticket-status.fulfilled {
+  background: rgba(185, 255, 202, 0.12);
+  color: rgba(185, 255, 202, 0.92);
+}
+
+.account-support-ticket-status.canceled {
+  background: rgba(255, 130, 130, 0.12);
+  color: rgba(255, 170, 170, 0.9);
+}
+
+@media (max-width: 760px) {
+  #admin-dashboard-tabs {
+    margin-bottom: 18px;
+    padding-bottom: 16px;
+  }
+
+  .admin-dashboard-panel .account-support-ticket-card {
+    padding: 20px;
+  }
+
+  .admin-dashboard-panel .account-support-ticket-top {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-dashboard-panel .account-support-ticket-status {
+    justify-self: start;
+  }
 }
 
 .account-support-modal {
