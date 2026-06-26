@@ -256,27 +256,47 @@
                 <p>View the sign-in methods currently connected to your account.</p>
               </div>
 
-              <div class="account-connected-grid">
-                <div class="account-connected-account-card" id="connected-password-card">
-                  <div class="account-connected-account-main">
-                    <span>Email & Password</span>
-                    <strong id="connected-password-status">Checking...</strong>
-                    <p>Use your email address and password to sign in.</p>
+                <div class="account-connected-grid">
+                  <div class="account-connected-account-card" id="connected-password-card">
+                    <div class="account-connected-account-main">
+                      <span>Email & Password</span>
+                      <strong id="connected-password-status">Checking...</strong>
+                      <p>Use your email address and password to sign in.</p>
+                    </div>
+
+                    <span class="account-connected-badge" id="connected-password-badge">Checking</span>
                   </div>
 
-                  <span class="account-connected-badge" id="connected-password-badge">Checking</span>
-                </div>
+                  <div class="account-connected-account-card" id="connected-google-card">
+                    <div class="account-connected-account-main">
+                      <span>Google</span>
+                      <strong id="connected-google-status">Checking...</strong>
+                      <p>Use your Google account to sign in faster.</p>
+                    </div>
 
-                <div class="account-connected-account-card" id="connected-google-card">
-                  <div class="account-connected-account-main">
-                    <span>Google</span>
-                    <strong id="connected-google-status">Checking...</strong>
-                    <p>Use your Google account to sign in faster.</p>
+                    <span class="account-connected-badge" id="connected-google-badge">Checking</span>
                   </div>
 
-                  <span class="account-connected-badge" id="connected-google-badge">Checking</span>
+                  <div class="account-connected-account-card" id="connected-github-card">
+                    <div class="account-connected-account-main">
+                      <span>GitHub</span>
+                      <strong id="connected-github-status">Checking...</strong>
+                      <p>Use your GitHub account to sign in faster.</p>
+                    </div>
+
+                    <span class="account-connected-badge" id="connected-github-badge">Checking</span>
+                  </div>
+
+                  <div class="account-connected-account-card" id="connected-facebook-card">
+                    <div class="account-connected-account-main">
+                      <span>Facebook</span>
+                      <strong id="connected-facebook-status">Checking...</strong>
+                      <p>Use your Facebook account to sign in faster.</p>
+                    </div>
+
+                    <span class="account-connected-badge" id="connected-facebook-badge">Checking</span>
+                  </div>
                 </div>
-              </div>
 
               <button class="account-primary-button" type="submit" id="save-account-details">
                 Save Changes
@@ -854,6 +874,10 @@ const connectedPasswordStatus = document.getElementById("connected-password-stat
 const connectedPasswordBadge = document.getElementById("connected-password-badge");
 const connectedGoogleStatus = document.getElementById("connected-google-status");
 const connectedGoogleBadge = document.getElementById("connected-google-badge");
+const connectedGithubStatus = document.getElementById("connected-github-status");
+const connectedGithubBadge = document.getElementById("connected-github-badge");
+const connectedFacebookStatus = document.getElementById("connected-facebook-status");
+const connectedFacebookBadge = document.getElementById("connected-facebook-badge");
 
   const openAddressModalButton = document.getElementById("open-address-modal-button");
   const addressesList = document.getElementById("account-addresses-list");
@@ -2767,6 +2791,8 @@ function updateAccountStatus(user, data) {
 
   updateConnectedAccountStatus(connectedPasswordStatus, connectedPasswordBadge, connectedProviderIds.has("password"));
   updateConnectedAccountStatus(connectedGoogleStatus, connectedGoogleBadge, connectedProviderIds.has("google.com"));
+  updateConnectedAccountStatus(connectedGithubStatus, connectedGithubBadge, connectedProviderIds.has("github.com"));
+  updateConnectedAccountStatus(connectedFacebookStatus, connectedFacebookBadge, connectedProviderIds.has("facebook.com"));
 
   if (statusMemberSince) {
     statusMemberSince.textContent = getReadableDate(safeData.createdAt || user.metadata.creationTime);
