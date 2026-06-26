@@ -2803,11 +2803,9 @@ function updateConnectedAccountStatus(statusElement, badgeElement, actionButton,
   badgeElement.classList.toggle("is-not-connected", !connected);
 
   if (!actionButton) {
-    badgeElement.hidden = false;
     return;
   }
 
-  badgeElement.hidden = !connected;
   actionButton.hidden = false;
   actionButton.disabled = false;
   actionButton.textContent = connected ? "Disconnect" : "Connect";
