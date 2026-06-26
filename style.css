@@ -7763,6 +7763,21 @@ body.account-security-modal-open {
   gap: 8px;
 }
 
+.account-connected-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.account-connected-icon {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  display: block;
+}
+
 .account-connected-account-main span {
   color: rgba(255, 255, 255, 0.42);
   font-size: 11px;
