@@ -258,10 +258,26 @@ async function deleteProfilePhoto(uid) {
   });
 }
 
+async function ensureAccountSession(req, res, uid) {
+  if (typeof getCurrentAccountSession !== "function" || typeof createAccountSession !== "function") {
+    return;
+  }
+
+  const currentSession = await getCurrentAccountSession(req, uid).catch(function () {
+    return null;
+  });
+
+  if (currentSession) {
+    return;
+  }
+
+  await createAccountSession(uid, res, req);
+}
+
 async function getProfile(uid, req) {
   const userRecord = await admin.auth().getUser(uid);
   const userDoc = await admin.firestore().collection("users").doc(uid).get();
-  const data = userDoc.exists ? userDoc.data() || {} : {};
+  const data = userDoc.exists ? userDoc.data() || {};
   const sessions = typeof listAccountSessions === "function"
     ? await listAccountSessions(req, uid)
     : [];
@@ -375,6 +391,8 @@ async function handleProviderAction(req, res, uid, userData) {
 }
 
 async function handleGet(req, res, uid) {
+  await ensureAccountSession(req, res, uid);
+
   const profile = await getProfile(uid, req);
 
   return res.status(200).json({
