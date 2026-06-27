@@ -53,6 +53,10 @@
           <img src="saved-icon.png" alt="">
           <span>Saved for Later</span>
         </a>
+        <a href="accounts.html#orders" class="floating-account-menu-link" id="floating-orders-link" hidden>
+          <img src="orders-icon.png" alt="">
+          <span>Order History</span>
+        </a>
 <button class="floating-account-menu-link floating-account-logout" id="floating-logout-button" type="button" hidden>
   <img src="logout-icon.png" alt="">
   <span>Logout</span>
@@ -132,9 +136,10 @@ if (floatingAccountWidget) {
     const loginLink = document.getElementById("floating-login-link");
     const accountLink = document.getElementById("floating-account-link");
     const savedLink = document.getElementById("floating-saved-link");
+    const ordersLink = document.getElementById("floating-orders-link");
     const logoutButton = document.getElementById("floating-logout-button");
 
-    if (accountWidget && accountGreeting && accountButton && accountPhoto && accountMenu && loginLink && accountLink && savedLink && logoutButton) {
+    if (accountWidget && accountGreeting && accountButton && accountPhoto && accountMenu && loginLink && accountLink && savedLink && ordersLink && logoutButton) {
       const firebaseAuth = {};
       const auth = null;
       const signOut = null;
@@ -180,6 +185,7 @@ if (floatingAccountWidget) {
         loginLink.hidden = false;
         accountLink.hidden = true;
         savedLink.hidden = true;
+        ordersLink.hidden = true;
         logoutButton.hidden = true;
         accountGreeting.textContent = "";
         accountGreeting.hidden = true;
@@ -192,6 +198,7 @@ if (floatingAccountWidget) {
         loginLink.hidden = true;
         accountLink.hidden = false;
         savedLink.hidden = false;
+        ordersLink.hidden = false;
         logoutButton.hidden = false;
         accountGreeting.textContent = "Hello, " + firstName;
         accountGreeting.hidden = false;
@@ -255,6 +262,7 @@ if (floatingAccountWidget) {
 
       accountLink.addEventListener("click", closeAccountMenu);
       savedLink.addEventListener("click", closeAccountMenu);
+      ordersLink.addEventListener("click", closeAccountMenu);
 
       document.addEventListener("click", function (event) {
         if (!accountWidget.contains(event.target)) {
