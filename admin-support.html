@@ -38,8 +38,11 @@
               <button class="account-support-filter" type="button" data-admin-order-filter="submitted">Submitted</button>
               <button class="account-support-filter" type="button" data-admin-order-filter="reviewing">Reviewing</button>
               <button class="account-support-filter" type="button" data-admin-order-filter="quoted">Quoted</button>
-              <button class="account-support-filter" type="button" data-admin-order-filter="confirmed">Confirmed</button>
-              <button class="account-support-filter" type="button" data-admin-order-filter="fulfilled">Fulfilled</button>
+              <button class="account-support-filter" type="button" data-admin-order-filter="awaiting_payment">Awaiting Payment</button>
+              <button class="account-support-filter" type="button" data-admin-order-filter="preparing_order">Preparing Order</button>
+              <button class="account-support-filter" type="button" data-admin-order-filter="ready_for_delivery_pickup">Ready for Delivery / Pickup</button>
+              <button class="account-support-filter" type="button" data-admin-order-filter="out_for_delivery">Out for Delivery</button>
+              <button class="account-support-filter" type="button" data-admin-order-filter="completed">Completed</button>
               <button class="account-support-filter" type="button" data-admin-order-filter="canceled">Canceled</button>
             </div>
 
@@ -113,8 +116,11 @@
             <button class="custom-select-option active" type="button" data-value="submitted">Submitted</button>
             <button class="custom-select-option" type="button" data-value="reviewing">Reviewing</button>
             <button class="custom-select-option" type="button" data-value="quoted">Quoted</button>
-            <button class="custom-select-option" type="button" data-value="confirmed">Confirmed</button>
-            <button class="custom-select-option" type="button" data-value="fulfilled">Fulfilled</button>
+            <button class="custom-select-option" type="button" data-value="awaiting_payment">Awaiting Payment</button>
+            <button class="custom-select-option" type="button" data-value="preparing_order">Preparing Order</button>
+            <button class="custom-select-option" type="button" data-value="ready_for_delivery_pickup">Ready for Delivery / Pickup</button>
+            <button class="custom-select-option" type="button" data-value="out_for_delivery">Out for Delivery</button>
+            <button class="custom-select-option" type="button" data-value="completed">Completed</button>
             <button class="custom-select-option" type="button" data-value="canceled">Canceled</button>
           </div>
         </div>
@@ -360,10 +366,16 @@
         return "Reviewing";
       case "quoted":
         return "Quoted";
-      case "confirmed":
-        return "Confirmed";
-      case "fulfilled":
-        return "Fulfilled";
+      case "awaiting_payment":
+        return "Awaiting Payment";
+      case "preparing_order":
+        return "Preparing Order";
+      case "ready_for_delivery_pickup":
+        return "Ready for Delivery / Pickup";
+      case "out_for_delivery":
+        return "Out for Delivery";
+      case "completed":
+        return "Completed";
       case "canceled":
         return "Canceled";
       default:
