@@ -4160,7 +4160,16 @@ body.nav-menu-open {
 
 .cart-items {
   display: grid;
-  gap: 18px;
+  gap: 26px;
+  padding: 34px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.105);
+  background: rgba(24, 25, 24, 0.72);
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.22);
+}
+
+.cart-items:empty {
+  display: none;
 }
 
 .cart-item {
@@ -4168,12 +4177,12 @@ body.nav-menu-open {
   grid-template-columns: 118px minmax(0, 1fr) auto;
   gap: 22px;
   align-items: center;
-  padding: 22px 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.105);
+  padding: 0;
+  border-top: 0;
 }
 
 .cart-item:last-child {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.105);
+  border-bottom: 0;
 }
 
 .cart-item-image-frame {
@@ -4199,28 +4208,28 @@ body.nav-menu-open {
 .cart-item-title,
 .cart-item-title:visited {
   display: inline-block;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   color: white;
-  font-size: 20px;
+  font-size: 32px;
   font-weight: 700;
-  line-height: 1.18;
+  line-height: 1.12;
   text-transform: uppercase;
   text-decoration: none;
 }
 
 .cart-item-info p {
   margin-bottom: 8px;
-  color: rgba(255, 255, 255, 0.62);
-  font-size: 14px;
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 15px;
   font-weight: 400;
-  line-height: 1.55;
+  line-height: 1.75;
 }
 
 .cart-item-info span {
-  color: rgba(255, 255, 255, 0.46);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
@@ -4234,18 +4243,19 @@ body.nav-menu-open {
 .cart-item-side strong {
   color: white;
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 850;
+  line-height: 1.25;
   white-space: nowrap;
 }
 
 .cart-item-remove {
   border: none;
   background: transparent;
-  color: rgba(255, 255, 255, 0.48);
+  color: rgba(255, 255, 255, 0.68);
   font-family: inherit;
   font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  font-weight: 900;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
   transition: color 0.22s ease, opacity 0.22s ease;
@@ -4892,16 +4902,17 @@ body.nav-menu-open {
   .cart-item {
     grid-template-columns: 92px minmax(0, 1fr);
     gap: 16px;
-    padding: 22px 0;
+    padding: 0;
   }
 
   .cart-item-image-frame {
     width: 92px;
   }
 
-  .cart-item-info h2 {
-    font-size: 17px;
-    line-height: 1.25;
+  .cart-item-title,
+  .cart-item-title:visited {
+    font-size: 24px;
+    line-height: 1.16;
   }
 
   .cart-item-side {
