@@ -168,12 +168,7 @@
       <div class="account-support-thread" id="admin-order-items"></div>
     </div>
 
-    <div class="account-field admin-order-note-field">
-      <label for="admin-order-note">Admin Note</label>
-      <textarea id="admin-order-note" rows="4" maxlength="1500"></textarea>
-    </div>
-
-    <div class="account-support-detail-actions">
+    <div class="account-support-detail-actions admin-order-actions">
       <button class="account-security-modal-cancel" type="button" id="admin-order-save">
         Save Order
       </button>
@@ -266,7 +261,6 @@
   const adminOrderPhone = document.getElementById("admin-order-phone");
   const adminOrderAddress = document.getElementById("admin-order-address");
   const adminOrderItems = document.getElementById("admin-order-items");
-  const adminOrderNote = document.getElementById("admin-order-note");
   const adminOrderSave = document.getElementById("admin-order-save");
   const adminOrderModalMessage = document.getElementById("admin-order-modal-message");
 
@@ -581,7 +575,6 @@
     adminOrderCustomer.textContent = (order.userName || "Customer") + (order.userEmail ? " · " + order.userEmail : "");
     adminOrderPhone.textContent = order.phone || "Not provided";
     adminOrderAddress.textContent = getOrderAddressText(order);
-    adminOrderNote.value = order.adminNote || "";
 
     adminOrderItems.innerHTML = items.length ? items.map(function (item) {
       const quantity = Number(item.quantity || 1);
@@ -973,11 +966,12 @@
     showMessage(adminOrderModalMessage, "", "");
 
     try {
+      const activeOrder = getActiveOrder();
       const updatedOrder = await updateAdminOrder(
         activeOrderId,
         adminOrderStatus.value,
         adminOrderPaymentStatus.value,
-        adminOrderNote.value.trim()
+        activeOrder && activeOrder.adminNote ? activeOrder.adminNote : ""
       );
 
       replaceOrder(updatedOrder);
