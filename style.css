@@ -6763,7 +6763,7 @@ body.nav-menu-open {
   margin-bottom: 12px;
   color: rgba(255, 255, 255, 0.58);
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -7438,7 +7438,7 @@ body.account-security-modal-open {
   margin-bottom: 12px;
   color: rgba(255, 255, 255, 0.58);
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -7477,7 +7477,7 @@ body.account-security-modal-open {
   border-radius: 999px;
   font-family: inherit;
   font-size: 13px;
-  font-weight: 900;
+  font-weight: 700;
   letter-spacing: 0.09em;
   text-transform: uppercase;
   cursor: pointer;
@@ -8078,7 +8078,7 @@ body.account-security-modal-open {
   color: #181918;
   font-family: inherit;
   font-size: 13px;
-  font-weight: 900;
+  font-weight: 700;
   letter-spacing: 0.09em;
   text-transform: uppercase;
   cursor: pointer;
@@ -9383,7 +9383,7 @@ body.account-security-modal-open {
   background: rgba(126, 224, 161, 0.16);
   color: #7EE0A1;
   font-size: 11px;
-  font-weight: 900;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -9401,7 +9401,7 @@ body.account-security-modal-open {
   flex-wrap: wrap;
   color: rgba(255, 255, 255, 0.42);
   font-size: 11px;
-  font-weight: 850;
+  font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -9464,7 +9464,7 @@ body.account-security-modal-open {
   background: rgba(255, 156, 156, 0.13);
   color: rgba(255, 176, 176, 0.96);
   font-size: 10px;
-  font-weight: 900;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -9484,7 +9484,7 @@ body.account-security-modal-open {
   color: white;
   font-family: inherit;
   font-size: 12px;
-  font-weight: 900;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
@@ -9525,7 +9525,7 @@ body.account-security-modal-open {
   color: rgba(255, 176, 176, 0.96);
   font-family: inherit;
   font-size: 13px;
-  font-weight: 900;
+  font-weight: 700;
   letter-spacing: 0.09em;
   text-transform: uppercase;
   cursor: pointer;
