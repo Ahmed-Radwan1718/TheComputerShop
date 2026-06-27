@@ -2354,49 +2354,32 @@ function getActiveOrder() {
 }
 
 function getOrderDeliveryText(order) {
-  const parts = [];
+  const addressType = order.addressType || "";
+  const details = [
+    { label: "Recipient", value: order.userName || "Not saved" },
+    { label: "Email", value: order.userEmail || "Not saved" },
+    { label: "Phone", value: order.phone || "Not saved" },
+    { label: "Address Type", value: addressType ? getAddressTypeLabel(addressType) : "Not saved" },
+    { label: "Street", value: order.streetName || "Not saved" }
+  ];
 
-  if (order.addressType) {
-    parts.push("Address type: " + order.addressType);
-  }
-
-  if (order.buildingName) {
-    parts.push("Building: " + order.buildingName);
-  }
-
-  if (order.apartmentNumber) {
-    parts.push("Apartment: " + order.apartmentNumber);
-  }
-
-  if (order.floorNumber) {
-    parts.push("Floor: " + order.floorNumber);
-  }
-
-  if (order.houseNumber) {
-    parts.push("House / Villa: " + order.houseNumber);
-  }
-
-  if (order.officeName) {
-    parts.push("Office: " + order.officeName);
-  }
-
-  if (order.companyName) {
-    parts.push("Company: " + order.companyName);
-  }
-
-  if (order.streetName) {
-    parts.push("Street: " + order.streetName);
+  if (addressType === "house") {
+    details.push({ label: "House / Villa", value: order.houseNumber || "Not saved" });
+  } else if (addressType === "office") {
+    details.push({ label: "Company", value: order.companyName || "Not saved" });
+    details.push({ label: "Office", value: order.officeName || "Not saved" });
+    details.push({ label: "Floor", value: order.floorNumber || "Not saved" });
+  } else {
+    details.push({ label: "Building", value: order.buildingName || "Not saved" });
+    details.push({ label: "Apartment", value: order.apartmentNumber || "Not saved" });
+    details.push({ label: "Floor", value: order.floorNumber || "Not saved" });
   }
 
   if (order.additionalInfo) {
-    parts.push("Additional info: " + order.additionalInfo);
+    details.push({ label: "Additional Info", value: order.additionalInfo });
   }
 
-  if (order.phone) {
-    parts.push("Phone: " + order.phone);
-  }
-
-  return parts;
+  return details;
 }
 
 function renderOrderDetail(order) {
@@ -2439,12 +2422,20 @@ function renderOrderDetail(order) {
   }
 
   if (deliveryParts.length) {
-    orderDetailInfo.innerHTML = deliveryParts.map(function (line) {
-      return `<p>${escapeHtml(line)}</p>`;
+    orderDetailInfo.innerHTML = deliveryParts.map(function (detail) {
+      return `
+        <div class="account-order-detail-info-card">
+          <span>${escapeHtml(detail.label)}</span>
+          <strong>${escapeHtml(detail.value)}</strong>
+        </div>
+      `;
     }).join("");
   } else {
     orderDetailInfo.innerHTML = `
-      <p>No delivery details were saved with this order.</p>
+      <div class="account-order-detail-info-card account-order-detail-info-card-full">
+        <span>Delivery</span>
+        <strong>No delivery details were saved with this order.</strong>
+      </div>
     `;
   }
 }
