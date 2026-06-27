@@ -211,8 +211,8 @@ async function handlePost(req, res, uid) {
     return res.status(400).json({ error: "Your cart is empty." });
   }
 
-  if (!details.fullName || !details.email || !details.phone || !details.streetName) {
-    return res.status(400).json({ error: "Please complete your contact and address details." });
+  if (!details.fullName || !details.email || !details.phone) {
+    return res.status(400).json({ error: "Please complete your contact details." });
   }
 
   const orderRef = db.collection("orders").doc();
