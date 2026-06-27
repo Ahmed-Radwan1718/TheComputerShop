@@ -494,7 +494,7 @@ async function createSiteSessionFromIdToken(firstArg, secondArg, thirdArg) {
     Math.floor(SITE_SESSION_EXPIRES_MS / 1000)
   );
 
-  await createAccountSession(decodedToken.uid, res, req).catch(function () {});
+  await createAccountSession(decodedToken.uid, res, req);
 
   return sessionCookie;
 }
@@ -927,6 +927,7 @@ module.exports = {
   signInWithCustomToken,
   createSiteSessionFromIdToken,
   createSiteSessionForUid,
+  createAccountSession,
   clearSiteSessionCookie,
   getSiteSessionUser,
   getOptionalSiteSessionUser,
