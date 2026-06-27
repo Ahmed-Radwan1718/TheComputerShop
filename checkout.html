@@ -488,21 +488,9 @@
 
     const fullName = checkoutName.value.trim();
     const phone = checkoutPhone.value.trim();
-    const streetName = checkoutStreetName.value.trim();
-    const selectedSavedAddressId = checkoutSavedAddressSelect ? checkoutSavedAddressSelect.value : "";
 
     if (!fullName || !phone) {
       showCheckoutMessage("Please enter your name and phone number.", "error");
-      return;
-    }
-
-    if (!selectedSavedAddressId && !streetName) {
-      showCheckoutMessage("Please enter your street name.", "error");
-      return;
-    }
-
-    if (selectedSavedAddressId && !streetName) {
-      showCheckoutMessage("This saved address is missing a street name. Edit the saved address or enter a new address.", "error");
       return;
     }
 
