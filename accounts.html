@@ -1981,24 +1981,27 @@ function getOrderStatusLabel(status) {
   switch (status) {
     case "submitted":
       return "Submitted";
-    case "under_review":
-      return "Under Review";
-    case "price_confirmed":
-      return "Price Confirmed";
-    case "awaiting_customer_confirmation":
-      return "Awaiting Confirmation";
-    case "confirmed":
-      return "Confirmed";
-    case "preparing":
-      return "Preparing";
-    case "ready_for_pickup":
-      return "Ready for Pickup";
+    case "reviewing":
+      return "Reviewing";
+    case "quoted":
+      return "Quoted";
+    case "awaiting_payment":
+      return "Awaiting Payment";
+    case "preparing_order":
+      return "Preparing Order";
+    case "ready_for_delivery_pickup":
+      return "Ready for Delivery / Pickup";
     case "out_for_delivery":
       return "Out for Delivery";
     case "completed":
       return "Completed";
+    case "confirmed":
+      return "Confirmed";
+    case "fulfilled":
+      return "Fulfilled";
+    case "canceled":
     case "cancelled":
-      return "Cancelled";
+      return "Canceled";
     default:
       return "Submitted";
   }
