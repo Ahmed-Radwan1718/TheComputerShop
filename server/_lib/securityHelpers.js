@@ -16,7 +16,12 @@ const LOGIN_2FA_COOKIE_NAME = IS_PRODUCTION
   ? "__Host-tcs_login_2fa"
   : "tcs_login_2fa";
 
+const ACCOUNT_SESSION_COOKIE_NAME = IS_PRODUCTION
+  ? "__Host-tcs_account_session"
+  : "tcs_account_session";
+
 const SITE_SESSION_EXPIRES_MS = 5 * 24 * 60 * 60 * 1000;
+const ACCOUNT_SESSION_EXPIRES_MS = SITE_SESSION_EXPIRES_MS;
 const LOGIN_CHALLENGE_EXPIRES_MS = 10 * 60 * 1000;
 const LOGIN_2FA_SESSION_MINUTES = 30;
 
@@ -58,6 +63,13 @@ function getLoginTwoFactorSessionHash(uid, token, salt) {
   return crypto
     .createHmac("sha256", getSecuritySecret())
     .update("login-2fa:" + uid + ":" + token + ":" + salt)
+    .digest("hex");
+}
+
+function getAccountSessionHash(uid, sessionId, token, salt) {
+  return crypto
+    .createHmac("sha256", getSecuritySecret())
+    .update("account-session:" + uid + ":" + sessionId + ":" + token + ":" + salt)
     .digest("hex");
 }
 
@@ -142,6 +154,268 @@ function clearCookie(res, name) {
   );
 }
 
+function isRequestLike(value) {
+  return Boolean(value && typeof value === "object" && value.headers);
+}
+
+function getSessionClientIp(req) {
+  if (!isRequestLike(req)) {
+    return "";
+  }
+
+  const forwardedFor = req.headers["x-forwarded-for"];
+
+  if (typeof forwardedFor === "string" && forwardedFor.trim()) {
+    return forwardedFor.split(",")[0].trim();
+  }
+
+  if (Array.isArray(forwardedFor) && forwardedFor[0]) {
+    return String(forwardedFor[0]).split(",")[0].trim();
+  }
+
+  return String(
+    req.headers["cf-connecting-ip"] ||
+    req.headers["x-real-ip"] ||
+    req.socket?.remoteAddress ||
+    ""
+  ).trim();
+}
+
+function getSessionBrowserLabel(userAgent) {
+  const value = String(userAgent || "");
+
+  if (/Edg\//i.test(value)) return "Microsoft Edge";
+  if (/OPR\//i.test(value)) return "Opera";
+  if (/Firefox\//i.test(value)) return "Firefox";
+  if (/Chrome\//i.test(value)) return "Chrome";
+  if (/Safari\//i.test(value) && /Version\//i.test(value)) return "Safari";
+
+  return "Browser";
+}
+
+function getSessionPlatformLabel(userAgent) {
+  const value = String(userAgent || "");
+
+  if (/iPhone|iPad|iPod/i.test(value)) return "iOS";
+  if (/Android/i.test(value)) return "Android";
+  if (/Windows NT/i.test(value)) return "Windows";
+  if (/Mac OS X/i.test(value)) return "macOS";
+  if (/Linux/i.test(value)) return "Linux";
+
+  return "Device";
+}
+
+function getSessionDetailsFromRequest(req) {
+  const userAgent = isRequestLike(req) ? String(req.headers["user-agent"] || "") : "";
+  const browserLabel = getSessionBrowserLabel(userAgent);
+  const platformLabel = getSessionPlatformLabel(userAgent);
+
+  return {
+    userAgent,
+    ipAddress: getSessionClientIp(req),
+    browserLabel,
+    platformLabel,
+    deviceLabel: browserLabel + " on " + platformLabel
+  };
+}
+
+function sessionTimestampToMillis(value) {
+  if (!value) return 0;
+  if (typeof value.toMillis === "function") return value.toMillis();
+  if (typeof value.toDate === "function") return value.toDate().getTime();
+
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? 0 : date.getTime();
+}
+
+function serializeSessionTimestamp(value) {
+  const millis = sessionTimestampToMillis(value);
+  return millis ? new Date(millis).toISOString() : null;
+}
+
+function getAccountSessionCookieParts(req) {
+  if (!isRequestLike(req)) {
+    return null;
+  }
+
+  const cookieValue = getCookie(req, ACCOUNT_SESSION_COOKIE_NAME);
+
+  if (!cookieValue || !cookieValue.includes(".")) {
+    return null;
+  }
+
+  const parts = cookieValue.split(".");
+  const sessionId = parts[0];
+  const token = parts.slice(1).join(".");
+
+  if (!sessionId || !token) {
+    return null;
+  }
+
+  return {
+    sessionId,
+    token
+  };
+}
+
+async function createAccountSession(uid, res, req) {
+  if (!uid || !res) {
+    return null;
+  }
+
+  const db = admin.firestore();
+  const sessionRef = db.collection("accountSessions").doc();
+  const sessionId = sessionRef.id;
+  const token = createRandomToken();
+  const salt = db.collection("_").doc().id;
+  const details = getSessionDetailsFromRequest(req);
+
+  await sessionRef.set({
+    uid,
+    sessionHash: getAccountSessionHash(uid, sessionId, token, salt),
+    salt,
+    userAgent: details.userAgent,
+    ipAddress: details.ipAddress,
+    browserLabel: details.browserLabel,
+    platformLabel: details.platformLabel,
+    deviceLabel: details.deviceLabel,
+    createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    lastSeenAt: admin.firestore.FieldValue.serverTimestamp(),
+    expiresAt: admin.firestore.Timestamp.fromDate(
+      new Date(Date.now() + ACCOUNT_SESSION_EXPIRES_MS)
+    )
+  });
+
+  setCookie(
+    res,
+    ACCOUNT_SESSION_COOKIE_NAME,
+    sessionId + "." + token,
+    Math.floor(ACCOUNT_SESSION_EXPIRES_MS / 1000)
+  );
+
+  return {
+    sessionId
+  };
+}
+
+async function getCurrentAccountSession(req, uid) {
+  const parts = getAccountSessionCookieParts(req);
+
+  if (!parts || !uid) {
+    return null;
+  }
+
+  const sessionRef = admin.firestore().collection("accountSessions").doc(parts.sessionId);
+  const sessionDoc = await sessionRef.get();
+
+  if (!sessionDoc.exists) {
+    return null;
+  }
+
+  const data = sessionDoc.data() || {};
+
+  if (data.uid !== uid) {
+    return null;
+  }
+
+  if (isExpired(data.expiresAt)) {
+    await sessionRef.delete().catch(function () {});
+    return null;
+  }
+
+  const submittedHash = getAccountSessionHash(uid, parts.sessionId, parts.token, data.salt || "");
+  const savedBuffer = Buffer.from(data.sessionHash || "", "hex");
+  const submittedBuffer = Buffer.from(submittedHash, "hex");
+
+  if (
+    savedBuffer.length !== submittedBuffer.length ||
+    !crypto.timingSafeEqual(savedBuffer, submittedBuffer)
+  ) {
+    return null;
+  }
+
+  return {
+    id: parts.sessionId,
+    ref: sessionRef,
+    data
+  };
+}
+
+async function touchCurrentAccountSession(req, uid) {
+  const session = await getCurrentAccountSession(req, uid);
+
+  if (!session) {
+    return null;
+  }
+
+  await session.ref.set({
+    lastSeenAt: admin.firestore.FieldValue.serverTimestamp(),
+    expiresAt: admin.firestore.Timestamp.fromDate(
+      new Date(Date.now() + ACCOUNT_SESSION_EXPIRES_MS)
+    )
+  }, { merge: true });
+
+  return session;
+}
+
+async function clearCurrentAccountSession(req) {
+  const parts = getAccountSessionCookieParts(req);
+
+  if (!parts) {
+    return;
+  }
+
+  await admin.firestore().collection("accountSessions").doc(parts.sessionId).delete().catch(function () {});
+}
+
+async function listAccountSessions(req, uid) {
+  if (!uid) {
+    return [];
+  }
+
+  const snapshot = await admin.firestore()
+    .collection("accountSessions")
+    .where("uid", "==", uid)
+    .limit(50)
+    .get();
+
+  const currentSession = await getCurrentAccountSession(req, uid).catch(function () {
+    return null;
+  });
+
+  const expiredDeletes = [];
+  const sessions = [];
+
+  snapshot.docs.forEach(function (doc) {
+    const data = doc.data() || {};
+
+    if (isExpired(data.expiresAt)) {
+      expiredDeletes.push(doc.ref.delete().catch(function () {}));
+      return;
+    }
+
+    sessions.push({
+      id: doc.id,
+      deviceLabel: data.deviceLabel || "Browser session",
+      browserLabel: data.browserLabel || "Browser",
+      platformLabel: data.platformLabel || "Device",
+      ipAddress: data.ipAddress || "",
+      createdAt: serializeSessionTimestamp(data.createdAt),
+      lastSeenAt: serializeSessionTimestamp(data.lastSeenAt || data.createdAt),
+      expiresAt: serializeSessionTimestamp(data.expiresAt),
+      current: Boolean(currentSession && currentSession.id === doc.id)
+    });
+  });
+
+  await Promise.all(expiredDeletes);
+
+  sessions.sort(function (a, b) {
+    return sessionTimestampToMillis(b.lastSeenAt) - sessionTimestampToMillis(a.lastSeenAt);
+  });
+
+  return sessions;
+}
+
 async function firebaseAuthRest(endpoint, payload) {
   const response = await fetch(
     "https://identitytoolkit.googleapis.com/v1/" +
@@ -186,7 +460,29 @@ async function signInWithCustomToken(customToken) {
   });
 }
 
-async function createSiteSessionFromIdToken(idToken, res) {
+function normalizeSessionCreationArgs(firstArg, secondArg, thirdArg) {
+  if (isRequestLike(firstArg)) {
+    return {
+      req: firstArg,
+      res: secondArg,
+      value: thirdArg
+    };
+  }
+
+  return {
+    req: isRequestLike(thirdArg) ? thirdArg : null,
+    res: secondArg,
+    value: firstArg
+  };
+}
+
+async function createSiteSessionFromIdToken(firstArg, secondArg, thirdArg) {
+  const args = normalizeSessionCreationArgs(firstArg, secondArg, thirdArg);
+  const idToken = args.value;
+  const res = args.res;
+  const req = args.req;
+  const decodedToken = await admin.auth().verifyIdToken(idToken);
+
   const sessionCookie = await admin.auth().createSessionCookie(idToken, {
     expiresIn: SITE_SESSION_EXPIRES_MS
   });
@@ -198,20 +494,34 @@ async function createSiteSessionFromIdToken(idToken, res) {
     Math.floor(SITE_SESSION_EXPIRES_MS / 1000)
   );
 
+  await createAccountSession(decodedToken.uid, res, req).catch(function () {});
+
   return sessionCookie;
 }
 
-async function createSiteSessionForUid(uid, res) {
+async function createSiteSessionForUid(firstArg, secondArg, thirdArg) {
+  const args = normalizeSessionCreationArgs(firstArg, secondArg, thirdArg);
+  const uid = args.value;
+  const res = args.res;
+  const req = args.req;
   const customToken = await admin.auth().createCustomToken(uid);
   const signInData = await signInWithCustomToken(customToken);
 
-  await createSiteSessionFromIdToken(signInData.idToken, res);
+  await createSiteSessionFromIdToken(signInData.idToken, res, req);
 
   return signInData;
 }
 
-function clearSiteSessionCookie(res) {
+async function clearSiteSessionCookie(firstArg, secondArg) {
+  const req = isRequestLike(firstArg) && secondArg ? firstArg : null;
+  const res = secondArg || firstArg;
+
+  if (req) {
+    await clearCurrentAccountSession(req);
+  }
+
   clearCookie(res, SITE_SESSION_COOKIE_NAME);
+  clearCookie(res, ACCOUNT_SESSION_COOKIE_NAME);
 }
 
 async function getSiteSessionUser(req, options) {
@@ -224,10 +534,14 @@ async function getSiteSessionUser(req, options) {
     throw error;
   }
 
-  return await admin.auth().verifySessionCookie(
+  const decodedUser = await admin.auth().verifySessionCookie(
     sessionCookie,
     settings.checkRevoked !== false
   );
+
+  await touchCurrentAccountSession(req, decodedUser.uid).catch(function () {});
+
+  return decodedUser;
 }
 
 async function getOptionalSiteSessionUser(req, options) {
@@ -616,6 +930,9 @@ module.exports = {
   clearSiteSessionCookie,
   getSiteSessionUser,
   getOptionalSiteSessionUser,
+  listAccountSessions,
+  getCurrentAccountSession,
+  clearCurrentAccountSession,
 
   createLoginChallenge,
   getLoginChallenge,
