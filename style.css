@@ -8796,13 +8796,10 @@ body.account-security-modal-open {
   white-space: nowrap;
 }
 
-.admin-order-note-field {
-  margin-top: 2px;
-}
-
-.admin-order-note-field textarea {
-  min-height: 118px;
-  resize: vertical;
+.admin-order-actions {
+  margin-top: 8px;
+  margin-bottom: 12px;
+  align-items: center;
 }
 
 @media (max-width: 760px) {
