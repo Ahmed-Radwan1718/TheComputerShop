@@ -169,7 +169,7 @@ async function clearFailedLoginAttempts(email, ipAddress) {
 }
 
 async function createCompatibleSiteSession(req, res, idToken) {
-  return await createSiteSessionFromIdToken(idToken, res);
+  return await createSiteSessionFromIdToken(idToken, res, req);
 }
 
 async function createCompatibleLoginChallenge(req, res, payload) {
