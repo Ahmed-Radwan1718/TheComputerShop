@@ -6,7 +6,7 @@ const {
 
 const ADMIN_EMAILS = ["ahmedradwan21@gmail.com"];
 const VALID_STATUSES = ["open", "pending", "answered", "resolved", "closed"];
-const VALID_ORDER_STATUSES = ["submitted", "reviewing", "quoted", "confirmed", "fulfilled", "canceled"];
+const VALID_ORDER_STATUSES = ["submitted", "reviewing", "quoted", "awaiting_payment", "preparing_order", "ready_for_delivery_pickup", "out_for_delivery", "completed", "canceled"];
 const VALID_PAYMENT_STATUSES = ["not_paid", "pending", "paid", "refunded"];
 
 function cleanString(value, maxLength) {
