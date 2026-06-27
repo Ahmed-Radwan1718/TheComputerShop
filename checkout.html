@@ -29,99 +29,115 @@
           </div>
 
           <form class="checkout-form" id="checkout-form">
-            <div class="checkout-saved-address-picker" id="checkout-saved-address-picker" hidden>
-              <div class="checkout-field">
-                <label for="checkout-saved-address-select">Saved Address</label>
-                <select id="checkout-saved-address-select">
-                  <option value="">Enter a new address</option>
-                </select>
+            <div class="checkout-form-box">
+              <div class="checkout-form-box-header">
+                <span>Personal Info</span>
+                <p>Your contact details for order updates.</p>
+              </div>
+
+              <div class="checkout-form-grid">
+                <div class="checkout-field">
+                  <label for="checkout-name">Full Name</label>
+                  <input type="text" id="checkout-name" autocomplete="name" required>
+                </div>
+
+                <div class="checkout-field">
+                  <label for="checkout-email">Email Address</label>
+                  <input type="email" id="checkout-email" autocomplete="email" readonly>
+                </div>
+
+                <div class="checkout-field">
+                  <label for="checkout-phone">Phone Number</label>
+                  <input type="tel" id="checkout-phone" autocomplete="tel" required>
+                </div>
+
+                <div class="checkout-field">
+                  <label for="checkout-payment-method">Payment Method</label>
+                  <select id="checkout-payment-method" required>
+                    <option value="Cash on Delivery">Cash on Delivery</option>
+                    <option value="Cash on Pickup">Cash on Pickup</option>
+                    <option value="Bank Transfer">Bank Transfer</option>
+                    <option value="Instapay">Instapay</option>
+                    <option value="To be confirmed">To be confirmed</option>
+                  </select>
+                </div>
               </div>
             </div>
 
-            <div class="checkout-form-grid">
-              <div class="checkout-field">
-                <label for="checkout-name">Full Name</label>
-                <input type="text" id="checkout-name" autocomplete="name" required>
+            <div class="checkout-form-box">
+              <div class="checkout-form-box-header">
+                <span>Delivery Info</span>
+                <p>Choose a saved address or enter a new delivery address.</p>
               </div>
 
-              <div class="checkout-field">
-                <label for="checkout-email">Email Address</label>
-                <input type="email" id="checkout-email" autocomplete="email" readonly>
-              </div>
-
-              <div class="checkout-field">
-                <label for="checkout-phone">Phone Number</label>
-                <input type="tel" id="checkout-phone" autocomplete="tel" required>
-              </div>
-
-              <div class="checkout-field">
-                <label for="checkout-payment-method">Payment Method</label>
-                <select id="checkout-payment-method" required>
-                  <option value="Cash on Delivery">Cash on Delivery</option>
-                  <option value="Cash on Pickup">Cash on Pickup</option>
-                  <option value="Bank Transfer">Bank Transfer</option>
-                  <option value="Instapay">Instapay</option>
-                  <option value="To be confirmed">To be confirmed</option>
-                </select>
-              </div>
-
-              <div class="checkout-field checkout-field-full">
-                <label>Address Type</label>
-                <input type="hidden" id="checkout-address-type" value="apartment">
-
-                <div class="checkout-address-type-options">
-                  <button class="checkout-address-type-button active" type="button" data-checkout-address-type="apartment">
-                    Apartment
-                  </button>
-
-                  <button class="checkout-address-type-button" type="button" data-checkout-address-type="house">
-                    House / Villa
-                  </button>
-
-                  <button class="checkout-address-type-button" type="button" data-checkout-address-type="office">
-                    Office
-                  </button>
+              <div class="checkout-saved-address-picker" id="checkout-saved-address-picker" hidden>
+                <div class="checkout-field">
+                  <label for="checkout-saved-address-select">Saved Address</label>
+                  <select id="checkout-saved-address-select">
+                    <option value="">Enter a new address</option>
+                  </select>
                 </div>
               </div>
 
-              <div class="checkout-field checkout-address-field checkout-address-apartment">
-                <label for="checkout-building-name">Building Name</label>
-                <input type="text" id="checkout-building-name">
-              </div>
+              <div class="checkout-form-grid" id="checkout-new-address-fields">
+                <div class="checkout-field checkout-field-full">
+                  <label>Address Type</label>
+                  <input type="hidden" id="checkout-address-type" value="apartment">
 
-              <div class="checkout-field checkout-address-field checkout-address-apartment">
-                <label for="checkout-apartment-number">Apartment Number</label>
-                <input type="text" id="checkout-apartment-number">
-              </div>
+                  <div class="checkout-address-type-options">
+                    <button class="checkout-address-type-button active" type="button" data-checkout-address-type="apartment">
+                      Apartment
+                    </button>
 
-              <div class="checkout-field checkout-address-field checkout-address-apartment checkout-address-office">
-                <label for="checkout-floor-number">Floor Number</label>
-                <input type="text" id="checkout-floor-number">
-              </div>
+                    <button class="checkout-address-type-button" type="button" data-checkout-address-type="house">
+                      House / Villa
+                    </button>
 
-              <div class="checkout-field checkout-address-field checkout-address-house">
-                <label for="checkout-house-number">House / Villa Number</label>
-                <input type="text" id="checkout-house-number">
-              </div>
+                    <button class="checkout-address-type-button" type="button" data-checkout-address-type="office">
+                      Office
+                    </button>
+                  </div>
+                </div>
 
-              <div class="checkout-field checkout-address-field checkout-address-office">
-                <label for="checkout-office-name">Office Name</label>
-                <input type="text" id="checkout-office-name">
-              </div>
+                <div class="checkout-field checkout-address-field checkout-address-apartment">
+                  <label for="checkout-building-name">Building Name</label>
+                  <input type="text" id="checkout-building-name">
+                </div>
 
-              <div class="checkout-field checkout-address-field checkout-address-office">
-                <label for="checkout-company-name">Company Name</label>
-                <input type="text" id="checkout-company-name">
-              </div>
+                <div class="checkout-field checkout-address-field checkout-address-apartment">
+                  <label for="checkout-apartment-number">Apartment Number</label>
+                  <input type="text" id="checkout-apartment-number">
+                </div>
 
-              <div class="checkout-field">
-                <label for="checkout-street-name">Street Name</label>
-                <input type="text" id="checkout-street-name" required>
-              </div>
+                <div class="checkout-field checkout-address-field checkout-address-apartment checkout-address-office">
+                  <label for="checkout-floor-number">Floor Number</label>
+                  <input type="text" id="checkout-floor-number">
+                </div>
 
-              <div class="checkout-field checkout-field-full">
-                <label for="checkout-additional-info">Additional Info</label>
-                <textarea id="checkout-additional-info" rows="4"></textarea>
+                <div class="checkout-field checkout-address-field checkout-address-house">
+                  <label for="checkout-house-number">House / Villa Number</label>
+                  <input type="text" id="checkout-house-number">
+                </div>
+
+                <div class="checkout-field checkout-address-field checkout-address-office">
+                  <label for="checkout-office-name">Office Name</label>
+                  <input type="text" id="checkout-office-name">
+                </div>
+
+                <div class="checkout-field checkout-address-field checkout-address-office">
+                  <label for="checkout-company-name">Company Name</label>
+                  <input type="text" id="checkout-company-name">
+                </div>
+
+                <div class="checkout-field">
+                  <label for="checkout-street-name">Street Name</label>
+                  <input type="text" id="checkout-street-name">
+                </div>
+
+                <div class="checkout-field checkout-field-full">
+                  <label for="checkout-additional-info">Additional Info</label>
+                  <textarea id="checkout-additional-info" rows="4"></textarea>
+                </div>
               </div>
 
               <div class="checkout-field checkout-field-full">
@@ -168,6 +184,7 @@
   const checkoutPaymentMethod = document.getElementById("checkout-payment-method");
   const checkoutSavedAddressPicker = document.getElementById("checkout-saved-address-picker");
   const checkoutSavedAddressSelect = document.getElementById("checkout-saved-address-select");
+  const checkoutNewAddressFields = document.getElementById("checkout-new-address-fields");
   const checkoutAddressType = document.getElementById("checkout-address-type");
   const checkoutBuildingName = document.getElementById("checkout-building-name");
   const checkoutApartmentNumber = document.getElementById("checkout-apartment-number");
@@ -275,6 +292,11 @@
 
   function showCheckoutAddressFields() {
     const selectedType = checkoutAddressType.value;
+    const isUsingSavedAddress = Boolean(checkoutSavedAddressSelect && checkoutSavedAddressSelect.value);
+
+    if (checkoutNewAddressFields) {
+      checkoutNewAddressFields.hidden = isUsingSavedAddress;
+    }
 
     document.querySelectorAll(".checkout-address-type-button").forEach(function (button) {
       button.classList.toggle("active", button.dataset.checkoutAddressType === selectedType);
@@ -283,6 +305,10 @@
     document.querySelectorAll(".checkout-address-field").forEach(function (field) {
       field.hidden = true;
     });
+
+    if (isUsingSavedAddress) {
+      return;
+    }
 
     document.querySelectorAll(".checkout-address-" + selectedType).forEach(function (field) {
       field.hidden = false;
@@ -423,7 +449,11 @@
   document.querySelectorAll(".checkout-address-type-button").forEach(function (button) {
     button.addEventListener("click", function () {
       checkoutAddressType.value = button.dataset.checkoutAddressType;
-      checkoutSavedAddressSelect.value = "";
+
+      if (checkoutSavedAddressSelect) {
+        checkoutSavedAddressSelect.value = "";
+      }
+
       showCheckoutAddressFields();
     });
   });
@@ -436,6 +466,8 @@
 
       if (selectedAddress) {
         fillCheckoutAddress(selectedAddress);
+      } else {
+        showCheckoutAddressFields();
       }
     });
   }
@@ -457,9 +489,20 @@
     const fullName = checkoutName.value.trim();
     const phone = checkoutPhone.value.trim();
     const streetName = checkoutStreetName.value.trim();
+    const selectedSavedAddressId = checkoutSavedAddressSelect ? checkoutSavedAddressSelect.value : "";
 
-    if (!fullName || !phone || !streetName) {
-      showCheckoutMessage("Please enter your name, phone number, and street name.", "error");
+    if (!fullName || !phone) {
+      showCheckoutMessage("Please enter your name and phone number.", "error");
+      return;
+    }
+
+    if (!selectedSavedAddressId && !streetName) {
+      showCheckoutMessage("Please enter your street name.", "error");
+      return;
+    }
+
+    if (selectedSavedAddressId && !streetName) {
+      showCheckoutMessage("This saved address is missing a street name. Edit the saved address or enter a new address.", "error");
       return;
     }
 
