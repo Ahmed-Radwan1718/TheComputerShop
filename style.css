@@ -4554,7 +4554,7 @@ body.nav-menu-open {
 
 .checkout-header {
   max-width: 760px;
-  margin-bottom: 38px;
+  margin-bottom: 30px;
 }
 
 .checkout-eyebrow,
@@ -4568,18 +4568,19 @@ body.nav-menu-open {
 }
 
 .checkout-header h1 {
-  margin-bottom: 18px;
+  margin-bottom: 14px;
   color: white;
-  font-size: 46px;
+  font-size: 32px;
   font-weight: 700;
-  line-height: 1.08;
+  line-height: 1.12;
   text-transform: uppercase;
 }
 
 .checkout-header p {
-  color: rgba(255, 255, 255, 0.68);
-  font-size: 16px;
-  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.75;
 }
 
 .checkout-layout {
@@ -4590,11 +4591,12 @@ body.nav-menu-open {
 }
 
 .checkout-panel {
-  padding: 0;
-  border-radius: 0;
-  border: 0;
-  background: transparent;
-  box-shadow: none;
+  padding: 28px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.105);
+  background: rgba(24, 25, 24, 0.72);
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.22);
+  box-sizing: border-box;
 }
 
 .checkout-summary {
