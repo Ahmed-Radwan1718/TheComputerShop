@@ -227,6 +227,11 @@
                         <input type="text" id="company-name">
                       </div>
 
+                      <div class="account-field account-field-full">
+                        <label for="address-street-name">Street Name</label>
+                        <input type="text" id="address-street-name">
+                      </div>
+
                       <div class="account-field">
                         <label for="additional-info">Additional Info</label>
                         <input type="text" id="additional-info">
@@ -952,6 +957,7 @@ const connectedFacebookAction = document.getElementById("connected-facebook-acti
   const houseNumber = document.getElementById("house-number");
   const officeName = document.getElementById("office-name");
   const companyName = document.getElementById("company-name");
+  const addressStreetName = document.getElementById("address-street-name");
   const additionalInfo = document.getElementById("additional-info");
 
   const detailsForm = document.getElementById("account-details-form");
@@ -2517,6 +2523,10 @@ function getAddressPreview(address) {
     }
   }
 
+  if (address.streetName) {
+    parts.push(address.streetName);
+  }
+
   return parts.length ? parts.join(" · ") : "No address details saved";
 }
 
@@ -2529,8 +2539,9 @@ function clearAddressForm() {
   floorNumber.value = "";
   houseNumber.value = "";
   officeName.value = "";
-    companyName.value = "";
-    additionalInfo.value = "";
+  companyName.value = "";
+  addressStreetName.value = "";
+  additionalInfo.value = "";
   showMessage(addressModalMessage, "", "");
   showAddressFields();
 }
@@ -2548,6 +2559,7 @@ function openAddressModal(address) {
     houseNumber.value = address.houseNumber || "";
     officeName.value = address.officeName || "";
     companyName.value = address.companyName || "";
+    addressStreetName.value = address.streetName || "";
     additionalInfo.value = address.additionalInfo || "";
     addressModalTitle.textContent = "Edit Address";
     saveAddressButton.textContent = "Save Changes";
@@ -2581,6 +2593,7 @@ function getAddressFormData() {
     houseNumber: houseNumber.value.trim(),
     officeName: officeName.value.trim(),
     companyName: companyName.value.trim(),
+    streetName: addressStreetName.value.trim(),
     additionalInfo: additionalInfo.value.trim()
   };
 }
