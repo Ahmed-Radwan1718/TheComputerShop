@@ -6727,6 +6727,12 @@ body.nav-menu-open {
   animation: accountPanelEnter 0.34s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+body.account-security-modal-open .account-panel.active {
+  animation: none;
+  transform: none;
+  filter: none;
+}
+
 @keyframes accountPanelEnter {
   from {
     opacity: 0;
@@ -8635,6 +8641,8 @@ body.account-security-modal-open {
   position: absolute;
   inset: 0;
   background: rgba(0, 0, 0, 0.58);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .account-support-modal-card {
