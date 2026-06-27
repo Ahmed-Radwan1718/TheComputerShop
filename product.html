@@ -10892,32 +10892,30 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
 
       addToCartButton.disabled = true;
 
-      setTimeout(async () => {
-        try {
-          await window.addProductToSyncedCart(productData, quantity);
+      try {
+        await window.addProductToSyncedCart(productData, quantity);
 
-          if (cartTransitionOverlay) {
-            cartTransitionOverlay.classList.remove("active");
-          }
-
-          addToCartButton.textContent = "Added to Cart";
-        } catch (error) {
-          if (cartTransitionOverlay) {
-            cartTransitionOverlay.classList.remove("active");
-          }
-
-          if (error.message === "login-required") {
-            return;
-          }
-
-          addToCartButton.textContent = "Could Not Add";
+        if (cartTransitionOverlay) {
+          cartTransitionOverlay.classList.remove("active");
         }
 
-        setTimeout(() => {
-          addToCartButton.textContent = "Add to Cart";
-          addToCartButton.disabled = false;
-        }, 1200);
-      }, 700);
+        addToCartButton.textContent = "Added to Cart";
+      } catch (error) {
+        if (cartTransitionOverlay) {
+          cartTransitionOverlay.classList.remove("active");
+        }
+
+        if (error.message === "login-required") {
+          return;
+        }
+
+        addToCartButton.textContent = "Could Not Add";
+      }
+
+      setTimeout(() => {
+        addToCartButton.textContent = "Add to Cart";
+        addToCartButton.disabled = false;
+      }, 1200);
     });
   }
 
