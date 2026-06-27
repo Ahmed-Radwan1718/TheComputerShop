@@ -55,6 +55,7 @@ function serializeAddress(addressDoc) {
     houseNumber: data.houseNumber || "",
     officeName: data.officeName || "",
     companyName: data.companyName || "",
+    streetName: data.streetName || "",
     additionalInfo: data.additionalInfo || "",
     isDefault: Boolean(data.isDefault),
     createdAt: serializeTimestamp(data.createdAt),
@@ -72,7 +73,7 @@ function cleanAddressData(body) {
     houseNumber: cleanString(body.houseNumber, 40),
     officeName: cleanString(body.officeName, 80),
     companyName: cleanString(body.companyName, 80),
-    streetName: "",
+    streetName: cleanString(body.streetName, 120),
     additionalInfo: cleanString(body.additionalInfo, 500)
   };
 }
