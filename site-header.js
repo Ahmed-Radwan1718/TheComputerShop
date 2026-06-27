@@ -1,4 +1,19 @@
 (function () {
+  const faviconHref = "favicon.png";
+  const existingFavicon = document.querySelector('link[rel="icon"], link[rel="shortcut icon"]');
+
+  if (existingFavicon) {
+    existingFavicon.rel = "icon";
+    existingFavicon.type = "image/png";
+    existingFavicon.href = faviconHref;
+  } else {
+    const favicon = document.createElement("link");
+    favicon.rel = "icon";
+    favicon.type = "image/png";
+    favicon.href = faviconHref;
+    document.head.appendChild(favicon);
+  }
+
   const headerRoot = document.getElementById("site-header-root");
 
   if (!headerRoot) {
