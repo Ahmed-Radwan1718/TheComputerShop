@@ -154,16 +154,25 @@
     cartItems.innerHTML = "";
 
     const cartLayout = cartEmpty.closest(".cart-layout");
+    const cartHeader = document.querySelector(".cart-header");
 
     if (cartLayout) {
       cartLayout.classList.remove("cart-layout-is-empty");
     }
 
     if (cart.length === 0) {
+      if (cartHeader) {
+        cartHeader.style.display = "none";
+      }
+
       cartEmpty.style.display = "block";
       cartSummary.style.display = "block";
       cartTotal.textContent = "0 EGP";
       return;
+    }
+
+    if (cartHeader) {
+      cartHeader.style.display = "";
     }
 
     cartEmpty.style.display = "none";
