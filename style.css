@@ -9322,6 +9322,7 @@ body.account-security-modal-open {
 }
 
 .account-change-password-section,
+.account-login-sessions-section,
 .account-sign-out-everywhere-section,
 .account-two-factor-section {
   display: grid;
@@ -9332,6 +9333,77 @@ body.account-security-modal-open {
 .account-two-factor-methods {
   display: grid;
   gap: 14px;
+}
+
+.account-login-sessions-list {
+  display: grid;
+  gap: 14px;
+}
+
+.account-login-sessions-list:empty {
+  display: none;
+}
+
+.account-login-session-card {
+  padding: 20px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.105);
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.account-login-session-card.current {
+  border-color: rgba(126, 224, 161, 0.28);
+  background: rgba(126, 224, 161, 0.08);
+}
+
+.account-login-session-main {
+  display: grid;
+  gap: 8px;
+}
+
+.account-login-session-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.account-login-session-head h4 {
+  color: white;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.account-login-session-current {
+  padding: 7px 11px;
+  border-radius: 999px;
+  border: 1px solid rgba(126, 224, 161, 0.28);
+  background: rgba(126, 224, 161, 0.16);
+  color: #7EE0A1;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.account-login-session-main p,
+.account-login-sessions-empty {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.account-login-session-meta {
+  display: flex;
+  gap: 10px 16px;
+  flex-wrap: wrap;
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 .account-two-factor-card {
