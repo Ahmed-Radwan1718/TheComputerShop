@@ -592,13 +592,22 @@
                 <form class="account-form" id="support-request-form">
                   <div class="account-field">
                     <label for="support-request-category">Category</label>
-                    <select id="support-request-category" required>
-                      <option value="General Question">General Question</option>
-                      <option value="Product Question">Product Question</option>
-                      <option value="Build Consultation">Build Consultation</option>
-                      <option value="Order Help">Order Help</option>
-                      <option value="Warranty / Return">Warranty / Return</option>
-                    </select>
+                    <div class="custom-select-dropdown admin-order-select" data-support-request-category-select>
+                      <input type="hidden" id="support-request-category" value="General Question">
+
+                      <button class="custom-select-trigger" type="button" aria-expanded="false">
+                        <span class="custom-select-value" id="support-request-category-value">General Question</span>
+                        <span class="chevron"></span>
+                      </button>
+
+                      <div class="custom-select-menu">
+                        <button class="custom-select-option active" type="button" data-value="General Question">General Question</button>
+                        <button class="custom-select-option" type="button" data-value="Product Question">Product Question</button>
+                        <button class="custom-select-option" type="button" data-value="Build Consultation">Build Consultation</button>
+                        <button class="custom-select-option" type="button" data-value="Order Help">Order Help</button>
+                        <button class="custom-select-option" type="button" data-value="Warranty / Return">Warranty / Return</button>
+                      </div>
+                    </div>
                   </div>
 
                   <div class="account-field">
@@ -1960,8 +1969,42 @@ async function startSupportTicketsSync(uid) {
   }
 }
 
+function syncSupportRequestCategorySelect() {
+  const dropdown = document.querySelector("[data-support-request-category-select]");
+  const valueText = dropdown ? dropdown.querySelector(".custom-select-value") : null;
+  const options = dropdown ? dropdown.querySelectorAll(".custom-select-option") : [];
+  let selectedText = "";
+
+  options.forEach(function (option) {
+    const isSelected = option.dataset.value === supportRequestCategory.value;
+    option.classList.toggle("active", isSelected);
+
+    if (isSelected) {
+      selectedText = option.textContent.trim();
+    }
+  });
+
+  if (valueText && selectedText) {
+    valueText.textContent = selectedText;
+  }
+}
+
+function closeSupportRequestCategorySelect() {
+  const dropdown = document.querySelector("[data-support-request-category-select]");
+  const trigger = dropdown ? dropdown.querySelector(".custom-select-trigger") : null;
+
+  if (dropdown) {
+    dropdown.classList.remove("open");
+  }
+
+  if (trigger) {
+    trigger.setAttribute("aria-expanded", "false");
+  }
+}
+
 function openSupportRequestModal() {
   supportRequestForm.reset();
+  syncSupportRequestCategorySelect();
   showMessage(supportRequestFormMessage, "", "");
   supportRequestModal.hidden = false;
   document.body.classList.add("account-security-modal-open");
@@ -1973,7 +2016,9 @@ function openSupportRequestModal() {
 
 function closeSupportRequestModal() {
   supportRequestModal.hidden = true;
+  closeSupportRequestCategorySelect();
   supportRequestForm.reset();
+  syncSupportRequestCategorySelect();
   showMessage(supportRequestFormMessage, "", "");
 
   if (supportDetailModal.hidden) {
@@ -4555,6 +4600,38 @@ if (!requestedEmail) {
   }
 
   if (supportRequestForm) {
+    const supportRequestCategoryDropdown = document.querySelector("[data-support-request-category-select]");
+
+    if (supportRequestCategoryDropdown && supportRequestCategory) {
+      const trigger = supportRequestCategoryDropdown.querySelector(".custom-select-trigger");
+      const options = supportRequestCategoryDropdown.querySelectorAll(".custom-select-option");
+
+      if (trigger) {
+        trigger.addEventListener("click", function () {
+          const shouldOpen = !supportRequestCategoryDropdown.classList.contains("open");
+
+          supportRequestCategoryDropdown.classList.toggle("open", shouldOpen);
+          trigger.setAttribute("aria-expanded", shouldOpen ? "true" : "false");
+        });
+      }
+
+      options.forEach(function (option) {
+        option.addEventListener("click", function () {
+          supportRequestCategory.value = option.dataset.value || "General Question";
+          syncSupportRequestCategorySelect();
+          closeSupportRequestCategorySelect();
+        });
+      });
+
+      document.addEventListener("click", function (event) {
+        if (!event.target.closest("[data-support-request-category-select]")) {
+          closeSupportRequestCategorySelect();
+        }
+      });
+
+      syncSupportRequestCategorySelect();
+    }
+
     supportRequestForm.addEventListener("submit", async function (event) {
       event.preventDefault();
 
