@@ -1176,7 +1176,7 @@ body {
 .signature-page {
   min-height: 100vh;
   background: #2a2b2a;
-  padding-top: 120px;
+  padding-top: 104px;
 }
 
 .signature-hero {
@@ -1200,11 +1200,11 @@ body {
 
 .signature-hero-eyebrow,
 .signature-builds-eyebrow {
-  margin-bottom: 14px;
-  color: rgba(255, 255, 255, 0.72);
-  font-size: 13px;
+  margin-bottom: 12px;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
@@ -1233,7 +1233,7 @@ body {
 }
 
 .signature-builds-header {
-  margin-bottom: 34px;
+  margin-bottom: 28px;
 }
 
 .component-search-box {
@@ -1332,31 +1332,40 @@ body {
 
 .signature-builds-header h2 {
   color: white;
-  font-size: 38px;
+  font-size: 32px;
   font-weight: 700;
-  line-height: 1.08;
+  line-height: 1.12;
   text-transform: uppercase;
 }
 
 .signature-builds-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 20px;
+  gap: 18px;
 }
 
 .signature-build-card,
 .signature-build-card:visited {
-  background: transparent;
-  border: none;
-  overflow: hidden;
-  padding-bottom: 14px;
+  padding: 18px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.095);
+  background: rgba(24, 25, 24, 0.56);
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.18);
   color: inherit;
   text-decoration: none;
   display: block;
   transition:
     opacity 0.22s ease,
     transform 0.22s ease,
-    filter 0.22s ease;
+    filter 0.22s ease,
+    border-color 0.22s ease,
+    background 0.22s ease;
+}
+
+.signature-build-card:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(24, 25, 24, 0.68);
+  transform: translateY(-2px);
 }
 
 .signature-builds-grid.filter-is-updating .signature-build-card {
@@ -1371,7 +1380,7 @@ body {
 }
 
 .product-card-link:hover h3 {
-  opacity: 0.82;
+  opacity: 1;
 }
 
 .signature-build-image-placeholder,
@@ -1380,7 +1389,6 @@ body {
   aspect-ratio: 75 / 56;
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.055);
-  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.18);
 }
 
 .signature-build-image-placeholder {
@@ -1412,21 +1420,21 @@ body {
 }
 
 .signature-build-card h3 {
-  margin-top: 20px;
+  margin-top: 18px;
   margin-bottom: 8px;
   color: white;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
-  line-height: 1.18;
+  line-height: 1.22;
   text-transform: uppercase;
 }
 
 .signature-build-card p {
   max-width: 95%;
-  color: rgba(255, 255, 255, 0.66);
+  color: rgba(255, 255, 255, 0.64);
   font-size: 14px;
   font-weight: 400;
-  line-height: 1.65;
+  line-height: 1.7;
 }
 
 .signature-build-price {
@@ -1434,9 +1442,9 @@ body {
   padding-top: 14px;
   border-top: 1px solid rgba(255, 255, 255, 0.105);
   color: white;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
-  line-height: 1.3;
+  line-height: 1.4;
 }
 
 @media (max-width: 1100px) {
@@ -1770,60 +1778,81 @@ body.nav-menu-open {
 
 .signature-layout {
   display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: 50px;
-  max-width: 1500px;
-  margin: 80px auto 0;
-  padding: 0 120px 90px;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 28px;
+  max-width: 1220px;
+  margin: 76px auto 0;
+  padding: 0 44px 96px;
   align-items: start;
 }
 
 .filters-panel {
   position: sticky;
-  top: 130px;
+  top: 120px;
   align-self: start;
-  background: transparent;
-  padding: 0 28px 0 0;
+  padding: 14px;
+  border-radius: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  background: rgba(24, 25, 24, 0.56);
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.18);
+  display: grid;
+  gap: 8px;
 }
 
 .filters-heading {
-  margin-bottom: 26px;
-  color: rgba(255, 255, 255, 0.52);
-  font-size: 13px;
+  margin: 0;
+  padding: 10px 14px 6px;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
 .filter-item {
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border: 0;
 }
 
 .filter-item:last-child {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 0;
 }
 
 .filter-toggle {
   width: 100%;
+  min-height: 48px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 999px;
   background: transparent;
-  border: none;
-  color: rgba(255, 255, 255, 0.94);
+  color: rgba(255, 255, 255, 0.62);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-align: left;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 34px 0;
-  font-size: 21px;
-  font-weight: 700;
-  line-height: 1.2;
-  cursor: pointer;
-  text-align: left;
+  gap: 12px;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.filter-toggle:hover,
+.filter-item.open .filter-toggle {
+  background: rgba(255, 255, 255, 0.095);
+  color: white;
 }
 
 .chevron {
-  width: 10px;
-  height: 10px;
-  border-right: 1.5px solid rgba(255, 255, 255, 0.9);
-  border-bottom: 1.5px solid rgba(255, 255, 255, 0.9);
+  width: 9px;
+  height: 9px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
   transform: rotate(45deg);
   transition: transform 0.2s ease;
   flex-shrink: 0;
@@ -1836,7 +1865,7 @@ body.nav-menu-open {
   overflow: hidden;
   opacity: 0;
   transform: translateY(-8px);
-  padding: 0;
+  padding: 0 8px;
   transition:
     max-height 0.42s ease,
     opacity 0.28s ease,
@@ -1847,7 +1876,7 @@ body.nav-menu-open {
   max-height: 560px;
   opacity: 1;
   transform: translateY(0);
-  padding: 8px 0 30px 0;
+  padding: 8px 8px 10px;
 }
 
 .filter-item.open .chevron {
@@ -1856,17 +1885,19 @@ body.nav-menu-open {
 
 .filter-content label {
   position: relative;
-  display: block;
-  margin-bottom: 10px;
-  padding: 12px 14px 12px 24px;
-  border-radius: 16px;
+  min-height: 40px;
+  margin: 0;
+  padding: 0 12px 0 22px;
+  border-radius: 14px;
   color: rgba(255, 255, 255, 0.62);
-  font-size: 16px;
-  font-weight: 400;
+  font-size: 13px;
+  font-weight: 700;
   line-height: 1.4;
   cursor: pointer;
   user-select: none;
   overflow: hidden;
+  display: flex;
+  align-items: center;
   transition:
     color 0.24s ease,
     background 0.24s ease,
@@ -1877,8 +1908,8 @@ body.nav-menu-open {
   content: "";
   position: absolute;
   left: 8px;
-  top: 12px;
-  bottom: 12px;
+  top: 10px;
+  bottom: 10px;
   width: 2px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.92);
@@ -1899,13 +1930,13 @@ body.nav-menu-open {
 }
 
 .filter-content label:hover {
-  color: rgba(255, 255, 255, 0.9);
-  background: rgba(255, 255, 255, 0.035);
+  color: white;
+  background: rgba(255, 255, 255, 0.055);
 }
 
 .filter-content label:has(input:checked) {
   color: white;
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.095);
   transform: translateX(2px);
 }
 
@@ -5040,10 +5071,10 @@ body.nav-menu-open {
   .filters-panel {
     position: static;
     width: 100%;
-    padding: 22px;
-    border: 1px solid rgba(255, 255, 255, 0.105);
-    border-radius: 24px;
-    background: rgba(255, 255, 255, 0.035);
+    padding: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.11);
+    border-radius: 26px;
+    background: rgba(24, 25, 24, 0.56);
   }
 
   .signature-products {
@@ -5413,9 +5444,10 @@ body.nav-menu-open {
 
   .filters-panel {
     position: static;
-    padding: 18px;
-    border-radius: 22px;
-    background: rgba(255, 255, 255, 0.04);
+    padding: 14px;
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.11);
+    background: rgba(24, 25, 24, 0.56);
   }
 
   .filters-heading {
