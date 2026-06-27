@@ -2339,7 +2339,12 @@ body.nav-menu-open {
   }
 }
 
-.component-page,
+.component-page {
+  min-height: 100vh;
+  background: #2a2b2a;
+  padding-top: 104px;
+}
+
 .product-page {
   min-height: 100vh;
   background: #2a2b2a;
@@ -5411,29 +5416,12 @@ body.nav-menu-open {
   }
 
   .component-hero {
-    display: block;
-    min-height: auto;
-    margin: 0 22px 34px;
-    border-radius: 26px;
-    overflow: hidden;
+    display: none;
   }
 
   .component-hero-bg,
   .component-hero-overlay {
-    display: block;
-  }
-
-  .component-hero-content {
-    padding: 42px 26px;
-  }
-
-  .component-hero-content h1 {
-    font-size: 34px;
-  }
-
-  .component-hero-content p:last-child {
-    font-size: 16px;
-    line-height: 1.7;
+    display: none;
   }
 
   .signature-layout {
