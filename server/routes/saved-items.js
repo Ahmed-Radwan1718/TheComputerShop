@@ -31,6 +31,7 @@ function serializeSavedItem(itemDoc) {
 
   return {
     id: data.id || itemDoc.id,
+    docId: itemDoc.id,
     name: data.name || "Product",
     category: data.category || "",
     url: data.url || "",
