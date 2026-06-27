@@ -101,24 +101,42 @@
     <div class="account-form-grid admin-order-status-grid">
       <div class="account-field">
         <label for="admin-order-status">Order Status</label>
-        <select id="admin-order-status">
-          <option value="submitted">Submitted</option>
-          <option value="reviewing">Reviewing</option>
-          <option value="quoted">Quoted</option>
-          <option value="confirmed">Confirmed</option>
-          <option value="fulfilled">Fulfilled</option>
-          <option value="canceled">Canceled</option>
-        </select>
+        <div class="custom-select-dropdown admin-order-select" data-admin-order-select>
+          <input type="hidden" id="admin-order-status" value="submitted">
+
+          <button class="custom-select-trigger" type="button" aria-expanded="false">
+            <span class="custom-select-value" id="admin-order-status-value">Submitted</span>
+            <span class="chevron"></span>
+          </button>
+
+          <div class="custom-select-menu">
+            <button class="custom-select-option active" type="button" data-value="submitted">Submitted</button>
+            <button class="custom-select-option" type="button" data-value="reviewing">Reviewing</button>
+            <button class="custom-select-option" type="button" data-value="quoted">Quoted</button>
+            <button class="custom-select-option" type="button" data-value="confirmed">Confirmed</button>
+            <button class="custom-select-option" type="button" data-value="fulfilled">Fulfilled</button>
+            <button class="custom-select-option" type="button" data-value="canceled">Canceled</button>
+          </div>
+        </div>
       </div>
 
       <div class="account-field">
         <label for="admin-order-payment-status">Payment Status</label>
-        <select id="admin-order-payment-status">
-          <option value="not_paid">Not Paid</option>
-          <option value="pending">Pending</option>
-          <option value="paid">Paid</option>
-          <option value="refunded">Refunded</option>
-        </select>
+        <div class="custom-select-dropdown admin-order-select" data-admin-order-select>
+          <input type="hidden" id="admin-order-payment-status" value="not_paid">
+
+          <button class="custom-select-trigger" type="button" aria-expanded="false">
+            <span class="custom-select-value" id="admin-order-payment-status-value">Not Paid</span>
+            <span class="chevron"></span>
+          </button>
+
+          <div class="custom-select-menu">
+            <button class="custom-select-option active" type="button" data-value="not_paid">Not Paid</button>
+            <button class="custom-select-option" type="button" data-value="pending">Pending</button>
+            <button class="custom-select-option" type="button" data-value="paid">Paid</button>
+            <button class="custom-select-option" type="button" data-value="refunded">Refunded</button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -237,6 +255,7 @@
   const adminOrderSummary = document.getElementById("admin-order-summary");
   const adminOrderStatus = document.getElementById("admin-order-status");
   const adminOrderPaymentStatus = document.getElementById("admin-order-payment-status");
+  const adminOrderSelects = document.querySelectorAll("[data-admin-order-select]");
   const adminOrderCustomer = document.getElementById("admin-order-customer");
   const adminOrderPhone = document.getElementById("admin-order-phone");
   const adminOrderAddress = document.getElementById("admin-order-address");
@@ -404,6 +423,42 @@
     }) || null;
   }
 
+  function closeAdminOrderSelects(exceptDropdown) {
+    adminOrderSelects.forEach(function (dropdown) {
+      if (dropdown === exceptDropdown) {
+        return;
+      }
+
+      dropdown.classList.remove("open");
+
+      const trigger = dropdown.querySelector(".custom-select-trigger");
+
+      if (trigger) {
+        trigger.setAttribute("aria-expanded", "false");
+      }
+    });
+  }
+
+  function syncAdminOrderSelect(hiddenInput) {
+    const dropdown = hiddenInput.closest("[data-admin-order-select]");
+    const valueText = dropdown ? dropdown.querySelector(".custom-select-value") : null;
+    const options = dropdown ? dropdown.querySelectorAll(".custom-select-option") : [];
+    let selectedText = "";
+
+    options.forEach(function (option) {
+      const isSelected = option.dataset.value === hiddenInput.value;
+      option.classList.toggle("active", isSelected);
+
+      if (isSelected) {
+        selectedText = option.textContent.trim();
+      }
+    });
+
+    if (valueText && selectedText) {
+      valueText.textContent = selectedText;
+    }
+  }
+
   function renderOrders() {
     adminOrderLoading.hidden = true;
 
@@ -509,6 +564,8 @@
     adminOrderSummary.textContent = "Submitted " + getAdminDate(order.createdAt) + " · Total: " + getOrderMoneyText(order);
     adminOrderStatus.value = order.status || "submitted";
     adminOrderPaymentStatus.value = order.paymentStatus || "not_paid";
+    syncAdminOrderSelect(adminOrderStatus);
+    syncAdminOrderSelect(adminOrderPaymentStatus);
     adminOrderCustomer.textContent = (order.userName || "Customer") + (order.userEmail ? " · " + order.userEmail : "");
     adminOrderPhone.textContent = order.phone || "Not provided";
     adminOrderAddress.textContent = getOrderAddressText(order);
@@ -784,6 +841,41 @@
     renderTickets();
     renderTicketModal(updatedTicket);
   }
+
+  adminOrderSelects.forEach(function (dropdown) {
+    const trigger = dropdown.querySelector(".custom-select-trigger");
+    const hiddenInput = dropdown.querySelector("input[type='hidden']");
+    const options = dropdown.querySelectorAll(".custom-select-option");
+
+    if (!trigger || !hiddenInput) {
+      return;
+    }
+
+    trigger.addEventListener("click", function () {
+      const shouldOpen = !dropdown.classList.contains("open");
+
+      closeAdminOrderSelects(dropdown);
+      dropdown.classList.toggle("open", shouldOpen);
+      trigger.setAttribute("aria-expanded", shouldOpen ? "true" : "false");
+    });
+
+    options.forEach(function (option) {
+      option.addEventListener("click", function () {
+        hiddenInput.value = option.dataset.value || "";
+        syncAdminOrderSelect(hiddenInput);
+        dropdown.classList.remove("open");
+        trigger.setAttribute("aria-expanded", "false");
+      });
+    });
+
+    syncAdminOrderSelect(hiddenInput);
+  });
+
+  document.addEventListener("click", function (event) {
+    if (!event.target.closest("[data-admin-order-select]")) {
+      closeAdminOrderSelects();
+    }
+  });
 
   adminDashboardTabs.addEventListener("click", function (event) {
     const panelButton = event.target.closest("[data-admin-panel]");
