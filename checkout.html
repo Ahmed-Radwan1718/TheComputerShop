@@ -73,9 +73,20 @@
               <div class="checkout-saved-address-picker" id="checkout-saved-address-picker" hidden>
                 <div class="checkout-field">
                   <label for="checkout-saved-address-select">Saved Address</label>
-                  <select id="checkout-saved-address-select">
+                  <select id="checkout-saved-address-select" hidden>
                     <option value="">Enter a new address</option>
                   </select>
+
+                  <div class="custom-select-dropdown" id="checkout-saved-address-dropdown">
+                    <button class="custom-select-trigger" type="button" aria-expanded="false">
+                      <span class="custom-select-value" id="checkout-saved-address-value">Enter a new address</span>
+                      <span class="chevron"></span>
+                    </button>
+
+                    <div class="custom-select-menu" id="checkout-saved-address-menu">
+                      <button class="custom-select-option active" type="button" data-value="">Enter a new address</button>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -179,6 +190,9 @@
   const checkoutPaymentMethod = document.getElementById("checkout-payment-method");
   const checkoutSavedAddressPicker = document.getElementById("checkout-saved-address-picker");
   const checkoutSavedAddressSelect = document.getElementById("checkout-saved-address-select");
+  const checkoutSavedAddressDropdown = document.getElementById("checkout-saved-address-dropdown");
+  const checkoutSavedAddressValue = document.getElementById("checkout-saved-address-value");
+  const checkoutSavedAddressMenu = document.getElementById("checkout-saved-address-menu");
   const checkoutNewAddressFields = document.getElementById("checkout-new-address-fields");
   const checkoutAddressType = document.getElementById("checkout-address-type");
   const checkoutBuildingName = document.getElementById("checkout-building-name");
@@ -325,6 +339,20 @@
     showCheckoutAddressFields();
   }
 
+  function syncCheckoutSavedAddressDropdown() {
+    if (!checkoutSavedAddressSelect || !checkoutSavedAddressValue || !checkoutSavedAddressMenu) {
+      return;
+    }
+
+    const selectedOption = checkoutSavedAddressSelect.options[checkoutSavedAddressSelect.selectedIndex];
+
+    checkoutSavedAddressValue.textContent = selectedOption ? selectedOption.textContent : "Enter a new address";
+
+    checkoutSavedAddressMenu.querySelectorAll(".custom-select-option").forEach(function (option) {
+      option.classList.toggle("active", option.dataset.value === checkoutSavedAddressSelect.value);
+    });
+  }
+
   function renderCheckoutSavedAddresses() {
     if (!checkoutSavedAddressPicker || !checkoutSavedAddressSelect) {
       return;
@@ -348,10 +376,22 @@
       `;
     }).join("");
 
+    if (checkoutSavedAddressMenu) {
+      checkoutSavedAddressMenu.innerHTML = `
+        <button class="custom-select-option active" type="button" data-value="">Enter a new address</button>
+      ` + orderedAddresses.map(function (address) {
+        return `
+          <button class="custom-select-option" type="button" data-value="${escapeHtml(address.id)}">${escapeHtml(getCheckoutAddressLabel(address))}</button>
+        `;
+      }).join("");
+    }
+
     if (defaultAddress) {
       checkoutSavedAddressSelect.value = defaultAddress.id;
       fillCheckoutAddress(defaultAddress);
     }
+
+    syncCheckoutSavedAddressDropdown();
   }
 
   function fillCheckoutProfile(profile) {
@@ -445,15 +485,47 @@
         checkoutSavedAddressSelect.value = "";
       }
 
+      syncCheckoutSavedAddressDropdown();
       showCheckoutAddressFields();
     });
   });
+
+  if (checkoutSavedAddressDropdown && checkoutSavedAddressSelect) {
+    const checkoutSavedAddressTrigger = checkoutSavedAddressDropdown.querySelector(".custom-select-trigger");
+
+    checkoutSavedAddressTrigger.addEventListener("click", function () {
+      const isOpen = checkoutSavedAddressDropdown.classList.toggle("open");
+      checkoutSavedAddressTrigger.setAttribute("aria-expanded", String(isOpen));
+    });
+
+    checkoutSavedAddressDropdown.addEventListener("click", function (event) {
+      const option = event.target.closest(".custom-select-option");
+
+      if (!option) {
+        return;
+      }
+
+      checkoutSavedAddressSelect.value = option.dataset.value || "";
+      checkoutSavedAddressSelect.dispatchEvent(new Event("change"));
+      checkoutSavedAddressDropdown.classList.remove("open");
+      checkoutSavedAddressTrigger.setAttribute("aria-expanded", "false");
+    });
+
+    document.addEventListener("click", function (event) {
+      if (!checkoutSavedAddressDropdown.contains(event.target)) {
+        checkoutSavedAddressDropdown.classList.remove("open");
+        checkoutSavedAddressTrigger.setAttribute("aria-expanded", "false");
+      }
+    });
+  }
 
   if (checkoutSavedAddressSelect) {
     checkoutSavedAddressSelect.addEventListener("change", function () {
       const selectedAddress = checkoutSavedAddresses.find(function (address) {
         return address.id === checkoutSavedAddressSelect.value;
       });
+
+      syncCheckoutSavedAddressDropdown();
 
       if (selectedAddress) {
         fillCheckoutAddress(selectedAddress);
