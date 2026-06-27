@@ -2,7 +2,8 @@ const admin = require("../_lib/firebaseAdmin");
 const { v2: cloudinary } = require("cloudinary");
 
 const {
-  getUserFromRequest
+  getUserFromRequest,
+  listAccountSessions
 } = require("../_lib/securityHelpers");
 
 const {
@@ -255,10 +256,13 @@ async function deleteProfilePhoto(uid) {
   });
 }
 
-async function getProfile(uid) {
+async function getProfile(uid, req) {
   const userRecord = await admin.auth().getUser(uid);
   const userDoc = await admin.firestore().collection("users").doc(uid).get();
   const data = userDoc.exists ? userDoc.data() || {} : {};
+  const sessions = typeof listAccountSessions === "function"
+    ? await listAccountSessions(req, uid)
+    : [];
 
   return {
     uid,
@@ -269,6 +273,7 @@ async function getProfile(uid) {
     phone: data.phone || "",
     twoFactor: getSafeTwoFactor(data.twoFactor),
     connectedProviders: getConnectedProviders(userRecord, data),
+    sessions,
     usernameLastChangedAt: serializeTimestamp(data.usernameLastChangedAt),
     emailLastChangedAt: serializeTimestamp(data.emailLastChangedAt),
     emailChangePendingTo: data.emailChangePendingTo || "",
@@ -368,7 +373,7 @@ async function handleProviderAction(req, res, uid, userData) {
 }
 
 async function handleGet(req, res, uid) {
-  const profile = await getProfile(uid);
+  const profile = await getProfile(uid, req);
 
   return res.status(200).json({
     success: true,
@@ -454,7 +459,7 @@ async function handlePatch(req, res, uid) {
     await admin.auth().updateUser(uid, authUpdateData);
   }
 
-  const profile = await getProfile(uid);
+  const profile = await getProfile(uid, req);
 
   return res.status(200).json({
     success: true,
