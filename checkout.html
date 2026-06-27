@@ -129,11 +129,6 @@
                   <input type="text" id="checkout-company-name">
                 </div>
 
-                <div class="checkout-field">
-                  <label for="checkout-street-name">Street Name</label>
-                  <input type="text" id="checkout-street-name">
-                </div>
-
                 <div class="checkout-field checkout-field-full">
                   <label for="checkout-additional-info">Additional Info</label>
                   <textarea id="checkout-additional-info" rows="4"></textarea>
@@ -192,7 +187,6 @@
   const checkoutHouseNumber = document.getElementById("checkout-house-number");
   const checkoutOfficeName = document.getElementById("checkout-office-name");
   const checkoutCompanyName = document.getElementById("checkout-company-name");
-  const checkoutStreetName = document.getElementById("checkout-street-name");
   const checkoutAdditionalInfo = document.getElementById("checkout-additional-info");
   const checkoutCustomerNote = document.getElementById("checkout-customer-note");
   const checkoutSubmitButton = document.getElementById("checkout-submit-button");
@@ -327,7 +321,6 @@
     checkoutHouseNumber.value = address.houseNumber || "";
     checkoutOfficeName.value = address.officeName || "";
     checkoutCompanyName.value = address.companyName || "";
-    checkoutStreetName.value = address.streetName || "";
     checkoutAdditionalInfo.value = address.additionalInfo || "";
     showCheckoutAddressFields();
   }
@@ -374,7 +367,6 @@
     checkoutHouseNumber.value = profile.houseNumber || "";
     checkoutOfficeName.value = profile.officeName || "";
     checkoutCompanyName.value = profile.companyName || "";
-    checkoutStreetName.value = profile.streetName || "";
     checkoutAdditionalInfo.value = profile.additionalInfo || "";
 
     showCheckoutAddressFields();
@@ -429,7 +421,6 @@
         houseNumber: checkoutHouseNumber.value.trim(),
         officeName: checkoutOfficeName.value.trim(),
         companyName: checkoutCompanyName.value.trim(),
-        streetName: checkoutStreetName.value.trim(),
         additionalInfo: checkoutAdditionalInfo.value.trim(),
         customerNote: checkoutCustomerNote.value.trim()
       })
