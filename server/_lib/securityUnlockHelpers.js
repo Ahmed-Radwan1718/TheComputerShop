@@ -8,7 +8,7 @@ const SECURITY_UNLOCK_COOKIE_NAME = IS_PRODUCTION
   ? "__Host-tcs_security_unlock"
   : "tcs_security_unlock";
 
-const SECURITY_UNLOCK_EXPIRES_MS = 30 * 60 * 1000;
+const SECURITY_UNLOCK_EXPIRES_MS = 60 * 60 * 1000;
 
 function getSecuritySecret() {
   if (!process.env.SECURITY_CODE_SECRET) {
