@@ -8603,6 +8603,38 @@ body.account-security-modal-open {
 
 .admin-order-status-grid {
   margin-bottom: 18px;
+  overflow: visible;
+}
+
+.admin-order-status-grid .account-field {
+  overflow: visible;
+}
+
+.admin-order-select {
+  position: relative;
+  z-index: 30;
+}
+
+.admin-order-select.open {
+  z-index: 80;
+}
+
+.admin-order-select .custom-select-trigger {
+  min-height: 50px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.045);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.admin-order-select .custom-select-menu {
+  z-index: 3600;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.admin-order-select .custom-select-option {
+  font-family: inherit;
 }
 
 .admin-order-info-grid {
