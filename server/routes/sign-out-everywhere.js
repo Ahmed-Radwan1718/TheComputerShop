@@ -105,7 +105,8 @@ module.exports = async function handler(req, res) {
       deleteQuery("securityPasswordSessions", decodedUser.uid),
       deleteQuery("loginTwoFactorSessions", decodedUser.uid),
       deleteQuery("loginChallenges", decodedUser.uid),
-      deleteQuery("loginEmailCodes", decodedUser.uid)
+      deleteQuery("loginEmailCodes", decodedUser.uid),
+      deleteQuery("accountSessions", decodedUser.uid)
     ]);
 
     await clearLoginChallengeCookie(req, res);
