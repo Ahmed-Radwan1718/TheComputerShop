@@ -4591,12 +4591,11 @@ body.nav-menu-open {
 }
 
 .checkout-panel {
-  padding: 28px;
-  border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.105);
-  background: rgba(24, 25, 24, 0.72);
-  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.22);
-  box-sizing: border-box;
+  padding: 0;
+  border-radius: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 .checkout-summary {
