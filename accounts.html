@@ -385,6 +385,21 @@
 
   <div class="account-divider"></div>
 
+  <div class="account-login-sessions-section">
+    <div class="account-panel-subheader">
+      <h3>Logged-In Sessions</h3>
+      <p>Browsers and devices that are currently signed in to your account.</p>
+    </div>
+
+    <div class="account-login-sessions-list" id="account-login-sessions-list"></div>
+
+    <p class="account-login-sessions-empty" id="account-login-sessions-empty" hidden>
+      No active sessions found yet.
+    </p>
+  </div>
+
+  <div class="account-divider"></div>
+
   <div class="account-sign-out-everywhere-section">
     <div class="account-panel-subheader">
       <h3>Sign Out Everywhere</h3>
@@ -1038,6 +1053,8 @@ const passwordMessage = document.getElementById("password-message");
   const twoFactorEmailStatus = document.getElementById("two-factor-email-status");
   const twoFactorEmailButton = document.getElementById("two-factor-email-button");
   const twoFactorMessage = document.getElementById("two-factor-message");
+  const loginSessionsList = document.getElementById("account-login-sessions-list");
+  const loginSessionsEmpty = document.getElementById("account-login-sessions-empty");
 
   const authenticatorSetupModal = document.getElementById("authenticator-setup-modal");
   const authenticatorSetupModalBackdrop = document.getElementById("authenticator-setup-modal-backdrop");
@@ -1088,6 +1105,7 @@ let orderHistoryUnsubscribe = null;
 let orderHistory = [];
 let activeOrderId = "";
 let twoFactorSettings = {};
+let loginSessions = [];
 const usernameCooldownDays = 14;
 const emailCooldownDays = 90;
 const securityUnlockMinutes = 30;
@@ -1221,6 +1239,60 @@ async function verifySecurityPanelCode(code, method) {
   }
 
   return data;
+}
+
+function getLoginSessionDate(value) {
+  const date = getDateFromFirestoreValue(value);
+
+  if (!date) {
+    return "Not available";
+  }
+
+  return date.toLocaleString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+}
+
+function renderLoginSessions() {
+  if (!loginSessionsList || !loginSessionsEmpty) {
+    return;
+  }
+
+  const sessions = Array.isArray(loginSessions) ? loginSessions : [];
+
+  loginSessionsEmpty.hidden = sessions.length > 0;
+
+  loginSessionsList.innerHTML = sessions.map(function (session) {
+    const currentBadge = session.current
+      ? '<span class="account-login-session-current">Current</span>'
+      : "";
+    const ipText = session.ipAddress
+      ? '<span>IP ' + escapeHtml(session.ipAddress) + '</span>'
+      : "";
+
+    return `
+      <article class="account-login-session-card ${session.current ? "current" : ""}">
+        <div class="account-login-session-main">
+          <div class="account-login-session-head">
+            <h4>${escapeHtml(session.deviceLabel || "Browser session")}</h4>
+            ${currentBadge}
+          </div>
+
+          <p>${escapeHtml(session.browserLabel || "Browser")} · ${escapeHtml(session.platformLabel || "Device")}</p>
+
+          <div class="account-login-session-meta">
+            <span>Last active ${escapeHtml(getLoginSessionDate(session.lastSeenAt || session.createdAt))}</span>
+            <span>Signed in ${escapeHtml(getLoginSessionDate(session.createdAt))}</span>
+            ${ipText}
+          </div>
+        </div>
+      </article>
+    `;
+  }).join("");
 }
 
 function updateTwoFactorUI() {
@@ -3851,7 +3923,9 @@ function hydrateAccountProfileFromServer(profile, user) {
   accountHeaderText.textContent = "Welcome back, " + (safeProfile.fullName || "Customer") + ".";
 
   twoFactorSettings = safeProfile.twoFactor || {};
+  loginSessions = Array.isArray(safeProfile.sessions) ? safeProfile.sessions : [];
   updateTwoFactorUI();
+  renderLoginSessions();
 
   updateAccountStatus(statusUser, profileDataForStatus);
 }
