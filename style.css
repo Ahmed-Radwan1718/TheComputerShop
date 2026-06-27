@@ -8590,15 +8590,125 @@ body.account-security-modal-open {
   width: min(680px, 100%);
   max-height: calc(100vh - 48px);
   overflow-y: auto;
-  padding: 36px;
-  border-radius: 26px;
+  padding: 34px;
+  border-radius: 24px;
   border: 1px solid rgba(255, 255, 255, 0.11);
   background: rgba(24, 25, 24, 0.96);
   box-shadow: 0 22px 55px rgba(0, 0, 0, 0.32);
 }
 
 .account-support-detail-card {
-  width: min(780px, 100%);
+  width: min(820px, 100%);
+}
+
+.admin-order-status-grid {
+  margin-bottom: 18px;
+}
+
+.admin-order-info-grid {
+  margin-bottom: 22px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.admin-order-info-card {
+  min-width: 0;
+  padding: 16px 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.095);
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.admin-order-info-card-full {
+  grid-column: 1 / -1;
+}
+
+.admin-order-info-card span,
+.admin-order-section h3 {
+  margin-bottom: 8px;
+  display: block;
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.admin-order-info-card strong {
+  color: white;
+  display: block;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.admin-order-info-card p {
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+
+.admin-order-section {
+  margin-bottom: 22px;
+}
+
+.admin-order-section .account-support-thread {
+  margin-bottom: 0;
+  gap: 10px;
+}
+
+.admin-order-item {
+  padding: 16px 18px;
+  border-radius: 18px;
+}
+
+.admin-order-item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.admin-order-item-row strong {
+  color: white;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.admin-order-note-field {
+  margin-top: 2px;
+}
+
+.admin-order-note-field textarea {
+  min-height: 118px;
+  resize: vertical;
+}
+
+@media (max-width: 760px) {
+  .account-support-modal-card {
+    padding: 28px 20px;
+  }
+
+  .admin-order-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-order-item-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .admin-order-item-row strong {
+    white-space: normal;
+  }
 }
 
 .account-support-modal-close {
