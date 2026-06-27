@@ -316,7 +316,7 @@ async function handleProviderAction(req, res, uid, userData) {
 
     await userRef.set(updateData, { merge: true });
 
-    const profile = await getProfile(uid);
+    const profile = await getProfile(uid, req);
 
     return res.status(200).json({
       success: true,
@@ -361,7 +361,7 @@ async function handleProviderAction(req, res, uid, userData) {
 
     await userRef.set(updateData, { merge: true });
 
-    const profile = await getProfile(uid);
+    const profile = await getProfile(uid, req);
 
     return res.status(200).json({
       success: true,
