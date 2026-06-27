@@ -256,7 +256,7 @@ body {
   color: rgba(255, 255, 255, 0.62);
   display: inline-flex;
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   text-decoration: none;
@@ -310,7 +310,7 @@ body {
   color: rgba(255, 255, 255, 0.62);
   display: inline-flex;
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   text-decoration: none;
@@ -350,7 +350,7 @@ body {
   color: rgba(255, 255, 255, 0.34);
   display: block;
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.14em;
 }
 
@@ -410,7 +410,7 @@ body {
 .home-signature-preview-link:visited {
   color: rgba(255, 255, 255, 0.62);
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   text-decoration: none;
@@ -461,7 +461,7 @@ body {
 .home-signature-preview-card p {
   color: rgba(255, 255, 255, 0.56);
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.065em;
   line-height: 1.35;
   text-transform: uppercase;
@@ -509,7 +509,7 @@ body {
 .home-support-item span {
   color: rgba(255, 255, 255, 0.34);
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.14em;
 }
 
@@ -561,7 +561,7 @@ body {
   flex-direction: column;
   gap: 13px;
   font-size: 14px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.09em;
   text-align: left;
   text-transform: uppercase;
@@ -1018,7 +1018,7 @@ body {
     overflow: hidden;
     color: white;
     font-size: 15px;
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: -0.02em;
     text-align: center;
     text-overflow: ellipsis;
@@ -1666,7 +1666,7 @@ body.nav-menu-open .nav-menu-panel.active {
   justify-content: center;
   color: white;
   font-size: 16px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.11em;
   text-align: center;
   text-shadow: 0 2px 18px rgba(0, 0, 0, 0.82);
@@ -2257,7 +2257,7 @@ body.nav-menu-open {
 .about-us-number {
   color: rgba(255, 255, 255, 0.36);
   font-size: 14px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.16em;
 }
 
@@ -2407,7 +2407,7 @@ body.nav-menu-open {
   background: rgba(24, 25, 24, 0.72);
   color: rgba(255, 255, 255, 0.78);
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.08em;
   line-height: 1;
   backdrop-filter: blur(12px);
@@ -4141,7 +4141,7 @@ body.nav-menu-open {
   margin-bottom: 12px;
   color: rgba(255, 255, 255, 0.58);
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -4232,7 +4232,7 @@ body.nav-menu-open {
 .cart-item-info span {
   color: rgba(255, 255, 255, 0.58);
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -4324,7 +4324,7 @@ body.nav-menu-open {
   color: rgba(255, 255, 255, 0.58);
   display: block;
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -4562,7 +4562,7 @@ body.nav-menu-open {
   margin-bottom: 14px;
   color: rgba(255, 255, 255, 0.72);
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
@@ -5034,7 +5034,7 @@ body.nav-menu-open {
     overflow: hidden;
     color: white;
     font-size: 15px;
-    font-weight: 800;
+    font-weight: 700;
     line-height: 1;
     letter-spacing: -0.02em;
     text-align: center;
@@ -5175,7 +5175,7 @@ body.nav-menu-open {
     background: rgba(255, 255, 255, 0.065);
     color: white;
     font-size: 15px;
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: 0.08em;
     line-height: 1.15;
     text-align: left;
@@ -5897,7 +5897,7 @@ body.nav-menu-open {
 .floating-account-greeting {
   color: rgba(255, 255, 255, 0.72);
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   white-space: nowrap;
@@ -5975,7 +5975,7 @@ body.nav-menu-open {
   color: rgba(255, 255, 255, 0.72);
   font-family: inherit;
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-align: left;
   text-transform: uppercase;
@@ -6137,7 +6137,7 @@ body.nav-menu-open {
   gap: 12px;
   font-family: inherit;
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
@@ -6209,7 +6209,7 @@ body.nav-menu-open {
   gap: 14px;
   color: rgba(255, 255, 255, 0.48);
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -6230,7 +6230,7 @@ body.nav-menu-open {
 .auth-field label {
   color: rgba(255, 255, 255, 0.58);
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
@@ -6358,7 +6358,7 @@ body.nav-menu-open {
   color: #111111;
   font-family: inherit;
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
@@ -6510,7 +6510,7 @@ body.nav-menu-open {
   margin-bottom: 14px;
   color: rgba(255, 255, 255, 0.58);
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -6543,7 +6543,7 @@ body.nav-menu-open {
   border-radius: 16px;
   text-align: center;
   font-size: 22px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0;
 }
 
@@ -6558,7 +6558,7 @@ body.nav-menu-open {
   color: white;
   font-family: inherit;
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.5;
   cursor: pointer;
   text-align: center;
@@ -6652,7 +6652,7 @@ body.nav-menu-open {
   color: rgba(255, 255, 255, 0.62);
   font-family: inherit;
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-align: left;
   text-transform: uppercase;
@@ -6827,7 +6827,7 @@ body.nav-menu-open {
 .account-profile-photo-initial {
   color: white;
   font-size: 24px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.05em;
 }
 
@@ -6845,7 +6845,7 @@ body.nav-menu-open {
 .account-profile-photo-actions h3 {
   color: white;
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.2;
   text-transform: uppercase;
 }
@@ -6869,7 +6869,7 @@ body.nav-menu-open {
   color: white;
   font-family: inherit;
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
@@ -6925,7 +6925,7 @@ body.nav-menu-open {
 .account-field label {
   color: rgba(255, 255, 255, 0.72);
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.09em;
   text-transform: uppercase;
 }
@@ -7316,7 +7316,7 @@ body.nav-menu-open {
   padding-right: 34px;
   color: white;
   font-size: 26px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.15;
 }
 
@@ -7343,7 +7343,7 @@ body.nav-menu-open {
   color: white;
   font-family: inherit;
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 700;
   cursor: pointer;
   transition:
     opacity 0.2s ease,
@@ -8041,7 +8041,7 @@ body.account-security-modal-open {
   color: #111111;
   font-family: inherit;
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   cursor: pointer;
@@ -8148,7 +8148,7 @@ body.account-security-modal-open {
   padding: 18px 0;
   color: rgba(255, 255, 255, 0.58);
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -8225,7 +8225,7 @@ body.account-security-modal-open {
 .account-saved-item-info h3 {
   color: white;
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.25;
   text-transform: uppercase;
 }
@@ -8239,7 +8239,7 @@ body.account-security-modal-open {
 .account-saved-item-info strong {
   color: white;
   font-size: 15px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .account-saved-remove-button {
@@ -8343,7 +8343,7 @@ body.account-security-modal-open {
   padding: 18px 0;
   color: rgba(255, 255, 255, 0.58);
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -8401,7 +8401,7 @@ body.account-security-modal-open {
 .account-support-ticket-card h3 {
   color: white;
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.25;
   text-transform: uppercase;
 }
@@ -8517,7 +8517,7 @@ body.account-security-modal-open {
 .admin-dashboard-panel .account-support-ticket-category {
   margin-bottom: 10px;
   color: rgba(255, 255, 255, 0.48);
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.12em;
 }
 
@@ -8908,7 +8908,7 @@ body.account-security-modal-open {
   padding: 18px 0;
   color: rgba(255, 255, 255, 0.58);
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -8966,7 +8966,7 @@ body.account-security-modal-open {
 .account-order-card h3 {
   color: white;
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.25;
   text-transform: uppercase;
 }
