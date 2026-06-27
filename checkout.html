@@ -53,13 +53,28 @@
 
                 <div class="checkout-field">
                   <label for="checkout-payment-method">Payment Method</label>
-                  <select id="checkout-payment-method" required>
+                  <select id="checkout-payment-method" required hidden>
                     <option value="Cash on Delivery">Cash on Delivery</option>
                     <option value="Cash on Pickup">Cash on Pickup</option>
                     <option value="Bank Transfer">Bank Transfer</option>
                     <option value="Instapay">Instapay</option>
                     <option value="To be confirmed">To be confirmed</option>
                   </select>
+
+                  <div class="custom-select-dropdown" id="checkout-payment-method-dropdown">
+                    <button class="custom-select-trigger" type="button" aria-expanded="false">
+                      <span class="custom-select-value" id="checkout-payment-method-value">Cash on Delivery</span>
+                      <span class="chevron"></span>
+                    </button>
+
+                    <div class="custom-select-menu">
+                      <button class="custom-select-option active" type="button" data-value="Cash on Delivery">Cash on Delivery</button>
+                      <button class="custom-select-option" type="button" data-value="Cash on Pickup">Cash on Pickup</button>
+                      <button class="custom-select-option" type="button" data-value="Bank Transfer">Bank Transfer</button>
+                      <button class="custom-select-option" type="button" data-value="Instapay">Instapay</button>
+                      <button class="custom-select-option" type="button" data-value="To be confirmed">To be confirmed</button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -188,6 +203,8 @@
   const checkoutEmail = document.getElementById("checkout-email");
   const checkoutPhone = document.getElementById("checkout-phone");
   const checkoutPaymentMethod = document.getElementById("checkout-payment-method");
+  const checkoutPaymentMethodDropdown = document.getElementById("checkout-payment-method-dropdown");
+  const checkoutPaymentMethodValue = document.getElementById("checkout-payment-method-value");
   const checkoutSavedAddressPicker = document.getElementById("checkout-saved-address-picker");
   const checkoutSavedAddressSelect = document.getElementById("checkout-saved-address-select");
   const checkoutSavedAddressDropdown = document.getElementById("checkout-saved-address-dropdown");
@@ -490,6 +507,37 @@
     });
   });
 
+  if (checkoutPaymentMethodDropdown && checkoutPaymentMethod) {
+    const checkoutPaymentMethodTrigger = checkoutPaymentMethodDropdown.querySelector(".custom-select-trigger");
+    const checkoutPaymentMethodOptions = checkoutPaymentMethodDropdown.querySelectorAll(".custom-select-option");
+
+    checkoutPaymentMethodTrigger.addEventListener("click", function () {
+      const isOpen = checkoutPaymentMethodDropdown.classList.toggle("open");
+      checkoutPaymentMethodTrigger.setAttribute("aria-expanded", String(isOpen));
+    });
+
+    checkoutPaymentMethodOptions.forEach(function (option) {
+      option.addEventListener("click", function () {
+        checkoutPaymentMethod.value = option.dataset.value;
+        checkoutPaymentMethodValue.textContent = option.textContent.trim();
+
+        checkoutPaymentMethodOptions.forEach(function (item) {
+          item.classList.toggle("active", item === option);
+        });
+
+        checkoutPaymentMethodDropdown.classList.remove("open");
+        checkoutPaymentMethodTrigger.setAttribute("aria-expanded", "false");
+      });
+    });
+
+    document.addEventListener("click", function (event) {
+      if (!checkoutPaymentMethodDropdown.contains(event.target)) {
+        checkoutPaymentMethodDropdown.classList.remove("open");
+        checkoutPaymentMethodTrigger.setAttribute("aria-expanded", "false");
+      }
+    });
+  }
+
   if (checkoutSavedAddressDropdown && checkoutSavedAddressSelect) {
     const checkoutSavedAddressTrigger = checkoutSavedAddressDropdown.querySelector(".custom-select-trigger");
 
@@ -537,6 +585,7 @@
 
   checkoutForm.addEventListener("submit", async function (event) {
     event.preventDefault();
+
 
     if (!currentCheckoutUser) {
       localStorage.setItem("tcs-login-redirect", "checkout.html");
