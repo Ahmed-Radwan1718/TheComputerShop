@@ -2158,6 +2158,44 @@ function renderOrderHistory() {
   }).join("");
 }
 
+async function refreshOrderHistory(showInitialError) {
+  if (refreshOrderHistory.inProgress) {
+    return;
+  }
+
+  refreshOrderHistory.inProgress = true;
+
+  try {
+    const nextOrderHistory = await loadServerOrderHistory();
+    const hasChanged = JSON.stringify(nextOrderHistory) !== JSON.stringify(orderHistory);
+
+    orderHistory = nextOrderHistory;
+
+    if (hasChanged || !ordersLoading.hidden) {
+      renderOrderHistory();
+    }
+
+    if (activeOrderId) {
+      const activeOrder = getActiveOrder();
+
+      if (activeOrder) {
+        renderOrderDetail(activeOrder);
+      }
+    }
+
+    showMessage(ordersMessage, "", "");
+  } catch (error) {
+    if (showInitialError) {
+      orderHistory = [];
+      ordersLoading.hidden = true;
+      ordersEmpty.hidden = false;
+      showMessage(ordersMessage, error.message || "Could not load your order history. Please refresh and try again.", "error");
+    }
+  } finally {
+    refreshOrderHistory.inProgress = false;
+  }
+}
+
 async function startOrderHistorySync(uid) {
   stopOrderHistorySync();
 
@@ -2170,23 +2208,26 @@ async function startOrderHistorySync(uid) {
   ordersList.innerHTML = "";
   showMessage(ordersMessage, "", "");
 
-  try {
-    orderHistory = await loadServerOrderHistory();
-    renderOrderHistory();
+  await refreshOrderHistory(true);
 
-    if (activeOrderId) {
-      const activeOrder = getActiveOrder();
-
-      if (activeOrder) {
-        renderOrderDetail(activeOrder);
-      }
+  const orderHistoryRefreshInterval = window.setInterval(function () {
+    if (!document.hidden) {
+      refreshOrderHistory(false);
     }
-  } catch (error) {
-    orderHistory = [];
-    ordersLoading.hidden = true;
-    ordersEmpty.hidden = false;
-    showMessage(ordersMessage, error.message || "Could not load your order history. Please refresh and try again.", "error");
-  }
+  }, 2500);
+
+  const handleOrderHistoryVisibilityChange = function () {
+    if (!document.hidden) {
+      refreshOrderHistory(false);
+    }
+  };
+
+  document.addEventListener("visibilitychange", handleOrderHistoryVisibilityChange);
+
+  orderHistoryUnsubscribe = function () {
+    window.clearInterval(orderHistoryRefreshInterval);
+    document.removeEventListener("visibilitychange", handleOrderHistoryVisibilityChange);
+  };
 }
 
 function getActiveOrder() {
