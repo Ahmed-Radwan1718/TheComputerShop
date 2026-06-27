@@ -4670,7 +4670,8 @@ body.nav-menu-open {
 }
 
 .checkout-saved-address-picker[hidden],
-.checkout-new-address-fields[hidden] {
+#checkout-new-address-fields[hidden],
+.checkout-address-field[hidden] {
   display: none;
 }
 
