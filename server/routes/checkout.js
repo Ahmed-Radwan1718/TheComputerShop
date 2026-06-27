@@ -159,7 +159,7 @@ function getCheckoutDetails(body, profile) {
     fullName: cleanString(body.fullName || body.userName || profile.fullName, 80),
     email: cleanString(body.email || profile.email, 160),
     phone: cleanString(body.phone || profile.phone, 30),
-    paymentMethod: cleanString(body.paymentMethod || "cash_on_delivery", 80),
+    paymentMethod: cleanString(body.paymentMethod || "Instapay", 80),
     customerNote: cleanString(body.customerNote || body.note || "", 1000),
     addressType,
     buildingName: cleanString(body.buildingName || "", 80),
