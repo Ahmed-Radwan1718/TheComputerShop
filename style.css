@@ -4627,17 +4627,43 @@ body.nav-menu-open {
 
 .checkout-form {
   display: grid;
-  gap: 24px;
+  gap: 18px;
+}
+
+.checkout-form-box {
+  padding: 20px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.095);
+  background: rgba(255, 255, 255, 0.04);
+  display: grid;
+  gap: 18px;
+}
+
+.checkout-form-box-header {
+  display: grid;
+  gap: 6px;
+}
+
+.checkout-form-box-header span {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.checkout-form-box-header p {
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 13px;
+  line-height: 1.6;
 }
 
 .checkout-saved-address-picker {
-  padding: 18px;
-  border-radius: 22px;
-  border: 1px solid rgba(255, 255, 255, 0.105);
-  background: rgba(255, 255, 255, 0.045);
+  padding: 0;
 }
 
-.checkout-saved-address-picker[hidden] {
+.checkout-saved-address-picker[hidden],
+.checkout-new-address-fields[hidden] {
   display: none;
 }
 
