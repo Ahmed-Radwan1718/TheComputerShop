@@ -8579,9 +8579,7 @@ body.account-security-modal-open {
 .account-support-modal-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.52);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(0, 0, 0, 0.58);
 }
 
 .account-support-modal-card {
@@ -8631,10 +8629,28 @@ body.account-security-modal-open {
   z-index: 3600;
   max-height: 260px;
   overflow-y: auto;
+  background: rgba(42, 43, 42, 0.99);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  transform: none;
+  transition: opacity 0.12s ease;
+  will-change: opacity;
+  contain: paint;
+}
+
+.admin-order-select.open .custom-select-menu {
+  transform: none;
 }
 
 .admin-order-select .custom-select-option {
   font-family: inherit;
+  transition:
+    color 0.12s ease,
+    background 0.12s ease;
+}
+
+.admin-order-select .custom-select-option:hover {
+  transform: none;
 }
 
 .admin-order-info-grid {
