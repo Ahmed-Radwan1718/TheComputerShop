@@ -4249,20 +4249,28 @@ body.nav-menu-open {
 }
 
 .cart-item-remove {
-  border: none;
-  background: transparent;
-  color: rgba(255, 255, 255, 0.68);
+  min-height: 34px;
+  padding: 0 16px;
+  border: 1px solid rgba(242, 154, 154, 0.28);
+  border-radius: 999px;
+  background: rgba(242, 154, 154, 0.14);
+  color: #F29A9A;
   font-family: inherit;
   font-size: 12px;
   font-weight: 900;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
-  transition: color 0.22s ease, opacity 0.22s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.22s ease, background 0.22s ease, border-color 0.22s ease, opacity 0.22s ease;
 }
 
 .cart-item-remove:hover {
-  color: white;
+  color: #FFD0D0;
+  background: rgba(242, 154, 154, 0.2);
+  border-color: rgba(242, 154, 154, 0.42);
 }
 
 .cart-empty {
