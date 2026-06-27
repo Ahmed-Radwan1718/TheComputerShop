@@ -4438,10 +4438,9 @@ body.nav-menu-open {
 .cart-summary-title {
   margin-bottom: 0;
   color: white;
-  font-size: 28px;
-  font-weight: 800;
+  font-size: 32px;
+  font-weight: 700;
   line-height: 1.12;
-  letter-spacing: 0;
   text-transform: uppercase;
   white-space: nowrap;
 }
@@ -4876,7 +4875,7 @@ body.nav-menu-open {
   }
 
   .cart-summary-title {
-    font-size: 28px;
+    font-size: 32px;
     white-space: normal;
   }
 
