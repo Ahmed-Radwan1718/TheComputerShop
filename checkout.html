@@ -69,6 +69,17 @@
                   </div>
                 </div>
               </div>
+
+              <div class="checkout-payment-info" id="telda-payment-info" hidden>
+                <div class="checkout-payment-barcode-frame">
+                  <img src="telda-payment-barcode.png" alt="Telda payment barcode">
+                </div>
+
+                <div class="checkout-payment-details">
+                  <span>Telda Payment</span>
+                  <p>Scan the barcode or send to Telda username <strong>ahmeddraddwan</strong>.</p>
+                </div>
+              </div>
             </div>
 
             <div class="checkout-form-box">
@@ -197,6 +208,7 @@
   const checkoutPaymentMethod = document.getElementById("checkout-payment-method");
   const checkoutPaymentMethodDropdown = document.getElementById("checkout-payment-method-dropdown");
   const checkoutPaymentMethodValue = document.getElementById("checkout-payment-method-value");
+  const teldaPaymentInfo = document.getElementById("telda-payment-info");
   const checkoutSavedAddressPicker = document.getElementById("checkout-saved-address-picker");
   const checkoutSavedAddressSelect = document.getElementById("checkout-saved-address-select");
   const checkoutSavedAddressDropdown = document.getElementById("checkout-saved-address-dropdown");
@@ -330,6 +342,12 @@
     document.querySelectorAll(".checkout-address-" + selectedType).forEach(function (field) {
       field.hidden = false;
     });
+  }
+
+  function syncTeldaPaymentInfo() {
+    if (teldaPaymentInfo && checkoutPaymentMethod) {
+      teldaPaymentInfo.hidden = checkoutPaymentMethod.value !== "Telda";
+    }
   }
 
   function fillCheckoutAddress(address) {
@@ -519,8 +537,12 @@
 
         checkoutPaymentMethodDropdown.classList.remove("open");
         checkoutPaymentMethodTrigger.setAttribute("aria-expanded", "false");
+        syncTeldaPaymentInfo();
       });
     });
+
+    checkoutPaymentMethod.addEventListener("change", syncTeldaPaymentInfo);
+    syncTeldaPaymentInfo();
 
     document.addEventListener("click", function (event) {
       if (!checkoutPaymentMethodDropdown.contains(event.target)) {
