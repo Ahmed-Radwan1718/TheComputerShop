@@ -98,7 +98,7 @@
       <p id="admin-order-summary">Review the customer request and update its status.</p>
     </div>
 
-    <div class="account-form-grid">
+    <div class="account-form-grid admin-order-status-grid">
       <div class="account-field">
         <label for="admin-order-status">Order Status</label>
         <select id="admin-order-status">
@@ -120,26 +120,31 @@
           <option value="refunded">Refunded</option>
         </select>
       </div>
+    </div>
 
-      <div class="account-field">
-        <label>Customer</label>
-        <input type="text" id="admin-order-customer" readonly>
+    <div class="admin-order-info-grid">
+      <div class="admin-order-info-card">
+        <span>Customer</span>
+        <strong id="admin-order-customer">Customer</strong>
       </div>
 
-      <div class="account-field">
-        <label>Phone</label>
-        <input type="text" id="admin-order-phone" readonly>
+      <div class="admin-order-info-card">
+        <span>Phone</span>
+        <strong id="admin-order-phone">Not provided</strong>
       </div>
 
-      <div class="account-field account-field-full">
-        <label>Delivery Address</label>
-        <input type="text" id="admin-order-address" readonly>
+      <div class="admin-order-info-card admin-order-info-card-full">
+        <span>Delivery Address</span>
+        <p id="admin-order-address">No address saved</p>
       </div>
     </div>
 
-    <div class="account-support-thread" id="admin-order-items"></div>
+    <div class="admin-order-section">
+      <h3>Items</h3>
+      <div class="account-support-thread" id="admin-order-items"></div>
+    </div>
 
-    <div class="account-field">
+    <div class="account-field admin-order-note-field">
       <label for="admin-order-note">Admin Note</label>
       <textarea id="admin-order-note" rows="4" maxlength="1500"></textarea>
     </div>
@@ -504,34 +509,38 @@
     adminOrderSummary.textContent = "Submitted " + getAdminDate(order.createdAt) + " · Total: " + getOrderMoneyText(order);
     adminOrderStatus.value = order.status || "submitted";
     adminOrderPaymentStatus.value = order.paymentStatus || "not_paid";
-    adminOrderCustomer.value = (order.userName || "Customer") + " · " + (order.userEmail || "");
-    adminOrderPhone.value = order.phone || "Not provided";
-    adminOrderAddress.value = getOrderAddressText(order);
+    adminOrderCustomer.textContent = (order.userName || "Customer") + (order.userEmail ? " · " + order.userEmail : "");
+    adminOrderPhone.textContent = order.phone || "Not provided";
+    adminOrderAddress.textContent = getOrderAddressText(order);
     adminOrderNote.value = order.adminNote || "";
 
     adminOrderItems.innerHTML = items.length ? items.map(function (item) {
       const quantity = Number(item.quantity || 1);
-      const lineTotal = item.lineTotalText || item.priceText || item.price || "";
+      const unitPrice = item.priceText || item.price || "Price not set";
+      const lineTotal = item.lineTotalText || unitPrice;
 
       return `
-        <article class="account-support-message">
+        <article class="account-support-message admin-order-item">
           <div class="account-support-message-head">
             <strong>${escapeHtml(item.name || "Product")}</strong>
-            <span>${escapeHtml(quantity + " x " + (item.priceText || item.price || ""))}</span>
+            <span>${escapeHtml("Qty " + quantity)}</span>
           </div>
 
-          <p>${escapeHtml(lineTotal)}</p>
+          <div class="admin-order-item-row">
+            <span>${escapeHtml(unitPrice)}</span>
+            <strong>${escapeHtml(lineTotal)}</strong>
+          </div>
         </article>
       `;
     }).join("") : `
-      <article class="account-support-message">
+      <article class="account-support-message admin-order-item">
         <p>No item details saved for this order.</p>
       </article>
     `;
 
     if (order.customerNote) {
       adminOrderItems.innerHTML += `
-        <article class="account-support-message">
+        <article class="account-support-message admin-order-item">
           <div class="account-support-message-head">
             <strong>Customer Note</strong>
           </div>
