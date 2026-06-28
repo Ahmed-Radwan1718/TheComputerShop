@@ -3423,6 +3423,16 @@ body.nav-menu-open {
 .custom-select-value {
   color: rgba(255, 255, 255, 0.86);
   font-weight: 400;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.payment-method-icon {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  display: block;
 }
 
 .custom-select-trigger:hover,
@@ -3481,6 +3491,9 @@ body.nav-menu-open {
   text-align: left;
   cursor: pointer;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   transition:
     color 0.24s ease,
     background 0.24s ease,
