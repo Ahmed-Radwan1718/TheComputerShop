@@ -57,13 +57,22 @@
 
                   <div class="custom-select-dropdown" id="checkout-payment-method-dropdown">
                     <button class="custom-select-trigger" type="button" aria-expanded="false">
-                      <span class="custom-select-value" id="checkout-payment-method-value">Instapay</span>
+                      <span class="custom-select-value" id="checkout-payment-method-value">
+                        <img class="payment-method-icon" src="instapay-icon.png" alt="" aria-hidden="true">
+                        <span>Instapay</span>
+                      </span>
                       <span class="chevron"></span>
                     </button>
 
                     <div class="custom-select-menu">
-                      <button class="custom-select-option active" type="button" data-value="Instapay">Instapay</button>
-                      <button class="custom-select-option" type="button" data-value="Telda">Telda</button>
+                      <button class="custom-select-option active" type="button" data-value="Instapay">
+                        <img class="payment-method-icon" src="instapay-icon.png" alt="" aria-hidden="true">
+                        <span>Instapay</span>
+                      </button>
+                      <button class="custom-select-option" type="button" data-value="Telda">
+                        <img class="payment-method-icon" src="telda-icon.png" alt="" aria-hidden="true">
+                        <span>Telda</span>
+                      </button>
                       <button class="custom-select-option" type="button" data-value="To be confirmed">To be confirmed</button>
                     </div>
                   </div>
@@ -529,7 +538,7 @@
     checkoutPaymentMethodOptions.forEach(function (option) {
       option.addEventListener("click", function () {
         checkoutPaymentMethod.value = option.dataset.value;
-        checkoutPaymentMethodValue.textContent = option.textContent.trim();
+        checkoutPaymentMethodValue.innerHTML = option.innerHTML;
 
         checkoutPaymentMethodOptions.forEach(function (item) {
           item.classList.toggle("active", item === option);
