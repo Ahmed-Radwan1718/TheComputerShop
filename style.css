@@ -9831,6 +9831,13 @@ body.account-security-modal-open {
   color: rgba(255, 255, 255, 0.86);
 }
 
+.account-trusted-device-platform-icon {
+  width: 30px;
+  height: 30px;
+  display: block;
+  object-fit: contain;
+}
+
 .account-trusted-device-mark span {
   font-size: 22px;
   font-weight: 800;
