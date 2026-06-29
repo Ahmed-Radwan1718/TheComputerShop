@@ -3,7 +3,9 @@ const admin = require("../_lib/firebaseAdmin");
 const {
   getUserFromRequest,
   signInWithPassword,
-  createSiteSessionForUid
+  createSiteSessionForUid,
+  revokeAllTrustedDevices,
+  clearTrustedDeviceCookie
 } = require("../_lib/securityHelpers");
 
 const {
@@ -155,6 +157,8 @@ module.exports = async function handler(req, res) {
     });
 
     await admin.auth().revokeRefreshTokens(decodedUser.uid);
+    await revokeAllTrustedDevices(decodedUser.uid, decodedUser.uid, "password_changed");
+    clearTrustedDeviceCookie(res);
     await createCompatibleSiteSession(req, res, decodedUser.uid);
     await clearSecurityUnlock(req, res, decodedUser.uid);
 
