@@ -20,8 +20,13 @@ const ACCOUNT_SESSION_COOKIE_NAME = IS_PRODUCTION
   ? "__Host-tcs_account_session"
   : "tcs_account_session";
 
+const TRUSTED_DEVICE_COOKIE_NAME = IS_PRODUCTION
+  ? "__Host-tcs_trusted_device"
+  : "tcs_trusted_device";
+
 const SITE_SESSION_EXPIRES_MS = 5 * 24 * 60 * 60 * 1000;
 const ACCOUNT_SESSION_EXPIRES_MS = SITE_SESSION_EXPIRES_MS;
+const TRUSTED_DEVICE_EXPIRES_MS = 30 * 24 * 60 * 60 * 1000;
 const LOGIN_CHALLENGE_EXPIRES_MS = 10 * 60 * 1000;
 const LOGIN_2FA_SESSION_MINUTES = 30;
 
@@ -70,6 +75,13 @@ function getAccountSessionHash(uid, sessionId, token, salt) {
   return crypto
     .createHmac("sha256", getSecuritySecret())
     .update("account-session:" + uid + ":" + sessionId + ":" + token + ":" + salt)
+    .digest("hex");
+}
+
+function getTrustedDeviceHash(uid, trustedDeviceId, token, salt) {
+  return crypto
+    .createHmac("sha256", getSecuritySecret())
+    .update("trusted-device:" + uid + ":" + trustedDeviceId + ":" + token + ":" + salt)
     .digest("hex");
 }
 
@@ -428,6 +440,273 @@ async function listAccountSessions(req, uid) {
   });
 
   return sessions;
+}
+
+function getTrustedDeviceCookieParts(req) {
+  if (!isRequestLike(req)) {
+    return null;
+  }
+
+  const cookieValue = getCookie(req, TRUSTED_DEVICE_COOKIE_NAME);
+
+  if (!cookieValue || !cookieValue.includes(".")) {
+    return null;
+  }
+
+  const parts = cookieValue.split(".");
+  const trustedDeviceId = parts[0];
+  const token = parts.slice(1).join(".");
+
+  if (!trustedDeviceId || !token) {
+    return null;
+  }
+
+  return {
+    trustedDeviceId,
+    token
+  };
+}
+
+function cleanTrustedDeviceId(value) {
+  const trustedDeviceId = String(value || "").trim();
+
+  if (!/^[A-Za-z0-9_-]{6,128}$/.test(trustedDeviceId)) {
+    return "";
+  }
+
+  return trustedDeviceId;
+}
+
+function clearTrustedDeviceCookie(res) {
+  clearCookie(res, TRUSTED_DEVICE_COOKIE_NAME);
+}
+
+async function createTrustedDevice(uid, res, req) {
+  if (!uid || !res) {
+    return null;
+  }
+
+  const db = admin.firestore();
+  const trustedDeviceRef = db.collection("trustedDevices").doc();
+  const trustedDeviceId = trustedDeviceRef.id;
+  const token = createRandomToken();
+  const salt = db.collection("_").doc().id;
+  const details = getSessionDetailsFromRequest(req);
+
+  await trustedDeviceRef.set({
+    uid,
+    userId: uid,
+    trustedDeviceId,
+    trustedDeviceHash: getTrustedDeviceHash(uid, trustedDeviceId, token, salt),
+    salt,
+    deviceName: details.deviceLabel,
+    browserName: details.browserLabel,
+    platform: details.platformLabel,
+    userAgent: details.userAgent,
+    ipAddress: details.ipAddress,
+    createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    lastTrustedAt: admin.firestore.FieldValue.serverTimestamp(),
+    lastUsedAt: admin.firestore.FieldValue.serverTimestamp(),
+    expiresAt: admin.firestore.Timestamp.fromDate(
+      new Date(Date.now() + TRUSTED_DEVICE_EXPIRES_MS)
+    )
+  });
+
+  setCookie(
+    res,
+    TRUSTED_DEVICE_COOKIE_NAME,
+    trustedDeviceId + "." + token,
+    Math.floor(TRUSTED_DEVICE_EXPIRES_MS / 1000)
+  );
+
+  return {
+    trustedDeviceId
+  };
+}
+
+async function getCurrentTrustedDevice(req, uid, options) {
+  const settings = options || {};
+  const parts = getTrustedDeviceCookieParts(req);
+
+  if (!parts || !uid) {
+    return null;
+  }
+
+  const trustedDeviceRef = admin.firestore().collection("trustedDevices").doc(parts.trustedDeviceId);
+  const trustedDeviceDoc = await trustedDeviceRef.get();
+
+  if (!trustedDeviceDoc.exists) {
+    return null;
+  }
+
+  const data = trustedDeviceDoc.data() || {};
+  const ownerId = data.userId || data.uid || "";
+
+  if (ownerId !== uid) {
+    return null;
+  }
+
+  if (data.revokedAt || isExpired(data.expiresAt)) {
+    return null;
+  }
+
+  const submittedHash = getTrustedDeviceHash(uid, parts.trustedDeviceId, parts.token, data.salt || "");
+  const savedBuffer = Buffer.from(data.trustedDeviceHash || "", "hex");
+  const submittedBuffer = Buffer.from(submittedHash, "hex");
+
+  if (
+    savedBuffer.length !== submittedBuffer.length ||
+    !crypto.timingSafeEqual(savedBuffer, submittedBuffer)
+  ) {
+    return null;
+  }
+
+  if (settings.touch !== false) {
+    await trustedDeviceRef.set({
+      lastUsedAt: admin.firestore.FieldValue.serverTimestamp(),
+      expiresAt: admin.firestore.Timestamp.fromDate(
+        new Date(Date.now() + TRUSTED_DEVICE_EXPIRES_MS)
+      )
+    }, { merge: true });
+  }
+
+  return {
+    id: parts.trustedDeviceId,
+    ref: trustedDeviceRef,
+    data
+  };
+}
+
+async function listTrustedDevices(req, uid) {
+  if (!uid) {
+    return [];
+  }
+
+  const snapshot = await admin.firestore()
+    .collection("trustedDevices")
+    .where("uid", "==", uid)
+    .limit(50)
+    .get();
+
+  const currentTrustedDevice = await getCurrentTrustedDevice(req, uid, { touch: false }).catch(function () {
+    return null;
+  });
+
+  const expiredDeletes = [];
+  const trustedDevices = [];
+
+  snapshot.docs.forEach(function (doc) {
+    const data = doc.data() || {};
+
+    if (data.revokedAt) {
+      return;
+    }
+
+    if (isExpired(data.expiresAt)) {
+      expiredDeletes.push(doc.ref.delete().catch(function () {}));
+      return;
+    }
+
+    trustedDevices.push({
+      id: doc.id,
+      trustedDeviceId: data.trustedDeviceId || doc.id,
+      deviceName: data.deviceName || data.browserName || "Trusted device",
+      browserName: data.browserName || "Browser",
+      platform: data.platform || "Device",
+      createdAt: serializeSessionTimestamp(data.createdAt),
+      lastTrustedAt: serializeSessionTimestamp(data.lastTrustedAt || data.createdAt),
+      lastUsedAt: serializeSessionTimestamp(data.lastUsedAt),
+      expiresAt: serializeSessionTimestamp(data.expiresAt),
+      current: Boolean(currentTrustedDevice && currentTrustedDevice.id === doc.id)
+    });
+  });
+
+  await Promise.all(expiredDeletes);
+
+  trustedDevices.sort(function (a, b) {
+    return sessionTimestampToMillis(b.lastUsedAt || b.lastTrustedAt) - sessionTimestampToMillis(a.lastUsedAt || a.lastTrustedAt);
+  });
+
+  return trustedDevices;
+}
+
+async function revokeTrustedDevice(req, res, uid, trustedDeviceId, revokedReason) {
+  const cleanId = cleanTrustedDeviceId(trustedDeviceId);
+
+  if (!uid || !cleanId) {
+    const error = new Error("Trusted device not found.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const trustedDeviceRef = admin.firestore().collection("trustedDevices").doc(cleanId);
+  const trustedDeviceDoc = await trustedDeviceRef.get();
+
+  if (!trustedDeviceDoc.exists) {
+    const error = new Error("Trusted device not found.");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  const data = trustedDeviceDoc.data() || {};
+  const ownerId = data.userId || data.uid || "";
+
+  if (ownerId !== uid) {
+    const error = new Error("You cannot remove this trusted device.");
+    error.statusCode = 403;
+    throw error;
+  }
+
+  if (data.revokedAt || isExpired(data.expiresAt)) {
+    const error = new Error("Trusted device not found.");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  await trustedDeviceRef.set({
+    revokedAt: admin.firestore.FieldValue.serverTimestamp(),
+    revokedBy: uid,
+    revokedReason: revokedReason || "trusted_device_removed"
+  }, { merge: true });
+
+  const currentTrustedDevice = await getCurrentTrustedDevice(req, uid, { touch: false }).catch(function () {
+    return null;
+  });
+
+  if (currentTrustedDevice && currentTrustedDevice.id === cleanId && res) {
+    clearTrustedDeviceCookie(res);
+  }
+
+  return {
+    trustedDeviceId: cleanId
+  };
+}
+
+async function revokeAllTrustedDevices(uid, revokedBy, revokedReason) {
+  if (!uid) {
+    return;
+  }
+
+  const snapshot = await admin.firestore()
+    .collection("trustedDevices")
+    .where("uid", "==", uid)
+    .get();
+
+  if (snapshot.empty) {
+    return;
+  }
+
+  const batch = admin.firestore().batch();
+
+  snapshot.docs.forEach(function (doc) {
+    batch.set(doc.ref, {
+      revokedAt: admin.firestore.FieldValue.serverTimestamp(),
+      revokedBy: revokedBy || uid,
+      revokedReason: revokedReason || "trusted_devices_revoked"
+    }, { merge: true });
+  });
+
+  await batch.commit();
 }
 
 async function firebaseAuthRest(endpoint, payload) {
@@ -968,6 +1247,13 @@ module.exports = {
   listAccountSessions,
   getCurrentAccountSession,
   clearCurrentAccountSession,
+
+  createTrustedDevice,
+  getCurrentTrustedDevice,
+  listTrustedDevices,
+  revokeTrustedDevice,
+  revokeAllTrustedDevices,
+  clearTrustedDeviceCookie,
 
   createLoginChallenge,
   getLoginChallenge,
