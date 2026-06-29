@@ -205,6 +205,21 @@ if (floatingAccountWidget) {
         setAccountPhoto(user.photoURL || "");
       }
 
+      const loginSessionSignedOutMessage = "This session was signed out from another device.";
+      let sessionStatusRedirecting = false;
+
+      async function redirectRevokedSession() {
+        if (sessionStatusRedirecting) {
+          return;
+        }
+
+        sessionStatusRedirecting = true;
+        sessionStorage.removeItem("tcs-login-2fa-pending");
+        sessionStorage.setItem("tcs-login-message", loginSessionSignedOutMessage);
+        await logoutServerSession();
+        window.location.href = "login.html";
+      }
+
       async function loadServerAccountState() {
         closeAccountMenu();
 
@@ -219,6 +234,7 @@ if (floatingAccountWidget) {
           const response = await fetch("/api/me", {
             method: "GET",
             credentials: "same-origin",
+            cache: "no-store",
             headers: {
               "Accept": "application/json"
             }
@@ -227,6 +243,11 @@ if (floatingAccountWidget) {
           const data = await response.json().catch(function () {
             return {};
           });
+
+          if (response.ok && data.sessionRevoked) {
+            await redirectRevokedSession();
+            return;
+          }
 
           if (!response.ok || !data.signedIn || !data.user) {
             showLoggedOutAccountState();
@@ -291,6 +312,7 @@ if (floatingAccountWidget) {
       });
 
       loadServerAccountState();
+      window.setInterval(loadServerAccountState, 2000);
 
       window.tcsReloadAccountHeader = loadServerAccountState;
     }
