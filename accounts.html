@@ -540,6 +540,72 @@
     </div>
   </div>
 
+  <div class="account-security-modal" id="recovery-codes-modal" hidden>
+    <div class="account-security-modal-backdrop" id="recovery-codes-modal-backdrop"></div>
+
+    <div class="account-security-modal-card account-security-code-card" role="dialog" aria-modal="true" aria-labelledby="recovery-codes-modal-title">
+      <button class="account-security-modal-close" type="button" id="recovery-codes-modal-close" aria-label="Close recovery codes popup">×</button>
+
+      <div class="account-security-modal-header">
+        <p class="account-security-modal-eyebrow">Recovery Codes</p>
+        <h2 id="recovery-codes-modal-title">Recovery Codes</h2>
+        <p>Save these codes somewhere safe. Each code can only be used once if you lose access to your two-factor authentication methods.</p>
+      </div>
+
+      <div class="account-authenticator-manual" id="recovery-codes-status-wrap">
+        <span id="recovery-codes-status-label">Recovery codes generated</span>
+        <strong id="recovery-codes-status-text">Unused codes remaining: 0 of 10</strong>
+      </div>
+
+      <div class="account-authenticator-manual" id="recovery-codes-list-wrap" hidden>
+        <span>Recovery codes</span>
+        <strong id="recovery-codes-list"></strong>
+      </div>
+
+      <div class="account-security-modal-actions">
+        <button class="account-security-modal-cancel" type="button" id="recovery-codes-copy-button">
+          Copy Codes
+        </button>
+
+        <button class="account-security-modal-cancel" type="button" id="recovery-codes-download-button">
+          Download Codes
+        </button>
+
+        <button class="account-security-modal-cancel" type="button" id="recovery-codes-generate-button">
+          Generate New Codes
+        </button>
+
+        <button class="account-security-modal-continue" type="button" id="recovery-codes-done-button">
+          Done
+        </button>
+      </div>
+
+      <p class="account-message" id="recovery-codes-message" aria-live="polite"></p>
+    </div>
+  </div>
+
+  <div class="account-security-modal" id="recovery-codes-confirm-modal" hidden>
+    <div class="account-security-modal-backdrop" id="recovery-codes-confirm-backdrop"></div>
+
+    <div class="account-security-modal-card account-security-gate-card" role="dialog" aria-modal="true" aria-labelledby="recovery-codes-confirm-title">
+      <div class="account-security-modal-header">
+        <p class="account-security-modal-eyebrow">Recovery Codes</p>
+        <h2 id="recovery-codes-confirm-title">Generate new recovery codes?</h2>
+        <p>This will replace your existing recovery codes. Any old unused codes will stop working.</p>
+      </div>
+
+      <div class="account-security-modal-actions">
+        <button class="account-security-modal-cancel" type="button" id="recovery-codes-confirm-cancel">
+          Cancel
+        </button>
+
+        <button class="account-security-modal-continue" type="button" id="recovery-codes-confirm-generate">
+          Generate New Codes
+        </button>
+      </div>
+    </div>
+  </div>
+
   <div class="account-password-modal" id="password-change-modal" hidden>
     <div class="account-password-modal-backdrop" id="password-change-modal-backdrop"></div>
 
@@ -1155,6 +1221,7 @@ const passwordMessage = document.getElementById("password-message");
   const twoFactorAppButton = document.getElementById("two-factor-app-button");
   const twoFactorEmailStatus = document.getElementById("two-factor-email-status");
   const twoFactorEmailButton = document.getElementById("two-factor-email-button");
+  const recoveryCodesButton = document.getElementById("recovery-codes-button");
   const twoFactorMessage = document.getElementById("two-factor-message");
   const loginSessionsList = document.getElementById("account-login-sessions-list");
   const loginSessionsEmpty = document.getElementById("account-login-sessions-empty");
@@ -1171,6 +1238,23 @@ const passwordMessage = document.getElementById("password-message");
   const authenticatorSetupMessage = document.getElementById("authenticator-setup-message");
   const authenticatorQrImage = document.getElementById("authenticator-qr-image");
   const authenticatorSecretKey = document.getElementById("authenticator-secret-key");
+
+  const recoveryCodesModal = document.getElementById("recovery-codes-modal");
+  const recoveryCodesModalBackdrop = document.getElementById("recovery-codes-modal-backdrop");
+  const recoveryCodesModalClose = document.getElementById("recovery-codes-modal-close");
+  const recoveryCodesStatusWrap = document.getElementById("recovery-codes-status-wrap");
+  const recoveryCodesStatusText = document.getElementById("recovery-codes-status-text");
+  const recoveryCodesListWrap = document.getElementById("recovery-codes-list-wrap");
+  const recoveryCodesList = document.getElementById("recovery-codes-list");
+  const recoveryCodesCopyButton = document.getElementById("recovery-codes-copy-button");
+  const recoveryCodesDownloadButton = document.getElementById("recovery-codes-download-button");
+  const recoveryCodesGenerateButton = document.getElementById("recovery-codes-generate-button");
+  const recoveryCodesDoneButton = document.getElementById("recovery-codes-done-button");
+  const recoveryCodesMessage = document.getElementById("recovery-codes-message");
+  const recoveryCodesConfirmModal = document.getElementById("recovery-codes-confirm-modal");
+  const recoveryCodesConfirmBackdrop = document.getElementById("recovery-codes-confirm-backdrop");
+  const recoveryCodesConfirmCancel = document.getElementById("recovery-codes-confirm-cancel");
+  const recoveryCodesConfirmGenerate = document.getElementById("recovery-codes-confirm-generate");
 
   const logoutButton = document.getElementById("account-logout-sidebar");
 
@@ -1210,6 +1294,13 @@ let orderHistoryUnsubscribe = null;
 let orderHistory = [];
 let activeOrderId = "";
 let twoFactorSettings = {};
+let recoveryCodesStatus = {
+  active: false,
+  hasCodes: false,
+  unusedCount: 0,
+  totalCount: 10
+};
+let currentRecoveryCodes = [];
 let loginSessions = [];
 let trustedDevices = [];
 let passwordLastChangedAt = null;
@@ -1259,6 +1350,10 @@ async function refreshSecurityUnlockStatus() {
     const data = await response.json().catch(function () {
       return {};
     });
+
+    if (response.ok && data.recoveryCodes) {
+      updateRecoveryCodesStatus(data.recoveryCodes);
+    }
 
     if (response.ok && data.unlocked) {
       securityUnlockUntil = Date.now() + securityUnlockMinutes * 60 * 1000;
@@ -1543,6 +1638,7 @@ function renderTrustedDevices() {
 function updateTwoFactorUI() {
   const appEnabled = Boolean(twoFactorSettings && twoFactorSettings.appEnabled);
   const emailEnabled = Boolean(twoFactorSettings && twoFactorSettings.emailEnabled);
+  const twoFactorActive = appEnabled || emailEnabled;
 
   twoFactorAppStatus.textContent = appEnabled ? "On" : "Off";
   twoFactorEmailStatus.textContent = emailEnabled ? "On" : "Off";
@@ -1552,6 +1648,11 @@ function updateTwoFactorUI() {
 
   twoFactorAppButton.textContent = appEnabled ? "Disable" : "Set up app";
   twoFactorEmailButton.textContent = emailEnabled ? "Disable" : "Enable email";
+
+  if (recoveryCodesButton) {
+    recoveryCodesButton.textContent = recoveryCodesStatus.hasCodes ? "VIEW CODES" : "GENERATE CODES";
+    recoveryCodesButton.disabled = !twoFactorActive;
+  }
 
   twoFactorAppButton.classList.toggle("danger", appEnabled);
   twoFactorEmailButton.classList.toggle("danger", emailEnabled);
@@ -1676,6 +1777,180 @@ async function setEmailTwoFactor(enabled) {
     twoFactorEmailButton.disabled = false;
     updateTwoFactorUI();
   }
+}
+
+function getTwoFactorActive() {
+  return Boolean(
+    twoFactorSettings &&
+    (twoFactorSettings.appEnabled || twoFactorSettings.emailEnabled)
+  );
+}
+
+function updateRecoveryCodesStatus(status) {
+  const safeStatus = status || {};
+
+  recoveryCodesStatus = {
+    active: Boolean(safeStatus.active),
+    hasCodes: Boolean(safeStatus.hasCodes),
+    unusedCount: Number(safeStatus.unusedCount || 0),
+    totalCount: Number(safeStatus.totalCount || 10)
+  };
+
+  updateTwoFactorUI();
+}
+
+function setRecoveryCodesModalView(codes, status) {
+  const safeCodes = Array.isArray(codes) ? codes : [];
+  const safeStatus = status || recoveryCodesStatus;
+
+  currentRecoveryCodes = safeCodes.slice();
+
+  recoveryCodesListWrap.hidden = !safeCodes.length;
+  recoveryCodesStatusWrap.hidden = Boolean(safeCodes.length);
+  recoveryCodesCopyButton.hidden = !safeCodes.length;
+  recoveryCodesDownloadButton.hidden = !safeCodes.length;
+
+  if (safeCodes.length) {
+    recoveryCodesList.innerHTML = safeCodes.map(function (code) {
+      return escapeHtml(code);
+    }).join("<br>");
+  } else {
+    recoveryCodesList.textContent = "";
+  }
+
+  if (safeStatus.hasCodes) {
+    recoveryCodesStatusText.textContent = "Unused codes remaining: " + Number(safeStatus.unusedCount || 0) + " of " + Number(safeStatus.totalCount || 10);
+  } else {
+    recoveryCodesStatusText.textContent = "No recovery codes generated yet.";
+  }
+
+  showMessage(recoveryCodesMessage, "", "");
+}
+
+function openRecoveryCodesModal() {
+  recoveryCodesModal.hidden = false;
+  document.body.classList.add("account-security-modal-open");
+}
+
+function closeRecoveryCodesModal() {
+  recoveryCodesModal.hidden = true;
+  currentRecoveryCodes = [];
+  recoveryCodesList.textContent = "";
+  showMessage(recoveryCodesMessage, "", "");
+
+  if (recoveryCodesConfirmModal.hidden) {
+    document.body.classList.remove("account-security-modal-open");
+  }
+}
+
+function openRecoveryCodesConfirmModal() {
+  recoveryCodesConfirmModal.hidden = false;
+  document.body.classList.add("account-security-modal-open");
+}
+
+function closeRecoveryCodesConfirmModal() {
+  recoveryCodesConfirmModal.hidden = true;
+
+  if (recoveryCodesModal.hidden) {
+    document.body.classList.remove("account-security-modal-open");
+  }
+}
+
+async function generateRecoveryCodes() {
+  recoveryCodesGenerateButton.disabled = true;
+  recoveryCodesConfirmGenerate.disabled = true;
+
+  if (recoveryCodesButton) {
+    recoveryCodesButton.disabled = true;
+    recoveryCodesButton.textContent = "GENERATING...";
+  }
+
+  showMessage(recoveryCodesMessage, "", "");
+
+  try {
+    const response = await fetch("/api/security-unlock-status", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: await getSecurityRequestHeaders(),
+      body: JSON.stringify({
+        action: "generate-recovery-codes"
+      })
+    });
+
+    const data = await response.json().catch(function () {
+      return {};
+    });
+
+    if (!response.ok) {
+      throw new Error(data.error || "Could not generate recovery codes.");
+    }
+
+    updateRecoveryCodesStatus(data.recoveryCodes || {});
+    setRecoveryCodesModalView(data.codes || [], data.recoveryCodes || recoveryCodesStatus);
+    openRecoveryCodesModal();
+  } catch (error) {
+    showMessage(twoFactorMessage, error.message || "Could not generate recovery codes.", "error");
+  } finally {
+    recoveryCodesGenerateButton.disabled = false;
+    recoveryCodesConfirmGenerate.disabled = false;
+    updateTwoFactorUI();
+  }
+}
+
+async function handleRecoveryCodesButtonClick() {
+  if (!currentUser) {
+    return;
+  }
+
+  const unlocked = await ensureSecurityUnlocked();
+
+  if (!unlocked) {
+    openSecurityGateModal();
+    return;
+  }
+
+  if (!getTwoFactorActive()) {
+    showMessage(twoFactorMessage, "Turn on two-factor authentication before generating recovery codes.", "error");
+    return;
+  }
+
+  await refreshSecurityUnlockStatus();
+
+  if (recoveryCodesStatus.hasCodes) {
+    setRecoveryCodesModalView([], recoveryCodesStatus);
+    openRecoveryCodesModal();
+    return;
+  }
+
+  await generateRecoveryCodes();
+}
+
+async function copyRecoveryCodes() {
+  if (!currentRecoveryCodes.length) {
+    return;
+  }
+
+  await navigator.clipboard.writeText(currentRecoveryCodes.join("\n"));
+  showMessage(recoveryCodesMessage, "Recovery codes copied.", "success");
+}
+
+function downloadRecoveryCodes() {
+  if (!currentRecoveryCodes.length) {
+    return;
+  }
+
+  const blob = new Blob([currentRecoveryCodes.join("\n") + "\n"], {
+    type: "text/plain"
+  });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = "the-computer-shop-recovery-codes.txt";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
 }
 
 function closeAuthenticatorSetupModal() {
@@ -4970,6 +5245,23 @@ if (!requestedEmail) {
   twoFactorEmailButton.addEventListener("click", function () {
     const emailEnabled = Boolean(twoFactorSettings && twoFactorSettings.emailEnabled);
     setEmailTwoFactor(!emailEnabled);
+  });
+
+  if (recoveryCodesButton) {
+    recoveryCodesButton.addEventListener("click", handleRecoveryCodesButtonClick);
+  }
+
+  recoveryCodesModalBackdrop.addEventListener("click", closeRecoveryCodesModal);
+  recoveryCodesModalClose.addEventListener("click", closeRecoveryCodesModal);
+  recoveryCodesDoneButton.addEventListener("click", closeRecoveryCodesModal);
+  recoveryCodesCopyButton.addEventListener("click", copyRecoveryCodes);
+  recoveryCodesDownloadButton.addEventListener("click", downloadRecoveryCodes);
+  recoveryCodesGenerateButton.addEventListener("click", openRecoveryCodesConfirmModal);
+  recoveryCodesConfirmBackdrop.addEventListener("click", closeRecoveryCodesConfirmModal);
+  recoveryCodesConfirmCancel.addEventListener("click", closeRecoveryCodesConfirmModal);
+  recoveryCodesConfirmGenerate.addEventListener("click", async function () {
+    closeRecoveryCodesConfirmModal();
+    await generateRecoveryCodes();
   });
 
   authenticatorSetupModalBackdrop.addEventListener("click", closeAuthenticatorSetupModal);
