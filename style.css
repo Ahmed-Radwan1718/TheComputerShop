@@ -10238,32 +10238,6 @@ body.account-security-modal-open {
   word-break: break-all;
 }
 
-.account-recovery-code-actions {
-  margin-top: 18px;
-  display: grid;
-  gap: 14px;
-}
-
-.account-recovery-code-action-row {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
-}
-
-.account-recovery-code-actions .account-security-modal-cancel,
-.account-recovery-code-actions .account-security-modal-continue {
-  width: 100%;
-  min-width: 0;
-  padding-inline: 18px;
-  white-space: normal;
-}
-
-@media (max-width: 700px) {
-  .account-recovery-code-action-row {
-    grid-template-columns: 1fr;
-  }
-}
-
 @media (max-width: 700px) {
   .account-two-factor-card {
     grid-template-columns: 1fr;
