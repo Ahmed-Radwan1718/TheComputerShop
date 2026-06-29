@@ -6651,6 +6651,23 @@ body.nav-menu-open {
   line-height: 1.6;
 }
 
+.auth-trust-device-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.auth-trust-device-option input {
+  width: 16px;
+  height: 16px;
+  accent-color: #d8d7d7;
+}
+
 .auth-message.success {
   color: rgba(185, 255, 202, 0.9);
 }
