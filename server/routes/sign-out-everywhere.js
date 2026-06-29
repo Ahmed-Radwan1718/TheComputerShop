@@ -2,6 +2,7 @@ const admin = require("../_lib/firebaseAdmin");
 
 const {
   getUserFromRequest,
+  getCurrentAccountSession,
   clearSiteSessionCookie,
   clearLoginChallenge,
   clearLoginTwoFactorCookie
@@ -80,7 +81,87 @@ async function deleteQuery(collectionName, uid) {
   await batch.commit();
 }
 
-module.exports = async function handler(req, res) {
+function getCleanSessionId(value) {
+  const sessionId = String(value || "").trim();
+
+  if (!/^[A-Za-z0-9_-]{6,128}$/.test(sessionId)) {
+    return "";
+  }
+
+  return sessionId;
+}
+
+async function signOutSession(req, res) {
+  try {
+    if (req.method !== "POST") {
+      return res.status(405).json({ error: "Method not allowed" });
+    }
+
+    const decodedUser = await getUserFromRequest(req, {
+      checkRevoked: true,
+      requireCompletedTwoFactor: true
+    });
+
+    const unlocked = await hasSecurityUnlock(req, decodedUser.uid);
+
+    if (!unlocked) {
+      return res.status(403).json({ error: "Please unlock the Security panel first." });
+    }
+
+    const sessionId = getCleanSessionId((req.body || {}).sessionId);
+
+    if (!sessionId) {
+      return res.status(400).json({ error: "Session not found." });
+    }
+
+    const currentSession = await getCurrentAccountSession(req, decodedUser.uid).catch(function (error) {
+      if (error && error.statusCode === 401) {
+        throw error;
+      }
+
+      return null;
+    });
+
+    if (currentSession && currentSession.id === sessionId) {
+      return res.status(400).json({ error: "You cannot sign out your current session here." });
+    }
+
+    const db = admin.firestore();
+    const sessionRef = db.collection("accountSessions").doc(sessionId);
+    const sessionDoc = await sessionRef.get();
+
+    if (!sessionDoc.exists) {
+      return res.status(404).json({ error: "Session not found." });
+    }
+
+    const sessionData = sessionDoc.data() || {};
+
+    if (sessionData.uid !== decodedUser.uid) {
+      return res.status(403).json({ error: "You cannot sign out this session." });
+    }
+
+    if (sessionData.revokedAt) {
+      return res.status(404).json({ error: "Session not found." });
+    }
+
+    await sessionRef.set({
+      revokedAt: admin.firestore.FieldValue.serverTimestamp(),
+      revokedBy: decodedUser.uid,
+      revokedReason: "individual_device_signout"
+    }, { merge: true });
+
+    return res.status(200).json({
+      success: true,
+      sessionId
+    });
+  } catch (error) {
+    return res.status(error.statusCode || 500).json({
+      error: error.message || "Could not sign out this device."
+    });
+  }
+}
+
+async function signOutEverywhereHandler(req, res) {
   try {
     if (req.method !== "POST") {
       return res.status(405).json({ error: "Method not allowed" });
@@ -122,4 +203,7 @@ module.exports = async function handler(req, res) {
       error: error.message || "Could not sign out everywhere."
     });
   }
-};
+}
+
+module.exports = signOutEverywhereHandler;
+module.exports.signOutSession = signOutSession;
