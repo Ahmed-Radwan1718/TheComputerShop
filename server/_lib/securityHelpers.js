@@ -298,6 +298,12 @@ async function createAccountSession(uid, res, req) {
   };
 }
 
+function createAccountSessionError(message) {
+  const error = new Error(message);
+  error.statusCode = 401;
+  return error;
+}
+
 async function getCurrentAccountSession(req, uid) {
   const parts = getAccountSessionCookieParts(req);
 
@@ -332,6 +338,10 @@ async function getCurrentAccountSession(req, uid) {
     !crypto.timingSafeEqual(savedBuffer, submittedBuffer)
   ) {
     return null;
+  }
+
+  if (data.revokedAt) {
+    throw createAccountSessionError("account-session-revoked");
   }
 
   return {
@@ -388,6 +398,10 @@ async function listAccountSessions(req, uid) {
 
   snapshot.docs.forEach(function (doc) {
     const data = doc.data() || {};
+
+    if (data.revokedAt) {
+      return;
+    }
 
     if (isExpired(data.expiresAt)) {
       expiredDeletes.push(doc.ref.delete().catch(function () {}));
@@ -539,7 +553,20 @@ async function getSiteSessionUser(req, options) {
     settings.checkRevoked !== false
   );
 
-  await touchCurrentAccountSession(req, decodedUser.uid).catch(function () {});
+  const hasAccountSessionCookie = Boolean(getAccountSessionCookieParts(req));
+  let currentAccountSession = null;
+
+  try {
+    currentAccountSession = await touchCurrentAccountSession(req, decodedUser.uid);
+  } catch (error) {
+    if (error && error.statusCode === 401) {
+      throw error;
+    }
+  }
+
+  if (hasAccountSessionCookie && !currentAccountSession) {
+    throw createAccountSessionError("account-session-invalid");
+  }
 
   return decodedUser;
 }
