@@ -4,6 +4,7 @@ const { v2: cloudinary } = require("cloudinary");
 const {
   getUserFromRequest,
   listAccountSessions,
+  listTrustedDevices,
   getCurrentAccountSession,
   createAccountSession
 } = require("../_lib/securityHelpers");
@@ -281,6 +282,9 @@ async function getProfile(uid, req) {
   const sessions = typeof listAccountSessions === "function"
     ? await listAccountSessions(req, uid)
     : [];
+  const trustedDevices = typeof listTrustedDevices === "function"
+    ? await listTrustedDevices(req, uid)
+    : [];
 
   return {
     uid,
@@ -292,6 +296,7 @@ async function getProfile(uid, req) {
     twoFactor: getSafeTwoFactor(data.twoFactor),
     connectedProviders: getConnectedProviders(userRecord, data),
     sessions,
+    trustedDevices,
     usernameLastChangedAt: serializeTimestamp(data.usernameLastChangedAt),
     emailLastChangedAt: serializeTimestamp(data.emailLastChangedAt),
     emailChangePendingTo: data.emailChangePendingTo || "",
