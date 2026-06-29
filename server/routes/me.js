@@ -74,14 +74,17 @@ return res.status(200).json({
       }
     });
   } catch (error) {
+    const sessionRevoked = Boolean(error && (
+      error.message === "account-session-revoked" ||
+      error.message === "account-session-invalid"
+    ));
+
 return res.status(200).json({
   signedIn: false,
   authenticated: false,
   loggedIn: false,
-  sessionRevoked: Boolean(error && (
-    error.message === "account-session-revoked" ||
-    error.message === "account-session-invalid"
-  )),
+  sessionRevoked,
+  sessionRevokedReason: sessionRevoked && error && error.revokedReason ? error.revokedReason : "",
   user: null
 });
   }
