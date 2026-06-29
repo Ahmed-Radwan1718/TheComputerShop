@@ -28,6 +28,66 @@ function timestampToMillis(value) {
   return Number.isNaN(date.getTime()) ? 0 : date.getTime();
 }
 
+function serializeTimestamp(value) {
+  const millis = timestampToMillis(value);
+  return millis ? new Date(millis).toISOString() : null;
+}
+
+async function revokeOtherAccountSessions(uid, currentSessionId, revokedBy) {
+  const keepSessionId = String(currentSessionId || "").trim();
+
+  if (!uid || !keepSessionId) {
+    const error = new Error("Could not refresh this session after password change.");
+    error.statusCode = 500;
+    throw error;
+  }
+
+  const db = admin.firestore();
+  const snapshot = await db.collection("accountSessions")
+    .where("uid", "==", uid)
+    .get();
+
+  if (snapshot.empty) {
+    return;
+  }
+
+  let batch = db.batch();
+  let operationCount = 0;
+  const commits = [];
+
+  snapshot.docs.forEach(function (doc) {
+    const data = doc.data() || {};
+
+    if (doc.id === keepSessionId || data.revokedAt) {
+      return;
+    }
+
+    if (data.uid !== uid) {
+      return;
+    }
+
+    batch.set(doc.ref, {
+      revokedAt: admin.firestore.FieldValue.serverTimestamp(),
+      revokedBy: revokedBy || uid,
+      revokedReason: "password_changed"
+    }, { merge: true });
+
+    operationCount += 1;
+
+    if (operationCount >= 450) {
+      commits.push(batch.commit());
+      batch = db.batch();
+      operationCount = 0;
+    }
+  });
+
+  if (operationCount) {
+    commits.push(batch.commit());
+  }
+
+  await Promise.all(commits);
+}
+
 function isStrongPassword(password) {
   return typeof password === "string"
     && password.length >= 8
@@ -152,18 +212,43 @@ module.exports = async function handler(req, res) {
 
     await clearWrongPasswordAttempts(decodedUser.uid);
 
+    const db = admin.firestore();
+    const userRef = db.collection("users").doc(decodedUser.uid);
+
     await admin.auth().updateUser(decodedUser.uid, {
       password: newPassword
     });
 
+    await userRef.set({
+      passwordLastChangedAt: admin.firestore.FieldValue.serverTimestamp(),
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+
+    const updatedUserDoc = await userRef.get();
+    const updatedUserData = updatedUserDoc.exists ? updatedUserDoc.data() || {} : {};
+    const passwordLastChangedAt = serializeTimestamp(updatedUserData.passwordLastChangedAt);
+
+    if (!passwordLastChangedAt) {
+      throw new Error("Could not save password change time.");
+    }
+
     await admin.auth().revokeRefreshTokens(decodedUser.uid);
     await revokeAllTrustedDevices(decodedUser.uid, decodedUser.uid, "password_changed");
     clearTrustedDeviceCookie(res);
-    await createCompatibleSiteSession(req, res, decodedUser.uid);
+
+    const refreshedSession = await createCompatibleSiteSession(req, res, decodedUser.uid);
+
+    await revokeOtherAccountSessions(
+      decodedUser.uid,
+      refreshedSession && refreshedSession.accountSessionId,
+      decodedUser.uid
+    );
+
     await clearSecurityUnlock(req, res, decodedUser.uid);
 
     return res.status(200).json({
-      success: true
+      success: true,
+      passwordLastChangedAt
     });
   } catch (error) {
     return res.status(error.statusCode || 500).json({
