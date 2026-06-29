@@ -1379,6 +1379,28 @@ function getLoginSessionDate(value) {
   });
 }
 
+function getLoginSessionBrowserIcon(browserLabel) {
+  const browser = String(browserLabel || "").toLowerCase();
+
+  if (browser.includes("chrome")) {
+    return "chrome-icon.png";
+  }
+
+  if (browser.includes("safari")) {
+    return "safari-icon.png";
+  }
+
+  if (browser.includes("firefox")) {
+    return "firefox-icon.png";
+  }
+
+  if (browser.includes("opera")) {
+    return "opera-icon.png";
+  }
+
+  return "";
+}
+
 function renderLoginSessions() {
   if (!loginSessionsList || !loginSessionsEmpty) {
     return;
@@ -1390,6 +1412,10 @@ function renderLoginSessions() {
 
   loginSessionsList.innerHTML = sessions.map(function (session) {
     const sessionId = String(session.id || "");
+    const browserIcon = getLoginSessionBrowserIcon(session.browserLabel);
+    const browserIconHtml = browserIcon
+      ? '<img class="account-login-session-browser-icon" src="' + escapeHtml(browserIcon) + '" alt="" aria-hidden="true">'
+      : "";
     const currentBadge = session.current
       ? '<span class="account-login-session-current">Current</span>'
       : "";
@@ -1404,7 +1430,10 @@ function renderLoginSessions() {
       <article class="account-login-session-card ${session.current ? "current" : ""}">
         <div class="account-login-session-main">
           <div class="account-login-session-head">
-            <h4>${escapeHtml(session.deviceLabel || "Browser session")}</h4>
+            <div class="account-login-session-title">
+              ${browserIconHtml}
+              <h4>${escapeHtml(session.deviceLabel || "Browser session")}</h4>
+            </div>
             <div class="account-login-session-actions">
               ${currentBadge}
               ${sessionAction}
