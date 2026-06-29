@@ -297,6 +297,7 @@ async function getProfile(uid, req) {
     connectedProviders: getConnectedProviders(userRecord, data),
     sessions,
     trustedDevices,
+    passwordLastChangedAt: serializeTimestamp(data.passwordLastChangedAt),
     usernameLastChangedAt: serializeTimestamp(data.usernameLastChangedAt),
     emailLastChangedAt: serializeTimestamp(data.emailLastChangedAt),
     emailChangePendingTo: data.emailChangePendingTo || "",
@@ -509,8 +510,15 @@ module.exports = async function handler(req, res) {
 
     return res.status(405).json({ error: "Method not allowed" });
   } catch (error) {
+    const sessionRevoked = Boolean(error && (
+      error.message === "account-session-revoked" ||
+      error.message === "account-session-invalid"
+    ));
+
     return res.status(error.statusCode || 500).json({
-      error: error.message || "Could not process account profile."
+      error: error.message || "Could not process account profile.",
+      sessionRevoked,
+      sessionRevokedReason: sessionRevoked && error && error.revokedReason ? error.revokedReason : ""
     });
   }
 };
