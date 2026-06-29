@@ -1806,14 +1806,14 @@ function setRecoveryCodesModalView(codes, status) {
   currentRecoveryCodes = safeCodes.slice();
 
   recoveryCodesListWrap.hidden = !safeCodes.length;
-  recoveryCodesStatusWrap.hidden = Boolean(safeCodes.length);
+  recoveryCodesStatusWrap.hidden = safeCodes.length > 0;
   recoveryCodesCopyButton.hidden = !safeCodes.length;
   recoveryCodesDownloadButton.hidden = !safeCodes.length;
 
   if (safeCodes.length) {
     recoveryCodesList.innerHTML = safeCodes.map(function (code) {
-      return escapeHtml(code);
-    }).join("<br>");
+      return "<span>" + escapeHtml(code) + "</span>";
+    }).join("");
   } else {
     recoveryCodesList.textContent = "";
   }
