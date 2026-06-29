@@ -1453,6 +1453,20 @@ function renderLoginSessions() {
   }).join("");
 }
 
+function getTrustedDevicePlatformIcon(platformLabel) {
+  const platform = String(platformLabel || "").toLowerCase();
+
+  if (platform.includes("windows")) {
+    return "windows-logo.png";
+  }
+
+  if (platform.includes("ios") || platform.includes("mac")) {
+    return "apple-logo.png";
+  }
+
+  return "";
+}
+
 function renderTrustedDevices() {
   if (!trustedDevicesList || !trustedDevicesEmpty) {
     return;
@@ -1467,7 +1481,11 @@ function renderTrustedDevices() {
     const deviceTitle = device.deviceName || device.browserName || "Trusted device";
     const browserName = device.browserName || "Browser";
     const platformName = device.platform || "Device";
-    const deviceInitial = String(browserName || deviceTitle || "T").charAt(0).toUpperCase();
+    const platformIcon = getTrustedDevicePlatformIcon(platformName);
+    const deviceInitial = String(platformName || browserName || deviceTitle || "T").charAt(0).toUpperCase();
+    const platformMark = platformIcon
+      ? '<img class="account-trusted-device-platform-icon" src="' + escapeHtml(platformIcon) + '" alt="" aria-hidden="true">'
+      : '<span>' + escapeHtml(deviceInitial) + '</span>';
     const currentBadge = device.current
       ? '<span class="account-trusted-device-current">Current</span>'
       : "";
@@ -1478,7 +1496,7 @@ function renderTrustedDevices() {
     return `
       <article class="account-trusted-device-tile ${device.current ? "current" : ""}">
         <div class="account-trusted-device-mark">
-          <span>${escapeHtml(deviceInitial)}</span>
+          ${platformMark}
         </div>
 
         <div class="account-trusted-device-body">
