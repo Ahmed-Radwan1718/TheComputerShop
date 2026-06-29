@@ -400,6 +400,21 @@
 
   <div class="account-divider"></div>
 
+  <div class="account-login-sessions-section">
+    <div class="account-panel-subheader">
+      <h3>TRUSTED DEVICES</h3>
+      <p>Devices you trust will not require a verification code every time you sign in.</p>
+    </div>
+
+    <div class="account-login-sessions-list" id="account-trusted-devices-list"></div>
+
+    <p class="account-login-sessions-empty" id="account-trusted-devices-empty" hidden>
+      No trusted devices found yet.
+    </p>
+  </div>
+
+  <div class="account-divider"></div>
+
   <div class="account-sign-out-everywhere-section">
     <div class="account-panel-subheader">
       <h3>Sign Out Everywhere</h3>
@@ -433,6 +448,29 @@
       </div>
 
       <p class="account-message" id="sign-out-session-message" aria-live="polite"></p>
+    </div>
+  </div>
+
+  <div class="account-security-modal" id="remove-trusted-device-modal" hidden>
+    <div class="account-security-modal-backdrop" id="remove-trusted-device-modal-backdrop"></div>
+
+    <div class="account-security-modal-card account-security-gate-card" role="dialog" aria-modal="true" aria-labelledby="remove-trusted-device-modal-title">
+      <div class="account-security-modal-header">
+        <h2 id="remove-trusted-device-modal-title">Remove trusted device?</h2>
+        <p>This device will require two-factor verification the next time it signs in.</p>
+      </div>
+
+      <div class="account-security-modal-actions">
+        <button class="account-security-modal-cancel" type="button" id="remove-trusted-device-modal-cancel">
+          Cancel
+        </button>
+
+        <button class="account-security-modal-continue" type="button" id="remove-trusted-device-modal-confirm">
+          Remove Trust
+        </button>
+      </div>
+
+      <p class="account-message" id="remove-trusted-device-message" aria-live="polite"></p>
     </div>
   </div>
 
@@ -1030,6 +1068,11 @@ const passwordMessage = document.getElementById("password-message");
   const signOutSessionCancel = document.getElementById("sign-out-session-modal-cancel");
   const signOutSessionConfirm = document.getElementById("sign-out-session-modal-confirm");
   const signOutSessionMessage = document.getElementById("sign-out-session-message");
+  const removeTrustedDeviceModal = document.getElementById("remove-trusted-device-modal");
+  const removeTrustedDeviceModalBackdrop = document.getElementById("remove-trusted-device-modal-backdrop");
+  const removeTrustedDeviceCancel = document.getElementById("remove-trusted-device-modal-cancel");
+  const removeTrustedDeviceConfirm = document.getElementById("remove-trusted-device-modal-confirm");
+  const removeTrustedDeviceMessage = document.getElementById("remove-trusted-device-message");
 
   const savedItemsLoading = document.getElementById("account-saved-loading");
   const savedItemsList = document.getElementById("account-saved-list");
@@ -1092,6 +1135,8 @@ const passwordMessage = document.getElementById("password-message");
   const twoFactorMessage = document.getElementById("two-factor-message");
   const loginSessionsList = document.getElementById("account-login-sessions-list");
   const loginSessionsEmpty = document.getElementById("account-login-sessions-empty");
+  const trustedDevicesList = document.getElementById("account-trusted-devices-list");
+  const trustedDevicesEmpty = document.getElementById("account-trusted-devices-empty");
 
   const authenticatorSetupModal = document.getElementById("authenticator-setup-modal");
   const authenticatorSetupModalBackdrop = document.getElementById("authenticator-setup-modal-backdrop");
@@ -1143,7 +1188,9 @@ let orderHistory = [];
 let activeOrderId = "";
 let twoFactorSettings = {};
 let loginSessions = [];
+let trustedDevices = [];
 let pendingSignOutSessionId = "";
+let pendingTrustedDeviceId = "";
 let sessionStatusCheckTimer = null;
 let sessionStatusRedirecting = false;
 const loginSessionSignedOutMessage = "This session was signed out from another device.";
@@ -1343,6 +1390,47 @@ function renderLoginSessions() {
   }).join("");
 }
 
+function renderTrustedDevices() {
+  if (!trustedDevicesList || !trustedDevicesEmpty) {
+    return;
+  }
+
+  const devices = Array.isArray(trustedDevices) ? trustedDevices : [];
+
+  trustedDevicesEmpty.hidden = devices.length > 0;
+
+  trustedDevicesList.innerHTML = devices.map(function (device) {
+    const trustedDeviceId = String(device.trustedDeviceId || device.id || "");
+    const currentBadge = device.current
+      ? '<span class="account-login-session-current">Current</span>'
+      : "";
+    const lastUsedText = device.lastUsedAt
+      ? '<span>Last used ${escapeHtml(getLoginSessionDate(device.lastUsedAt))}</span>'
+      : "";
+
+    return `
+      <article class="account-login-session-card ${device.current ? "current" : ""}">
+        <div class="account-login-session-main">
+          <div class="account-login-session-head">
+            <h4>${escapeHtml(device.deviceName || device.browserName || "Trusted device")}</h4>
+            <div class="account-login-session-actions">
+              ${currentBadge}
+              <button class="account-login-session-sign-out" type="button" data-trusted-device-remove data-trusted-device-id="${escapeHtml(trustedDeviceId)}">REMOVE TRUST</button>
+            </div>
+          </div>
+
+          <p>${escapeHtml(device.browserName || "Browser")} · ${escapeHtml(device.platform || "Device")}</p>
+
+          <div class="account-login-session-meta">
+            <span>Last trusted ${escapeHtml(getLoginSessionDate(device.lastTrustedAt || device.createdAt))}</span>
+            ${lastUsedText}
+          </div>
+        </div>
+      </article>
+    `;
+  }).join("");
+}
+
 function updateTwoFactorUI() {
   const appEnabled = Boolean(twoFactorSettings && twoFactorSettings.appEnabled);
   const emailEnabled = Boolean(twoFactorSettings && twoFactorSettings.emailEnabled);
@@ -1494,6 +1582,12 @@ function getLoginSessionById(sessionId) {
   }) || null;
 }
 
+function getTrustedDeviceById(trustedDeviceId) {
+  return (Array.isArray(trustedDevices) ? trustedDevices : []).find(function (device) {
+    return String(device.trustedDeviceId || device.id || "") === String(trustedDeviceId || "");
+  }) || null;
+}
+
 function openSignOutSessionModal(sessionId) {
   const session = getLoginSessionById(sessionId);
 
@@ -1578,6 +1672,86 @@ async function signOutSelectedSession() {
     showMessage(signOutSessionMessage, error.message || "Could not sign out this device.", "error");
     signOutSessionConfirm.disabled = false;
     signOutSessionConfirm.textContent = "Sign Out";
+  }
+}
+
+function openRemoveTrustedDeviceModal(trustedDeviceId) {
+  const trustedDevice = getTrustedDeviceById(trustedDeviceId);
+
+  if (!trustedDevice || !removeTrustedDeviceModal) {
+    return;
+  }
+
+  pendingTrustedDeviceId = String(trustedDevice.trustedDeviceId || trustedDevice.id || "");
+  showMessage(removeTrustedDeviceMessage, "", "");
+  removeTrustedDeviceConfirm.disabled = false;
+  removeTrustedDeviceConfirm.textContent = "Remove Trust";
+  removeTrustedDeviceModal.hidden = false;
+  document.body.classList.add("account-security-modal-open");
+}
+
+function closeRemoveTrustedDeviceModal() {
+  pendingTrustedDeviceId = "";
+
+  if (removeTrustedDeviceModal) {
+    removeTrustedDeviceModal.hidden = true;
+  }
+
+  if (removeTrustedDeviceConfirm) {
+    removeTrustedDeviceConfirm.disabled = false;
+    removeTrustedDeviceConfirm.textContent = "Remove Trust";
+  }
+
+  showMessage(removeTrustedDeviceMessage, "", "");
+  document.body.classList.remove("account-security-modal-open");
+}
+
+async function removeSelectedTrustedDevice() {
+  if (!currentUser || !pendingTrustedDeviceId) {
+    return;
+  }
+
+  const trustedDeviceId = pendingTrustedDeviceId;
+  const unlocked = await ensureSecurityUnlocked();
+
+  if (!unlocked) {
+    closeRemoveTrustedDeviceModal();
+    openSecurityGateModal();
+    return;
+  }
+
+  removeTrustedDeviceConfirm.disabled = true;
+  removeTrustedDeviceConfirm.textContent = "Removing...";
+  showMessage(removeTrustedDeviceMessage, "", "");
+
+  try {
+    const response = await fetch("/api/trusted-devices", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: await getSecurityRequestHeaders(),
+      body: JSON.stringify({
+        trustedDeviceId: trustedDeviceId
+      })
+    });
+
+    const data = await response.json().catch(function () {
+      return {};
+    });
+
+    if (!response.ok) {
+      throw new Error(data.error || "Could not remove trusted device.");
+    }
+
+    trustedDevices = (Array.isArray(trustedDevices) ? trustedDevices : []).filter(function (trustedDevice) {
+      return String(trustedDevice.trustedDeviceId || trustedDevice.id || "") !== trustedDeviceId;
+    });
+
+    renderTrustedDevices();
+    closeRemoveTrustedDeviceModal();
+  } catch (error) {
+    showMessage(removeTrustedDeviceMessage, error.message || "Could not remove trusted device.", "error");
+    removeTrustedDeviceConfirm.disabled = false;
+    removeTrustedDeviceConfirm.textContent = "Remove Trust";
   }
 }
 
@@ -4094,8 +4268,10 @@ function hydrateAccountProfileFromServer(profile, user) {
 
   twoFactorSettings = safeProfile.twoFactor || {};
   loginSessions = Array.isArray(safeProfile.sessions) ? safeProfile.sessions : [];
+  trustedDevices = Array.isArray(safeProfile.trustedDevices) ? safeProfile.trustedDevices : [];
   updateTwoFactorUI();
   renderLoginSessions();
+  renderTrustedDevices();
 
   updateAccountStatus(statusUser, profileDataForStatus);
 }
@@ -4742,9 +4918,24 @@ if (!requestedEmail) {
     });
   }
 
+  if (trustedDevicesList) {
+    trustedDevicesList.addEventListener("click", function (event) {
+      const removeTrustButton = event.target.closest("[data-trusted-device-remove]");
+
+      if (!removeTrustButton) {
+        return;
+      }
+
+      openRemoveTrustedDeviceModal(removeTrustButton.dataset.trustedDeviceId || "");
+    });
+  }
+
   signOutSessionCancel.addEventListener("click", closeSignOutSessionModal);
   signOutSessionModalBackdrop.addEventListener("click", closeSignOutSessionModal);
   signOutSessionConfirm.addEventListener("click", signOutSelectedSession);
+  removeTrustedDeviceCancel.addEventListener("click", closeRemoveTrustedDeviceModal);
+  removeTrustedDeviceModalBackdrop.addEventListener("click", closeRemoveTrustedDeviceModal);
+  removeTrustedDeviceConfirm.addEventListener("click", removeSelectedTrustedDevice);
 
   if (ordersList) {
     ordersList.addEventListener("click", function (event) {
