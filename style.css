@@ -9677,7 +9677,22 @@ body.account-security-modal-open {
   gap: 14px;
 }
 
-.account-login-session-head h4 {
+.account-login-session-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.account-login-session-browser-icon {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  display: block;
+  object-fit: contain;
+}
+
+.account-login-session-title h4 {
   min-width: 0;
   color: white;
   font-size: 18px;
