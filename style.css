@@ -9862,9 +9862,36 @@ body.account-security-modal-open {
   cursor: not-allowed;
 }
 
+.account-change-password-details {
+  display: grid;
+  gap: 10px;
+  align-items: start;
+}
+
 .account-change-password-open-button {
   width: fit-content;
   min-width: 210px;
+}
+
+.account-password-last-changed-details {
+  display: grid;
+  gap: 4px;
+}
+
+.account-password-last-changed,
+.account-password-session-note {
+  max-width: 620px;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.account-password-last-changed {
+  font-weight: 700;
+}
+
+.account-password-session-note {
+  font-weight: 400;
 }
 
 .account-danger-button {
