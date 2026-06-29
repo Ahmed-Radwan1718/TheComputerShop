@@ -9758,6 +9758,134 @@ body.account-security-modal-open {
   text-transform: uppercase;
 }
 
+.account-trusted-device-card {
+  position: relative;
+  overflow: hidden;
+  padding: 18px 20px 18px 24px;
+  border-radius: 16px;
+  border: 1px solid rgba(115, 188, 255, 0.18);
+  background:
+    linear-gradient(135deg, rgba(64, 112, 150, 0.18), rgba(255, 255, 255, 0.035));
+  box-shadow: inset 4px 0 0 rgba(115, 188, 255, 0.48);
+}
+
+.account-trusted-device-card.current {
+  border-color: rgba(126, 224, 161, 0.28);
+  background:
+    linear-gradient(135deg, rgba(68, 132, 98, 0.18), rgba(255, 255, 255, 0.035));
+  box-shadow: inset 4px 0 0 rgba(126, 224, 161, 0.58);
+}
+
+.account-trusted-device-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: start;
+}
+
+.account-trusted-device-copy {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.account-trusted-device-copy h4 {
+  color: white;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.account-trusted-device-copy p {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.account-trusted-device-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.account-trusted-device-current {
+  padding: 7px 11px;
+  border-radius: 10px;
+  border: 1px solid rgba(126, 224, 161, 0.28);
+  background: rgba(126, 224, 161, 0.13);
+  color: #7EE0A1;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.account-trusted-device-remove {
+  min-height: 34px;
+  padding: 0 13px;
+  border: 1px solid rgba(255, 156, 156, 0.3);
+  border-radius: 10px;
+  background: rgba(255, 156, 156, 0.1);
+  color: rgba(255, 176, 176, 0.96);
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.account-trusted-device-remove:hover {
+  background: rgba(255, 156, 156, 0.16);
+  border-color: rgba(255, 156, 156, 0.44);
+}
+
+.account-trusted-device-remove:active {
+  transform: translateY(1px);
+}
+
+.account-trusted-device-remove:disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
+}
+
+.account-trusted-device-meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.account-trusted-device-meta span {
+  padding: 7px 9px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+@media (max-width: 680px) {
+  .account-trusted-device-main {
+    grid-template-columns: 1fr;
+  }
+
+  .account-trusted-device-actions {
+    justify-content: flex-start;
+  }
+}
+
 .account-two-factor-card {
   min-height: 118px;
   padding: 20px;
