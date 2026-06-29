@@ -23,6 +23,7 @@ const routes = {
   "set-email-2fa": require("../server/routes/set-email-2fa"),
   "setup-authenticator": require("../server/routes/setup-authenticator"),
   "sign-out-everywhere": require("../server/routes/sign-out-everywhere"),
+  "sign-out-session": require("../server/routes/sign-out-everywhere").signOutSession,
   "signup": require("../server/routes/signup"),
   "support-tickets": require("../server/routes/support-tickets"),
   "verify-authenticator-setup": require("../server/routes/verify-authenticator-setup"),
