@@ -9817,8 +9817,6 @@ body.account-security-modal-open {
   width: 52px;
   height: 52px;
   border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.06);
   color: rgba(255, 255, 255, 0.78);
   display: flex;
   align-items: center;
@@ -9826,16 +9824,18 @@ body.account-security-modal-open {
 }
 
 .account-trusted-device-tile.current .account-trusted-device-mark {
-  border-color: rgba(255, 255, 255, 0.18);
-  background: rgba(255, 255, 255, 0.08);
   color: rgba(255, 255, 255, 0.86);
 }
 
 .account-trusted-device-platform-icon {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   display: block;
   object-fit: contain;
+}
+
+.account-trusted-device-platform-icon-apple {
+  filter: invert(1);
 }
 
 .account-trusted-device-mark span {
