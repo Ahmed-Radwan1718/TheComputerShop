@@ -3,6 +3,8 @@ const admin = require("../_lib/firebaseAdmin");
 const {
   getUserFromRequest,
   getCurrentAccountSession,
+  revokeTrustedDevice,
+  clearTrustedDeviceCookie,
   clearSiteSessionCookie,
   clearLoginChallenge,
   clearLoginTwoFactorCookie
@@ -187,12 +189,14 @@ async function signOutEverywhereHandler(req, res) {
       deleteQuery("loginTwoFactorSessions", decodedUser.uid),
       deleteQuery("loginChallenges", decodedUser.uid),
       deleteQuery("loginEmailCodes", decodedUser.uid),
-      deleteQuery("accountSessions", decodedUser.uid)
+      deleteQuery("accountSessions", decodedUser.uid),
+      deleteQuery("trustedDevices", decodedUser.uid)
     ]);
 
     await clearLoginChallengeCookie(req, res);
     await clearSecurityUnlock(req, res, decodedUser.uid);
     await clearLoginTwoFactor(req, res);
+    clearTrustedDeviceCookie(res);
     await clearSiteSession(req, res);
 
     return res.status(200).json({
@@ -205,5 +209,44 @@ async function signOutEverywhereHandler(req, res) {
   }
 }
 
+async function trustedDevices(req, res) {
+  try {
+    if (req.method !== "POST") {
+      return res.status(405).json({ error: "Method not allowed" });
+    }
+
+    const decodedUser = await getUserFromRequest(req, {
+      checkRevoked: true,
+      requireCompletedTwoFactor: true
+    });
+
+    const unlocked = await hasSecurityUnlock(req, decodedUser.uid);
+
+    if (!unlocked) {
+      return res.status(403).json({ error: "Please unlock the Security panel first." });
+    }
+
+    const trustedDeviceId = getCleanSessionId((req.body || {}).trustedDeviceId);
+
+    await revokeTrustedDevice(
+      req,
+      res,
+      decodedUser.uid,
+      trustedDeviceId,
+      "trusted_device_removed"
+    );
+
+    return res.status(200).json({
+      success: true,
+      trustedDeviceId
+    });
+  } catch (error) {
+    return res.status(error.statusCode || 500).json({
+      error: error.message || "Could not remove trusted device."
+    });
+  }
+}
+
 module.exports = signOutEverywhereHandler;
 module.exports.signOutSession = signOutSession;
+module.exports.trustedDevices = trustedDevices;
