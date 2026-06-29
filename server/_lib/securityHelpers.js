@@ -575,6 +575,13 @@ async function getOptionalSiteSessionUser(req, options) {
   try {
     return await getSiteSessionUser(req, options);
   } catch (error) {
+    if (error && (
+      error.message === "account-session-revoked" ||
+      error.message === "account-session-invalid"
+    )) {
+      throw error;
+    }
+
     return null;
   }
 }
