@@ -9661,11 +9661,20 @@ body.account-security-modal-open {
 }
 
 .account-login-session-head h4 {
+  min-width: 0;
   color: white;
   font-size: 18px;
   font-weight: 700;
   line-height: 1.25;
   text-transform: uppercase;
+}
+
+.account-login-session-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  margin-left: auto;
 }
 
 .account-login-session-current {
@@ -9678,6 +9687,40 @@ body.account-security-modal-open {
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.account-login-session-sign-out {
+  min-height: 34px;
+  padding: 0 13px;
+  border: 1px solid rgba(255, 156, 156, 0.28);
+  border-radius: 999px;
+  background: rgba(255, 156, 156, 0.12);
+  color: rgba(255, 176, 176, 0.96);
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.account-login-session-sign-out:hover {
+  background: rgba(255, 156, 156, 0.18);
+  border-color: rgba(255, 156, 156, 0.42);
+}
+
+.account-login-session-sign-out:active {
+  transform: translateY(1px);
+}
+
+.account-login-session-sign-out:disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
 }
 
 .account-login-session-main p,
