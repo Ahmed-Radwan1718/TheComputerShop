@@ -9758,81 +9758,153 @@ body.account-security-modal-open {
   text-transform: uppercase;
 }
 
-.account-trusted-device-card {
-  position: relative;
-  overflow: hidden;
-  padding: 18px 20px 18px 24px;
-  border-radius: 16px;
-  border: 1px solid rgba(115, 188, 255, 0.18);
-  background:
-    linear-gradient(135deg, rgba(64, 112, 150, 0.18), rgba(255, 255, 255, 0.035));
-  box-shadow: inset 4px 0 0 rgba(115, 188, 255, 0.48);
-}
-
-.account-trusted-device-card.current {
-  border-color: rgba(126, 224, 161, 0.28);
-  background:
-    linear-gradient(135deg, rgba(68, 132, 98, 0.18), rgba(255, 255, 255, 0.035));
-  box-shadow: inset 4px 0 0 rgba(126, 224, 161, 0.58);
-}
-
-.account-trusted-device-main {
+.account-trusted-devices-section {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 16px;
+  gap: 18px;
   align-items: start;
 }
 
-.account-trusted-device-copy {
+.account-trusted-devices-grid {
   display: grid;
-  gap: 8px;
-  min-width: 0;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 16px;
 }
 
-.account-trusted-device-copy h4 {
-  color: white;
-  font-size: 18px;
-  font-weight: 700;
-  line-height: 1.25;
-  text-transform: uppercase;
+.account-trusted-devices-grid:empty {
+  display: none;
 }
 
-.account-trusted-device-copy p {
+.account-trusted-devices-empty {
   color: rgba(255, 255, 255, 0.62);
   font-size: 14px;
   line-height: 1.55;
 }
 
-.account-trusted-device-actions {
+.account-trusted-device-tile {
+  min-height: 258px;
+  padding: 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(124, 184, 255, 0.18);
+  background:
+    linear-gradient(180deg, rgba(86, 126, 158, 0.16), rgba(255, 255, 255, 0.035));
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 16px;
+}
+
+.account-trusted-device-tile.current {
+  border-color: rgba(126, 224, 161, 0.3);
+  background:
+    linear-gradient(180deg, rgba(82, 146, 111, 0.18), rgba(255, 255, 255, 0.035));
+}
+
+.account-trusted-device-mark {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  border: 1px solid rgba(124, 184, 255, 0.28);
+  background: rgba(124, 184, 255, 0.12);
+  color: rgba(210, 231, 255, 0.96);
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
+}
+
+.account-trusted-device-tile.current .account-trusted-device-mark {
+  border-color: rgba(126, 224, 161, 0.32);
+  background: rgba(126, 224, 161, 0.13);
+  color: #7EE0A1;
+}
+
+.account-trusted-device-mark span {
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.account-trusted-device-body {
+  display: grid;
+  gap: 9px;
+  align-content: start;
+}
+
+.account-trusted-device-kicker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 10px;
-  flex-wrap: wrap;
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 .account-trusted-device-current {
-  padding: 7px 11px;
-  border-radius: 10px;
+  flex-shrink: 0;
+  padding: 5px 8px;
+  border-radius: 8px;
   border: 1px solid rgba(126, 224, 161, 0.28);
   background: rgba(126, 224, 161, 0.13);
   color: #7EE0A1;
-  font-size: 11px;
-  font-weight: 700;
+  font-size: 10px;
+  font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
-.account-trusted-device-remove {
-  min-height: 34px;
-  padding: 0 13px;
-  border: 1px solid rgba(255, 156, 156, 0.3);
+.account-trusted-device-body h4 {
+  color: white;
+  font-size: 19px;
+  font-weight: 800;
+  line-height: 1.18;
+  text-transform: uppercase;
+}
+
+.account-trusted-device-body p {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.account-trusted-device-dates {
+  display: grid;
+  gap: 7px;
+  margin-top: 4px;
+}
+
+.account-trusted-device-dates span {
+  padding: 8px 10px;
   border-radius: 10px;
+  background: rgba(0, 0, 0, 0.16);
+  color: rgba(255, 255, 255, 0.56);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.account-trusted-device-dates strong {
+  display: block;
+  margin-bottom: 2px;
+  color: rgba(255, 255, 255, 0.34);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.account-trusted-device-remove {
+  width: 100%;
+  min-height: 40px;
+  padding: 0 13px;
+  border: 1px solid rgba(255, 156, 156, 0.28);
+  border-radius: 12px;
   background: rgba(255, 156, 156, 0.1);
   color: rgba(255, 176, 176, 0.96);
   font-family: inherit;
   font-size: 10px;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
@@ -9855,35 +9927,6 @@ body.account-security-modal-open {
 .account-trusted-device-remove:disabled {
   opacity: 0.48;
   cursor: not-allowed;
-}
-
-.account-trusted-device-meta {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-top: 14px;
-  color: rgba(255, 255, 255, 0.48);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.account-trusted-device-meta span {
-  padding: 7px 9px;
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.04);
-}
-
-@media (max-width: 680px) {
-  .account-trusted-device-main {
-    grid-template-columns: 1fr;
-  }
-
-  .account-trusted-device-actions {
-    justify-content: flex-start;
-  }
 }
 
 .account-two-factor-card {
