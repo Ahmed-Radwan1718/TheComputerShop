@@ -413,6 +413,29 @@
     <p class="account-message" id="sign-out-everywhere-message" aria-live="polite"></p>
   </div>
 
+  <div class="account-security-modal" id="sign-out-session-modal" hidden>
+    <div class="account-security-modal-backdrop" id="sign-out-session-modal-backdrop"></div>
+
+    <div class="account-security-modal-card account-security-gate-card" role="dialog" aria-modal="true" aria-labelledby="sign-out-session-modal-title">
+      <div class="account-security-modal-header">
+        <h2 id="sign-out-session-modal-title">Sign out this device?</h2>
+        <p>This will sign your account out of this browser or device only.</p>
+      </div>
+
+      <div class="account-security-modal-actions">
+        <button class="account-security-modal-cancel" type="button" id="sign-out-session-modal-cancel">
+          Cancel
+        </button>
+
+        <button class="account-security-modal-continue" type="button" id="sign-out-session-modal-confirm">
+          Sign Out
+        </button>
+      </div>
+
+      <p class="account-message" id="sign-out-session-message" aria-live="polite"></p>
+    </div>
+  </div>
+
   <div class="account-authenticator-modal" id="authenticator-setup-modal" hidden>
     <div class="account-authenticator-modal-backdrop" id="authenticator-setup-modal-backdrop"></div>
 
@@ -883,7 +906,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-  import { FacebookAuthProvider, GithubAuthProvider, GoogleAuthProvider, getAuth, linkWithPopup, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+  import { FacebookAuthProvider, GithubAuthProvider, GoogleAuthProvider, getAuth, linkWithPopup, signInWithCustomToken, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 
   const accountLoading = document.getElementById("account-loading");
   const accountHeaderText = document.getElementById("account-header-text");
@@ -1002,6 +1025,11 @@ const passwordMessage = document.getElementById("password-message");
 
   const signOutEverywhereButton = document.getElementById("sign-out-everywhere-button");
   const signOutEverywhereMessage = document.getElementById("sign-out-everywhere-message");
+  const signOutSessionModal = document.getElementById("sign-out-session-modal");
+  const signOutSessionModalBackdrop = document.getElementById("sign-out-session-modal-backdrop");
+  const signOutSessionCancel = document.getElementById("sign-out-session-modal-cancel");
+  const signOutSessionConfirm = document.getElementById("sign-out-session-modal-confirm");
+  const signOutSessionMessage = document.getElementById("sign-out-session-message");
 
   const savedItemsLoading = document.getElementById("account-saved-loading");
   const savedItemsList = document.getElementById("account-saved-list");
@@ -1115,6 +1143,10 @@ let orderHistory = [];
 let activeOrderId = "";
 let twoFactorSettings = {};
 let loginSessions = [];
+let pendingSignOutSessionId = "";
+let sessionStatusCheckTimer = null;
+let sessionStatusRedirecting = false;
+const loginSessionSignedOutMessage = "This session was signed out from another device.";
 const usernameCooldownDays = 14;
 const emailCooldownDays = 90;
 const securityUnlockMinutes = 60;
@@ -1276,8 +1308,12 @@ function renderLoginSessions() {
   loginSessionsEmpty.hidden = sessions.length > 0;
 
   loginSessionsList.innerHTML = sessions.map(function (session) {
+    const sessionId = String(session.id || "");
     const currentBadge = session.current
       ? '<span class="account-login-session-current">Current</span>'
+      : "";
+    const sessionAction = !session.current && sessionId
+      ? '<button class="account-login-session-sign-out" type="button" data-session-sign-out data-session-id="' + escapeHtml(sessionId) + '">SIGN OUT</button>'
       : "";
     const ipText = session.ipAddress
       ? '<span>IP ' + escapeHtml(session.ipAddress) + '</span>'
@@ -1288,7 +1324,10 @@ function renderLoginSessions() {
         <div class="account-login-session-main">
           <div class="account-login-session-head">
             <h4>${escapeHtml(session.deviceLabel || "Browser session")}</h4>
-            ${currentBadge}
+            <div class="account-login-session-actions">
+              ${currentBadge}
+              ${sessionAction}
+            </div>
           </div>
 
           <p>${escapeHtml(session.browserLabel || "Browser")} · ${escapeHtml(session.platformLabel || "Device")}</p>
@@ -1447,6 +1486,99 @@ function closeAuthenticatorSetupModal() {
   authenticatorSetupCode.value = "";
   showMessage(authenticatorSetupMessage, "", "");
   document.body.classList.remove("account-security-modal-open");
+}
+
+function getLoginSessionById(sessionId) {
+  return (Array.isArray(loginSessions) ? loginSessions : []).find(function (session) {
+    return String(session.id || "") === String(sessionId || "");
+  }) || null;
+}
+
+function openSignOutSessionModal(sessionId) {
+  const session = getLoginSessionById(sessionId);
+
+  if (!session || session.current || !signOutSessionModal) {
+    return;
+  }
+
+  pendingSignOutSessionId = String(session.id || "");
+  showMessage(signOutSessionMessage, "", "");
+  signOutSessionConfirm.disabled = false;
+  signOutSessionConfirm.textContent = "Sign Out";
+  signOutSessionModal.hidden = false;
+  document.body.classList.add("account-security-modal-open");
+}
+
+function closeSignOutSessionModal() {
+  pendingSignOutSessionId = "";
+
+  if (signOutSessionModal) {
+    signOutSessionModal.hidden = true;
+  }
+
+  if (signOutSessionConfirm) {
+    signOutSessionConfirm.disabled = false;
+    signOutSessionConfirm.textContent = "Sign Out";
+  }
+
+  showMessage(signOutSessionMessage, "", "");
+  document.body.classList.remove("account-security-modal-open");
+}
+
+async function signOutSelectedSession() {
+  if (!currentUser || !pendingSignOutSessionId) {
+    return;
+  }
+
+  const sessionId = pendingSignOutSessionId;
+  const session = getLoginSessionById(sessionId);
+
+  if (!session || session.current) {
+    closeSignOutSessionModal();
+    return;
+  }
+
+  const unlocked = await ensureSecurityUnlocked();
+
+  if (!unlocked) {
+    closeSignOutSessionModal();
+    openSecurityGateModal();
+    return;
+  }
+
+  signOutSessionConfirm.disabled = true;
+  signOutSessionConfirm.textContent = "Signing out...";
+  showMessage(signOutSessionMessage, "", "");
+
+  try {
+    const response = await fetch("/api/sign-out-session", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: await getSecurityRequestHeaders(),
+      body: JSON.stringify({
+        sessionId: sessionId
+      })
+    });
+
+    const data = await response.json().catch(function () {
+      return {};
+    });
+
+    if (!response.ok) {
+      throw new Error(data.error || "Could not sign out this device.");
+    }
+
+    loginSessions = (Array.isArray(loginSessions) ? loginSessions : []).filter(function (loginSession) {
+      return String(loginSession.id || "") !== sessionId;
+    });
+
+    renderLoginSessions();
+    closeSignOutSessionModal();
+  } catch (error) {
+    showMessage(signOutSessionMessage, error.message || "Could not sign out this device.", "error");
+    signOutSessionConfirm.disabled = false;
+    signOutSessionConfirm.textContent = "Sign Out";
+  }
 }
 
 async function signOutEverywhere() {
@@ -3572,7 +3704,9 @@ async function getServerAccountProfile() {
   });
 
   if (!response.ok || !data.profile) {
-    throw new Error(data.error || "Could not load account profile.");
+    const error = new Error(data.error || "Could not load account profile.");
+    error.sessionRevoked = data.error === "account-session-revoked";
+    throw error;
   }
 
   return data.profile;
@@ -3966,6 +4100,80 @@ function hydrateAccountProfileFromServer(profile, user) {
   updateAccountStatus(statusUser, profileDataForStatus);
 }
 
+async function forceCurrentSessionSignedOut() {
+  if (sessionStatusRedirecting) {
+    return;
+  }
+
+  sessionStatusRedirecting = true;
+
+  if (sessionStatusCheckTimer) {
+    clearInterval(sessionStatusCheckTimer);
+    sessionStatusCheckTimer = null;
+  }
+
+  stopSavedItemsSync();
+  stopAddressesSync();
+  stopSupportTicketsSync();
+  stopOrderHistorySync();
+  clearSecurityUnlock();
+
+  try {
+    const authForSignOut = firebaseClientAuth || (firebaseClientApp ? getAuth(firebaseClientApp) : null);
+
+    if (authForSignOut) {
+      await signOut(authForSignOut);
+    }
+  } catch (error) {}
+
+  await fetch("/api/logout", {
+    method: "POST",
+    credentials: "same-origin",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({})
+  }).catch(function () {});
+
+  sessionStorage.removeItem("tcs-login-2fa-pending");
+  sessionStorage.setItem("tcs-login-message", loginSessionSignedOutMessage);
+  window.location.href = "login.html";
+}
+
+async function checkCurrentSessionStatus() {
+  if (!currentUser || sessionStatusRedirecting) {
+    return;
+  }
+
+  try {
+    const response = await fetch("/api/me", {
+      method: "GET",
+      credentials: "same-origin",
+      cache: "no-store",
+      headers: {
+        "Accept": "application/json"
+      }
+    });
+
+    const data = await response.json().catch(function () {
+      return {};
+    });
+
+    if (response.ok && data.sessionRevoked) {
+      await forceCurrentSessionSignedOut();
+    }
+  } catch (error) {}
+}
+
+function startCurrentSessionStatusListener() {
+  if (sessionStatusCheckTimer) {
+    clearInterval(sessionStatusCheckTimer);
+  }
+
+  sessionStatusCheckTimer = setInterval(checkCurrentSessionStatus, 5000);
+  checkCurrentSessionStatus();
+}
+
 async function initializeServerAccountPage() {
   try {
     const profile = await getServerAccountProfile();
@@ -3998,7 +4206,13 @@ async function initializeServerAccountPage() {
     updateTwoFactorUI();
 
     hydrateAccountProfileFromServer(profile, currentUser);
+    startCurrentSessionStatusListener();
   } catch (error) {
+    if (error && error.sessionRevoked) {
+      await forceCurrentSessionSignedOut();
+      return;
+    }
+
     window.location.href = "login.html";
     return;
   } finally {
@@ -4515,6 +4729,22 @@ if (!requestedEmail) {
   signOutEverywhereButton.addEventListener("click", function () {
     signOutEverywhere();
   });
+
+  if (loginSessionsList) {
+    loginSessionsList.addEventListener("click", function (event) {
+      const signOutButton = event.target.closest("[data-session-sign-out]");
+
+      if (!signOutButton) {
+        return;
+      }
+
+      openSignOutSessionModal(signOutButton.dataset.sessionId || "");
+    });
+  }
+
+  signOutSessionCancel.addEventListener("click", closeSignOutSessionModal);
+  signOutSessionModalBackdrop.addEventListener("click", closeSignOutSessionModal);
+  signOutSessionConfirm.addEventListener("click", signOutSelectedSession);
 
   if (ordersList) {
     ordersList.addEventListener("click", function (event) {
