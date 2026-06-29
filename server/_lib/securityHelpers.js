@@ -310,9 +310,10 @@ async function createAccountSession(uid, res, req) {
   };
 }
 
-function createAccountSessionError(message) {
+function createAccountSessionError(message, revokedReason) {
   const error = new Error(message);
   error.statusCode = 401;
+  error.revokedReason = revokedReason || "";
   return error;
 }
 
@@ -353,7 +354,7 @@ async function getCurrentAccountSession(req, uid) {
   }
 
   if (data.revokedAt) {
-    throw createAccountSessionError("account-session-revoked");
+    throw createAccountSessionError("account-session-revoked", data.revokedReason || "");
   }
 
   return {
@@ -787,9 +788,12 @@ async function createSiteSessionFromIdToken(firstArg, secondArg, thirdArg) {
     Math.floor(SITE_SESSION_EXPIRES_MS / 1000)
   );
 
-  await createAccountSession(decodedToken.uid, res, req);
+  const accountSession = await createAccountSession(decodedToken.uid, res, req);
 
-  return sessionCookie;
+  return {
+    sessionCookie,
+    accountSessionId: accountSession && accountSession.sessionId ? accountSession.sessionId : ""
+  };
 }
 
 async function createSiteSessionForUid(firstArg, secondArg, thirdArg) {
@@ -799,10 +803,12 @@ async function createSiteSessionForUid(firstArg, secondArg, thirdArg) {
   const req = args.req;
   const customToken = await admin.auth().createCustomToken(uid);
   const signInData = await signInWithCustomToken(customToken);
+  const sessionData = await createSiteSessionFromIdToken(signInData.idToken, res, req);
 
-  await createSiteSessionFromIdToken(signInData.idToken, res, req);
-
-  return signInData;
+  return Object.assign({}, signInData, {
+    sessionCookie: sessionData && sessionData.sessionCookie ? sessionData.sessionCookie : "",
+    accountSessionId: sessionData && sessionData.accountSessionId ? sessionData.accountSessionId : ""
+  });
 }
 
 async function clearSiteSessionCookie(firstArg, secondArg) {
@@ -827,10 +833,7 @@ async function getSiteSessionUser(req, options) {
     throw error;
   }
 
-  const decodedUser = await admin.auth().verifySessionCookie(
-    sessionCookie,
-    settings.checkRevoked !== false
-  );
+  const decodedUser = await admin.auth().verifySessionCookie(sessionCookie, false);
 
   const hasAccountSessionCookie = Boolean(getAccountSessionCookieParts(req));
   let currentAccountSession = null;
@@ -845,6 +848,10 @@ async function getSiteSessionUser(req, options) {
 
   if (hasAccountSessionCookie && !currentAccountSession) {
     throw createAccountSessionError("account-session-invalid");
+  }
+
+  if (settings.checkRevoked !== false) {
+    await admin.auth().verifySessionCookie(sessionCookie, true);
   }
 
   return decodedUser;
