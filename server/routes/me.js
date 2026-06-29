@@ -78,7 +78,10 @@ return res.status(200).json({
   signedIn: false,
   authenticated: false,
   loggedIn: false,
-  sessionRevoked: Boolean(error && error.message === "account-session-revoked"),
+  sessionRevoked: Boolean(error && (
+    error.message === "account-session-revoked" ||
+    error.message === "account-session-invalid"
+  )),
   user: null
 });
   }
