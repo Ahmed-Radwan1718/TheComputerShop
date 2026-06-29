@@ -6,7 +6,8 @@ const {
   clearLoginChallenge,
   createSiteSessionFromIdToken,
   createSiteSessionForUid,
-  createLoginTwoFactorSession
+  createLoginTwoFactorSession,
+  createTrustedDevice
 } = require("../_lib/securityHelpers");
 
 const LOCKOUT_MS = 30 * 60 * 1000;
@@ -63,6 +64,14 @@ async function createCompatibleTwoFactorSession(req, res, uid) {
   }
 
   return await createLoginTwoFactorSession(uid, res);
+}
+
+async function createCompatibleTrustedDevice(req, res, uid) {
+  if (!Boolean((req.body || {}).trustDevice) || typeof createTrustedDevice !== "function") {
+    return;
+  }
+
+  return await createTrustedDevice(uid, res, req);
 }
 
 async function clearCompatibleChallenge(req, res) {
@@ -166,6 +175,7 @@ module.exports = async function handler(req, res) {
 
     await createCompatibleSiteSession(req, res, challenge);
     await createCompatibleTwoFactorSession(req, res, challenge.uid);
+    await createCompatibleTrustedDevice(req, res, challenge.uid);
     await clearCompatibleChallenge(req, res);
 
     return res.status(200).json({
