@@ -2,7 +2,9 @@ const admin = require("../_lib/firebaseAdmin");
 const { authenticator } = require("otplib");
 
 const {
-  getUserFromRequest
+  getUserFromRequest,
+  revokeAllTrustedDevices,
+  clearTrustedDeviceCookie
 } = require("../_lib/securityHelpers");
 
 const {
@@ -144,6 +146,9 @@ module.exports = async function handler(req, res) {
       },
       updatedAt: admin.firestore.FieldValue.serverTimestamp()
     }, { merge: true });
+
+    await revokeAllTrustedDevices(decodedUser.uid, decodedUser.uid, "two_factor_disabled");
+    clearTrustedDeviceCookie(res);
 
     return res.status(200).json({ success: true });
   } catch (error) {
