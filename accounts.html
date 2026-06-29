@@ -4159,7 +4159,7 @@ async function checkCurrentSessionStatus() {
       return {};
     });
 
-    if (response.ok && data.sessionRevoked) {
+    if (response.ok && (data.sessionRevoked || !data.signedIn || !data.user)) {
       await forceCurrentSessionSignedOut();
     }
   } catch (error) {}
@@ -4170,7 +4170,7 @@ function startCurrentSessionStatusListener() {
     clearInterval(sessionStatusCheckTimer);
   }
 
-  sessionStatusCheckTimer = setInterval(checkCurrentSessionStatus, 5000);
+  sessionStatusCheckTimer = setInterval(checkCurrentSessionStatus, 2000);
   checkCurrentSessionStatus();
 }
 
