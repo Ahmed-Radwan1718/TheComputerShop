@@ -407,15 +407,15 @@
 
   <div class="account-divider"></div>
 
-  <div class="account-login-sessions-section">
+  <div class="account-trusted-devices-section">
     <div class="account-panel-subheader">
       <h3>TRUSTED DEVICES</h3>
       <p>Devices you trust will not require a verification code every time you sign in.</p>
     </div>
 
-    <div class="account-login-sessions-list" id="account-trusted-devices-list"></div>
+    <div class="account-trusted-devices-grid" id="account-trusted-devices-list"></div>
 
-    <p class="account-login-sessions-empty" id="account-trusted-devices-empty" hidden>
+    <p class="account-trusted-devices-empty" id="account-trusted-devices-empty" hidden>
       No trusted devices found yet.
     </p>
   </div>
@@ -1435,31 +1435,39 @@ function renderTrustedDevices() {
 
   trustedDevicesList.innerHTML = devices.map(function (device) {
     const trustedDeviceId = String(device.trustedDeviceId || device.id || "");
+    const deviceTitle = device.deviceName || device.browserName || "Trusted device";
+    const browserName = device.browserName || "Browser";
+    const platformName = device.platform || "Device";
+    const deviceInitial = String(browserName || deviceTitle || "T").charAt(0).toUpperCase();
     const currentBadge = device.current
       ? '<span class="account-trusted-device-current">Current</span>'
       : "";
     const lastUsedText = device.lastUsedAt
-      ? '<span>Last used ' + escapeHtml(getLoginSessionDate(device.lastUsedAt)) + '</span>'
+      ? '<span><strong>Last used</strong>' + escapeHtml(getLoginSessionDate(device.lastUsedAt)) + '</span>'
       : "";
 
     return `
-      <article class="account-trusted-device-card ${device.current ? "current" : ""}">
-        <div class="account-trusted-device-main">
-          <div class="account-trusted-device-copy">
-            <h4>${escapeHtml(device.deviceName || device.browserName || "Trusted device")}</h4>
-            <p>${escapeHtml(device.browserName || "Browser")} · ${escapeHtml(device.platform || "Device")}</p>
-          </div>
+      <article class="account-trusted-device-tile ${device.current ? "current" : ""}">
+        <div class="account-trusted-device-mark">
+          <span>${escapeHtml(deviceInitial)}</span>
+        </div>
 
-          <div class="account-trusted-device-actions">
+        <div class="account-trusted-device-body">
+          <div class="account-trusted-device-kicker">
+            <span>Trusted access</span>
             ${currentBadge}
-            <button class="account-trusted-device-remove" type="button" data-trusted-device-remove data-trusted-device-id="${escapeHtml(trustedDeviceId)}">REMOVE TRUST</button>
+          </div>
+
+          <h4>${escapeHtml(deviceTitle)}</h4>
+          <p>${escapeHtml(browserName)} · ${escapeHtml(platformName)}</p>
+
+          <div class="account-trusted-device-dates">
+            <span><strong>Trusted</strong>${escapeHtml(getLoginSessionDate(device.lastTrustedAt || device.createdAt))}</span>
+            ${lastUsedText}
           </div>
         </div>
 
-        <div class="account-trusted-device-meta">
-          <span>Last trusted ${escapeHtml(getLoginSessionDate(device.lastTrustedAt || device.createdAt))}</span>
-          ${lastUsedText}
-        </div>
+        <button class="account-trusted-device-remove" type="button" data-trusted-device-remove data-trusted-device-id="${escapeHtml(trustedDeviceId)}">REMOVE TRUST</button>
       </article>
     `;
   }).join("");
