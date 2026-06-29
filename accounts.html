@@ -1439,7 +1439,7 @@ function renderTrustedDevices() {
       ? '<span class="account-login-session-current">Current</span>'
       : "";
     const lastUsedText = device.lastUsedAt
-      ? '<span>Last used ${escapeHtml(getLoginSessionDate(device.lastUsedAt))}</span>'
+      ? '<span>Last used ' + escapeHtml(getLoginSessionDate(device.lastUsedAt)) + '</span>'
       : "";
 
     return `
