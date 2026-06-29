@@ -6652,20 +6652,84 @@ body.nav-menu-open {
 }
 
 .auth-trust-device-option {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: rgba(255, 255, 255, 0.72);
-  font-size: 13px;
+  width: fit-content;
+  min-height: 44px;
+  padding: 0 16px 0 14px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.065);
+  color: rgba(255, 255, 255, 0.78);
+  font-family: inherit;
+  font-size: 12px;
   font-weight: 700;
+  letter-spacing: 0.08em;
   line-height: 1.5;
+  text-transform: uppercase;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.auth-trust-device-option:hover {
+  background: rgba(255, 255, 255, 0.095);
+  border-color: rgba(255, 255, 255, 0.22);
 }
 
 .auth-trust-device-option input {
-  width: 16px;
-  height: 16px;
-  accent-color: #d8d7d7;
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.auth-trust-device-option span {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.auth-trust-device-option span::before {
+  content: "";
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.08);
+  flex: 0 0 auto;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.auth-trust-device-option span::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 50%;
+  width: 5px;
+  height: 9px;
+  border: solid #181918;
+  border-width: 0 2px 2px 0;
+  transform: translateY(-58%) rotate(45deg) scale(0);
+  transition: transform 0.2s ease;
+}
+
+.auth-trust-device-option input:checked + span::before {
+  border-color: #d8d7d7;
+  background: #d8d7d7;
+}
+
+.auth-trust-device-option input:checked + span::after {
+  transform: translateY(-58%) rotate(45deg) scale(1);
+}
+
+.auth-trust-device-option input:focus-visible + span::before {
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.08);
 }
 
 .auth-message.success {
