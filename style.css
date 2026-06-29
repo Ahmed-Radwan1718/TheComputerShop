@@ -9784,36 +9784,36 @@ body.account-security-modal-open {
   min-height: 258px;
   padding: 18px;
   border-radius: 18px;
-  border: 1px solid rgba(124, 184, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.105);
   background:
-    linear-gradient(180deg, rgba(86, 126, 158, 0.16), rgba(255, 255, 255, 0.035));
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.035));
   display: grid;
   grid-template-rows: auto 1fr auto;
   gap: 16px;
 }
 
 .account-trusted-device-tile.current {
-  border-color: rgba(126, 224, 161, 0.3);
+  border-color: rgba(255, 255, 255, 0.14);
   background:
-    linear-gradient(180deg, rgba(82, 146, 111, 0.18), rgba(255, 255, 255, 0.035));
+    linear-gradient(180deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.04));
 }
 
 .account-trusted-device-mark {
   width: 52px;
   height: 52px;
   border-radius: 16px;
-  border: 1px solid rgba(124, 184, 255, 0.28);
-  background: rgba(124, 184, 255, 0.12);
-  color: rgba(210, 231, 255, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.78);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .account-trusted-device-tile.current .account-trusted-device-mark {
-  border-color: rgba(126, 224, 161, 0.32);
-  background: rgba(126, 224, 161, 0.13);
-  color: #7EE0A1;
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.86);
 }
 
 .account-trusted-device-mark span {
@@ -9845,9 +9845,9 @@ body.account-security-modal-open {
   flex-shrink: 0;
   padding: 5px 8px;
   border-radius: 8px;
-  border: 1px solid rgba(126, 224, 161, 0.28);
-  background: rgba(126, 224, 161, 0.13);
-  color: #7EE0A1;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.78);
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.08em;
