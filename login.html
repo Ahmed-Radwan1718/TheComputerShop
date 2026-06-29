@@ -134,6 +134,7 @@
   let twoFactorFlowActive = false;
 
   const pendingTwoFactorKey = "tcs-login-2fa-pending";
+  const loginNoticeKey = "tcs-login-message";
 
   function showMessage(message, type) {
     loginMessage.textContent = message;
@@ -142,6 +143,13 @@
     if (type) {
       loginMessage.classList.add(type);
     }
+  }
+
+  const savedLoginNotice = sessionStorage.getItem(loginNoticeKey);
+
+  if (savedLoginNotice) {
+    sessionStorage.removeItem(loginNoticeKey);
+    showMessage(savedLoginNotice, "error");
   }
 
   function showTwoFactorMessage(message, type) {
