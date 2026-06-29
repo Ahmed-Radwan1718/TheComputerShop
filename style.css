@@ -10220,6 +10220,10 @@ body.account-security-modal-open {
   gap: 10px;
 }
 
+#recovery-codes-list-wrap[hidden] {
+  display: none;
+}
+
 .account-authenticator-manual span {
   color: rgba(255, 255, 255, 0.42);
   font-size: 11px;
