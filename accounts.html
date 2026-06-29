@@ -1436,29 +1436,29 @@ function renderTrustedDevices() {
   trustedDevicesList.innerHTML = devices.map(function (device) {
     const trustedDeviceId = String(device.trustedDeviceId || device.id || "");
     const currentBadge = device.current
-      ? '<span class="account-login-session-current">Current</span>'
+      ? '<span class="account-trusted-device-current">Current</span>'
       : "";
     const lastUsedText = device.lastUsedAt
       ? '<span>Last used ' + escapeHtml(getLoginSessionDate(device.lastUsedAt)) + '</span>'
       : "";
 
     return `
-      <article class="account-login-session-card ${device.current ? "current" : ""}">
-        <div class="account-login-session-main">
-          <div class="account-login-session-head">
+      <article class="account-trusted-device-card ${device.current ? "current" : ""}">
+        <div class="account-trusted-device-main">
+          <div class="account-trusted-device-copy">
             <h4>${escapeHtml(device.deviceName || device.browserName || "Trusted device")}</h4>
-            <div class="account-login-session-actions">
-              ${currentBadge}
-              <button class="account-login-session-sign-out" type="button" data-trusted-device-remove data-trusted-device-id="${escapeHtml(trustedDeviceId)}">REMOVE TRUST</button>
-            </div>
+            <p>${escapeHtml(device.browserName || "Browser")} · ${escapeHtml(device.platform || "Device")}</p>
           </div>
 
-          <p>${escapeHtml(device.browserName || "Browser")} · ${escapeHtml(device.platform || "Device")}</p>
-
-          <div class="account-login-session-meta">
-            <span>Last trusted ${escapeHtml(getLoginSessionDate(device.lastTrustedAt || device.createdAt))}</span>
-            ${lastUsedText}
+          <div class="account-trusted-device-actions">
+            ${currentBadge}
+            <button class="account-trusted-device-remove" type="button" data-trusted-device-remove data-trusted-device-id="${escapeHtml(trustedDeviceId)}">REMOVE TRUST</button>
           </div>
+        </div>
+
+        <div class="account-trusted-device-meta">
+          <span>Last trusted ${escapeHtml(getLoginSessionDate(device.lastTrustedAt || device.createdAt))}</span>
+          ${lastUsedText}
         </div>
       </article>
     `;
