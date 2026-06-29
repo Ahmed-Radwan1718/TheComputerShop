@@ -93,6 +93,11 @@
         </div>
       </div>
 
+      <label class="auth-trust-device-option">
+        <input type="checkbox" id="login-trust-device">
+        <span>Trust this device</span>
+      </label>
+
       <button class="auth-button" type="submit" id="login-two-factor-submit">
         Continue
       </button>
@@ -127,6 +132,7 @@
   const twoFactorMessage = document.getElementById("login-two-factor-message");
   const useEmailCodeButton = document.getElementById("login-use-email-code");
   const twoFactorCancelButton = document.getElementById("login-two-factor-cancel");
+  const trustDeviceCheckbox = document.getElementById("login-trust-device");
 
   let pendingTwoFactorSettings = {};
   let pendingMaskedEmail = "";
@@ -218,6 +224,11 @@
     markTwoFactorPending();
     clearTwoFactorCodeInputs();
     showTwoFactorMessage("", "");
+
+    if (trustDeviceCheckbox) {
+      trustDeviceCheckbox.checked = false;
+    }
+
     loginForm.hidden = true;
     twoFactorForm.hidden = false;
 
@@ -270,6 +281,10 @@
     return data;
   }
 
+  function shouldTrustDevice() {
+    return Boolean(trustDeviceCheckbox && trustDeviceCheckbox.checked);
+  }
+
   async function verifyEmailLoginCode(code) {
     const response = await fetch("/api/login-verify-email-code", {
       method: "POST",
@@ -277,7 +292,10 @@
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ code: code })
+      body: JSON.stringify({
+        code: code,
+        trustDevice: shouldTrustDevice()
+      })
     });
 
     const data = await response.json().catch(function () {
@@ -298,7 +316,10 @@
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ code: code })
+      body: JSON.stringify({
+        code: code,
+        trustDevice: shouldTrustDevice()
+      })
     });
 
     const data = await response.json().catch(function () {
