@@ -1482,9 +1482,14 @@ function renderTrustedDevices() {
     const browserName = device.browserName || "Browser";
     const platformName = device.platform || "Device";
     const platformIcon = getTrustedDevicePlatformIcon(platformName);
+    const platformIconClass = platformIcon.includes("apple")
+      ? " account-trusted-device-platform-icon-apple"
+      : platformIcon.includes("windows")
+        ? " account-trusted-device-platform-icon-windows"
+        : "";
     const deviceInitial = String(platformName || browserName || deviceTitle || "T").charAt(0).toUpperCase();
     const platformMark = platformIcon
-      ? '<img class="account-trusted-device-platform-icon" src="' + escapeHtml(platformIcon) + '" alt="" aria-hidden="true">'
+      ? '<img class="account-trusted-device-platform-icon' + platformIconClass + '" src="' + escapeHtml(platformIcon) + '" alt="" aria-hidden="true">'
       : '<span>' + escapeHtml(deviceInitial) + '</span>';
     const currentBadge = device.current
       ? '<span class="account-trusted-device-current">Current</span>'
