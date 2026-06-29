@@ -24,6 +24,7 @@ const routes = {
   "setup-authenticator": require("../server/routes/setup-authenticator"),
   "sign-out-everywhere": require("../server/routes/sign-out-everywhere"),
   "sign-out-session": require("../server/routes/sign-out-everywhere").signOutSession,
+  "trusted-devices": require("../server/routes/sign-out-everywhere").trustedDevices,
   "signup": require("../server/routes/signup"),
   "support-tickets": require("../server/routes/support-tickets"),
   "verify-authenticator-setup": require("../server/routes/verify-authenticator-setup"),
