@@ -14,7 +14,8 @@ const {
 } = require("../_lib/securityUnlockHelpers");
 
 const USERNAME_COOLDOWN_MS = 14 * 24 * 60 * 60 * 1000;
-const PROFILE_PHOTO_MAX_DATA_URL_LENGTH = 750 * 1024;
+const PROFILE_PHOTO_MAX_BYTES = 4 * 1024 * 1024;
+const PROFILE_PHOTO_ALLOWED_MIME_TYPES = new Set(["image/jpeg", "image/jpg", "image/png", "image/webp"]);
 
 const PROVIDER_CONFIGS = {
   google: {
@@ -208,19 +209,26 @@ function getProfilePhotoDataUrl(value) {
     return "";
   }
 
-  if (dataUrl.length > PROFILE_PHOTO_MAX_DATA_URL_LENGTH) {
-    const error = new Error("Profile photo is too large. Please choose a smaller image.");
-    error.statusCode = 413;
-    throw error;
-  }
+  const match = dataUrl.match(/^data:(image\/(?:jpeg|jpg|png|webp));base64,([A-Za-z0-9+/]+={0,2})$/i);
 
-  if (!/^data:image\/(jpeg|jpg|png|webp);base64,[A-Za-z0-9+/=]+$/i.test(dataUrl)) {
-    const error = new Error("Please choose a valid image file.");
+  if (!match || !PROFILE_PHOTO_ALLOWED_MIME_TYPES.has(match[1].toLowerCase())) {
+    const error = new Error("Please upload a JPG, PNG, or WEBP image.");
     error.statusCode = 400;
     throw error;
   }
 
-  return dataUrl;
+  const mimeType = match[1].toLowerCase() === "image/jpg" ? "image/jpeg" : match[1].toLowerCase();
+  const base64Data = match[2];
+  const padding = base64Data.endsWith("==") ? 2 : base64Data.endsWith("=") ? 1 : 0;
+  const byteLength = Math.floor((base64Data.length * 3) / 4) - padding;
+
+  if (byteLength > PROFILE_PHOTO_MAX_BYTES) {
+    const error = new Error("Profile photo must be 4MB or smaller.");
+    error.statusCode = 413;
+    throw error;
+  }
+
+  return "data:" + mimeType + ";base64," + base64Data;
 }
 
 async function uploadProfilePhoto(uid, dataUrl) {
