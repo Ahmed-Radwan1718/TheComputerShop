@@ -6,7 +6,7 @@ const {
 
 const ADMIN_EMAILS = ["ahmedradwan21@gmail.com"];
 const VALID_STATUSES = ["open", "pending", "answered", "resolved", "closed"];
-const VALID_ORDER_STATUSES = ["submitted", "reviewing", "quoted", "awaiting_payment", "preparing_order", "ready_for_delivery_pickup", "out_for_delivery", "completed", "canceled"];
+const VALID_ORDER_STATUSES = ["submitted", "reviewing", "awaiting_payment", "preparing_order", "ready_for_delivery_pickup", "out_for_delivery", "fulfilled", "canceled"];
 const VALID_PAYMENT_STATUSES = ["not_paid", "pending", "paid", "refunded"];
 
 function cleanString(value, maxLength) {
@@ -42,6 +42,11 @@ function cleanStatus(value) {
 
 function cleanOrderStatus(value) {
   const status = cleanString(value, 40);
+
+  if (status === "completed") {
+    return "fulfilled";
+  }
+
   return VALID_ORDER_STATUSES.includes(status) ? status : "submitted";
 }
 
@@ -137,7 +142,7 @@ function serializeOrder(orderDoc) {
     itemCount: Number(data.itemCount || items.length || 0),
     totalValue: Number(data.totalValue || 0),
     totalText: data.totalText || "",
-    status: data.status || "submitted",
+    status: data.status === "completed" ? "fulfilled" : (data.status || "submitted"),
     paymentStatus: data.paymentStatus || "not_paid",
     adminNote: data.adminNote || "",
     createdAt: serializeTimestamp(data.createdAt),
