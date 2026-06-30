@@ -7188,6 +7188,241 @@ body.account-security-modal-open .account-panel.active {
   cursor: not-allowed;
 }
 
+body.account-photo-crop-modal-open {
+  overflow: hidden;
+}
+
+.account-photo-crop-modal[hidden] {
+  display: none;
+}
+
+.account-photo-crop-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 5000;
+  padding: 24px;
+  display: grid;
+  place-items: center;
+}
+
+.account-photo-crop-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(14px);
+}
+
+.account-photo-crop-card {
+  position: relative;
+  z-index: 1;
+  width: min(760px, 100%);
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+  padding: 28px;
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(28, 30, 28, 0.98);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.42);
+}
+
+.account-photo-crop-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  color: white;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.account-photo-crop-header {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+
+.account-photo-crop-header h2 {
+  color: white;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1.15;
+}
+
+.account-photo-crop-header p:last-child {
+  max-width: 560px;
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.65;
+}
+
+.account-photo-crop-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 168px;
+  gap: 20px;
+  align-items: start;
+}
+
+.account-photo-crop-stage {
+  position: relative;
+  height: 320px;
+  overflow: hidden;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.055);
+  cursor: grab;
+  touch-action: none;
+}
+
+.account-photo-crop-stage:active {
+  cursor: grabbing;
+}
+
+.account-photo-crop-stage img {
+  position: absolute;
+  max-width: none;
+  max-height: none;
+  transform-origin: center;
+  user-select: none;
+  pointer-events: none;
+}
+
+.account-photo-crop-frame {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(240px, calc(100% - 42px));
+  aspect-ratio: 1;
+  border: 2px solid rgba(255, 255, 255, 0.92);
+  border-radius: 18px;
+  box-shadow: 0 0 0 999px rgba(0, 0, 0, 0.42);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+.account-photo-crop-control {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.account-photo-crop-control label,
+.account-photo-crop-preview-label {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.account-photo-crop-control input {
+  width: 100%;
+  accent-color: white;
+}
+
+.account-photo-crop-preview-panel {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  padding: 18px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.account-photo-crop-preview {
+  width: 118px;
+  height: 118px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.account-photo-crop-preview img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.account-photo-crop-note {
+  margin-top: 4px;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.55;
+  text-align: center;
+}
+
+.account-photo-crop-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 22px;
+}
+
+.account-photo-crop-cancel,
+.account-photo-crop-use {
+  min-height: 52px;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    opacity 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.account-photo-crop-cancel {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.065);
+  color: white;
+}
+
+.account-photo-crop-use {
+  border: 1px solid white;
+  background: white;
+  color: #111;
+}
+
+.account-photo-crop-cancel:hover,
+.account-photo-crop-use:hover {
+  opacity: 0.86;
+}
+
+.account-photo-crop-use:disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
+}
+
+@media (max-width: 680px) {
+  .account-photo-crop-card {
+    padding: 24px 18px;
+  }
+
+  .account-photo-crop-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .account-photo-crop-stage {
+    height: 280px;
+  }
+
+  .account-photo-crop-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
 .account-form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
