@@ -836,11 +836,6 @@
           <img src="" alt="Selected profile photo" id="account-photo-crop-image">
           <div class="account-photo-crop-frame"></div>
         </div>
-
-        <div class="account-photo-crop-control">
-          <label for="account-photo-crop-zoom">Zoom</label>
-          <input type="range" id="account-photo-crop-zoom" min="1" max="3" step="0.01" value="1">
-        </div>
       </div>
 
       <div class="account-photo-crop-preview-panel">
@@ -1194,6 +1189,9 @@ let removeProfilePhotoOnSave = false;
 let profilePhotoCropObjectUrl = "";
 let profilePhotoCropRenderFrame = 0;
 let profilePhotoCropPreviewTimer = 0;
+let profilePhotoCropActivePointers = new Map();
+let profilePhotoCropPinchStartDistance = 0;
+let profilePhotoCropPinchStartZoom = 1;
 let profilePhotoCropState = {
   dragging: false,
   startX: 0,
@@ -4353,6 +4351,10 @@ function validateProfilePhotoFile(file) {
 }
 
 function resetProfilePhotoCropState() {
+  profilePhotoCropActivePointers.clear();
+  profilePhotoCropPinchStartDistance = 0;
+  profilePhotoCropPinchStartZoom = 1;
+
   profilePhotoCropState = {
     dragging: false,
     startX: 0,
@@ -4621,16 +4623,61 @@ async function openProfilePhotoCropModal(file) {
   accountPhotoCropImage.src = profilePhotoCropObjectUrl;
 }
 
+function getProfilePhotoCropPointerDistance() {
+  const pointers = Array.from(profilePhotoCropActivePointers.values());
+
+  if (pointers.length < 2) {
+    return 0;
+  }
+
+  const deltaX = pointers[0].clientX - pointers[1].clientX;
+  const deltaY = pointers[0].clientY - pointers[1].clientY;
+
+  return Math.hypot(deltaX, deltaY);
+}
+
+function setProfilePhotoCropZoom(nextZoom) {
+  const zoom = Math.min(3, Math.max(1, Number(nextZoom) || 1));
+
+  if (zoom === profilePhotoCropState.zoom) {
+    return;
+  }
+
+  profilePhotoCropState.zoom = zoom;
+  setProfilePhotoCropPosition(profilePhotoCropState.x, profilePhotoCropState.y);
+}
+
+function scheduleProfilePhotoCropPreviewUpdate() {
+  if (profilePhotoCropPreviewTimer) {
+    window.clearTimeout(profilePhotoCropPreviewTimer);
+  }
+
+  profilePhotoCropPreviewTimer = window.setTimeout(updateProfilePhotoCropPreview, 120);
+}
+
 function handleProfilePhotoCropPointerDown(event) {
   if (!profilePhotoCropState.naturalWidth) {
     return;
   }
 
-  profilePhotoCropState.dragging = true;
-  profilePhotoCropState.startX = event.clientX;
-  profilePhotoCropState.startY = event.clientY;
-  profilePhotoCropState.originX = profilePhotoCropState.x;
-  profilePhotoCropState.originY = profilePhotoCropState.y;
+  profilePhotoCropActivePointers.set(event.pointerId, {
+    clientX: event.clientX,
+    clientY: event.clientY
+  });
+
+  if (profilePhotoCropActivePointers.size === 1) {
+    profilePhotoCropState.dragging = true;
+    profilePhotoCropState.startX = event.clientX;
+    profilePhotoCropState.startY = event.clientY;
+    profilePhotoCropState.originX = profilePhotoCropState.x;
+    profilePhotoCropState.originY = profilePhotoCropState.y;
+  }
+
+  if (profilePhotoCropActivePointers.size >= 2) {
+    profilePhotoCropState.dragging = false;
+    profilePhotoCropPinchStartDistance = getProfilePhotoCropPointerDistance();
+    profilePhotoCropPinchStartZoom = profilePhotoCropState.zoom;
+  }
 
   if (accountPhotoCropStage && typeof accountPhotoCropStage.setPointerCapture === "function") {
     accountPhotoCropStage.setPointerCapture(event.pointerId);
@@ -4640,33 +4687,69 @@ function handleProfilePhotoCropPointerDown(event) {
 }
 
 function handleProfilePhotoCropPointerMove(event) {
-  if (!profilePhotoCropState.dragging) {
+  if (!profilePhotoCropState.naturalWidth || !profilePhotoCropActivePointers.has(event.pointerId)) {
     return;
   }
 
-  setProfilePhotoCropPosition(
-    profilePhotoCropState.originX + event.clientX - profilePhotoCropState.startX,
-    profilePhotoCropState.originY + event.clientY - profilePhotoCropState.startY
-  );
-}
+  profilePhotoCropActivePointers.set(event.pointerId, {
+    clientX: event.clientX,
+    clientY: event.clientY
+  });
 
-function handleProfilePhotoCropPointerUp() {
+  if (profilePhotoCropActivePointers.size >= 2) {
+    const pinchDistance = getProfilePhotoCropPointerDistance();
+
+    if (pinchDistance && profilePhotoCropPinchStartDistance) {
+      setProfilePhotoCropZoom(profilePhotoCropPinchStartZoom * (pinchDistance / profilePhotoCropPinchStartDistance));
+      scheduleProfilePhotoCropPreviewUpdate();
+    }
+
+    event.preventDefault();
+    return;
+  }
+
   if (profilePhotoCropState.dragging) {
+    setProfilePhotoCropPosition(
+      profilePhotoCropState.originX + event.clientX - profilePhotoCropState.startX,
+      profilePhotoCropState.originY + event.clientY - profilePhotoCropState.startY
+    );
+  }
+
+  event.preventDefault();
+}
+
+function handleProfilePhotoCropPointerUp(event) {
+  if (event && profilePhotoCropActivePointers.has(event.pointerId)) {
+    profilePhotoCropActivePointers.delete(event.pointerId);
+  }
+
+  if (profilePhotoCropActivePointers.size === 1) {
+    const remainingPointer = Array.from(profilePhotoCropActivePointers.values())[0];
+
+    profilePhotoCropState.dragging = true;
+    profilePhotoCropState.startX = remainingPointer.clientX;
+    profilePhotoCropState.startY = remainingPointer.clientY;
+    profilePhotoCropState.originX = profilePhotoCropState.x;
+    profilePhotoCropState.originY = profilePhotoCropState.y;
+  } else {
     profilePhotoCropState.dragging = false;
-    updateProfilePhotoCropPreview();
+  }
+
+  profilePhotoCropPinchStartDistance = 0;
+  profilePhotoCropPinchStartZoom = profilePhotoCropState.zoom;
+  updateProfilePhotoCropPreview();
+}
+
+function handleProfilePhotoCropWheel(event) {
+  if (!profilePhotoCropState.naturalWidth) {
     return;
   }
 
-  profilePhotoCropState.dragging = false;
-}
+  event.preventDefault();
 
-function handleProfilePhotoCropZoom() {
-  profilePhotoCropState.zoom = Number(accountPhotoCropZoom.value || 1);
-  setProfilePhotoCropPosition(profilePhotoCropState.x, profilePhotoCropState.y);
-}
-
-function handleProfilePhotoCropZoomCommit() {
-  updateProfilePhotoCropPreview();
+  const nextZoom = profilePhotoCropState.zoom * (1 - event.deltaY * 0.0012);
+  setProfilePhotoCropZoom(nextZoom);
+  scheduleProfilePhotoCropPreviewUpdate();
 }
 
 function applyProfilePhotoCrop() {
@@ -4921,11 +5004,7 @@ if (accountPhotoCropStage) {
   accountPhotoCropStage.addEventListener("pointerup", handleProfilePhotoCropPointerUp);
   accountPhotoCropStage.addEventListener("pointercancel", handleProfilePhotoCropPointerUp);
   accountPhotoCropStage.addEventListener("lostpointercapture", handleProfilePhotoCropPointerUp);
-}
-
-if (accountPhotoCropZoom) {
-  accountPhotoCropZoom.addEventListener("input", handleProfilePhotoCropZoom);
-  accountPhotoCropZoom.addEventListener("change", handleProfilePhotoCropZoomCommit);
+  accountPhotoCropStage.addEventListener("wheel", handleProfilePhotoCropWheel, { passive: false });
 }
 
 if (accountPhotoCropUse) {
