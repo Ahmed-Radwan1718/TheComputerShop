@@ -1200,7 +1200,12 @@ let profilePhotoCropState = {
   zoom: 1,
   baseScale: 1,
   naturalWidth: 0,
-  naturalHeight: 0
+  naturalHeight: 0,
+  stageWidth: 0,
+  stageHeight: 0,
+  frameLeft: 0,
+  frameTop: 0,
+  frameSize: 0
 };
 let originalUsername = "";
 let usernameLastChangedAt = null;
@@ -4322,7 +4327,12 @@ function resetProfilePhotoCropState() {
     zoom: 1,
     baseScale: 1,
     naturalWidth: 0,
-    naturalHeight: 0
+    naturalHeight: 0,
+    stageWidth: 0,
+    stageHeight: 0,
+    frameLeft: 0,
+    frameTop: 0,
+    frameSize: 0
   };
 }
 
@@ -4367,35 +4377,41 @@ function closeProfilePhotoCropModal() {
   resetProfilePhotoCropState();
 }
 
-function getProfilePhotoCropRects() {
+function cacheProfilePhotoCropMetrics() {
   if (!accountPhotoCropStage || !accountPhotoCropFrame) {
-    return null;
+    return false;
   }
 
-  return {
-    stageRect: accountPhotoCropStage.getBoundingClientRect(),
-    frameRect: accountPhotoCropFrame.getBoundingClientRect()
-  };
+  const stageRect = accountPhotoCropStage.getBoundingClientRect();
+  const frameRect = accountPhotoCropFrame.getBoundingClientRect();
+
+  profilePhotoCropState.stageWidth = stageRect.width;
+  profilePhotoCropState.stageHeight = stageRect.height;
+  profilePhotoCropState.frameLeft = frameRect.left - stageRect.left;
+  profilePhotoCropState.frameTop = frameRect.top - stageRect.top;
+  profilePhotoCropState.frameSize = Math.min(frameRect.width, frameRect.height);
+
+  return Boolean(profilePhotoCropState.stageWidth && profilePhotoCropState.stageHeight && profilePhotoCropState.frameSize);
 }
 
 function clampProfilePhotoCropPosition(x, y) {
-  const rects = getProfilePhotoCropRects();
+  if (!profilePhotoCropState.stageWidth || !profilePhotoCropState.frameSize) {
+    cacheProfilePhotoCropMetrics();
+  }
 
-  if (!rects || !profilePhotoCropState.naturalWidth || !profilePhotoCropState.naturalHeight) {
+  if (!profilePhotoCropState.stageWidth || !profilePhotoCropState.naturalWidth || !profilePhotoCropState.naturalHeight) {
     return { x: 0, y: 0 };
   }
 
   const scale = profilePhotoCropState.baseScale * profilePhotoCropState.zoom;
   const displayWidth = profilePhotoCropState.naturalWidth * scale;
   const displayHeight = profilePhotoCropState.naturalHeight * scale;
-  const frameLeft = rects.frameRect.left - rects.stageRect.left;
-  const frameRight = rects.frameRect.right - rects.stageRect.left;
-  const frameTop = rects.frameRect.top - rects.stageRect.top;
-  const frameBottom = rects.frameRect.bottom - rects.stageRect.top;
-  const minX = frameRight - displayWidth / 2 - rects.stageRect.width / 2;
-  const maxX = frameLeft + displayWidth / 2 - rects.stageRect.width / 2;
-  const minY = frameBottom - displayHeight / 2 - rects.stageRect.height / 2;
-  const maxY = frameTop + displayHeight / 2 - rects.stageRect.height / 2;
+  const frameRight = profilePhotoCropState.frameLeft + profilePhotoCropState.frameSize;
+  const frameBottom = profilePhotoCropState.frameTop + profilePhotoCropState.frameSize;
+  const minX = frameRight - displayWidth / 2 - profilePhotoCropState.stageWidth / 2;
+  const maxX = profilePhotoCropState.frameLeft + displayWidth / 2 - profilePhotoCropState.stageWidth / 2;
+  const minY = frameBottom - displayHeight / 2 - profilePhotoCropState.stageHeight / 2;
+  const maxY = profilePhotoCropState.frameTop + displayHeight / 2 - profilePhotoCropState.stageHeight / 2;
 
   return {
     x: Math.min(Math.max(x, minX), maxX),
@@ -4404,22 +4420,22 @@ function clampProfilePhotoCropPosition(x, y) {
 }
 
 function getCroppedProfilePhotoDataUrl(size, quality) {
-  const rects = getProfilePhotoCropRects();
+  if (!profilePhotoCropState.stageWidth || !profilePhotoCropState.frameSize) {
+    cacheProfilePhotoCropMetrics();
+  }
 
-  if (!rects || !accountPhotoCropImage || !profilePhotoCropState.naturalWidth || !profilePhotoCropState.naturalHeight) {
+  if (!accountPhotoCropImage || !profilePhotoCropState.stageWidth || !profilePhotoCropState.naturalWidth || !profilePhotoCropState.naturalHeight) {
     throw new Error("Could not prepare this photo. Please try another image.");
   }
 
   const scale = profilePhotoCropState.baseScale * profilePhotoCropState.zoom;
   const displayWidth = profilePhotoCropState.naturalWidth * scale;
   const displayHeight = profilePhotoCropState.naturalHeight * scale;
-  const imageLeft = rects.stageRect.width / 2 + profilePhotoCropState.x - displayWidth / 2;
-  const imageTop = rects.stageRect.height / 2 + profilePhotoCropState.y - displayHeight / 2;
-  const frameLeft = rects.frameRect.left - rects.stageRect.left;
-  const frameTop = rects.frameRect.top - rects.stageRect.top;
-  const sourceSize = rects.frameRect.width / scale;
-  const sourceX = Math.max(0, Math.min((frameLeft - imageLeft) / scale, profilePhotoCropState.naturalWidth - sourceSize));
-  const sourceY = Math.max(0, Math.min((frameTop - imageTop) / scale, profilePhotoCropState.naturalHeight - sourceSize));
+  const imageLeft = profilePhotoCropState.stageWidth / 2 + profilePhotoCropState.x - displayWidth / 2;
+  const imageTop = profilePhotoCropState.stageHeight / 2 + profilePhotoCropState.y - displayHeight / 2;
+  const sourceSize = profilePhotoCropState.frameSize / scale;
+  const sourceX = Math.max(0, Math.min((profilePhotoCropState.frameLeft - imageLeft) / scale, profilePhotoCropState.naturalWidth - sourceSize));
+  const sourceY = Math.max(0, Math.min((profilePhotoCropState.frameTop - imageTop) / scale, profilePhotoCropState.naturalHeight - sourceSize));
   const canvas = document.createElement("canvas");
   const context = canvas.getContext("2d");
 
@@ -4437,17 +4453,9 @@ function updateProfilePhotoCropPreview() {
 
   if (accountPhotoCropPreviewImage && profilePhotoCropState.naturalWidth) {
     try {
-      accountPhotoCropPreviewImage.src = getCroppedProfilePhotoDataUrl(192, 0.86);
+      accountPhotoCropPreviewImage.src = getCroppedProfilePhotoDataUrl(192, 0.82);
     } catch (error) {}
   }
-}
-
-function scheduleProfilePhotoCropPreviewUpdate() {
-  if (profilePhotoCropPreviewTimer) {
-    window.clearTimeout(profilePhotoCropPreviewTimer);
-  }
-
-  profilePhotoCropPreviewTimer = window.setTimeout(updateProfilePhotoCropPreview, 90);
 }
 
 function renderProfilePhotoCrop() {
@@ -4457,18 +4465,16 @@ function renderProfilePhotoCrop() {
 
   profilePhotoCropRenderFrame = window.requestAnimationFrame(function () {
     const scale = profilePhotoCropState.baseScale * profilePhotoCropState.zoom;
+    const displayWidth = profilePhotoCropState.naturalWidth * scale;
+    const displayHeight = profilePhotoCropState.naturalHeight * scale;
+    const imageLeft = profilePhotoCropState.stageWidth / 2 + profilePhotoCropState.x - displayWidth / 2;
+    const imageTop = profilePhotoCropState.stageHeight / 2 + profilePhotoCropState.y - displayHeight / 2;
 
     profilePhotoCropRenderFrame = 0;
 
     if (accountPhotoCropImage) {
-      accountPhotoCropImage.style.width = profilePhotoCropState.naturalWidth + "px";
-      accountPhotoCropImage.style.height = profilePhotoCropState.naturalHeight + "px";
-      accountPhotoCropImage.style.left = "calc(50% + " + profilePhotoCropState.x + "px)";
-      accountPhotoCropImage.style.top = "calc(50% + " + profilePhotoCropState.y + "px)";
-      accountPhotoCropImage.style.transform = "translate3d(-50%, -50%, 0) scale(" + scale + ")";
+      accountPhotoCropImage.style.transform = "translate3d(" + imageLeft + "px, " + imageTop + "px, 0) scale(" + scale + ")";
     }
-
-    scheduleProfilePhotoCropPreviewUpdate();
   });
 }
 
@@ -4481,19 +4487,20 @@ function setProfilePhotoCropPosition(x, y) {
 }
 
 function initializeProfilePhotoCropImage() {
-  const rects = getProfilePhotoCropRects();
-
-  if (!rects || !accountPhotoCropImage) {
+  if (!accountPhotoCropImage || !cacheProfilePhotoCropMetrics()) {
     return;
   }
 
   profilePhotoCropState.naturalWidth = accountPhotoCropImage.naturalWidth;
   profilePhotoCropState.naturalHeight = accountPhotoCropImage.naturalHeight;
   profilePhotoCropState.baseScale = Math.max(
-    rects.frameRect.width / profilePhotoCropState.naturalWidth,
-    rects.frameRect.height / profilePhotoCropState.naturalHeight
+    profilePhotoCropState.frameSize / profilePhotoCropState.naturalWidth,
+    profilePhotoCropState.frameSize / profilePhotoCropState.naturalHeight
   );
   profilePhotoCropState.zoom = 1;
+
+  accountPhotoCropImage.style.width = profilePhotoCropState.naturalWidth + "px";
+  accountPhotoCropImage.style.height = profilePhotoCropState.naturalHeight + "px";
 
   if (accountPhotoCropZoom) {
     accountPhotoCropZoom.value = "1";
@@ -4504,13 +4511,60 @@ function initializeProfilePhotoCropImage() {
   }
 
   setProfilePhotoCropPosition(0, 0);
+  updateProfilePhotoCropPreview();
 }
 
-function openProfilePhotoCropModal(file) {
+function createProfilePhotoCropSourceUrl(file) {
+  return new Promise(function (resolve, reject) {
+    const originalUrl = URL.createObjectURL(file);
+    const image = new Image();
+
+    image.addEventListener("load", function () {
+      const maxDimension = 1200;
+      const largestDimension = Math.max(image.naturalWidth, image.naturalHeight);
+
+      if (!largestDimension || largestDimension <= maxDimension) {
+        resolve(originalUrl);
+        return;
+      }
+
+      const scale = maxDimension / largestDimension;
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+
+      canvas.width = Math.round(image.naturalWidth * scale);
+      canvas.height = Math.round(image.naturalHeight * scale);
+      context.imageSmoothingEnabled = true;
+      context.imageSmoothingQuality = "high";
+      context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+      canvas.toBlob(function (blob) {
+        URL.revokeObjectURL(originalUrl);
+
+        if (!blob) {
+          reject(new Error("Could not prepare this photo. Please try another image."));
+          return;
+        }
+
+        resolve(URL.createObjectURL(blob));
+      }, "image/jpeg", 0.86);
+    });
+
+    image.addEventListener("error", function () {
+      URL.revokeObjectURL(originalUrl);
+      reject(new Error("Could not read this image. Please choose another photo."));
+    });
+
+    image.decoding = "async";
+    image.src = originalUrl;
+  });
+}
+
+async function openProfilePhotoCropModal(file) {
   validateProfilePhotoFile(file);
   closeProfilePhotoCropModal();
 
-  profilePhotoCropObjectUrl = URL.createObjectURL(file);
+  profilePhotoCropObjectUrl = await createProfilePhotoCropSourceUrl(file);
 
   if (accountPhotoCropUse) {
     accountPhotoCropUse.disabled = true;
@@ -4560,12 +4614,22 @@ function handleProfilePhotoCropPointerMove(event) {
 }
 
 function handleProfilePhotoCropPointerUp() {
+  if (profilePhotoCropState.dragging) {
+    profilePhotoCropState.dragging = false;
+    updateProfilePhotoCropPreview();
+    return;
+  }
+
   profilePhotoCropState.dragging = false;
 }
 
 function handleProfilePhotoCropZoom() {
   profilePhotoCropState.zoom = Number(accountPhotoCropZoom.value || 1);
   setProfilePhotoCropPosition(profilePhotoCropState.x, profilePhotoCropState.y);
+}
+
+function handleProfilePhotoCropZoomCommit() {
+  updateProfilePhotoCropPreview();
 }
 
 function applyProfilePhotoCrop() {
@@ -4795,10 +4859,12 @@ if (accountPhotoCropStage) {
   accountPhotoCropStage.addEventListener("pointermove", handleProfilePhotoCropPointerMove);
   accountPhotoCropStage.addEventListener("pointerup", handleProfilePhotoCropPointerUp);
   accountPhotoCropStage.addEventListener("pointercancel", handleProfilePhotoCropPointerUp);
+  accountPhotoCropStage.addEventListener("lostpointercapture", handleProfilePhotoCropPointerUp);
 }
 
 if (accountPhotoCropZoom) {
   accountPhotoCropZoom.addEventListener("input", handleProfilePhotoCropZoom);
+  accountPhotoCropZoom.addEventListener("change", handleProfilePhotoCropZoomCommit);
 }
 
 if (accountPhotoCropUse) {
@@ -4807,7 +4873,9 @@ if (accountPhotoCropUse) {
 
 window.addEventListener("resize", function () {
   if (accountPhotoCropModal && !accountPhotoCropModal.hidden && profilePhotoCropState.naturalWidth) {
+    cacheProfilePhotoCropMetrics();
     setProfilePhotoCropPosition(profilePhotoCropState.x, profilePhotoCropState.y);
+    updateProfilePhotoCropPreview();
   }
 });
 
@@ -4816,18 +4884,23 @@ if (accountPhotoChooseButton && accountPhotoInput) {
     accountPhotoInput.click();
   });
 
-  accountPhotoInput.addEventListener("change", function () {
+  accountPhotoInput.addEventListener("change", async function () {
     const file = accountPhotoInput.files && accountPhotoInput.files[0];
 
     if (!file) {
       return;
     }
 
+    accountPhotoChooseButton.disabled = true;
+    showMessage(detailsMessage, "", "");
+
     try {
-      openProfilePhotoCropModal(file);
+      await openProfilePhotoCropModal(file);
     } catch (error) {
       accountPhotoInput.value = "";
       showMessage(detailsMessage, error.message || "Could not prepare this photo. Please try another image.", "error");
+    } finally {
+      accountPhotoChooseButton.disabled = false;
     }
   });
 }
