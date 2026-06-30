@@ -2657,6 +2657,74 @@ function getOrderItemSummary(order) {
   return firstNames.join(", ");
 }
 
+function getOrderProgressData(status) {
+  const normalizedStatus = status === "completed" ? "fulfilled" : String(status || "submitted");
+  const steps = [
+    { key: "submitted", label: "Submitted" },
+    { key: "reviewing", label: "Reviewing" },
+    { key: "awaiting_payment", label: "Payment" },
+    { key: "preparing_order", label: "Preparing" },
+    { key: "out_for_delivery", label: "Delivery" },
+    { key: "fulfilled", label: "Fulfilled" }
+  ];
+  const progressIndexes = {
+    submitted: 0,
+    reviewing: 1,
+    quoted: 2,
+    awaiting_payment: 2,
+    preparing_order: 3,
+    ready_for_delivery_pickup: 4,
+    out_for_delivery: 4,
+    fulfilled: 5,
+    completed: 5,
+    canceled: -1,
+    cancelled: -1
+  };
+  const currentIndex = Object.prototype.hasOwnProperty.call(progressIndexes, normalizedStatus)
+    ? progressIndexes[normalizedStatus]
+    : 0;
+  const percent = currentIndex <= 0 ? 0 : Math.round((currentIndex / (steps.length - 1)) * 100);
+
+  return {
+    steps,
+    currentIndex,
+    percent,
+    canceled: normalizedStatus === "canceled" || normalizedStatus === "cancelled"
+  };
+}
+
+function getOrderProgressMarkup(status) {
+  const progress = getOrderProgressData(status);
+  const progressClass = progress.canceled ? " canceled" : "";
+  const stepsMarkup = progress.steps.map(function (step, index) {
+    const stepClass = [
+      "account-order-progress-step",
+      !progress.canceled && index <= progress.currentIndex ? "done" : "",
+      !progress.canceled && index === progress.currentIndex ? "current" : ""
+    ].filter(Boolean).join(" ");
+
+    return `
+      <span class="${stepClass}">
+        <span class="account-order-progress-dot"></span>
+        <span class="account-order-progress-label">${escapeHtml(step.label)}</span>
+      </span>
+    `;
+  }).join("");
+
+  return `
+    <div class="account-order-progress${progressClass}" style="--order-progress: ${progress.percent};" aria-label="Order progress: ${escapeHtml(getOrderStatusLabel(status))}">
+      <span class="account-order-progress-track" aria-hidden="true">
+        <span class="account-order-progress-line"></span>
+        <span class="account-order-progress-line-fill"></span>
+      </span>
+
+      <span class="account-order-progress-steps">
+        ${stepsMarkup}
+      </span>
+    </div>
+  `;
+}
+
 function renderOrderHistory() {
   if (!ordersList || !ordersEmpty || !ordersLoading) {
     return;
@@ -2694,6 +2762,8 @@ function renderOrderHistory() {
           <span>${escapeHtml(Number(order.itemCount || 0))} item${Number(order.itemCount || 0) === 1 ? "" : "s"}</span>
           <span>${escapeHtml(getPaymentStatusLabel(paymentStatus))}</span>
         </div>
+
+        ${getOrderProgressMarkup(status)}
 
         <div class="account-order-card-bottom">
           <strong>${escapeHtml(order.totalText || "Final price to be confirmed")}</strong>
