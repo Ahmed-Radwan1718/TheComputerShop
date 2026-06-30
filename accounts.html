@@ -1230,6 +1230,7 @@ let passwordLastChangedAt = null;
 let pendingSignOutSessionId = "";
 let pendingTrustedDeviceId = "";
 let sessionStatusCheckTimer = null;
+let sessionStatusCheckInProgress = false;
 let sessionStatusRedirecting = false;
 const loginSessionSignedOutMessage = "This session was signed out from another device.";
 const passwordChangedSessionSignedOutMessage = "Your session was signed out because your password was changed.";
@@ -4751,9 +4752,11 @@ async function forceCurrentSessionSignedOut(message) {
 }
 
 async function checkCurrentSessionStatus() {
-  if (!currentUser || sessionStatusRedirecting) {
+  if (!currentUser || sessionStatusRedirecting || sessionStatusCheckInProgress) {
     return;
   }
+
+  sessionStatusCheckInProgress = true;
 
   try {
     const response = await fetch("/api/me", {
@@ -4772,7 +4775,10 @@ async function checkCurrentSessionStatus() {
     if (response.ok && (data.sessionRevoked || !data.signedIn || !data.user)) {
       await forceCurrentSessionSignedOut(getSessionSignOutMessage(data.sessionRevokedReason));
     }
-  } catch (error) {}
+  } catch (error) {
+  } finally {
+    sessionStatusCheckInProgress = false;
+  }
 }
 
 function startCurrentSessionStatusListener() {
