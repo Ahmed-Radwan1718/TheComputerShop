@@ -9820,6 +9820,11 @@ body.account-security-modal-open {
   filter: invert(1) grayscale(1) brightness(1.45);
 }
 
+.account-order-progress-step:last-child .account-order-progress-icon {
+  width: 23px;
+  height: 23px;
+}
+
 .account-order-progress-step.done {
   color: rgba(255, 255, 255, 0.82);
 }
