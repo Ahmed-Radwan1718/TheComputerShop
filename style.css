@@ -9806,8 +9806,9 @@ body.account-security-modal-open {
   height: 32px;
   border-radius: 999px;
   background: #202220;
+  background-clip: padding-box;
   border: 2px solid rgba(255, 255, 255, 0.22);
-  box-shadow: 0 0 0 6px #252725;
+  box-shadow: none;
   overflow: hidden;
 }
 
@@ -9843,7 +9844,6 @@ body.account-security-modal-open {
 .account-order-progress-step.current .account-order-progress-dot {
   background: #8BE28B;
   border-color: #8BE28B;
-  animation: account-order-progress-pulse 1.6s ease-in-out infinite;
 }
 
 .account-order-progress-label {
