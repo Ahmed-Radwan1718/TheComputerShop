@@ -2660,12 +2660,12 @@ function getOrderItemSummary(order) {
 function getOrderProgressData(status) {
   const normalizedStatus = status === "completed" ? "fulfilled" : String(status || "submitted");
   const steps = [
-    { key: "submitted", label: "Submitted" },
-    { key: "reviewing", label: "Reviewing" },
-    { key: "awaiting_payment", label: "Payment" },
-    { key: "preparing_order", label: "Preparing" },
-    { key: "out_for_delivery", label: "Delivery" },
-    { key: "fulfilled", label: "Fulfilled" }
+    { key: "submitted", label: "Submitted", icon: "order-status-submitted-icon.png" },
+    { key: "reviewing", label: "Reviewing", icon: "order-status-reviewing-icon.png" },
+    { key: "awaiting_payment", label: "Payment", icon: "order-status-payment-icon.png" },
+    { key: "preparing_order", label: "Preparing", icon: "order-status-preparing-icon.png" },
+    { key: "out_for_delivery", label: "Delivery", icon: "order-status-delivery-icon.png" },
+    { key: "fulfilled", label: "Fulfilled", icon: "order-status-fulfilled-icon.png" }
   ];
   const progressIndexes = {
     submitted: 0,
@@ -2705,7 +2705,9 @@ function getOrderProgressMarkup(status) {
 
     return `
       <span class="${stepClass}">
-        <span class="account-order-progress-dot"></span>
+        <span class="account-order-progress-dot">
+          <img class="account-order-progress-icon" src="${escapeHtml(step.icon)}" alt="" aria-hidden="true" loading="lazy" decoding="async">
+        </span>
         <span class="account-order-progress-label">${escapeHtml(step.label)}</span>
       </span>
     `;
