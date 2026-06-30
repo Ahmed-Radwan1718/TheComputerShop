@@ -6860,7 +6860,21 @@ body.nav-menu-open {
   overflow-x: clip;
 }
 
-body:has(.account-page) .site-header {
+body:has(:is(
+  .home-page,
+  .components-hub-page,
+  .signature-page,
+  .component-page,
+  .product-page,
+  .cart-page,
+  .checkout-page,
+  .consultation-page,
+  .about-us-page,
+  .faq-page,
+  .policies-page,
+  .auth-page,
+  .account-page
+)) .site-header {
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   transform: translate3d(-50%, 0, 0);
@@ -6868,9 +6882,65 @@ body:has(.account-page) .site-header {
   backface-visibility: hidden;
 }
 
-body:has(.account-page) .site-header .floating-account-menu {
+body:has(:is(
+  .home-page,
+  .components-hub-page,
+  .signature-page,
+  .component-page,
+  .product-page,
+  .cart-page,
+  .checkout-page,
+  .consultation-page,
+  .about-us-page,
+  .faq-page,
+  .policies-page,
+  .auth-page,
+  .account-page
+)) .site-header .floating-account-menu {
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
+}
+
+.nav-menu-overlay,
+.filters-panel,
+.checkout-summary,
+.cart-summary,
+.product-carousel-main,
+.faq-accordion-item,
+.product-included-item,
+.product-spec-row {
+  contain: layout paint style;
+}
+
+.nav-menu-overlay {
+  transform: translateZ(0);
+  will-change: opacity;
+  backface-visibility: hidden;
+}
+
+.filters-panel,
+.checkout-summary {
+  transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.components-hub-card,
+.signature-build-card,
+.cart-item {
+  content-visibility: auto;
+}
+
+.components-hub-card {
+  contain-intrinsic-size: 300px;
+}
+
+.signature-build-card {
+  contain-intrinsic-size: 390px;
+}
+
+.cart-item {
+  contain-intrinsic-size: 190px;
 }
 
 .account-section {
