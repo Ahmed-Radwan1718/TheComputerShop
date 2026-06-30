@@ -9832,7 +9832,7 @@ body.account-security-modal-open {
   background: #202220;
   background-clip: padding-box;
   border: 2px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 0 0 0 6px #252725, 0 12px 22px rgba(0, 0, 0, 0.22);
+  box-shadow: 0 12px 22px rgba(0, 0, 0, 0.22);
   overflow: hidden;
 }
 
@@ -9857,7 +9857,7 @@ body.account-security-modal-open {
 .account-order-progress-step.done .account-order-progress-dot {
   background: #F1C87A;
   border-color: #F1C87A;
-  box-shadow: 0 0 0 6px #252725, 0 0 18px rgba(241, 200, 122, 0.24);
+  box-shadow: 0 0 18px rgba(241, 200, 122, 0.24);
 }
 
 .account-order-progress-step.next {
@@ -9866,7 +9866,7 @@ body.account-security-modal-open {
 
 .account-order-progress-step.next .account-order-progress-dot {
   border-color: rgba(139, 226, 139, 0.45);
-  box-shadow: 0 0 0 6px #252725, 0 0 16px rgba(139, 226, 139, 0.12);
+  box-shadow: 0 0 16px rgba(139, 226, 139, 0.12);
 }
 
 .account-order-progress-step.done .account-order-progress-icon,
@@ -9882,7 +9882,7 @@ body.account-security-modal-open {
 .account-order-progress-step.current .account-order-progress-dot {
   background: #8BE28B;
   border-color: #8BE28B;
-  box-shadow: 0 0 0 6px #252725, 0 0 0 10px rgba(139, 226, 139, 0.12), 0 0 24px rgba(139, 226, 139, 0.32);
+  box-shadow: 0 0 0 10px rgba(139, 226, 139, 0.12), 0 0 24px rgba(139, 226, 139, 0.32);
   animation: account-order-progress-pulse 1.7s ease-out infinite;
 }
 
@@ -9929,11 +9929,11 @@ body.account-security-modal-open {
 @keyframes account-order-progress-pulse {
   0%,
   100% {
-    box-shadow: 0 0 0 6px #252725, 0 0 0 10px rgba(139, 226, 139, 0.12), 0 0 24px rgba(139, 226, 139, 0.32);
+    box-shadow: 0 0 0 10px rgba(139, 226, 139, 0.12), 0 0 24px rgba(139, 226, 139, 0.32);
   }
 
   50% {
-    box-shadow: 0 0 0 6px #252725, 0 0 0 15px rgba(139, 226, 139, 0), 0 0 30px rgba(139, 226, 139, 0.42);
+    box-shadow: 0 0 0 15px rgba(139, 226, 139, 0), 0 0 30px rgba(139, 226, 139, 0.42);
   }
 }
 
@@ -9961,7 +9961,7 @@ body.account-security-modal-open {
   .account-order-progress-dot {
     width: 40px;
     height: 40px;
-    box-shadow: 0 0 0 5px #252725, 0 10px 18px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.2);
   }
 
   .account-order-progress-icon {
