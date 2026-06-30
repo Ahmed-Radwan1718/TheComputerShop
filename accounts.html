@@ -1187,6 +1187,8 @@ const PROFILE_PHOTO_ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 let pendingProfilePhotoDataUrl = "";
 let removeProfilePhotoOnSave = false;
 let profilePhotoCropObjectUrl = "";
+let profilePhotoCropRenderFrame = 0;
+let profilePhotoCropPreviewTimer = 0;
 let profilePhotoCropState = {
   dragging: false,
   startX: 0,
@@ -4336,6 +4338,16 @@ function closeProfilePhotoCropModal() {
     accountPhotoCropModal.hidden = true;
   }
 
+  if (profilePhotoCropRenderFrame) {
+    window.cancelAnimationFrame(profilePhotoCropRenderFrame);
+    profilePhotoCropRenderFrame = 0;
+  }
+
+  if (profilePhotoCropPreviewTimer) {
+    window.clearTimeout(profilePhotoCropPreviewTimer);
+    profilePhotoCropPreviewTimer = 0;
+  }
+
   document.body.classList.remove("account-photo-crop-modal-open");
   clearProfilePhotoCropObjectUrl();
 
@@ -4420,22 +4432,44 @@ function getCroppedProfilePhotoDataUrl(size, quality) {
   return canvas.toDataURL("image/jpeg", quality);
 }
 
-function renderProfilePhotoCrop() {
-  const scale = profilePhotoCropState.baseScale * profilePhotoCropState.zoom;
-
-  if (accountPhotoCropImage) {
-    accountPhotoCropImage.style.width = profilePhotoCropState.naturalWidth + "px";
-    accountPhotoCropImage.style.height = profilePhotoCropState.naturalHeight + "px";
-    accountPhotoCropImage.style.left = "calc(50% + " + profilePhotoCropState.x + "px)";
-    accountPhotoCropImage.style.top = "calc(50% + " + profilePhotoCropState.y + "px)";
-    accountPhotoCropImage.style.transform = "translate(-50%, -50%) scale(" + scale + ")";
-  }
+function updateProfilePhotoCropPreview() {
+  profilePhotoCropPreviewTimer = 0;
 
   if (accountPhotoCropPreviewImage && profilePhotoCropState.naturalWidth) {
     try {
       accountPhotoCropPreviewImage.src = getCroppedProfilePhotoDataUrl(192, 0.86);
     } catch (error) {}
   }
+}
+
+function scheduleProfilePhotoCropPreviewUpdate() {
+  if (profilePhotoCropPreviewTimer) {
+    window.clearTimeout(profilePhotoCropPreviewTimer);
+  }
+
+  profilePhotoCropPreviewTimer = window.setTimeout(updateProfilePhotoCropPreview, 90);
+}
+
+function renderProfilePhotoCrop() {
+  if (profilePhotoCropRenderFrame) {
+    return;
+  }
+
+  profilePhotoCropRenderFrame = window.requestAnimationFrame(function () {
+    const scale = profilePhotoCropState.baseScale * profilePhotoCropState.zoom;
+
+    profilePhotoCropRenderFrame = 0;
+
+    if (accountPhotoCropImage) {
+      accountPhotoCropImage.style.width = profilePhotoCropState.naturalWidth + "px";
+      accountPhotoCropImage.style.height = profilePhotoCropState.naturalHeight + "px";
+      accountPhotoCropImage.style.left = "calc(50% + " + profilePhotoCropState.x + "px)";
+      accountPhotoCropImage.style.top = "calc(50% + " + profilePhotoCropState.y + "px)";
+      accountPhotoCropImage.style.transform = "translate3d(-50%, -50%, 0) scale(" + scale + ")";
+    }
+
+    scheduleProfilePhotoCropPreviewUpdate();
+  });
 }
 
 function setProfilePhotoCropPosition(x, y) {
