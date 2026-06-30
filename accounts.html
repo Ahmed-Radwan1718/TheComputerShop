@@ -1444,7 +1444,7 @@ function renderLoginSessions() {
     const sessionId = String(session.id || "");
     const browserIcon = getLoginSessionBrowserIcon(session.browserLabel);
     const browserIconHtml = browserIcon
-      ? '<img class="account-login-session-browser-icon" src="' + escapeHtml(browserIcon) + '" alt="" aria-hidden="true">'
+      ? '<img class="account-login-session-browser-icon" src="' + escapeHtml(browserIcon) + '" alt="" aria-hidden="true" loading="lazy" decoding="async">'
       : "";
     const currentBadge = session.current
       ? '<span class="account-login-session-current">Current</span>'
@@ -1519,7 +1519,7 @@ function renderTrustedDevices() {
         : "";
     const deviceInitial = String(platformName || browserName || deviceTitle || "T").charAt(0).toUpperCase();
     const platformMark = platformIcon
-      ? '<img class="account-trusted-device-platform-icon' + platformIconClass + '" src="' + escapeHtml(platformIcon) + '" alt="" aria-hidden="true">'
+      ? '<img class="account-trusted-device-platform-icon' + platformIconClass + '" src="' + escapeHtml(platformIcon) + '" alt="" aria-hidden="true" loading="lazy" decoding="async">'
       : '<span>' + escapeHtml(deviceInitial) + '</span>';
     const currentBadge = device.current
       ? '<span class="account-trusted-device-current">Current</span>'
@@ -2112,7 +2112,7 @@ function renderSavedItems(items) {
       <article class="account-saved-item">
         <a class="account-saved-item-main" href="${escapeHtml(url)}">
           <div class="account-saved-item-image-frame">
-            <img src="${escapeHtml(image)}" alt="${escapeHtml(name)}">
+            <img src="${escapeHtml(image)}" alt="${escapeHtml(name)}" loading="lazy" decoding="async">
           </div>
 
           <div class="account-saved-item-info">
@@ -2834,7 +2834,7 @@ function renderOrderDetail(order) {
     return `
       <article class="account-order-detail-item">
         <div class="account-order-detail-image-frame">
-          <img src="${escapeHtml(item.image || "")}" alt="${escapeHtml(item.name || "Product")}">
+          <img src="${escapeHtml(item.image || "")}" alt="${escapeHtml(item.name || "Product")}" loading="lazy" decoding="async">
         </div>
 
         <div class="account-order-detail-item-info">
