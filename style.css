@@ -9271,7 +9271,8 @@ body.account-security-modal-open {
   box-shadow: inset 0 0 0 1px rgba(111, 211, 255, 0.28);
 }
 
-.account-support-ticket-status.completed {
+.account-support-ticket-status.completed,
+.account-support-ticket-status.fulfilled {
   background: rgba(139, 226, 139, 0.16);
   color: #8BE28B;
   box-shadow: inset 0 0 0 1px rgba(139, 226, 139, 0.28);
@@ -9714,7 +9715,8 @@ body.account-security-modal-open {
   box-shadow: inset 0 0 0 1px rgba(111, 211, 255, 0.28);
 }
 
-.account-order-status.completed {
+.account-order-status.completed,
+.account-order-status.fulfilled {
   background: rgba(139, 226, 139, 0.16);
   color: #8BE28B;
   box-shadow: inset 0 0 0 1px rgba(139, 226, 139, 0.28);
