@@ -7278,6 +7278,9 @@ body.account-photo-crop-modal-open {
   background: rgba(255, 255, 255, 0.055);
   cursor: grab;
   touch-action: none;
+  contain: layout paint;
+  isolation: isolate;
+  transform: translateZ(0);
 }
 
 .account-photo-crop-stage:active {
@@ -7286,12 +7289,15 @@ body.account-photo-crop-modal-open {
 
 .account-photo-crop-stage img {
   position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
   max-width: none;
   max-height: none;
-  transform-origin: center;
+  transform-origin: 0 0;
   user-select: none;
   pointer-events: none;
-  will-change: transform, left, top;
+  will-change: transform;
   backface-visibility: hidden;
 }
 
