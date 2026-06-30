@@ -284,15 +284,22 @@ async function ensureAccountSession(req, res, uid) {
 }
 
 async function getProfile(uid, req) {
-  const userRecord = await admin.auth().getUser(uid);
-  const userDoc = await admin.firestore().collection("users").doc(uid).get();
+  const userDocRef = admin.firestore().collection("users").doc(uid);
+  const sessionsPromise = typeof listAccountSessions === "function"
+    ? listAccountSessions(req, uid)
+    : Promise.resolve([]);
+  const trustedDevicesPromise = typeof listTrustedDevices === "function"
+    ? listTrustedDevices(req, uid)
+    : Promise.resolve([]);
+
+  const [userRecord, userDoc, sessions, trustedDevices] = await Promise.all([
+    admin.auth().getUser(uid),
+    userDocRef.get(),
+    sessionsPromise,
+    trustedDevicesPromise
+  ]);
+
   const data = userDoc.exists ? userDoc.data() || {} : {};
-  const sessions = typeof listAccountSessions === "function"
-    ? await listAccountSessions(req, uid)
-    : [];
-  const trustedDevices = typeof listTrustedDevices === "function"
-    ? await listTrustedDevices(req, uid)
-    : [];
 
   return {
     uid,
