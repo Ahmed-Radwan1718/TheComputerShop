@@ -579,14 +579,27 @@
     });
   });
 
+  let filterUpdateFrame = 0;
+
+  function scheduleComponentFilterUpdate() {
+    if (filterUpdateFrame) {
+      cancelAnimationFrame(filterUpdateFrame);
+    }
+
+    filterUpdateFrame = requestAnimationFrame(() => {
+      filterUpdateFrame = 0;
+      updateComponentFilters();
+    });
+  }
+
   document.querySelectorAll(".filter-content input[type='checkbox']").forEach((checkbox) => {
-    checkbox.addEventListener("change", updateComponentFilters);
+    checkbox.addEventListener("change", scheduleComponentFilterUpdate);
   });
 
   const componentSearchInput = document.getElementById("component-search-input");
 
   if (componentSearchInput) {
-    componentSearchInput.addEventListener("input", updateComponentFilters);
+    componentSearchInput.addEventListener("input", scheduleComponentFilterUpdate);
   }
 
   updateComponentFilters();
