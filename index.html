@@ -356,9 +356,17 @@
       featuredComponentRow.classList.remove(`is-switching-out-${direction}`);
       featuredComponentRow.classList.add(`is-switching-in-${direction}`);
 
-      featuredComponentRow.offsetHeight;
+      const removeIncomingClass = () => {
+        featuredComponentRow.classList.remove(`is-switching-in-${direction}`);
+      };
 
-      featuredComponentRow.classList.remove(`is-switching-in-${direction}`);
+      if (typeof window.requestAnimationFrame === "function") {
+        window.requestAnimationFrame(() => {
+          window.requestAnimationFrame(removeIncomingClass);
+        });
+      } else {
+        setTimeout(removeIncomingClass, 0);
+      }
 
       setTimeout(() => {
         featuredComponentIsAnimating = false;
