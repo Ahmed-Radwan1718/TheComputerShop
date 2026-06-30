@@ -9749,7 +9749,7 @@ body.account-security-modal-open {
   position: absolute;
   left: calc(100% / 12);
   right: calc(100% / 12);
-  top: 27px;
+  top: 30px;
   height: 4px;
   pointer-events: none;
 }
@@ -9799,13 +9799,25 @@ body.account-security-modal-open {
 
 .account-order-progress-dot {
   position: relative;
-  display: block;
-  width: 18px;
-  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
   border-radius: 999px;
   background: #202220;
   border: 2px solid rgba(255, 255, 255, 0.22);
   box-shadow: 0 0 0 5px #252725;
+  overflow: hidden;
+}
+
+.account-order-progress-icon {
+  width: 16px;
+  height: 16px;
+  display: block;
+  object-fit: contain;
+  opacity: 0.42;
+  filter: grayscale(1) brightness(1.45);
 }
 
 .account-order-progress-step.done {
@@ -9817,16 +9829,10 @@ body.account-security-modal-open {
   border-color: #F1C87A;
 }
 
-.account-order-progress-step.done .account-order-progress-dot::after {
-  content: "";
-  position: absolute;
-  left: 5px;
-  top: 2px;
-  width: 4px;
-  height: 8px;
-  border: solid #181A18;
-  border-width: 0 2px 2px 0;
-  transform: rotate(45deg);
+.account-order-progress-step.done .account-order-progress-icon,
+.account-order-progress-step.current .account-order-progress-icon {
+  opacity: 1;
+  filter: none;
 }
 
 .account-order-progress-step.current .account-order-progress-dot {
