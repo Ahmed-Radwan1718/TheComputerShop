@@ -9805,8 +9805,9 @@ body.account-security-modal-open {
   width: 32px;
   height: 32px;
   border-radius: 999px;
-  background: transparent;
+  background: #202220;
   border: 2px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 0 0 6px #252725;
   overflow: hidden;
 }
 
@@ -9872,11 +9873,11 @@ body.account-security-modal-open {
 @keyframes account-order-progress-pulse {
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgba(139, 226, 139, 0.24);
+    box-shadow: 0 0 0 6px #252725, 0 0 0 0 rgba(139, 226, 139, 0.24);
   }
 
   50% {
-    box-shadow: 0 0 0 11px rgba(139, 226, 139, 0);
+    box-shadow: 0 0 0 6px #252725, 0 0 0 11px rgba(139, 226, 139, 0);
   }
 }
 
