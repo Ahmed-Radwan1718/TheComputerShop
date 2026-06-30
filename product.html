@@ -10350,7 +10350,7 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
 
       return `
         <button class="product-thumbnail${activeClass}" type="button" data-image="${image}" data-index="${originalIndex}">
-          <img src="${image}" alt="${product.name}${variantText} thumbnail ${imageNumber}">
+          <img src="${image}" alt="${product.name}${variantText} thumbnail ${imageNumber}" loading="lazy" decoding="async">
         </button>
       `;
     }).join("");
@@ -10699,6 +10699,9 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
 
     const currentLayer = document.createElement("img");
     const nextLayer = document.createElement("img");
+
+    currentLayer.decoding = "async";
+    nextLayer.decoding = "async";
 
     currentLayer.src = currentImage;
     nextLayer.src = nextImage;
