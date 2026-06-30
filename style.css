@@ -7749,14 +7749,6 @@ body.account-security-modal-open {
   gap: 14px;
 }
 
-#recovery-codes-modal .account-security-modal-actions {
-  margin-top: 22px;
-}
-
-#recovery-codes-list-wrap[hidden] {
-  display: none;
-}
-
 .account-security-modal-cancel,
 .account-security-modal-continue,
 .account-security-code-submit,
@@ -10226,10 +10218,6 @@ body.account-security-modal-open {
 .account-authenticator-manual {
   display: grid;
   gap: 10px;
-}
-
-#recovery-codes-list-wrap[hidden] {
-  display: none;
 }
 
 .account-authenticator-manual span {
