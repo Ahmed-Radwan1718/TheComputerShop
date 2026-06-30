@@ -9741,16 +9741,16 @@ body.account-security-modal-open {
 .account-order-progress {
   position: relative;
   display: block;
-  min-height: 76px;
-  padding: 18px 4px 0;
+  min-height: 86px;
+  padding: 20px 4px 0;
 }
 
 .account-order-progress-track {
   position: absolute;
   left: calc(100% / 12);
   right: calc(100% / 12);
-  top: 30px;
-  height: 4px;
+  top: 34px;
+  height: 5px;
   pointer-events: none;
 }
 
@@ -9786,10 +9786,10 @@ body.account-security-modal-open {
 .account-order-progress-step {
   display: grid;
   justify-items: center;
-  gap: 10px;
+  gap: 11px;
   min-width: 0;
   color: rgba(255, 255, 255, 0.38);
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.08em;
   line-height: 1.25;
@@ -9802,18 +9802,18 @@ body.account-security-modal-open {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: 999px;
   background: #202220;
   border: 2px solid rgba(255, 255, 255, 0.22);
-  box-shadow: 0 0 0 5px #252725;
+  box-shadow: 0 0 0 6px #252725;
   overflow: hidden;
 }
 
 .account-order-progress-icon {
-  width: 16px;
-  height: 16px;
+  width: 19px;
+  height: 19px;
   display: block;
   object-fit: contain;
   opacity: 0.42;
@@ -9843,7 +9843,7 @@ body.account-security-modal-open {
 
 .account-order-progress-label {
   display: block;
-  max-width: 92px;
+  max-width: 104px;
   overflow-wrap: normal;
 }
 
@@ -9868,11 +9868,11 @@ body.account-security-modal-open {
 @keyframes account-order-progress-pulse {
   0%,
   100% {
-    box-shadow: 0 0 0 5px #252725, 0 0 0 0 rgba(139, 226, 139, 0.24);
+    box-shadow: 0 0 0 6px #252725, 0 0 0 0 rgba(139, 226, 139, 0.24);
   }
 
   50% {
-    box-shadow: 0 0 0 5px #252725, 0 0 0 9px rgba(139, 226, 139, 0);
+    box-shadow: 0 0 0 6px #252725, 0 0 0 11px rgba(139, 226, 139, 0);
   }
 }
 
