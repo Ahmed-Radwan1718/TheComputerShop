@@ -2712,7 +2712,6 @@ function getOrderProgressMarkup(status) {
   }).join("");
 
   return `
-  return `
     <div class="account-order-progress${progressClass}" style="--order-progress: ${progress.percent}%;" aria-label="Order progress: ${escapeHtml(getOrderStatusLabel(status))}">
       <span class="account-order-progress-track" aria-hidden="true">
         <span class="account-order-progress-line"></span>
