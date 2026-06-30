@@ -9780,8 +9780,9 @@ body.account-security-modal-open {
 
 .account-order-progress-line-fill {
   left: 0;
-  width: var(--order-progress, 0%);
-  background: linear-gradient(90deg, #F1C87A, #8BE28B);
+  right: 0;
+  width: auto;
+  background: linear-gradient(90deg, #8BE28B 0 var(--order-progress, 0%), transparent var(--order-progress, 0%) 100%);
   box-shadow: 0 0 18px rgba(139, 226, 139, 0.18);
   transform-origin: left center;
   animation: account-order-progress-fill 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
