@@ -9930,6 +9930,8 @@ body.account-security-modal-open {
   border-radius: 22px;
   border: 1px solid rgba(255, 255, 255, 0.105);
   background: rgba(255, 255, 255, 0.045);
+  content-visibility: auto;
+  contain-intrinsic-size: 112px;
 }
 
 .account-login-session-card.current {
@@ -10077,6 +10079,8 @@ body.account-security-modal-open {
   display: grid;
   grid-template-rows: auto 1fr auto;
   gap: 16px;
+  content-visibility: auto;
+  contain-intrinsic-size: 258px;
 }
 
 .account-trusted-device-tile.current {
