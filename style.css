@@ -7300,7 +7300,7 @@ body.account-photo-crop-modal-open {
   width: min(240px, calc(100% - 42px));
   aspect-ratio: 1;
   border: 2px solid rgba(255, 255, 255, 0.92);
-  border-radius: 18px;
+  border-radius: 999px;
   box-shadow: 0 0 0 999px rgba(0, 0, 0, 0.42);
   pointer-events: none;
   transform: translate(-50%, -50%);
