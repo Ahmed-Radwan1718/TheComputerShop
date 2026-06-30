@@ -9817,7 +9817,7 @@ body.account-security-modal-open {
   display: block;
   object-fit: contain;
   opacity: 0.42;
-  filter: grayscale(1) brightness(1.45);
+  filter: invert(1) grayscale(1) brightness(1.45);
 }
 
 .account-order-progress-step.done {
@@ -9832,7 +9832,7 @@ body.account-security-modal-open {
 .account-order-progress-step.done .account-order-progress-icon,
 .account-order-progress-step.current .account-order-progress-icon {
   opacity: 1;
-  filter: none;
+  filter: invert(1);
 }
 
 .account-order-progress-step.current .account-order-progress-dot {
