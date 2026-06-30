@@ -9741,16 +9741,16 @@ body.account-security-modal-open {
 .account-order-progress {
   position: relative;
   display: block;
-  min-height: 128px;
-  padding: 18px 0 4px;
+  min-height: 112px;
+  padding: 18px 4px 2px;
 }
 
 .account-order-progress-track {
   position: absolute;
   left: calc(100% / 12);
   right: calc(100% / 12);
-  top: 43px;
-  height: 8px;
+  top: 40px;
+  height: 7px;
   pointer-events: none;
 }
 
@@ -9767,15 +9767,15 @@ body.account-security-modal-open {
 .account-order-progress-line {
   left: 0;
   right: 0;
-  background: rgba(255, 255, 255, 0.12);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  background: #3A3C3A;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
 }
 
 .account-order-progress-line-fill {
   left: 0;
   width: var(--order-progress, 0%);
-  background: linear-gradient(90deg, #F1C87A, #FFB86B, #8BE28B);
-  box-shadow: 0 0 22px rgba(241, 200, 122, 0.26), 0 0 26px rgba(139, 226, 139, 0.18);
+  background: linear-gradient(90deg, #F1C87A, #8BE28B);
+  box-shadow: 0 0 18px rgba(139, 226, 139, 0.18);
   transform-origin: left center;
   animation: account-order-progress-fill 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
@@ -9785,18 +9785,16 @@ body.account-security-modal-open {
   width: var(--order-progress-segment, 0%);
   overflow: hidden;
   background: rgba(139, 226, 139, 0.08);
-  box-shadow: 0 0 18px rgba(139, 226, 139, 0.2);
 }
 
 .account-order-progress-line-pulse::before {
   content: "";
   position: absolute;
-  top: -7px;
-  bottom: -7px;
+  top: -5px;
+  bottom: -5px;
   left: 0;
-  width: 78px;
-  background: linear-gradient(90deg, transparent, rgba(241, 200, 122, 0.18), rgba(139, 226, 139, 0.95), transparent);
-  filter: blur(0.2px);
+  width: 70px;
+  background: linear-gradient(90deg, transparent, rgba(139, 226, 139, 0.95), transparent);
   animation: account-order-progress-travel 1.45s ease-in-out infinite;
 }
 
@@ -9812,9 +9810,9 @@ body.account-security-modal-open {
 .account-order-progress-step {
   display: grid;
   justify-items: center;
-  gap: 12px;
+  gap: 11px;
   min-width: 0;
-  color: rgba(255, 255, 255, 0.46);
+  color: rgba(255, 255, 255, 0.42);
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 0.08em;
@@ -9828,47 +9826,47 @@ body.account-security-modal-open {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 58px;
-  height: 58px;
-  border-radius: 18px;
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.035));
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  background: #202220;
   background-clip: padding-box;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 0 14px 26px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  overflow: visible;
+  border: 2px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 0 0 6px #252725, 0 12px 22px rgba(0, 0, 0, 0.22);
+  overflow: hidden;
 }
 
 .account-order-progress-icon {
-  width: 34px;
-  height: 34px;
+  width: 30px;
+  height: 30px;
   display: block;
   object-fit: contain;
-  opacity: 0.58;
-  filter: invert(1) grayscale(1) brightness(1.35);
+  opacity: 0.48;
+  filter: invert(1) grayscale(1) brightness(1.45);
 }
 
 .account-order-progress-step:last-child .account-order-progress-icon {
-  width: 38px;
-  height: 38px;
+  width: 34px;
+  height: 34px;
 }
 
 .account-order-progress-step.done {
-  color: rgba(255, 255, 255, 0.88);
+  color: rgba(255, 255, 255, 0.86);
 }
 
 .account-order-progress-step.done .account-order-progress-dot {
-  background: linear-gradient(145deg, #F1C87A, #D9B36F);
-  border-color: rgba(241, 200, 122, 0.86);
-  box-shadow: 0 0 0 5px rgba(241, 200, 122, 0.1), 0 16px 30px rgba(0, 0, 0, 0.28);
+  background: #F1C87A;
+  border-color: #F1C87A;
+  box-shadow: 0 0 0 6px #252725, 0 0 18px rgba(241, 200, 122, 0.24);
 }
 
 .account-order-progress-step.next {
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.58);
 }
 
 .account-order-progress-step.next .account-order-progress-dot {
-  border-color: rgba(139, 226, 139, 0.48);
-  background: linear-gradient(145deg, rgba(139, 226, 139, 0.15), rgba(255, 255, 255, 0.04));
+  border-color: rgba(139, 226, 139, 0.45);
+  box-shadow: 0 0 0 6px #252725, 0 0 16px rgba(139, 226, 139, 0.12);
 }
 
 .account-order-progress-step.done .account-order-progress-icon,
@@ -9878,21 +9876,13 @@ body.account-security-modal-open {
 }
 
 .account-order-progress-step.next .account-order-progress-icon {
-  opacity: 0.78;
+  opacity: 0.66;
 }
 
 .account-order-progress-step.current .account-order-progress-dot {
-  background: linear-gradient(145deg, #8BE28B, #4FCB73);
+  background: #8BE28B;
   border-color: #8BE28B;
-  box-shadow: 0 0 0 6px rgba(139, 226, 139, 0.12), 0 0 28px rgba(139, 226, 139, 0.3), 0 16px 30px rgba(0, 0, 0, 0.3);
-}
-
-.account-order-progress-step.current .account-order-progress-dot::after {
-  content: "";
-  position: absolute;
-  inset: -8px;
-  border-radius: 24px;
-  border: 1px solid rgba(139, 226, 139, 0.45);
+  box-shadow: 0 0 0 6px #252725, 0 0 0 10px rgba(139, 226, 139, 0.12), 0 0 24px rgba(139, 226, 139, 0.32);
   animation: account-order-progress-pulse 1.7s ease-out infinite;
 }
 
@@ -9932,32 +9922,30 @@ body.account-security-modal-open {
   }
 
   to {
-    transform: translateX(calc(100% + 78px));
+    transform: translateX(calc(100% + 70px));
   }
 }
 
 @keyframes account-order-progress-pulse {
   0%,
   100% {
-    opacity: 0.95;
-    transform: scale(0.92);
+    box-shadow: 0 0 0 6px #252725, 0 0 0 10px rgba(139, 226, 139, 0.12), 0 0 24px rgba(139, 226, 139, 0.32);
   }
 
   50% {
-    opacity: 0.15;
-    transform: scale(1.16);
+    box-shadow: 0 0 0 6px #252725, 0 0 0 15px rgba(139, 226, 139, 0), 0 0 30px rgba(139, 226, 139, 0.42);
   }
 }
 
 @media (max-width: 620px) {
   .account-order-progress {
-    min-height: 136px;
+    min-height: 126px;
     padding-top: 16px;
   }
 
   .account-order-progress-track {
-    top: 38px;
-    height: 7px;
+    top: 35px;
+    height: 6px;
   }
 
   .account-order-progress-steps {
@@ -9971,19 +9959,19 @@ body.account-security-modal-open {
   }
 
   .account-order-progress-dot {
-    width: 44px;
-    height: 44px;
-    border-radius: 14px;
+    width: 40px;
+    height: 40px;
+    box-shadow: 0 0 0 5px #252725, 0 10px 18px rgba(0, 0, 0, 0.2);
   }
 
   .account-order-progress-icon {
-    width: 26px;
-    height: 26px;
+    width: 25px;
+    height: 25px;
   }
 
   .account-order-progress-step:last-child .account-order-progress-icon {
-    width: 29px;
-    height: 29px;
+    width: 28px;
+    height: 28px;
   }
 
   .account-order-progress-label {
@@ -9994,7 +9982,7 @@ body.account-security-modal-open {
 @media (prefers-reduced-motion: reduce) {
   .account-order-progress-line-fill,
   .account-order-progress-line-pulse::before,
-  .account-order-progress-step.current .account-order-progress-dot::after {
+  .account-order-progress-step.current .account-order-progress-dot {
     animation: none;
   }
 }
