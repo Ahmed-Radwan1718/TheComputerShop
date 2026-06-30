@@ -7291,6 +7291,8 @@ body.account-photo-crop-modal-open {
   transform-origin: center;
   user-select: none;
   pointer-events: none;
+  will-change: transform, left, top;
+  backface-visibility: hidden;
 }
 
 .account-photo-crop-frame {
