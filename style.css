@@ -9747,8 +9747,8 @@ body.account-security-modal-open {
 
 .account-order-progress-track {
   position: absolute;
-  left: 34px;
-  right: 34px;
+  left: calc(100% / 12);
+  right: calc(100% / 12);
   top: 27px;
   height: 4px;
   pointer-events: none;
