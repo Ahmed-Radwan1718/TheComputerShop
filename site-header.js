@@ -207,6 +207,7 @@ if (floatingAccountWidget) {
 
       const loginSessionSignedOutMessage = "This session was signed out from another device.";
       let sessionStatusRedirecting = false;
+      let accountStateRequestInFlight = false;
 
       async function redirectRevokedSession() {
         if (sessionStatusRedirecting) {
@@ -229,6 +230,12 @@ if (floatingAccountWidget) {
           showLoggedOutAccountState();
           return;
         }
+
+        if (accountStateRequestInFlight) {
+          return;
+        }
+
+        accountStateRequestInFlight = true;
 
         try {
           const response = await fetch("/api/me", {
@@ -257,6 +264,8 @@ if (floatingAccountWidget) {
           showLoggedInAccountState(data.user);
         } catch (error) {
           showLoggedOutAccountState();
+        } finally {
+          accountStateRequestInFlight = false;
         }
       }
 
