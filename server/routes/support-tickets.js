@@ -14,9 +14,14 @@ const {
 const VALID_CATEGORIES = [
   "General Question",
   "Product Question",
-  "Build Consultation",
   "Order Help",
-  "Warranty / Return"
+  "Shipping / Delivery",
+  "Payment / Checkout Issue",
+  "Warranty / Return",
+  "Account Help",
+  "Technical Support",
+  "Website Issue",
+  "Other"
 ];
 
 function cleanString(value, maxLength) {
