@@ -321,7 +321,13 @@ if (floatingAccountWidget) {
       });
 
       loadServerAccountState();
-      window.setInterval(loadServerAccountState, 2000);
+
+      const currentPageName = window.location.pathname.split("/").pop().toLowerCase();
+      const headerIsOnAccountPage = currentPageName === "accounts.html";
+
+      if (!headerIsOnAccountPage) {
+        window.setInterval(loadServerAccountState, 2000);
+      }
 
       window.tcsReloadAccountHeader = loadServerAccountState;
     }
