@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Account - The Computer Shop</title>
-  <link rel="stylesheet" href="style.css?v=orders-progress-20260630" />
+  <link rel="stylesheet" href="style.css?v=orders-progress-redesign-20260701" />
 </head>
 <body oncontextmenu="return false;">
 
@@ -2680,27 +2680,40 @@ function getOrderProgressData(status) {
     canceled: -1,
     cancelled: -1
   };
+  const canceled = normalizedStatus === "canceled" || normalizedStatus === "cancelled";
   const currentIndex = Object.prototype.hasOwnProperty.call(progressIndexes, normalizedStatus)
     ? progressIndexes[normalizedStatus]
     : 0;
-  const percent = currentIndex <= 0 ? 0 : Math.round((currentIndex / (steps.length - 1)) * 100);
+  const percent = !canceled && currentIndex > 0 ? Math.round((currentIndex / (steps.length - 1)) * 100) : 0;
+  const nextIndex = !canceled && currentIndex >= 0 && currentIndex < steps.length - 1 ? currentIndex + 1 : currentIndex;
+  const nextPercent = !canceled && nextIndex > 0 ? Math.round((nextIndex / (steps.length - 1)) * 100) : percent;
+  const segmentPercent = Math.max(0, nextPercent - percent);
 
   return {
     steps,
     currentIndex,
+    nextIndex,
     percent,
-    canceled: normalizedStatus === "canceled" || normalizedStatus === "cancelled"
+    nextPercent,
+    segmentPercent,
+    canceled,
+    complete: !canceled && currentIndex >= steps.length - 1
   };
 }
 
 function getOrderProgressMarkup(status) {
   const progress = getOrderProgressData(status);
-  const progressClass = progress.canceled ? " canceled" : "";
+  const progressClass = [
+    progress.canceled ? "canceled" : "",
+    progress.complete ? "complete" : ""
+  ].filter(Boolean).join(" ");
+  const progressClassAttribute = progressClass ? " " + progressClass : "";
   const stepsMarkup = progress.steps.map(function (step, index) {
     const stepClass = [
       "account-order-progress-step",
       !progress.canceled && index <= progress.currentIndex ? "done" : "",
-      !progress.canceled && index === progress.currentIndex ? "current" : ""
+      !progress.canceled && index === progress.currentIndex ? "current" : "",
+      !progress.canceled && index === progress.nextIndex && index !== progress.currentIndex ? "next" : ""
     ].filter(Boolean).join(" ");
 
     return `
@@ -2714,10 +2727,11 @@ function getOrderProgressMarkup(status) {
   }).join("");
 
   return `
-    <div class="account-order-progress${progressClass}" style="--order-progress: ${progress.percent}%;" aria-label="Order progress: ${escapeHtml(getOrderStatusLabel(status))}">
+    <div class="account-order-progress${progressClassAttribute}" style="--order-progress: ${progress.percent}%; --order-progress-next: ${progress.nextPercent}%; --order-progress-segment: ${progress.segmentPercent}%;" aria-label="Order progress: ${escapeHtml(getOrderStatusLabel(status))}">
       <span class="account-order-progress-track" aria-hidden="true">
         <span class="account-order-progress-line"></span>
         <span class="account-order-progress-line-fill"></span>
+        <span class="account-order-progress-line-pulse"></span>
       </span>
 
       <span class="account-order-progress-steps">
