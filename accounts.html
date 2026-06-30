@@ -821,18 +821,35 @@
 
     <div class="account-photo-crop-header">
       <p class="account-panel-eyebrow">Profile Photo</p>
-      <h2 id="account-photo-crop-title">Crop Your Photo</h2>
-      <p>Drag the image and adjust zoom until the square preview looks right.</p>
+      <h2 id="account-photo-crop-title">Adjust Profile Photo</h2>
+      <p>Crop and preview your profile photo before saving.</p>
     </div>
 
-    <div class="account-photo-crop-stage" id="account-photo-crop-stage">
-      <img src="" alt="Selected profile photo" id="account-photo-crop-image">
-      <div class="account-photo-crop-frame"></div>
-    </div>
+    <div class="account-photo-crop-layout">
+      <div>
+        <div class="account-photo-crop-stage" id="account-photo-crop-stage">
+          <img src="" alt="Selected profile photo" id="account-photo-crop-image">
+          <div class="account-photo-crop-frame"></div>
+        </div>
 
-    <div class="account-photo-crop-control">
-      <label for="account-photo-crop-zoom">Zoom</label>
-      <input type="range" id="account-photo-crop-zoom" min="1" max="3" step="0.01" value="1">
+        <div class="account-photo-crop-control">
+          <label for="account-photo-crop-zoom">Zoom</label>
+          <input type="range" id="account-photo-crop-zoom" min="1" max="3" step="0.01" value="1">
+        </div>
+      </div>
+
+      <div class="account-photo-crop-preview-panel">
+        <div class="account-photo-crop-preview">
+          <img src="" alt="Profile photo crop preview" id="account-photo-crop-preview-image">
+        </div>
+
+        <p class="account-photo-crop-preview-label">Preview</p>
+
+        <p class="account-photo-crop-note">
+          Supported formats: JPG, PNG, WEBP<br>
+          Maximum size: 4MB
+        </p>
+      </div>
     </div>
 
     <div class="account-photo-crop-actions">
@@ -841,7 +858,7 @@
       </button>
 
       <button class="account-photo-crop-use" type="button" id="account-photo-crop-use">
-        Use Photo
+        Apply Photo
       </button>
     </div>
 
@@ -967,7 +984,9 @@ const accountPhotoCropClose = document.getElementById("account-photo-crop-close"
 const accountPhotoCropCancel = document.getElementById("account-photo-crop-cancel");
 const accountPhotoCropUse = document.getElementById("account-photo-crop-use");
 const accountPhotoCropStage = document.getElementById("account-photo-crop-stage");
+const accountPhotoCropFrame = accountPhotoCropStage ? accountPhotoCropStage.querySelector(".account-photo-crop-frame") : null;
 const accountPhotoCropImage = document.getElementById("account-photo-crop-image");
+const accountPhotoCropPreviewImage = document.getElementById("account-photo-crop-preview-image");
 const accountPhotoCropZoom = document.getElementById("account-photo-crop-zoom");
 const accountPhotoCropMessage = document.getElementById("account-photo-crop-message");
 const accountName = document.getElementById("account-name");
@@ -1162,6 +1181,9 @@ const passwordMessage = document.getElementById("password-message");
 let currentUser = null;
 let firebaseClientApp = null;
 let firebaseClientAuth = null;
+const PROFILE_PHOTO_MAX_FILE_SIZE = 4 * 1024 * 1024;
+const PROFILE_PHOTO_ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
+
 let pendingProfilePhotoDataUrl = "";
 let removeProfilePhotoOnSave = false;
 let profilePhotoCropObjectUrl = "";
@@ -4274,52 +4296,264 @@ function updateAccountPhotoPreview(profile, user) {
   }
 }
 
-function resizeProfilePhotoFile(file) {
-  return new Promise(function (resolve, reject) {
-    if (!file || !file.type || !file.type.startsWith("image/")) {
-      reject(new Error("Please choose a valid image file."));
-      return;
+function validateProfilePhotoFile(file) {
+  const fileType = String(file && file.type ? file.type : "").toLowerCase();
+
+  if (!file || PROFILE_PHOTO_ALLOWED_TYPES.indexOf(fileType) === -1) {
+    throw new Error("Please upload a JPG, PNG, or WEBP image.");
+  }
+
+  if (file.size > PROFILE_PHOTO_MAX_FILE_SIZE) {
+    throw new Error("Profile photo must be 4MB or smaller.");
+  }
+}
+
+function resetProfilePhotoCropState() {
+  profilePhotoCropState = {
+    dragging: false,
+    startX: 0,
+    startY: 0,
+    originX: 0,
+    originY: 0,
+    x: 0,
+    y: 0,
+    zoom: 1,
+    baseScale: 1,
+    naturalWidth: 0,
+    naturalHeight: 0
+  };
+}
+
+function clearProfilePhotoCropObjectUrl() {
+  if (profilePhotoCropObjectUrl) {
+    URL.revokeObjectURL(profilePhotoCropObjectUrl);
+    profilePhotoCropObjectUrl = "";
+  }
+}
+
+function closeProfilePhotoCropModal() {
+  if (accountPhotoCropModal) {
+    accountPhotoCropModal.hidden = true;
+  }
+
+  document.body.classList.remove("account-photo-crop-modal-open");
+  clearProfilePhotoCropObjectUrl();
+
+  if (accountPhotoCropImage) {
+    accountPhotoCropImage.removeAttribute("src");
+  }
+
+  if (accountPhotoCropPreviewImage) {
+    accountPhotoCropPreviewImage.removeAttribute("src");
+  }
+
+  if (accountPhotoInput) {
+    accountPhotoInput.value = "";
+  }
+
+  showMessage(accountPhotoCropMessage, "", "");
+  resetProfilePhotoCropState();
+}
+
+function getProfilePhotoCropRects() {
+  if (!accountPhotoCropStage || !accountPhotoCropFrame) {
+    return null;
+  }
+
+  return {
+    stageRect: accountPhotoCropStage.getBoundingClientRect(),
+    frameRect: accountPhotoCropFrame.getBoundingClientRect()
+  };
+}
+
+function clampProfilePhotoCropPosition(x, y) {
+  const rects = getProfilePhotoCropRects();
+
+  if (!rects || !profilePhotoCropState.naturalWidth || !profilePhotoCropState.naturalHeight) {
+    return { x: 0, y: 0 };
+  }
+
+  const scale = profilePhotoCropState.baseScale * profilePhotoCropState.zoom;
+  const displayWidth = profilePhotoCropState.naturalWidth * scale;
+  const displayHeight = profilePhotoCropState.naturalHeight * scale;
+  const frameLeft = rects.frameRect.left - rects.stageRect.left;
+  const frameRight = rects.frameRect.right - rects.stageRect.left;
+  const frameTop = rects.frameRect.top - rects.stageRect.top;
+  const frameBottom = rects.frameRect.bottom - rects.stageRect.top;
+  const minX = frameRight - displayWidth / 2 - rects.stageRect.width / 2;
+  const maxX = frameLeft + displayWidth / 2 - rects.stageRect.width / 2;
+  const minY = frameBottom - displayHeight / 2 - rects.stageRect.height / 2;
+  const maxY = frameTop + displayHeight / 2 - rects.stageRect.height / 2;
+
+  return {
+    x: Math.min(Math.max(x, minX), maxX),
+    y: Math.min(Math.max(y, minY), maxY)
+  };
+}
+
+function getCroppedProfilePhotoDataUrl(size, quality) {
+  const rects = getProfilePhotoCropRects();
+
+  if (!rects || !accountPhotoCropImage || !profilePhotoCropState.naturalWidth || !profilePhotoCropState.naturalHeight) {
+    throw new Error("Could not prepare this photo. Please try another image.");
+  }
+
+  const scale = profilePhotoCropState.baseScale * profilePhotoCropState.zoom;
+  const displayWidth = profilePhotoCropState.naturalWidth * scale;
+  const displayHeight = profilePhotoCropState.naturalHeight * scale;
+  const imageLeft = rects.stageRect.width / 2 + profilePhotoCropState.x - displayWidth / 2;
+  const imageTop = rects.stageRect.height / 2 + profilePhotoCropState.y - displayHeight / 2;
+  const frameLeft = rects.frameRect.left - rects.stageRect.left;
+  const frameTop = rects.frameRect.top - rects.stageRect.top;
+  const sourceSize = rects.frameRect.width / scale;
+  const sourceX = Math.max(0, Math.min((frameLeft - imageLeft) / scale, profilePhotoCropState.naturalWidth - sourceSize));
+  const sourceY = Math.max(0, Math.min((frameTop - imageTop) / scale, profilePhotoCropState.naturalHeight - sourceSize));
+  const canvas = document.createElement("canvas");
+  const context = canvas.getContext("2d");
+
+  canvas.width = size;
+  canvas.height = size;
+  context.imageSmoothingEnabled = true;
+  context.imageSmoothingQuality = "high";
+  context.drawImage(accountPhotoCropImage, sourceX, sourceY, sourceSize, sourceSize, 0, 0, size, size);
+
+  return canvas.toDataURL("image/jpeg", quality);
+}
+
+function renderProfilePhotoCrop() {
+  const scale = profilePhotoCropState.baseScale * profilePhotoCropState.zoom;
+
+  if (accountPhotoCropImage) {
+    accountPhotoCropImage.style.width = profilePhotoCropState.naturalWidth + "px";
+    accountPhotoCropImage.style.height = profilePhotoCropState.naturalHeight + "px";
+    accountPhotoCropImage.style.left = "calc(50% + " + profilePhotoCropState.x + "px)";
+    accountPhotoCropImage.style.top = "calc(50% + " + profilePhotoCropState.y + "px)";
+    accountPhotoCropImage.style.transform = "translate(-50%, -50%) scale(" + scale + ")";
+  }
+
+  if (accountPhotoCropPreviewImage && profilePhotoCropState.naturalWidth) {
+    try {
+      accountPhotoCropPreviewImage.src = getCroppedProfilePhotoDataUrl(192, 0.86);
+    } catch (error) {}
+  }
+}
+
+function setProfilePhotoCropPosition(x, y) {
+  const nextPosition = clampProfilePhotoCropPosition(x, y);
+
+  profilePhotoCropState.x = nextPosition.x;
+  profilePhotoCropState.y = nextPosition.y;
+  renderProfilePhotoCrop();
+}
+
+function initializeProfilePhotoCropImage() {
+  const rects = getProfilePhotoCropRects();
+
+  if (!rects || !accountPhotoCropImage) {
+    return;
+  }
+
+  profilePhotoCropState.naturalWidth = accountPhotoCropImage.naturalWidth;
+  profilePhotoCropState.naturalHeight = accountPhotoCropImage.naturalHeight;
+  profilePhotoCropState.baseScale = Math.max(
+    rects.frameRect.width / profilePhotoCropState.naturalWidth,
+    rects.frameRect.height / profilePhotoCropState.naturalHeight
+  );
+  profilePhotoCropState.zoom = 1;
+
+  if (accountPhotoCropZoom) {
+    accountPhotoCropZoom.value = "1";
+  }
+
+  if (accountPhotoCropUse) {
+    accountPhotoCropUse.disabled = false;
+  }
+
+  setProfilePhotoCropPosition(0, 0);
+}
+
+function openProfilePhotoCropModal(file) {
+  validateProfilePhotoFile(file);
+  closeProfilePhotoCropModal();
+
+  profilePhotoCropObjectUrl = URL.createObjectURL(file);
+
+  if (accountPhotoCropUse) {
+    accountPhotoCropUse.disabled = true;
+  }
+
+  if (accountPhotoCropModal) {
+    accountPhotoCropModal.hidden = false;
+  }
+
+  document.body.classList.add("account-photo-crop-modal-open");
+  showMessage(accountPhotoCropMessage, "", "");
+
+  accountPhotoCropImage.onload = initializeProfilePhotoCropImage;
+  accountPhotoCropImage.onerror = function () {
+    showMessage(accountPhotoCropMessage, "Could not read this image. Please choose another photo.", "error");
+  };
+  accountPhotoCropImage.src = profilePhotoCropObjectUrl;
+}
+
+function handleProfilePhotoCropPointerDown(event) {
+  if (!profilePhotoCropState.naturalWidth) {
+    return;
+  }
+
+  profilePhotoCropState.dragging = true;
+  profilePhotoCropState.startX = event.clientX;
+  profilePhotoCropState.startY = event.clientY;
+  profilePhotoCropState.originX = profilePhotoCropState.x;
+  profilePhotoCropState.originY = profilePhotoCropState.y;
+
+  if (accountPhotoCropStage && typeof accountPhotoCropStage.setPointerCapture === "function") {
+    accountPhotoCropStage.setPointerCapture(event.pointerId);
+  }
+
+  event.preventDefault();
+}
+
+function handleProfilePhotoCropPointerMove(event) {
+  if (!profilePhotoCropState.dragging) {
+    return;
+  }
+
+  setProfilePhotoCropPosition(
+    profilePhotoCropState.originX + event.clientX - profilePhotoCropState.startX,
+    profilePhotoCropState.originY + event.clientY - profilePhotoCropState.startY
+  );
+}
+
+function handleProfilePhotoCropPointerUp() {
+  profilePhotoCropState.dragging = false;
+}
+
+function handleProfilePhotoCropZoom() {
+  profilePhotoCropState.zoom = Number(accountPhotoCropZoom.value || 1);
+  setProfilePhotoCropPosition(profilePhotoCropState.x, profilePhotoCropState.y);
+}
+
+function applyProfilePhotoCrop() {
+  try {
+    pendingProfilePhotoDataUrl = getCroppedProfilePhotoDataUrl(512, 0.86);
+    removeProfilePhotoOnSave = false;
+
+    if (accountPhotoPreview && accountPhotoInitial) {
+      accountPhotoPreview.src = pendingProfilePhotoDataUrl;
+      accountPhotoPreview.hidden = false;
+      accountPhotoInitial.hidden = true;
     }
 
-    if (file.size > 6 * 1024 * 1024) {
-      reject(new Error("Please choose an image smaller than 6MB."));
-      return;
+    if (accountPhotoRemoveButton) {
+      accountPhotoRemoveButton.hidden = false;
     }
 
-    const reader = new FileReader();
-
-    reader.addEventListener("load", function () {
-      const image = new Image();
-
-      image.addEventListener("load", function () {
-        const canvas = document.createElement("canvas");
-        const size = 512;
-        const sourceSize = Math.min(image.width, image.height);
-        const sourceX = Math.max(0, Math.floor((image.width - sourceSize) / 2));
-        const sourceY = Math.max(0, Math.floor((image.height - sourceSize) / 2));
-
-        canvas.width = size;
-        canvas.height = size;
-
-        const context = canvas.getContext("2d");
-        context.drawImage(image, sourceX, sourceY, sourceSize, sourceSize, 0, 0, size, size);
-
-        resolve(canvas.toDataURL("image/jpeg", 0.86));
-      });
-
-      image.addEventListener("error", function () {
-        reject(new Error("Could not read this image. Please choose another photo."));
-      });
-
-      image.src = reader.result;
-    });
-
-    reader.addEventListener("error", function () {
-      reject(new Error("Could not read this image. Please choose another photo."));
-    });
-
-    reader.readAsDataURL(file);
-  });
+    closeProfilePhotoCropModal();
+    showMessage(detailsMessage, "Profile photo selected. Save changes to sync it to your account.", "success");
+  } catch (error) {
+    showMessage(accountPhotoCropMessage, error.message || "Could not prepare this photo. Please try another image.", "error");
+  }
 }
 
 function hydrateAccountProfileFromServer(profile, user) {
@@ -4510,45 +4744,56 @@ initializeServerAccountPage();
   });
 });
 
+if (accountPhotoCropBackdrop) {
+  accountPhotoCropBackdrop.addEventListener("click", closeProfilePhotoCropModal);
+}
+
+if (accountPhotoCropClose) {
+  accountPhotoCropClose.addEventListener("click", closeProfilePhotoCropModal);
+}
+
+if (accountPhotoCropCancel) {
+  accountPhotoCropCancel.addEventListener("click", closeProfilePhotoCropModal);
+}
+
+if (accountPhotoCropStage) {
+  accountPhotoCropStage.addEventListener("pointerdown", handleProfilePhotoCropPointerDown);
+  accountPhotoCropStage.addEventListener("pointermove", handleProfilePhotoCropPointerMove);
+  accountPhotoCropStage.addEventListener("pointerup", handleProfilePhotoCropPointerUp);
+  accountPhotoCropStage.addEventListener("pointercancel", handleProfilePhotoCropPointerUp);
+}
+
+if (accountPhotoCropZoom) {
+  accountPhotoCropZoom.addEventListener("input", handleProfilePhotoCropZoom);
+}
+
+if (accountPhotoCropUse) {
+  accountPhotoCropUse.addEventListener("click", applyProfilePhotoCrop);
+}
+
+window.addEventListener("resize", function () {
+  if (accountPhotoCropModal && !accountPhotoCropModal.hidden && profilePhotoCropState.naturalWidth) {
+    setProfilePhotoCropPosition(profilePhotoCropState.x, profilePhotoCropState.y);
+  }
+});
+
 if (accountPhotoChooseButton && accountPhotoInput) {
   accountPhotoChooseButton.addEventListener("click", function () {
     accountPhotoInput.click();
   });
 
-  accountPhotoInput.addEventListener("change", async function () {
+  accountPhotoInput.addEventListener("change", function () {
     const file = accountPhotoInput.files && accountPhotoInput.files[0];
 
     if (!file) {
       return;
     }
 
-    accountPhotoChooseButton.disabled = true;
-    detailsButton.disabled = true;
-    showMessage(detailsMessage, "Preparing profile photo...", "");
-
     try {
-      pendingProfilePhotoDataUrl = await resizeProfilePhotoFile(file);
-      removeProfilePhotoOnSave = false;
-
-      if (accountPhotoPreview && accountPhotoInitial) {
-        accountPhotoPreview.src = pendingProfilePhotoDataUrl;
-        accountPhotoPreview.hidden = false;
-        accountPhotoInitial.hidden = true;
-      }
-
-      if (accountPhotoRemoveButton) {
-        accountPhotoRemoveButton.hidden = false;
-      }
-
-      showMessage(detailsMessage, "Profile photo selected. Save changes to sync it to your account.", "success");
+      openProfilePhotoCropModal(file);
     } catch (error) {
-      pendingProfilePhotoDataUrl = "";
       accountPhotoInput.value = "";
-      updateAccountPhotoPreview(currentUser || {}, currentUser);
       showMessage(detailsMessage, error.message || "Could not prepare this photo. Please try another image.", "error");
-    } finally {
-      accountPhotoChooseButton.disabled = false;
-      detailsButton.disabled = false;
     }
   });
 }
