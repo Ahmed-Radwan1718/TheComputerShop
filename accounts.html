@@ -2757,14 +2757,19 @@ async function startOrderHistorySync(uid) {
 
   await refreshOrderHistory(true);
 
+  const orderHistoryPanel = document.getElementById("account-panel-orders");
+  const orderHistoryPanelIsActive = function () {
+    return Boolean(orderHistoryPanel && orderHistoryPanel.classList.contains("active"));
+  };
+
   const orderHistoryRefreshInterval = window.setInterval(function () {
-    if (!document.hidden) {
+    if (!document.hidden && orderHistoryPanelIsActive()) {
       refreshOrderHistory(false);
     }
   }, 2500);
 
   const handleOrderHistoryVisibilityChange = function () {
-    if (!document.hidden) {
+    if (!document.hidden && orderHistoryPanelIsActive()) {
       refreshOrderHistory(false);
     }
   };
@@ -3271,45 +3276,59 @@ async function deleteAddress(addressId) {
   }
 }
 
+const accountAddressFields = Array.from(document.querySelectorAll(".address-field"));
+const addressTypeButtons = Array.from(document.querySelectorAll(".account-address-type-button"));
+const accountSidebarLinks = Array.from(document.querySelectorAll(".account-sidebar-link"));
+const accountPanels = Array.from(document.querySelectorAll(".account-panel"));
+const accountPanelButtons = Array.from(document.querySelectorAll("[data-account-panel]"));
+
+function getAccountPanelElement(panelName) {
+  return accountPanels.find(function (panel) {
+    return panel.id === "account-panel-" + panelName;
+  }) || null;
+}
+
 function showAddressFields() {
   const selectedType = addressType.value;
-  const allAddressFields = document.querySelectorAll(".address-field");
+  const selectedAddressClass = "address-" + selectedType;
 
-  document.querySelectorAll(".account-address-type-button").forEach(function (button) {
+  addressTypeButtons.forEach(function (button) {
     button.classList.toggle("active", button.dataset.addressType === selectedType);
   });
 
-  allAddressFields.forEach(function (field) {
-    field.hidden = true;
-  });
-
-  document.querySelectorAll(".address-" + selectedType).forEach(function (field) {
-    field.hidden = false;
+  accountAddressFields.forEach(function (field) {
+    field.hidden = !field.classList.contains(selectedAddressClass);
   });
 }
 
   function switchPanel(panelName) {
-    document.querySelectorAll(".account-sidebar-link").forEach(function (button) {
+    accountSidebarLinks.forEach(function (button) {
       button.classList.remove("active");
     });
 
-    document.querySelectorAll(".account-panel").forEach(function (panel) {
+    accountPanels.forEach(function (panel) {
       panel.classList.remove("active");
     });
 
-    const activeButton = document.querySelector('[data-account-panel="' + panelName + '"]');
-    const activePanel = document.getElementById("account-panel-" + panelName);
+    const activeButton = accountPanelButtons.find(function (button) {
+      return button.dataset.accountPanel === panelName;
+    }) || null;
+    const activePanel = getAccountPanelElement(panelName);
 
     if (activeButton && activePanel) {
       activeButton.classList.add("active");
       activePanel.classList.add("active");
+    }
+
+    if (panelName === "orders" && currentUser && orderHistoryUnsubscribe) {
+      refreshOrderHistory(false);
     }
   }
 
   function getAccountPanelFromHash() {
     const panelName = window.location.hash.replace("#", "").trim();
 
-    if (panelName && document.getElementById("account-panel-" + panelName)) {
+    if (panelName && getAccountPanelElement(panelName)) {
       return panelName;
     }
 
@@ -3581,16 +3600,22 @@ function updateUsernameLockState() {
     document.body.classList.remove("account-email-modal-open");
   }
 
-document.querySelectorAll("[data-account-panel]").forEach(function (button) {
+accountPanelButtons.forEach(function (button) {
   button.addEventListener("click", async function () {
     const panelName = button.dataset.accountPanel;
 
     if (panelName === "security") {
-      const unlocked = await ensureSecurityUnlocked();
+      button.disabled = true;
 
-      if (!unlocked) {
-        openSecurityGateModal();
-        return;
+      try {
+        const unlocked = await ensureSecurityUnlocked();
+
+        if (!unlocked) {
+          openSecurityGateModal();
+          return;
+        }
+      } finally {
+        button.disabled = false;
       }
     }
 
@@ -3759,7 +3784,7 @@ if (sendEmailVerificationButton) {
 
 
 
-document.querySelectorAll(".account-address-type-button").forEach(function (button) {
+addressTypeButtons.forEach(function (button) {
   button.addEventListener("click", function () {
     addressType.value = button.dataset.addressType;
     showAddressFields();
@@ -3830,14 +3855,20 @@ accountUsernameEditButton.addEventListener("click", function () {
 });
 
 accountEmailEditButton.addEventListener("click", async function () {
-  const unlocked = await ensureSecurityUnlocked();
+  accountEmailEditButton.disabled = true;
 
-  if (!unlocked) {
-    openSecurityGateModal();
-    return;
+  try {
+    const unlocked = await ensureSecurityUnlocked();
+
+    if (!unlocked) {
+      openSecurityGateModal();
+      return;
+    }
+
+    openEmailModal();
+  } finally {
+    accountEmailEditButton.disabled = false;
   }
-
-  openEmailModal();
 });
 
 emailModalClose.addEventListener("click", closeEmailModal);
@@ -4790,6 +4821,28 @@ function startCurrentSessionStatusListener() {
   checkCurrentSessionStatus();
 }
 
+function startAccountBackgroundDataSync(uid) {
+  const runSync = function () {
+    if (!currentUser || currentUser.uid !== uid) {
+      return;
+    }
+
+    startSavedItemsSync(uid);
+    startAddressesSync(uid);
+    startSupportTicketsSync(uid);
+    startOrderHistorySync(uid);
+  };
+
+  if (typeof window.requestAnimationFrame === "function") {
+    window.requestAnimationFrame(function () {
+      window.setTimeout(runSync, 0);
+    });
+    return;
+  }
+
+  window.setTimeout(runSync, 0);
+}
+
 async function initializeServerAccountPage() {
   try {
     const profile = await getServerAccountProfile();
@@ -4806,10 +4859,7 @@ async function initializeServerAccountPage() {
     };
 
     accountEmail.value = currentUser.email || "";
-    startSavedItemsSync(currentUser.uid);
-    startAddressesSync(currentUser.uid);
-    startSupportTicketsSync(currentUser.uid);
-    startOrderHistorySync(currentUser.uid);
+    startAccountBackgroundDataSync(currentUser.uid);
 
     accountName.value = currentUser.displayName || "";
     originalUsername = currentUser.displayName || "";
@@ -5169,15 +5219,21 @@ if (!requestedEmail) {
   }
 
   openPasswordModalButton.addEventListener("click", async function () {
-    const unlocked = await ensureSecurityUnlocked();
+    openPasswordModalButton.disabled = true;
 
-    if (!unlocked) {
-      closePasswordModal();
-      openSecurityGateModal();
-      return;
+    try {
+      const unlocked = await ensureSecurityUnlocked();
+
+      if (!unlocked) {
+        closePasswordModal();
+        openSecurityGateModal();
+        return;
+      }
+
+      openPasswordModal();
+    } finally {
+      openPasswordModalButton.disabled = false;
     }
-
-    openPasswordModal();
   });
 
   passwordChangeModalBackdrop.addEventListener("click", function () {
