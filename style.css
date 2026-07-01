@@ -5096,13 +5096,15 @@ body.nav-menu-open {
   font-weight: 700;
 }
 
-.checkout-address-type-options {
+.checkout-address-type-options,
+.checkout-fulfillment-options {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
 }
 
-.checkout-address-type-button {
+.checkout-address-type-button,
+.checkout-fulfillment-button {
   min-height: 42px;
   padding: 0 16px;
   border-radius: 999px;
@@ -5118,9 +5120,18 @@ body.nav-menu-open {
 }
 
 .checkout-address-type-button.active,
-.checkout-address-type-button:hover {
+.checkout-address-type-button:hover,
+.checkout-fulfillment-button.active,
+.checkout-fulfillment-button:hover {
   background: rgba(255, 255, 255, 0.13);
   color: white;
+}
+
+.checkout-fulfillment-note {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 13px;
+  line-height: 1.6;
 }
 
 .checkout-submit-button {
