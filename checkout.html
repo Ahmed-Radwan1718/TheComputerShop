@@ -139,7 +139,7 @@
 
                 <div class="checkout-field">
                   <label for="checkout-province">Province</label>
-                  <select id="checkout-province">
+                  <select id="checkout-province" hidden>
                     <option value="">Select province</option>
                     <option value="Alexandria">Alexandria</option>
                     <option value="Aswan">Aswan</option>
@@ -169,6 +169,44 @@
                     <option value="South Sinai">South Sinai</option>
                     <option value="Suez">Suez</option>
                   </select>
+
+                  <div class="custom-select-dropdown checkout-province-select" id="checkout-province-dropdown">
+                    <button class="custom-select-trigger" type="button" aria-expanded="false">
+                      <span class="custom-select-value" id="checkout-province-value">Select province</span>
+                      <span class="chevron"></span>
+                    </button>
+
+                    <div class="custom-select-menu">
+                      <button class="custom-select-option active" type="button" data-value="">Select province</button>
+                      <button class="custom-select-option" type="button" data-value="Alexandria">Alexandria</button>
+                      <button class="custom-select-option" type="button" data-value="Aswan">Aswan</button>
+                      <button class="custom-select-option" type="button" data-value="Asyut">Asyut</button>
+                      <button class="custom-select-option" type="button" data-value="Beheira">Beheira</button>
+                      <button class="custom-select-option" type="button" data-value="Beni Suef">Beni Suef</button>
+                      <button class="custom-select-option" type="button" data-value="Cairo">Cairo</button>
+                      <button class="custom-select-option" type="button" data-value="Dakahlia">Dakahlia</button>
+                      <button class="custom-select-option" type="button" data-value="Damietta">Damietta</button>
+                      <button class="custom-select-option" type="button" data-value="Faiyum">Faiyum</button>
+                      <button class="custom-select-option" type="button" data-value="Gharbia">Gharbia</button>
+                      <button class="custom-select-option" type="button" data-value="Giza">Giza</button>
+                      <button class="custom-select-option" type="button" data-value="Ismailia">Ismailia</button>
+                      <button class="custom-select-option" type="button" data-value="Kafr El Sheikh">Kafr El Sheikh</button>
+                      <button class="custom-select-option" type="button" data-value="Luxor">Luxor</button>
+                      <button class="custom-select-option" type="button" data-value="Matrouh">Matrouh</button>
+                      <button class="custom-select-option" type="button" data-value="Minya">Minya</button>
+                      <button class="custom-select-option" type="button" data-value="Monufia">Monufia</button>
+                      <button class="custom-select-option" type="button" data-value="New Valley">New Valley</button>
+                      <button class="custom-select-option" type="button" data-value="North Sinai">North Sinai</button>
+                      <button class="custom-select-option" type="button" data-value="Port Said">Port Said</button>
+                      <button class="custom-select-option" type="button" data-value="Qalyubia">Qalyubia</button>
+                      <button class="custom-select-option" type="button" data-value="Qena">Qena</button>
+                      <button class="custom-select-option" type="button" data-value="Red Sea">Red Sea</button>
+                      <button class="custom-select-option" type="button" data-value="Sharqia">Sharqia</button>
+                      <button class="custom-select-option" type="button" data-value="Sohag">Sohag</button>
+                      <button class="custom-select-option" type="button" data-value="South Sinai">South Sinai</button>
+                      <button class="custom-select-option" type="button" data-value="Suez">Suez</button>
+                    </div>
+                  </div>
                 </div>
 
                 <div class="checkout-field">
@@ -265,6 +303,8 @@
   const checkoutNewAddressFields = document.getElementById("checkout-new-address-fields");
   const checkoutAddressType = document.getElementById("checkout-address-type");
   const checkoutProvince = document.getElementById("checkout-province");
+  const checkoutProvinceDropdown = document.getElementById("checkout-province-dropdown");
+  const checkoutProvinceValue = document.getElementById("checkout-province-value");
   const checkoutCity = document.getElementById("checkout-city");
   const checkoutBuildingName = document.getElementById("checkout-building-name");
   const checkoutApartmentNumber = document.getElementById("checkout-apartment-number");
@@ -369,6 +409,20 @@
     return (address.label || "Saved Address") + (address.isDefault ? " (Default)" : "");
   }
 
+  function syncCheckoutProvinceDropdown() {
+    if (!checkoutProvince || !checkoutProvinceDropdown || !checkoutProvinceValue) {
+      return;
+    }
+
+    const selectedOption = checkoutProvince.options[checkoutProvince.selectedIndex];
+
+    checkoutProvinceValue.textContent = selectedOption ? selectedOption.textContent : "Select province";
+
+    checkoutProvinceDropdown.querySelectorAll(".custom-select-option").forEach(function (option) {
+      option.classList.toggle("active", option.dataset.value === checkoutProvince.value);
+    });
+  }
+
   function showCheckoutAddressFields() {
     const selectedType = checkoutAddressType.value;
     const isUsingSavedAddress = Boolean(checkoutSavedAddressSelect && checkoutSavedAddressSelect.value);
@@ -384,6 +438,8 @@
     document.querySelectorAll(".checkout-address-field").forEach(function (field) {
       field.hidden = true;
     });
+
+    syncCheckoutProvinceDropdown();
 
     if (isUsingSavedAddress) {
       return;
@@ -572,6 +628,35 @@
       showCheckoutAddressFields();
     });
   });
+
+  if (checkoutProvinceDropdown && checkoutProvince) {
+    const checkoutProvinceTrigger = checkoutProvinceDropdown.querySelector(".custom-select-trigger");
+    const checkoutProvinceOptions = checkoutProvinceDropdown.querySelectorAll(".custom-select-option");
+
+    checkoutProvinceTrigger.addEventListener("click", function () {
+      const isOpen = checkoutProvinceDropdown.classList.toggle("open");
+      checkoutProvinceTrigger.setAttribute("aria-expanded", String(isOpen));
+    });
+
+    checkoutProvinceOptions.forEach(function (option) {
+      option.addEventListener("click", function () {
+        checkoutProvince.value = option.dataset.value || "";
+        checkoutProvince.dispatchEvent(new Event("change"));
+        checkoutProvinceDropdown.classList.remove("open");
+        checkoutProvinceTrigger.setAttribute("aria-expanded", "false");
+      });
+    });
+
+    checkoutProvince.addEventListener("change", syncCheckoutProvinceDropdown);
+    syncCheckoutProvinceDropdown();
+
+    document.addEventListener("click", function (event) {
+      if (!checkoutProvinceDropdown.contains(event.target)) {
+        checkoutProvinceDropdown.classList.remove("open");
+        checkoutProvinceTrigger.setAttribute("aria-expanded", "false");
+      }
+    });
+  }
 
   if (checkoutPaymentMethodDropdown && checkoutPaymentMethod) {
     const checkoutPaymentMethodTrigger = checkoutPaymentMethodDropdown.querySelector(".custom-select-trigger");
