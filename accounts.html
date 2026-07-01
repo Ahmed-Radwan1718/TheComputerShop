@@ -302,6 +302,33 @@
                         <label for="additional-info">Additional Info</label>
                         <input type="text" id="additional-info">
                       </div>
+
+                      <div class="account-field account-field-full account-address-location-field">
+                        <label>Map Location</label>
+                        <input type="hidden" id="address-location-latitude">
+                        <input type="hidden" id="address-location-longitude">
+                        <input type="hidden" id="address-location-map-url">
+
+                        <div class="account-address-map-preview" id="address-location-map-wrap" hidden>
+                          <iframe id="address-location-map" title="Saved address map" loading="lazy"></iframe>
+                        </div>
+
+                        <div class="account-address-location-actions">
+                          <button class="account-address-location-button" type="button" id="address-location-current-button">
+                            Use Current Location
+                          </button>
+
+                          <button class="account-address-location-clear" type="button" id="address-location-clear-button" hidden>
+                            Clear Location
+                          </button>
+
+                          <a class="account-address-location-link" id="address-location-open-link" href="#" target="_blank" rel="noopener" hidden>
+                            Open Map
+                          </a>
+                        </div>
+
+                        <p class="account-address-location-note" id="address-location-note">Use your current location to attach a map pin to this address.</p>
+                      </div>
                     </div>
 
                     <div class="account-security-modal-actions">
@@ -1122,6 +1149,15 @@ const connectedFacebookAction = document.getElementById("connected-facebook-acti
   const officeName = document.getElementById("office-name");
   const companyName = document.getElementById("company-name");
   const additionalInfo = document.getElementById("additional-info");
+  const addressLocationLatitude = document.getElementById("address-location-latitude");
+  const addressLocationLongitude = document.getElementById("address-location-longitude");
+  const addressLocationMapUrl = document.getElementById("address-location-map-url");
+  const addressLocationMapWrap = document.getElementById("address-location-map-wrap");
+  const addressLocationMap = document.getElementById("address-location-map");
+  const addressLocationCurrentButton = document.getElementById("address-location-current-button");
+  const addressLocationClearButton = document.getElementById("address-location-clear-button");
+  const addressLocationOpenLink = document.getElementById("address-location-open-link");
+  const addressLocationNote = document.getElementById("address-location-note");
 
   const detailsForm = document.getElementById("account-details-form");
   const detailsButton = document.getElementById("save-account-details");
@@ -3139,6 +3175,94 @@ function getAddressPreview(address) {
   return parts.length ? parts.join(" · ") : "No address details saved";
 }
 
+function getAddressLocationMapLink(latitude, longitude) {
+  return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(latitude + "," + longitude);
+}
+
+function getAddressLocationEmbedUrl(latitude, longitude) {
+  const lat = Number(latitude);
+  const lng = Number(longitude);
+  const offset = 0.01;
+
+  return "https://www.openstreetmap.org/export/embed.html?bbox="
+    + encodeURIComponent((lng - offset) + "," + (lat - offset) + "," + (lng + offset) + "," + (lat + offset))
+    + "&marker=" + encodeURIComponent(lat + "," + lng);
+}
+
+function clearAddressLocation() {
+  if (addressLocationLatitude) addressLocationLatitude.value = "";
+  if (addressLocationLongitude) addressLocationLongitude.value = "";
+  if (addressLocationMapUrl) addressLocationMapUrl.value = "";
+  if (addressLocationMap) addressLocationMap.removeAttribute("src");
+  if (addressLocationMapWrap) addressLocationMapWrap.hidden = true;
+  if (addressLocationOpenLink) addressLocationOpenLink.hidden = true;
+  if (addressLocationClearButton) addressLocationClearButton.hidden = true;
+
+  if (addressLocationNote) {
+    addressLocationNote.textContent = "Use your current location to attach a map pin to this address.";
+  }
+}
+
+function setAddressLocation(latitude, longitude) {
+  const lat = Number(latitude);
+  const lng = Number(longitude);
+
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+    clearAddressLocation();
+    return;
+  }
+
+  const normalizedLat = lat.toFixed(6);
+  const normalizedLng = lng.toFixed(6);
+  const mapUrl = getAddressLocationMapLink(normalizedLat, normalizedLng);
+
+  if (addressLocationLatitude) addressLocationLatitude.value = normalizedLat;
+  if (addressLocationLongitude) addressLocationLongitude.value = normalizedLng;
+  if (addressLocationMapUrl) addressLocationMapUrl.value = mapUrl;
+
+  if (addressLocationMap) {
+    addressLocationMap.src = getAddressLocationEmbedUrl(normalizedLat, normalizedLng);
+  }
+
+  if (addressLocationMapWrap) addressLocationMapWrap.hidden = false;
+
+  if (addressLocationOpenLink) {
+    addressLocationOpenLink.href = mapUrl;
+    addressLocationOpenLink.hidden = false;
+  }
+
+  if (addressLocationClearButton) addressLocationClearButton.hidden = false;
+
+  if (addressLocationNote) {
+    addressLocationNote.textContent = "Map location saved for this address.";
+  }
+}
+
+function useCurrentAddressLocation() {
+  if (!navigator.geolocation) {
+    showMessage(addressModalMessage, "Location is not supported in this browser.", "error");
+    return;
+  }
+
+  addressLocationCurrentButton.disabled = true;
+  addressLocationCurrentButton.textContent = "Locating...";
+
+  navigator.geolocation.getCurrentPosition(function (position) {
+    setAddressLocation(position.coords.latitude, position.coords.longitude);
+    showMessage(addressModalMessage, "Map location added.", "success");
+    addressLocationCurrentButton.disabled = false;
+    addressLocationCurrentButton.textContent = "Use Current Location";
+  }, function () {
+    showMessage(addressModalMessage, "Could not get your location. Please allow location access and try again.", "error");
+    addressLocationCurrentButton.disabled = false;
+    addressLocationCurrentButton.textContent = "Use Current Location";
+  }, {
+    enableHighAccuracy: true,
+    timeout: 15000,
+    maximumAge: 0
+  });
+}
+
 function clearAddressForm() {
   addressEditId.value = "";
   addressLabel.value = "";
@@ -3152,6 +3276,7 @@ function clearAddressForm() {
   officeName.value = "";
   companyName.value = "";
   additionalInfo.value = "";
+  clearAddressLocation();
   showMessage(addressModalMessage, "", "");
   showAddressFields();
 }
@@ -3172,6 +3297,11 @@ function openAddressModal(address) {
     officeName.value = address.officeName || "";
     companyName.value = address.companyName || "";
     additionalInfo.value = address.additionalInfo || "";
+
+    if (address.locationLatitude && address.locationLongitude) {
+      setAddressLocation(address.locationLatitude, address.locationLongitude);
+    }
+
     addressModalTitle.textContent = "Edit Address";
     saveAddressButton.textContent = "Save Changes";
   } else {
@@ -3206,7 +3336,10 @@ function getAddressFormData() {
     houseNumber: houseNumber.value.trim(),
     officeName: officeName.value.trim(),
     companyName: companyName.value.trim(),
-    additionalInfo: additionalInfo.value.trim()
+    additionalInfo: additionalInfo.value.trim(),
+    locationLatitude: addressLocationLatitude ? addressLocationLatitude.value : "",
+    locationLongitude: addressLocationLongitude ? addressLocationLongitude.value : "",
+    locationMapUrl: addressLocationMapUrl ? addressLocationMapUrl.value : ""
   };
 }
 
@@ -4045,6 +4178,17 @@ if (addressProvinceDropdown && addressProvince && addressProvinceMenu) {
       }
     });
   }
+}
+
+if (addressLocationCurrentButton) {
+  addressLocationCurrentButton.addEventListener("click", useCurrentAddressLocation);
+}
+
+if (addressLocationClearButton) {
+  addressLocationClearButton.addEventListener("click", function () {
+    clearAddressLocation();
+    showMessage(addressModalMessage, "Map location cleared.", "success");
+  });
 }
 
 if (openAddressModalButton) {
