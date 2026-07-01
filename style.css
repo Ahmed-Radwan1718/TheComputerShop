@@ -7824,6 +7824,52 @@ body.account-photo-crop-modal-open {
   transform: none;
 }
 
+.account-phone-verification-actions,
+.account-phone-code-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.account-phone-code-row[hidden] {
+  display: none;
+}
+
+.account-phone-code-row input {
+  max-width: 180px;
+  text-align: center;
+  letter-spacing: 0.12em;
+}
+
+.account-phone-action-button {
+  width: fit-content;
+  min-height: 42px;
+  padding: 0 16px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.09);
+  color: white;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.account-phone-action-button:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.account-phone-action-button:disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
+}
+
+.account-phone-recaptcha {
+  min-height: 0;
+}
+
 @media (max-width: 620px) {
   .account-phone-row {
     grid-template-columns: 116px minmax(0, 1fr);
@@ -7837,6 +7883,17 @@ body.account-photo-crop-modal-open {
 
   .account-phone-country-dropdown .custom-select-menu {
     width: min(290px, calc(100vw - 40px));
+  }
+
+  .account-phone-code-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .account-phone-code-row input,
+  .account-phone-action-button {
+    width: 100%;
+    max-width: none;
   }
 }
 
