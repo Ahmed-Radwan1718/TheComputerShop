@@ -8667,7 +8667,7 @@ body.account-security-modal-open {
 .account-address-modal-card {
   position: relative;
   z-index: 1;
-  width: min(760px, calc(100vw - 48px));
+  width: min(920px, calc(100vw - 48px));
   max-height: min(820px, calc(100dvh - 48px));
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -8681,6 +8681,10 @@ body.account-security-modal-open {
   scrollbar-color: rgba(255, 255, 255, 0.55) #2a2b2a;
   scrollbar-width: auto;
   contain: layout paint;
+}
+
+.account-address-modal-card .account-form-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .account-address-modal-close {
@@ -10567,6 +10571,7 @@ body.account-security-modal-open {
   }
 
   .account-form-grid,
+  .account-address-modal-card .account-form-grid,
   .account-status-grid,
   .account-saved-item,
   .account-saved-item-main {
