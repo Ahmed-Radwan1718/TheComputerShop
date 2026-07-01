@@ -85,9 +85,14 @@ function serializeAddress(addressDoc) {
 }
 
 function createOrderNumber() {
-  const datePart = new Date().toISOString().slice(0, 10).replaceAll("-", "");
-  const randomPart = Math.random().toString(36).slice(2, 8).toUpperCase();
-  return "TCS-" + datePart + "-" + randomPart;
+  const now = new Date();
+  const day = String(now.getUTCDate()).padStart(2, "0");
+  const month = String(now.getUTCMonth() + 1).padStart(2, "0");
+  const year = String(now.getUTCFullYear());
+  const datePart = day + month + year;
+  const randomPart = Math.random().toString(36).slice(2, 12).toUpperCase();
+
+  return datePart + "-" + randomPart;
 }
 
 async function getProfile(uid) {
