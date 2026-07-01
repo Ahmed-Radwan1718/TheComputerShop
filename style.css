@@ -7751,7 +7751,7 @@ body.account-photo-crop-modal-open {
 
 .account-phone-row {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(150px, 170px) minmax(0, 1fr);
   gap: 12px;
   align-items: start;
 }
@@ -7838,6 +7838,7 @@ body.account-photo-crop-modal-open {
 
 @media (max-width: 620px) {
   .account-phone-row {
+    grid-template-columns: 1fr;
     gap: 10px;
   }
 
