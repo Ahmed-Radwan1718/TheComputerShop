@@ -2851,13 +2851,13 @@ async function startOrderHistorySync(uid) {
   };
 
   const orderHistoryRefreshInterval = window.setInterval(function () {
-    if (!document.hidden && orderHistoryPanelIsActive()) {
+    if (!document.hidden && (orderHistoryPanelIsActive() || activeOrderId)) {
       refreshOrderHistory(false);
     }
-  }, 2500);
+  }, 700);
 
   const handleOrderHistoryVisibilityChange = function () {
-    if (!document.hidden && orderHistoryPanelIsActive()) {
+    if (!document.hidden && (orderHistoryPanelIsActive() || activeOrderId)) {
       refreshOrderHistory(false);
     }
   };
@@ -2975,6 +2975,7 @@ function openOrderDetail(orderId) {
   renderOrderDetail(order);
   orderDetailModal.hidden = false;
   document.body.classList.add("account-security-modal-open");
+  refreshOrderHistory(false);
 }
 
 function closeOrderDetailModal() {
