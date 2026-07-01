@@ -5007,6 +5007,18 @@ body.nav-menu-open {
   contain: paint;
 }
 
+.account-address-province-select .custom-select-menu {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 10px);
+  display: block;
+  height: min(260px, 46dvh);
+  max-height: min(260px, 46dvh);
+  overflow-y: scroll;
+  overscroll-behavior: contain;
+}
+
 .checkout-province-select.open .custom-select-menu,
 .account-address-province-select.open .custom-select-menu {
   transform: none;
