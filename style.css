@@ -9495,35 +9495,26 @@ body.account-security-modal-open {
 }
 
 .admin-order-item {
-  padding: 14px;
+  padding: 16px 18px;
   border-radius: 18px;
 }
 
 .admin-order-item-content {
   display: grid;
-  grid-template-columns: 86px minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: 16px;
   align-items: center;
 }
 
-.admin-order-item-image-frame {
-  width: 86px;
-  aspect-ratio: 1;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.06);
-  overflow: hidden;
+.admin-order-item-content.has-image {
+  grid-template-columns: 88px minmax(0, 1fr);
 }
 
-.admin-order-item-image-frame.empty {
-  background: rgba(255, 255, 255, 0.04);
-}
-
-.admin-order-item-image-frame img {
+.admin-order-item-image {
   display: block;
-  width: 100%;
-  height: 100%;
-  padding: 8px;
+  width: 88px;
+  aspect-ratio: 1;
+  border-radius: 16px;
   object-fit: contain;
 }
 
@@ -9574,15 +9565,15 @@ body.account-security-modal-open {
     grid-template-columns: 1fr;
   }
 
-  .admin-order-item-content {
+  .admin-order-item-content.has-image {
     grid-template-columns: 72px minmax(0, 1fr);
     gap: 12px;
     align-items: flex-start;
   }
 
-  .admin-order-item-image-frame {
+  .admin-order-item-image {
     width: 72px;
-    border-radius: 12px;
+    border-radius: 14px;
   }
 
   .admin-order-item-row {
