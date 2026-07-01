@@ -28,6 +28,20 @@ function cleanFulfillmentMethod(value) {
   return VALID_FULFILLMENT_METHODS.includes(fulfillmentMethod) ? fulfillmentMethod : "delivery";
 }
 
+function cleanCoordinate(value, maxAbs) {
+  const number = Number(value);
+
+  if (!Number.isFinite(number) || Math.abs(number) > maxAbs) {
+    return "";
+  }
+
+  return String(Math.round(number * 1000000) / 1000000);
+}
+
+function getMapUrl(latitude, longitude) {
+  return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(latitude + "," + longitude);
+}
+
 function serializeTimestamp(value) {
   if (!value) return null;
   if (typeof value.toDate === "function") return value.toDate().toISOString();
@@ -76,6 +90,8 @@ function serializeAddress(addressDoc) {
     id: addressDoc.id,
     label: data.label || "",
     addressType: data.addressType || "apartment",
+    province: data.province || "",
+    city: data.city || "",
     buildingName: data.buildingName || "",
     apartmentNumber: data.apartmentNumber || "",
     floorNumber: data.floorNumber || "",
@@ -84,6 +100,9 @@ function serializeAddress(addressDoc) {
     companyName: data.companyName || "",
     streetName: data.streetName || "",
     additionalInfo: data.additionalInfo || "",
+    locationLatitude: data.locationLatitude || "",
+    locationLongitude: data.locationLongitude || "",
+    locationMapUrl: data.locationMapUrl || "",
     isDefault: Boolean(data.isDefault),
     createdAt: serializeTimestamp(data.createdAt),
     updatedAt: serializeTimestamp(data.updatedAt)
@@ -167,6 +186,9 @@ function getCheckoutDetails(body, profile) {
   const fulfillmentMethod = cleanFulfillmentMethod(body.fulfillmentMethod);
   const usesDelivery = fulfillmentMethod === "delivery";
   const addressType = usesDelivery ? cleanAddressType(body.addressType || profile.addressType) : "";
+  const locationLatitude = usesDelivery ? cleanCoordinate(body.locationLatitude, 90) : "";
+  const locationLongitude = usesDelivery ? cleanCoordinate(body.locationLongitude, 180) : "";
+  const locationMapUrl = locationLatitude && locationLongitude ? getMapUrl(locationLatitude, locationLongitude) : "";
 
   return {
     fullName: cleanString(body.fullName || body.userName || profile.fullName, 80),
@@ -183,7 +205,10 @@ function getCheckoutDetails(body, profile) {
     officeName: usesDelivery ? cleanString(body.officeName || "", 80) : "",
     companyName: usesDelivery ? cleanString(body.companyName || "", 80) : "",
     streetName: usesDelivery ? cleanString(body.streetName || "", 120) : "",
-    additionalInfo: usesDelivery ? cleanString(body.additionalInfo || "", 500) : ""
+    additionalInfo: usesDelivery ? cleanString(body.additionalInfo || "", 500) : "",
+    locationLatitude,
+    locationLongitude,
+    locationMapUrl
   };
 }
 
@@ -250,6 +275,9 @@ async function handlePost(req, res, uid) {
     companyName: details.companyName,
     streetName: details.streetName,
     additionalInfo: details.additionalInfo,
+    locationLatitude: details.locationLatitude,
+    locationLongitude: details.locationLongitude,
+    locationMapUrl: details.locationMapUrl,
     items: cartItems,
     itemCount: summary.itemCount,
     totalValue: summary.totalValue,
