@@ -694,6 +694,13 @@
       return {};
     });
 
+    if (response.status === 401) {
+      localStorage.setItem("tcs-login-redirect", "admin-support.html");
+      sessionStorage.removeItem("tcs-login-2fa-pending");
+      window.location.href = "login.html";
+      throw new Error("Redirecting to login...");
+    }
+
     if (!response.ok || !Array.isArray(data.orders)) {
       throw new Error(data.error || "Could not load orders.");
     }
@@ -725,6 +732,13 @@
     const data = await response.json().catch(function () {
       return {};
     });
+
+    if (response.status === 401) {
+      localStorage.setItem("tcs-login-redirect", "admin-support.html");
+      sessionStorage.removeItem("tcs-login-2fa-pending");
+      window.location.href = "login.html";
+      throw new Error("Redirecting to login...");
+    }
 
     if (!response.ok || !Array.isArray(data.tickets)) {
       throw new Error(data.error || "Could not load tickets.");
