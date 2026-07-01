@@ -218,6 +218,12 @@ module.exports = async function handler(req, res) {
     try {
       loginResult = await signInWithPassword(email, password);
     } catch (error) {
+      if (error && error.statusCode === 504) {
+        return res.status(504).json({
+          error: error.message || "Login took too long. Please try again."
+        });
+      }
+
       const failedAttempt = await recordFailedLoginAttempt(email, ipAddress);
 
       if (failedAttempt.lockedUntilMs) {
