@@ -7683,7 +7683,7 @@ body.account-photo-crop-modal-open {
 
 .account-form-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: 18px;
   align-items: start;
 }
@@ -7740,7 +7740,7 @@ body.account-photo-crop-modal-open {
 
 .account-phone-row {
   display: grid;
-  grid-template-columns: 126px minmax(0, 1fr);
+  grid-template-columns: 1fr;
   gap: 12px;
   align-items: start;
 }
@@ -7752,6 +7752,7 @@ body.account-photo-crop-modal-open {
 .account-phone-country-dropdown {
   position: relative;
   z-index: 30;
+  width: min(170px, 100%);
 }
 
 .account-phone-country-dropdown.open {
@@ -7826,9 +7827,10 @@ body.account-photo-crop-modal-open {
 
 .account-phone-verification-actions,
 .account-phone-code-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr;
   gap: 10px;
-  align-items: center;
+  align-items: start;
 }
 
 .account-phone-code-row[hidden] {
@@ -7836,7 +7838,7 @@ body.account-photo-crop-modal-open {
 }
 
 .account-phone-code-row input {
-  max-width: 180px;
+  max-width: none;
   text-align: center;
   letter-spacing: 0.12em;
 }
@@ -7872,7 +7874,6 @@ body.account-photo-crop-modal-open {
 
 @media (max-width: 620px) {
   .account-phone-row {
-    grid-template-columns: 116px minmax(0, 1fr);
     gap: 10px;
   }
 
@@ -7887,7 +7888,6 @@ body.account-photo-crop-modal-open {
 
   .account-phone-code-row {
     align-items: stretch;
-    flex-direction: column;
   }
 
   .account-phone-code-row input,
