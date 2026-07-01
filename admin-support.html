@@ -833,6 +833,47 @@
     }
   }
 
+  async function deleteAdminOrder(orderId) {
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(function () {
+      controller.abort();
+    }, 15000);
+
+    try {
+      const response = await fetch("/api/admin-support-tickets", {
+        method: "POST",
+        credentials: "same-origin",
+        signal: controller.signal,
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({
+          action: "order-delete",
+          orderId: orderId
+        })
+      });
+
+      const data = await response.json().catch(function () {
+        return {};
+      });
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || "Could not delete order.");
+      }
+
+      return data;
+    } catch (error) {
+      if (error && error.name === "AbortError") {
+        throw new Error("Deleting timed out. Please refresh and try again.");
+      }
+
+      throw error;
+    } finally {
+      window.clearTimeout(timeoutId);
+    }
+  }
+
   async function sendAdminTicketReply(ticketId, message) {
     const response = await fetch("/api/admin-support-tickets", {
       method: "POST",
@@ -867,6 +908,14 @@
 
     renderOrders();
     renderOrderModal(updatedOrder);
+  }
+
+  function removeOrder(orderId) {
+    orders = orders.filter(function (order) {
+      return order.id !== orderId;
+    });
+
+    renderOrders();
   }
 
   function replaceTicket(updatedTicket) {
@@ -1014,6 +1063,39 @@
     } finally {
       adminOrderSave.disabled = false;
       adminOrderSave.textContent = "Save Order";
+    }
+  });
+
+  adminOrderDelete.addEventListener("click", async function () {
+    if (!activeOrderId) {
+      return;
+    }
+
+    const activeOrder = getActiveOrder();
+    const orderLabel = activeOrder && activeOrder.orderNumber ? activeOrder.orderNumber : "this order";
+    const confirmed = window.confirm("Delete " + orderLabel + " from admin and the customer's order history? This cannot be undone.");
+
+    if (!confirmed) {
+      return;
+    }
+
+    adminOrderDelete.disabled = true;
+    adminOrderDelete.textContent = "Deleting...";
+    adminOrderSave.disabled = true;
+    showMessage(adminOrderModalMessage, "", "");
+
+    try {
+      const orderId = activeOrderId;
+      await deleteAdminOrder(orderId);
+      removeOrder(orderId);
+      closeOrderModal();
+      showMessage(adminOrderMessage, "Order deleted.", "success");
+    } catch (error) {
+      showMessage(adminOrderModalMessage, error.message || "Could not delete order.", "error");
+    } finally {
+      adminOrderDelete.disabled = false;
+      adminOrderDelete.textContent = "Delete Order";
+      adminOrderSave.disabled = false;
     }
   });
 
