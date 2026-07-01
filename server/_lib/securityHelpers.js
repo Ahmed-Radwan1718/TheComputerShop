@@ -835,12 +835,19 @@ async function getSiteSessionUser(req, options) {
 
   const decodedUser = await admin.auth().verifySessionCookie(sessionCookie, false);
 
+  const hasAccountSessionCookie = Boolean(getAccountSessionCookieParts(req));
+  let currentAccountSession = null;
+
   try {
-    await touchCurrentAccountSession(req, decodedUser.uid);
+    currentAccountSession = await touchCurrentAccountSession(req, decodedUser.uid);
   } catch (error) {
-    if (error && error.message === "account-session-revoked") {
+    if (error && error.statusCode === 401) {
       throw error;
     }
+  }
+
+  if (hasAccountSessionCookie && !currentAccountSession) {
+    throw createAccountSessionError("account-session-invalid");
   }
 
   if (settings.checkRevoked !== false) {
