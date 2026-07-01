@@ -129,9 +129,25 @@
   </div>
 </div>
 
-<div class="account-field account-field-full">
+<div class="account-field account-field-full account-phone-field">
   <label for="account-phone">Phone Number</label>
-  <input type="tel" id="account-phone" autocomplete="tel">
+
+  <div class="account-phone-row">
+    <select id="account-phone-country" class="account-phone-country-select" aria-label="Country code">
+      <option value="+20">EG +20</option>
+      <option value="+966">SA +966</option>
+      <option value="+971">AE +971</option>
+      <option value="+965">KW +965</option>
+      <option value="+974">QA +974</option>
+      <option value="+973">BH +973</option>
+      <option value="+968">OM +968</option>
+      <option value="+962">JO +962</option>
+      <option value="+1">US +1</option>
+      <option value="+44">UK +44</option>
+    </select>
+
+    <input type="tel" id="account-phone" autocomplete="tel">
+  </div>
 </div>
               </div>
 
@@ -1042,6 +1058,7 @@ const accountUsernameNote = document.getElementById("account-username-note");
 const accountUsernameEditButton = document.getElementById("account-username-edit-button");
 const accountEmail = document.getElementById("account-email");
 const accountEmailEditButton = document.getElementById("account-email-edit-button");
+const accountPhoneCountry = document.getElementById("account-phone-country");
 const accountPhone = document.getElementById("account-phone");
 
 const statusEmailVerified = document.getElementById("status-email-verified");
@@ -5145,6 +5162,60 @@ function applyProfilePhotoCrop() {
   }
 }
 
+function getAccountPhoneCountryCodes() {
+  if (!accountPhoneCountry) {
+    return ["+20"];
+  }
+
+  return Array.from(accountPhoneCountry.options).map(function (option) {
+    return option.value;
+  }).filter(Boolean).sort(function (first, second) {
+    return second.length - first.length;
+  });
+}
+
+function splitAccountPhoneValue(value) {
+  const phoneText = String(value || "").trim();
+  const countryCodes = getAccountPhoneCountryCodes();
+
+  for (let index = 0; index < countryCodes.length; index += 1) {
+    const countryCode = countryCodes[index];
+
+    if (phoneText === countryCode || phoneText.indexOf(countryCode) === 0) {
+      return {
+        country: countryCode,
+        local: phoneText.slice(countryCode.length).replace(/^[-\s]+/, "").trim()
+      };
+    }
+  }
+
+  return {
+    country: "+20",
+    local: phoneText
+  };
+}
+
+function hydrateAccountPhoneValue(value) {
+  const phoneParts = splitAccountPhoneValue(value);
+
+  if (accountPhoneCountry) {
+    accountPhoneCountry.value = phoneParts.country;
+  }
+
+  accountPhone.value = phoneParts.local;
+}
+
+function getAccountPhoneValueForSave() {
+  const localPhone = accountPhone.value.trim();
+  const countryCode = accountPhoneCountry ? accountPhoneCountry.value : "";
+
+  if (!localPhone) {
+    return "";
+  }
+
+  return [countryCode, localPhone].filter(Boolean).join(" ");
+}
+
 function hydrateAccountProfileFromServer(profile, user) {
   const safeProfile = profile || {};
 
@@ -5171,7 +5242,7 @@ function hydrateAccountProfileFromServer(profile, user) {
   emailLastChangedAt = safeProfile.emailLastChangedAt || null;
   updatePasswordLastChangedText(safeProfile.passwordLastChangedAt || null);
 
-  accountPhone.value = safeProfile.phone || "";
+  hydrateAccountPhoneValue(safeProfile.phone || "");
   addressType.value = "apartment";
 
   pendingProfilePhotoDataUrl = "";
@@ -5475,7 +5546,7 @@ detailsForm.addEventListener("submit", async function (event) {
   try {
     const profileData = {
       fullName: newUsername,
-      phone: accountPhone.value.trim()
+      phone: getAccountPhoneValueForSave()
     };
 
     if (pendingProfilePhotoDataUrl) {
