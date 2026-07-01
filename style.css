@@ -8281,6 +8281,10 @@ body.account-security-modal-open {
   gap: 8px;
 }
 
+.account-order-modal-card .account-panel-subheader {
+  margin-bottom: 14px;
+}
+
 .account-panel-subheader h3 {
   color: white;
   font-size: 20px;
