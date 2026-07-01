@@ -7428,12 +7428,16 @@ body.account-photo-crop-modal-open {
   background: rgba(255, 255, 255, 0.055);
   cursor: grab;
   touch-action: none;
-  contain: layout paint;
+  contain: layout paint size;
   isolation: isolate;
   transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
+  user-select: none;
 }
 
-.account-photo-crop-stage:active {
+.account-photo-crop-stage:active,
+.account-photo-crop-stage.is-interacting {
   cursor: grabbing;
 }
 
@@ -7444,11 +7448,14 @@ body.account-photo-crop-modal-open {
   display: block;
   max-width: none;
   max-height: none;
-  transform-origin: 0 0;
+  transform-origin: center center;
   user-select: none;
   pointer-events: none;
+  touch-action: none;
   will-change: transform;
   backface-visibility: hidden;
+  contain: layout paint size;
+  transition: none;
 }
 
 .account-photo-crop-frame {
@@ -7461,7 +7468,13 @@ body.account-photo-crop-modal-open {
   border-radius: 999px;
   box-shadow: 0 0 0 999px rgba(0, 0, 0, 0.42);
   pointer-events: none;
-  transform: translate(-50%, -50%);
+  transform: translate3d(-50%, -50%, 0);
+  transform-origin: center center;
+  will-change: transform;
+  backface-visibility: hidden;
+  user-select: none;
+  touch-action: none;
+  contain: layout paint size;
 }
 
 .account-photo-crop-control {
@@ -7495,18 +7508,37 @@ body.account-photo-crop-modal-open {
 }
 
 .account-photo-crop-preview {
+  position: relative;
   width: 118px;
   height: 118px;
   border-radius: 999px;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.09);
+  contain: layout paint size;
+  isolation: isolate;
+  transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
 .account-photo-crop-preview img {
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
   display: block;
-  object-fit: cover;
+  width: auto;
+  height: auto;
+  max-width: none;
+  max-height: none;
+  object-fit: initial;
+  transform-origin: center center;
+  user-select: none;
+  pointer-events: none;
+  touch-action: none;
+  will-change: transform;
+  backface-visibility: hidden;
+  contain: layout paint size;
+  transition: none;
 }
 
 .account-photo-crop-note {
