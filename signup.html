@@ -199,10 +199,6 @@
     return firebaseClientAuth;
   }
 
-  async function syncFirebaseClientSession() {
-    return;
-  }
-
   function getProviderSignupErrorMessage(error, providerName) {
     if (error && error.code === "auth/popup-closed-by-user") {
       return providerName + " sign-in was closed before it finished.";
@@ -478,8 +474,6 @@
         return;
       }
 
-      await syncFirebaseClientSession();
-
       showMessage("Account created successfully.", "success");
 
       setTimeout(function () {
@@ -509,7 +503,6 @@
 
     try {
       await submitSignupRequest(verificationCode);
-      await syncFirebaseClientSession();
 
       showSignupVerificationMessage("Email verified. Your account has been created.", "success");
 
