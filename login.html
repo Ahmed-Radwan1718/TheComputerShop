@@ -333,23 +333,15 @@
     return data;
   }
 
-  function cancelServerLogin() {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(function () {
-      controller.abort();
-    }, 8000);
-
-    fetch("/api/logout", {
+  async function cancelServerLogin() {
+    await fetch("/api/logout", {
       method: "POST",
       credentials: "same-origin",
-      signal: controller.signal,
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({})
-    }).catch(function () {}).finally(function () {
-      clearTimeout(timeoutId);
-    });
+    }).catch(function () {});
   }
 
   passwordVisibilityToggles.forEach(function (toggleButton) {
@@ -437,40 +429,21 @@
     showMessage("", "");
 
     try {
-      const loginController = new AbortController();
-      const loginTimeoutId = setTimeout(function () {
-        loginController.abort();
-      }, 20000);
+      const response = await fetch("/api/login", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password
+        })
+      });
 
-      let response;
-      let data = {};
-
-      try {
-        response = await fetch("/api/login", {
-          method: "POST",
-          credentials: "same-origin",
-          signal: loginController.signal,
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            email: email,
-            password: password
-          })
-        });
-
-        data = await response.json().catch(function () {
-          return {};
-        });
-      } catch (error) {
-        if (error && error.name === "AbortError") {
-          throw new Error("Login is taking too long. Please refresh and try again.");
-        }
-
-        throw error;
-      } finally {
-        clearTimeout(loginTimeoutId);
-      }
+      const data = await response.json().catch(function () {
+        return {};
+      });
 
       if (!response.ok) {
         throw new Error(data.error || "Incorrect email or password.");
