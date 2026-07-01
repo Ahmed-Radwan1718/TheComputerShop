@@ -199,7 +199,7 @@
 
                       <div class="account-field">
                         <label for="address-province">Province</label>
-                        <select id="address-province">
+                        <select id="address-province" hidden>
                           <option value="">Select province</option>
                           <option value="Alexandria">Alexandria</option>
                           <option value="Aswan">Aswan</option>
@@ -229,6 +229,15 @@
                           <option value="South Sinai">South Sinai</option>
                           <option value="Suez">Suez</option>
                         </select>
+
+                        <div class="custom-select-dropdown account-address-province-select" id="address-province-dropdown">
+                          <button class="custom-select-trigger" type="button" aria-expanded="false">
+                            <span class="custom-select-value" id="address-province-value">Select province</span>
+                            <span class="chevron"></span>
+                          </button>
+
+                          <div class="custom-select-menu" id="address-province-menu"></div>
+                        </div>
                       </div>
 
                       <div class="account-field">
@@ -1073,6 +1082,9 @@ const connectedFacebookAction = document.getElementById("connected-facebook-acti
 
   const addressType = document.getElementById("address-type");
   const addressProvince = document.getElementById("address-province");
+  const addressProvinceDropdown = document.getElementById("address-province-dropdown");
+  const addressProvinceValue = document.getElementById("address-province-value");
+  const addressProvinceMenu = document.getElementById("address-province-menu");
   const addressCity = document.getElementById("address-city");
   const buildingName = document.getElementById("building-name");
   const apartmentNumber = document.getElementById("apartment-number");
@@ -3437,6 +3449,36 @@ function getAccountPanelElement(panelName) {
   }) || null;
 }
 
+function renderAddressProvinceDropdownOptions() {
+  if (!addressProvince || !addressProvinceMenu || addressProvinceMenu.children.length) {
+    return;
+  }
+
+  Array.from(addressProvince.options).forEach(function (selectOption) {
+    const optionButton = document.createElement("button");
+    optionButton.className = "custom-select-option";
+    optionButton.type = "button";
+    optionButton.dataset.value = selectOption.value;
+    optionButton.textContent = selectOption.textContent;
+    addressProvinceMenu.appendChild(optionButton);
+  });
+}
+
+function syncAddressProvinceDropdown() {
+  if (!addressProvince || !addressProvinceValue || !addressProvinceMenu) {
+    return;
+  }
+
+  renderAddressProvinceDropdownOptions();
+
+  const selectedOption = addressProvince.options[addressProvince.selectedIndex];
+  addressProvinceValue.textContent = selectedOption ? selectedOption.textContent : "Select province";
+
+  addressProvinceMenu.querySelectorAll(".custom-select-option").forEach(function (option) {
+    option.classList.toggle("active", option.dataset.value === addressProvince.value);
+  });
+}
+
 function showAddressFields() {
   const selectedType = addressType.value;
   const selectedAddressClass = "address-" + selectedType;
@@ -3448,6 +3490,8 @@ function showAddressFields() {
   accountAddressFields.forEach(function (field) {
     field.hidden = !field.classList.contains(selectedAddressClass);
   });
+
+  syncAddressProvinceDropdown();
 }
 
   function switchPanel(panelName) {
@@ -3939,6 +3983,40 @@ addressTypeButtons.forEach(function (button) {
     showAddressFields();
   });
 });
+
+if (addressProvinceDropdown && addressProvince && addressProvinceMenu) {
+  const addressProvinceTrigger = addressProvinceDropdown.querySelector(".custom-select-trigger");
+
+  if (addressProvinceTrigger) {
+    addressProvinceTrigger.addEventListener("click", function () {
+      const isOpen = addressProvinceDropdown.classList.toggle("open");
+      addressProvinceTrigger.setAttribute("aria-expanded", String(isOpen));
+    });
+
+    addressProvinceMenu.addEventListener("click", function (event) {
+      const option = event.target.closest(".custom-select-option");
+
+      if (!option) {
+        return;
+      }
+
+      addressProvince.value = option.dataset.value || "";
+      addressProvince.dispatchEvent(new Event("change"));
+      addressProvinceDropdown.classList.remove("open");
+      addressProvinceTrigger.setAttribute("aria-expanded", "false");
+    });
+
+    addressProvince.addEventListener("change", syncAddressProvinceDropdown);
+    syncAddressProvinceDropdown();
+
+    document.addEventListener("click", function (event) {
+      if (!addressProvinceDropdown.contains(event.target)) {
+        addressProvinceDropdown.classList.remove("open");
+        addressProvinceTrigger.setAttribute("aria-expanded", "false");
+      }
+    });
+  }
+}
 
 if (openAddressModalButton) {
   openAddressModalButton.addEventListener("click", function () {
