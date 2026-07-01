@@ -7944,8 +7944,7 @@ body.account-photo-crop-modal-open {
   min-height: 220px;
 }
 
-.account-address-map-preview .leaflet-container {
-  background: rgba(255, 255, 255, 0.055);
+.account-address-map-canvas .gm-style {
   font-family: inherit;
 }
 
