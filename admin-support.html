@@ -583,16 +583,12 @@
       const unitPrice = item.priceText || item.price || "Price not set";
       const lineTotal = item.lineTotalText || unitPrice;
       const imageMarkup = item.image ? `
-            <div class="admin-order-item-image-frame">
-              <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name || "Product")}" loading="lazy" decoding="async">
-            </div>
-      ` : `
-            <div class="admin-order-item-image-frame empty" aria-hidden="true"></div>
-      `;
+            <img class="admin-order-item-image" src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name || "Product")}" loading="lazy" decoding="async">
+      ` : "";
 
       return `
         <article class="account-support-message admin-order-item">
-          <div class="admin-order-item-content">
+          <div class="admin-order-item-content${item.image ? " has-image" : ""}">
             ${imageMarkup}
 
             <div class="admin-order-item-details">
