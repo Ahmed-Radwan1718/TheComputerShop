@@ -282,21 +282,36 @@ async function createAccountSession(uid, res, req) {
   const salt = db.collection("_").doc().id;
   const details = getSessionDetailsFromRequest(req);
 
-  await sessionRef.set({
-    uid,
-    sessionHash: getAccountSessionHash(uid, sessionId, token, salt),
-    salt,
-    userAgent: details.userAgent,
-    ipAddress: details.ipAddress,
-    browserLabel: details.browserLabel,
-    platformLabel: details.platformLabel,
-    deviceLabel: details.deviceLabel,
-    createdAt: admin.firestore.FieldValue.serverTimestamp(),
-    lastSeenAt: admin.firestore.FieldValue.serverTimestamp(),
-    expiresAt: admin.firestore.Timestamp.fromDate(
-      new Date(Date.now() + ACCOUNT_SESSION_EXPIRES_MS)
-    )
-  });
+  const sessionSaved = await Promise.race([
+    sessionRef.set({
+      uid,
+      sessionHash: getAccountSessionHash(uid, sessionId, token, salt),
+      salt,
+      userAgent: details.userAgent,
+      ipAddress: details.ipAddress,
+      browserLabel: details.browserLabel,
+      platformLabel: details.platformLabel,
+      deviceLabel: details.deviceLabel,
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      lastSeenAt: admin.firestore.FieldValue.serverTimestamp(),
+      expiresAt: admin.firestore.Timestamp.fromDate(
+        new Date(Date.now() + ACCOUNT_SESSION_EXPIRES_MS)
+      )
+    }).then(function () {
+      return true;
+    }).catch(function () {
+      return false;
+    }),
+    new Promise(function (resolve) {
+      setTimeout(function () {
+        resolve(false);
+      }, 3000);
+    })
+  ]);
+
+  if (!sessionSaved) {
+    return null;
+  }
 
   setCookie(
     res,
@@ -816,7 +831,12 @@ async function clearSiteSessionCookie(firstArg, secondArg) {
   const res = secondArg || firstArg;
 
   if (req) {
-    await clearCurrentAccountSession(req);
+    await Promise.race([
+      clearCurrentAccountSession(req).catch(function () {}),
+      new Promise(function (resolve) {
+        setTimeout(resolve, 3000);
+      })
+    ]);
   }
 
   clearCookie(res, SITE_SESSION_COOKIE_NAME);
