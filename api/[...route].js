@@ -1,36 +1,52 @@
-const routes = {
-  "account-addresses": require("../server/routes/account-addresses"),
-  "account-orders": require("../server/routes/account-orders"),
-  "account-profile": require("../server/routes/account-profile"),
-  "admin-support-tickets": require("../server/routes/admin-support-tickets"),
-  "cart": require("../server/routes/cart"),
-  "change-email": require("../server/routes/change-email"),
-  "change-password": require("../server/routes/change-password"),
-  "checkout": require("../server/routes/checkout"),
-  "client-token": require("../server/routes/client-token"),
-  "disable-authenticator": require("../server/routes/disable-authenticator"),
-  "forgot-password": require("../server/routes/forgot-password"),
-  "login": require("../server/routes/login"),
-  "login-send-email-code": require("../server/routes/login-send-email-code"),
-  "login-verify-authenticator": require("../server/routes/login-verify-authenticator"),
-  "login-verify-email-code": require("../server/routes/login-verify-email-code"),
-  "logout": require("../server/routes/logout"),
-  "me": require("../server/routes/me"),
-  "saved-items": require("../server/routes/saved-items"),
-  "security-unlock-status": require("../server/routes/security-unlock-status"),
-  "send-email-verification": require("../server/routes/send-email-verification"),
-  "send-security-code": require("../server/routes/send-security-code"),
-  "set-email-2fa": require("../server/routes/set-email-2fa"),
-  "setup-authenticator": require("../server/routes/setup-authenticator"),
-  "sign-out-everywhere": require("../server/routes/sign-out-everywhere"),
-  "sign-out-session": require("../server/routes/sign-out-everywhere").signOutSession,
-  "trusted-devices": require("../server/routes/sign-out-everywhere").trustedDevices,
-  "signup": require("../server/routes/signup"),
-  "support-tickets": require("../server/routes/support-tickets"),
-  "verify-authenticator-setup": require("../server/routes/verify-authenticator-setup"),
-  "verify-login-authenticator": require("../server/routes/verify-login-authenticator"),
-  "verify-security-code": require("../server/routes/verify-security-code")
+const routeLoaders = {
+  "account-addresses": function () { return require("../server/routes/account-addresses"); },
+  "account-orders": function () { return require("../server/routes/account-orders"); },
+  "account-profile": function () { return require("../server/routes/account-profile"); },
+  "admin-support-tickets": function () { return require("../server/routes/admin-support-tickets"); },
+  "cart": function () { return require("../server/routes/cart"); },
+  "change-email": function () { return require("../server/routes/change-email"); },
+  "change-password": function () { return require("../server/routes/change-password"); },
+  "checkout": function () { return require("../server/routes/checkout"); },
+  "client-token": function () { return require("../server/routes/client-token"); },
+  "disable-authenticator": function () { return require("../server/routes/disable-authenticator"); },
+  "forgot-password": function () { return require("../server/routes/forgot-password"); },
+  "login": function () { return require("../server/routes/login"); },
+  "login-send-email-code": function () { return require("../server/routes/login-send-email-code"); },
+  "login-verify-authenticator": function () { return require("../server/routes/login-verify-authenticator"); },
+  "login-verify-email-code": function () { return require("../server/routes/login-verify-email-code"); },
+  "logout": function () { return require("../server/routes/logout"); },
+  "me": function () { return require("../server/routes/me"); },
+  "saved-items": function () { return require("../server/routes/saved-items"); },
+  "security-unlock-status": function () { return require("../server/routes/security-unlock-status"); },
+  "send-email-verification": function () { return require("../server/routes/send-email-verification"); },
+  "send-security-code": function () { return require("../server/routes/send-security-code"); },
+  "set-email-2fa": function () { return require("../server/routes/set-email-2fa"); },
+  "setup-authenticator": function () { return require("../server/routes/setup-authenticator"); },
+  "sign-out-everywhere": function () { return require("../server/routes/sign-out-everywhere"); },
+  "sign-out-session": function () { return require("../server/routes/sign-out-everywhere").signOutSession; },
+  "trusted-devices": function () { return require("../server/routes/sign-out-everywhere").trustedDevices; },
+  "signup": function () { return require("../server/routes/signup"); },
+  "support-tickets": function () { return require("../server/routes/support-tickets"); },
+  "verify-authenticator-setup": function () { return require("../server/routes/verify-authenticator-setup"); },
+  "verify-login-authenticator": function () { return require("../server/routes/verify-login-authenticator"); },
+  "verify-security-code": function () { return require("../server/routes/verify-security-code"); }
 };
+
+const routeCache = {};
+
+function getRouteHandler(routeName) {
+  const routeLoader = routeLoaders[routeName];
+
+  if (!routeLoader) {
+    return null;
+  }
+
+  if (!Object.prototype.hasOwnProperty.call(routeCache, routeName)) {
+    routeCache[routeName] = routeLoader();
+  }
+
+  return routeCache[routeName];
+}
 
 function getRouteName(req) {
   if (req.query && req.query.route) {
@@ -50,7 +66,7 @@ function getRouteName(req) {
 
 module.exports = async function handler(req, res) {
   const routeName = getRouteName(req);
-  const routeHandler = routes[routeName];
+  const routeHandler = getRouteHandler(routeName);
 
   if (!routeHandler) {
     return res.status(404).json({
