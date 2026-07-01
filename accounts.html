@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Account - The Computer Shop</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="style.css?v=orders-progress-completed-calm-green-20260701" />
 </head>
 <body oncontextmenu="return false;">
@@ -310,7 +311,7 @@
                         <input type="hidden" id="address-location-map-url">
 
                         <div class="account-address-map-preview" id="address-location-map-wrap">
-                          <iframe id="address-location-map" title="Saved address map" loading="lazy" src="https://maps.google.com/maps?q=Egypt&amp;z=6&amp;output=embed"></iframe>
+                          <div class="account-address-map-canvas" id="address-location-map" aria-label="Address map"></div>
                         </div>
 
                         <div class="account-address-location-actions">
@@ -1060,6 +1061,7 @@
   </div>
 </div>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
   import { FacebookAuthProvider, GithubAuthProvider, GoogleAuthProvider, getAuth, linkWithPopup, signInWithCustomToken, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
@@ -3171,20 +3173,93 @@ function getAddressPreview(address) {
   return parts.length ? parts.join(" · ") : "No address details saved";
 }
 
+const ADDRESS_LOCATION_DEFAULT_COORDS = {
+  latitude: 26.8206,
+  longitude: 30.8025
+};
+
+let addressLocationLeafletMap = null;
+let addressLocationMarker = null;
+
 function getAddressLocationMapLink(latitude, longitude) {
   return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(latitude + "," + longitude);
 }
 
-function getAddressLocationEmbedUrl(latitude, longitude) {
-  return "https://maps.google.com/maps?q="
-    + encodeURIComponent(latitude + "," + longitude)
-    + "&z=16&output=embed";
+function syncAddressLocationMapSize() {
+  if (addressLocationLeafletMap) {
+    setTimeout(function () {
+      addressLocationLeafletMap.invalidateSize();
+    }, 50);
+  }
 }
 
-function getAddressLocationDefaultEmbedUrl() {
-  return "https://maps.google.com/maps?q="
-    + encodeURIComponent("Egypt")
-    + "&z=6&output=embed";
+function initializeAddressLocationMap() {
+  if (!addressLocationMap || !window.L) {
+    return;
+  }
+
+  if (addressLocationLeafletMap) {
+    syncAddressLocationMapSize();
+    return;
+  }
+
+  addressLocationLeafletMap = window.L.map(addressLocationMap, {
+    scrollWheelZoom: false
+  }).setView([ADDRESS_LOCATION_DEFAULT_COORDS.latitude, ADDRESS_LOCATION_DEFAULT_COORDS.longitude], 6);
+
+  window.L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "&copy; OpenStreetMap contributors"
+  }).addTo(addressLocationLeafletMap);
+
+  addressLocationLeafletMap.on("click", function (event) {
+    setAddressLocation(event.latlng.lat, event.latlng.lng, {
+      shouldCenter: false
+    });
+    showMessage(addressModalMessage, "Map location added.", "success");
+  });
+
+  syncAddressLocationMapSize();
+}
+
+function setAddressLocationMarker(latitude, longitude, options) {
+  if (!addressLocationLeafletMap || !window.L) {
+    return;
+  }
+
+  const position = [latitude, longitude];
+  const shouldCenter = !options || options.shouldCenter !== false;
+
+  if (!addressLocationMarker) {
+    addressLocationMarker = window.L.marker(position, {
+      draggable: true
+    }).addTo(addressLocationLeafletMap);
+
+    addressLocationMarker.on("dragend", function () {
+      const markerPosition = addressLocationMarker.getLatLng();
+      setAddressLocation(markerPosition.lat, markerPosition.lng, {
+        shouldCenter: false
+      });
+    });
+  } else {
+    addressLocationMarker.setLatLng(position);
+  }
+
+  if (shouldCenter) {
+    addressLocationLeafletMap.setView(position, 16);
+  }
+}
+
+function resetAddressLocationMap() {
+  initializeAddressLocationMap();
+
+  if (addressLocationMarker && addressLocationLeafletMap) {
+    addressLocationLeafletMap.removeLayer(addressLocationMarker);
+    addressLocationMarker = null;
+  }
+
+  if (addressLocationLeafletMap) {
+    addressLocationLeafletMap.setView([ADDRESS_LOCATION_DEFAULT_COORDS.latitude, ADDRESS_LOCATION_DEFAULT_COORDS.longitude], 6);
+  }
 }
 
 function clearAddressLocation() {
@@ -3192,20 +3267,18 @@ function clearAddressLocation() {
   if (addressLocationLongitude) addressLocationLongitude.value = "";
   if (addressLocationMapUrl) addressLocationMapUrl.value = "";
 
-  if (addressLocationMap) {
-    addressLocationMap.src = getAddressLocationDefaultEmbedUrl();
-  }
+  resetAddressLocationMap();
 
   if (addressLocationMapWrap) addressLocationMapWrap.hidden = false;
   if (addressLocationOpenLink) addressLocationOpenLink.hidden = true;
   if (addressLocationClearButton) addressLocationClearButton.hidden = true;
 
   if (addressLocationNote) {
-    addressLocationNote.textContent = "Allow location access when prompted to attach a map pin to this address.";
+    addressLocationNote.textContent = "Click the map to drop a pin, or use your current location.";
   }
 }
 
-function setAddressLocation(latitude, longitude) {
+function setAddressLocation(latitude, longitude, options) {
   const lat = Number(latitude);
   const lng = Number(longitude);
 
@@ -3222,9 +3295,8 @@ function setAddressLocation(latitude, longitude) {
   if (addressLocationLongitude) addressLocationLongitude.value = normalizedLng;
   if (addressLocationMapUrl) addressLocationMapUrl.value = mapUrl;
 
-  if (addressLocationMap) {
-    addressLocationMap.src = getAddressLocationEmbedUrl(normalizedLat, normalizedLng);
-  }
+  initializeAddressLocationMap();
+  setAddressLocationMarker(lat, lng, options);
 
   if (addressLocationMapWrap) addressLocationMapWrap.hidden = false;
 
@@ -3317,11 +3389,15 @@ function openAddressModal(address) {
   addressModal.hidden = false;
   document.body.classList.add("account-security-modal-open");
 
+  initializeAddressLocationMap();
+  syncAddressLocationMapSize();
+
   if (!hasSavedLocation) {
     useCurrentAddressLocation();
   }
 
   setTimeout(function () {
+    syncAddressLocationMapSize();
     addressLabel.focus();
   }, 50);
 }
