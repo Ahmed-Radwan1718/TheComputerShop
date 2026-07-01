@@ -94,7 +94,24 @@
             <div class="checkout-form-box">
               <div class="checkout-form-box-header">
                 <span>Delivery Info</span>
-                <p>Choose a saved address or enter a new delivery address.</p>
+                <p>Choose delivery to an address or pick up your order.</p>
+              </div>
+
+              <div class="checkout-field checkout-field-full">
+                <label>Order Method</label>
+                <input type="hidden" id="checkout-fulfillment-method" value="delivery">
+
+                <div class="checkout-fulfillment-options">
+                  <button class="checkout-fulfillment-button active" type="button" data-checkout-fulfillment="delivery">
+                    Delivery
+                  </button>
+
+                  <button class="checkout-fulfillment-button" type="button" data-checkout-fulfillment="pickup">
+                    Pick Up
+                  </button>
+                </div>
+
+                <p class="checkout-fulfillment-note" id="checkout-fulfillment-note">Choose a saved address or enter a new delivery address.</p>
               </div>
 
               <div class="checkout-saved-address-picker" id="checkout-saved-address-picker" hidden>
@@ -295,6 +312,8 @@
   const checkoutPaymentMethodDropdown = document.getElementById("checkout-payment-method-dropdown");
   const checkoutPaymentMethodValue = document.getElementById("checkout-payment-method-value");
   const teldaPaymentInfo = document.getElementById("telda-payment-info");
+  const checkoutFulfillmentMethod = document.getElementById("checkout-fulfillment-method");
+  const checkoutFulfillmentNote = document.getElementById("checkout-fulfillment-note");
   const checkoutSavedAddressPicker = document.getElementById("checkout-saved-address-picker");
   const checkoutSavedAddressSelect = document.getElementById("checkout-saved-address-select");
   const checkoutSavedAddressDropdown = document.getElementById("checkout-saved-address-dropdown");
@@ -425,11 +444,27 @@
 
   function showCheckoutAddressFields() {
     const selectedType = checkoutAddressType.value;
-    const isUsingSavedAddress = Boolean(checkoutSavedAddressSelect && checkoutSavedAddressSelect.value);
+    const selectedFulfillment = checkoutFulfillmentMethod ? checkoutFulfillmentMethod.value : "delivery";
+    const isPickup = selectedFulfillment === "pickup";
+    const isUsingSavedAddress = !isPickup && Boolean(checkoutSavedAddressSelect && checkoutSavedAddressSelect.value);
+
+    if (checkoutSavedAddressPicker) {
+      checkoutSavedAddressPicker.hidden = isPickup || checkoutSavedAddresses.length === 0;
+    }
 
     if (checkoutNewAddressFields) {
-      checkoutNewAddressFields.hidden = isUsingSavedAddress;
+      checkoutNewAddressFields.hidden = isPickup || isUsingSavedAddress;
     }
+
+    if (checkoutFulfillmentNote) {
+      checkoutFulfillmentNote.textContent = isPickup
+        ? "We will contact you with pickup timing and location after reviewing your order."
+        : "Choose a saved address or enter a new delivery address.";
+    }
+
+    document.querySelectorAll(".checkout-fulfillment-button").forEach(function (button) {
+      button.classList.toggle("active", button.dataset.checkoutFulfillment === selectedFulfillment);
+    });
 
     document.querySelectorAll(".checkout-address-type-button").forEach(function (button) {
       button.classList.toggle("active", button.dataset.checkoutAddressType === selectedType);
@@ -441,7 +476,7 @@
 
     syncCheckoutProvinceDropdown();
 
-    if (isUsingSavedAddress) {
+    if (isPickup || isUsingSavedAddress) {
       return;
     }
 
@@ -591,6 +626,7 @@
         fullName: checkoutName.value.trim(),
         phone: checkoutPhone.value.trim(),
         paymentMethod: checkoutPaymentMethod.value,
+        fulfillmentMethod: checkoutFulfillmentMethod ? checkoutFulfillmentMethod.value : "delivery",
         addressType: checkoutAddressType.value,
         province: checkoutProvince.value,
         city: checkoutCity.value.trim(),
@@ -615,6 +651,19 @@
 
     return data;
   }
+
+  document.querySelectorAll(".checkout-fulfillment-button").forEach(function (button) {
+    button.addEventListener("click", function () {
+      checkoutFulfillmentMethod.value = button.dataset.checkoutFulfillment || "delivery";
+
+      if (checkoutFulfillmentMethod.value === "pickup" && checkoutSavedAddressSelect) {
+        checkoutSavedAddressSelect.value = "";
+      }
+
+      syncCheckoutSavedAddressDropdown();
+      showCheckoutAddressFields();
+    });
+  });
 
   document.querySelectorAll(".checkout-address-type-button").forEach(function (button) {
     button.addEventListener("click", function () {
