@@ -9492,8 +9492,52 @@ body.account-security-modal-open {
 }
 
 .admin-order-item {
-  padding: 16px 18px;
+  padding: 14px;
   border-radius: 18px;
+}
+
+.admin-order-item-content {
+  display: grid;
+  grid-template-columns: 86px minmax(0, 1fr);
+  gap: 16px;
+  align-items: center;
+}
+
+.admin-order-item-image-frame {
+  width: 86px;
+  aspect-ratio: 1;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+
+.admin-order-item-image-frame.empty {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.admin-order-item-image-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 8px;
+  object-fit: contain;
+}
+
+.admin-order-item-details {
+  display: grid;
+  min-width: 0;
+  gap: 12px;
+}
+
+.admin-order-item .account-support-message-head {
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.admin-order-item .account-support-message-head strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .admin-order-item-row {
@@ -9525,6 +9569,17 @@ body.account-security-modal-open {
 
   .admin-order-info-grid {
     grid-template-columns: 1fr;
+  }
+
+  .admin-order-item-content {
+    grid-template-columns: 72px minmax(0, 1fr);
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .admin-order-item-image-frame {
+    width: 72px;
+    border-radius: 12px;
   }
 
   .admin-order-item-row {
