@@ -137,7 +137,10 @@
 
     <div class="custom-select-dropdown account-phone-country-dropdown" id="account-phone-country-dropdown">
       <button class="custom-select-trigger" type="button" aria-expanded="false">
-        <span class="custom-select-value" id="account-phone-country-value">EG +20</span>
+        <span class="custom-select-value" id="account-phone-country-value">
+          <img class="account-phone-country-flag" src="https://flagcdn.com/w20/eg.png" alt="" aria-hidden="true">
+          <span>EG +20</span>
+        </span>
         <span class="chevron"></span>
       </button>
 
@@ -5452,6 +5455,17 @@ function getAccountPhoneCountryShortLabel(country) {
   return country.iso + " " + country.dial;
 }
 
+function getAccountPhoneCountryFlagUrl(country) {
+  return "https://flagcdn.com/w20/" + country.iso.toLowerCase() + ".png";
+}
+
+function getAccountPhoneCountryValueMarkup(country) {
+  return `
+    <img class="account-phone-country-flag" src="${getAccountPhoneCountryFlagUrl(country)}" alt="" aria-hidden="true">
+    <span>${getAccountPhoneCountryShortLabel(country)}</span>
+  `;
+}
+
 function renderAccountPhoneCountryDropdownOptions() {
   if (!accountPhoneCountryMenu || accountPhoneCountryMenu.children.length) {
     return;
@@ -5462,7 +5476,10 @@ function renderAccountPhoneCountryDropdownOptions() {
     optionButton.className = "custom-select-option";
     optionButton.type = "button";
     optionButton.dataset.iso = country.iso;
-    optionButton.textContent = country.name + " " + country.dial;
+    optionButton.innerHTML = `
+      <img class="account-phone-country-flag" src="${getAccountPhoneCountryFlagUrl(country)}" alt="" aria-hidden="true">
+      <span>${country.name} ${country.dial}</span>
+    `;
     accountPhoneCountryMenu.appendChild(optionButton);
   });
 }
@@ -5476,7 +5493,7 @@ function syncAccountPhoneCountryDropdown() {
 
   const country = getAccountPhoneCountryByIso(accountPhoneCountry.value);
   accountPhoneCountry.value = country.iso;
-  accountPhoneCountryValue.textContent = getAccountPhoneCountryShortLabel(country);
+  accountPhoneCountryValue.innerHTML = getAccountPhoneCountryValueMarkup(country);
 
   accountPhoneCountryMenu.querySelectorAll(".custom-select-option").forEach(function (option) {
     option.classList.toggle("active", option.dataset.iso === country.iso);
