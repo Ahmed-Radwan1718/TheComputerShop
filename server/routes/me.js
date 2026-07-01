@@ -79,19 +79,13 @@ return res.status(200).json({
       error.message === "account-session-invalid"
     ));
 
-    if (sessionRevoked) {
 return res.status(200).json({
   signedIn: false,
   authenticated: false,
   loggedIn: false,
   sessionRevoked,
-  sessionRevokedReason: error && error.revokedReason ? error.revokedReason : "",
+  sessionRevokedReason: sessionRevoked && error && error.revokedReason ? error.revokedReason : "",
   user: null
 });
-    }
-
-    return res.status(error.statusCode || 500).json({
-      error: error.message || "Could not check account session."
-    });
   }
 };
