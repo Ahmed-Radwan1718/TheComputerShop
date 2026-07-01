@@ -7801,6 +7801,7 @@ body.account-photo-crop-modal-open {
   top: calc(100% + 10px);
   width: min(310px, calc(100vw - 48px));
   max-height: 260px;
+  padding: 10px;
   overflow-y: auto;
   background: rgba(42, 43, 42, 0.99);
   color-scheme: dark;
@@ -7812,6 +7813,37 @@ body.account-photo-crop-modal-open {
   transition: opacity 0.12s ease;
   will-change: opacity;
   contain: paint;
+}
+
+.account-phone-country-search-wrap {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding-bottom: 8px;
+  background: rgba(42, 43, 42, 0.99);
+}
+
+.account-phone-country-search {
+  width: 100%;
+  min-height: 38px;
+  padding: 0 13px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.075);
+  color: white;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  outline: none;
+}
+
+.account-phone-country-search::placeholder {
+  color: rgba(255, 255, 255, 0.48);
+}
+
+.account-phone-country-options {
+  display: grid;
+  gap: 2px;
 }
 
 .account-phone-country-dropdown.open .custom-select-menu {
