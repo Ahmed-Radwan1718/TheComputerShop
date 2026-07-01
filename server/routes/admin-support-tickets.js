@@ -261,6 +261,13 @@ async function handleOrderUpdate(req, res) {
     return res.status(404).json({ error: "Order not found." });
   }
 
+  const responseData = Object.assign({}, orderDoc.data() || {}, {
+    status,
+    paymentStatus,
+    adminNote,
+    updatedAt: new Date().toISOString()
+  });
+
   await orderRef.update({
     status,
     paymentStatus,
@@ -268,11 +275,14 @@ async function handleOrderUpdate(req, res) {
     updatedAt: admin.firestore.FieldValue.serverTimestamp()
   });
 
-  const updatedOrder = await orderRef.get();
-
   return res.status(200).json({
     success: true,
-    order: serializeOrder(updatedOrder)
+    order: serializeOrder({
+      id: orderDoc.id,
+      data: function () {
+        return responseData;
+      }
+    })
   });
 }
 
