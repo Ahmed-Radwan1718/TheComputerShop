@@ -137,6 +137,45 @@
                   </div>
                 </div>
 
+                <div class="checkout-field">
+                  <label for="checkout-province">Province</label>
+                  <select id="checkout-province">
+                    <option value="">Select province</option>
+                    <option value="Alexandria">Alexandria</option>
+                    <option value="Aswan">Aswan</option>
+                    <option value="Asyut">Asyut</option>
+                    <option value="Beheira">Beheira</option>
+                    <option value="Beni Suef">Beni Suef</option>
+                    <option value="Cairo">Cairo</option>
+                    <option value="Dakahlia">Dakahlia</option>
+                    <option value="Damietta">Damietta</option>
+                    <option value="Faiyum">Faiyum</option>
+                    <option value="Gharbia">Gharbia</option>
+                    <option value="Giza">Giza</option>
+                    <option value="Ismailia">Ismailia</option>
+                    <option value="Kafr El Sheikh">Kafr El Sheikh</option>
+                    <option value="Luxor">Luxor</option>
+                    <option value="Matrouh">Matrouh</option>
+                    <option value="Minya">Minya</option>
+                    <option value="Monufia">Monufia</option>
+                    <option value="New Valley">New Valley</option>
+                    <option value="North Sinai">North Sinai</option>
+                    <option value="Port Said">Port Said</option>
+                    <option value="Qalyubia">Qalyubia</option>
+                    <option value="Qena">Qena</option>
+                    <option value="Red Sea">Red Sea</option>
+                    <option value="Sharqia">Sharqia</option>
+                    <option value="Sohag">Sohag</option>
+                    <option value="South Sinai">South Sinai</option>
+                    <option value="Suez">Suez</option>
+                  </select>
+                </div>
+
+                <div class="checkout-field">
+                  <label for="checkout-city">City</label>
+                  <input type="text" id="checkout-city">
+                </div>
+
                 <div class="checkout-field checkout-address-field checkout-address-apartment">
                   <label for="checkout-building-name">Building Name</label>
                   <input type="text" id="checkout-building-name">
@@ -225,6 +264,8 @@
   const checkoutSavedAddressMenu = document.getElementById("checkout-saved-address-menu");
   const checkoutNewAddressFields = document.getElementById("checkout-new-address-fields");
   const checkoutAddressType = document.getElementById("checkout-address-type");
+  const checkoutProvince = document.getElementById("checkout-province");
+  const checkoutCity = document.getElementById("checkout-city");
   const checkoutBuildingName = document.getElementById("checkout-building-name");
   const checkoutApartmentNumber = document.getElementById("checkout-apartment-number");
   const checkoutFloorNumber = document.getElementById("checkout-floor-number");
@@ -365,6 +406,8 @@
     }
 
     checkoutAddressType.value = address.addressType || "apartment";
+    checkoutProvince.value = address.province || "";
+    checkoutCity.value = address.city || "";
     checkoutBuildingName.value = address.buildingName || "";
     checkoutApartmentNumber.value = address.apartmentNumber || "";
     checkoutFloorNumber.value = address.floorNumber || "";
@@ -437,6 +480,8 @@
     checkoutName.value = profile.fullName || "";
     checkoutPhone.value = profile.phone || "";
     checkoutAddressType.value = profile.addressType || "apartment";
+    checkoutProvince.value = profile.province || "";
+    checkoutCity.value = profile.city || "";
     checkoutBuildingName.value = profile.buildingName || "";
     checkoutApartmentNumber.value = profile.apartmentNumber || "";
     checkoutFloorNumber.value = profile.floorNumber || "";
@@ -491,6 +536,8 @@
         phone: checkoutPhone.value.trim(),
         paymentMethod: checkoutPaymentMethod.value,
         addressType: checkoutAddressType.value,
+        province: checkoutProvince.value,
+        city: checkoutCity.value.trim(),
         buildingName: checkoutBuildingName.value.trim(),
         apartmentNumber: checkoutApartmentNumber.value.trim(),
         floorNumber: checkoutFloorNumber.value.trim(),
