@@ -310,7 +310,7 @@
                         <input type="hidden" id="address-location-map-url">
 
                         <div class="account-address-map-preview" id="address-location-map-wrap">
-                          <div class="account-address-map-canvas" id="address-location-map" aria-label="Address map"></div>
+                          <iframe id="address-location-map" title="Saved address map" loading="lazy" src="https://maps.google.com/maps?q=Egypt&amp;z=6&amp;output=embed"></iframe>
                         </div>
 
                         <div class="account-address-location-actions">
@@ -1060,7 +1060,6 @@
   </div>
 </div>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY"></script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
   import { FacebookAuthProvider, GithubAuthProvider, GoogleAuthProvider, getAuth, linkWithPopup, signInWithCustomToken, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
@@ -3172,120 +3171,20 @@ function getAddressPreview(address) {
   return parts.length ? parts.join(" · ") : "No address details saved";
 }
 
-const ADDRESS_LOCATION_DEFAULT_COORDS = {
-  latitude: 26.8206,
-  longitude: 30.8025
-};
-
-let addressLocationGoogleMap = null;
-let addressLocationMarker = null;
-
 function getAddressLocationMapLink(latitude, longitude) {
   return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(latitude + "," + longitude);
 }
 
-function syncAddressLocationMapSize() {
-  if (addressLocationGoogleMap && window.google && window.google.maps) {
-    const center = addressLocationGoogleMap.getCenter();
-
-    setTimeout(function () {
-      window.google.maps.event.trigger(addressLocationGoogleMap, "resize");
-
-      if (center) {
-        addressLocationGoogleMap.setCenter(center);
-      }
-    }, 50);
-  }
+function getAddressLocationEmbedUrl(latitude, longitude) {
+  return "https://maps.google.com/maps?q="
+    + encodeURIComponent(latitude + "," + longitude)
+    + "&z=16&output=embed";
 }
 
-function initializeAddressLocationMap() {
-  if (!addressLocationMap || !window.google || !window.google.maps) {
-    return;
-  }
-
-  if (addressLocationGoogleMap) {
-    syncAddressLocationMapSize();
-    return;
-  }
-
-  addressLocationGoogleMap = new window.google.maps.Map(addressLocationMap, {
-    center: {
-      lat: ADDRESS_LOCATION_DEFAULT_COORDS.latitude,
-      lng: ADDRESS_LOCATION_DEFAULT_COORDS.longitude
-    },
-    zoom: 6,
-    clickableIcons: false,
-    mapTypeControl: false,
-    streetViewControl: false,
-    fullscreenControl: true
-  });
-
-  addressLocationGoogleMap.addListener("click", function (event) {
-    if (!event.latLng) {
-      return;
-    }
-
-    setAddressLocation(event.latLng.lat(), event.latLng.lng(), {
-      shouldCenter: false
-    });
-    showMessage(addressModalMessage, "Map location added.", "success");
-  });
-
-  syncAddressLocationMapSize();
-}
-
-function setAddressLocationMarker(latitude, longitude, options) {
-  if (!addressLocationGoogleMap || !window.google || !window.google.maps) {
-    return;
-  }
-
-  const position = {
-    lat: latitude,
-    lng: longitude
-  };
-  const shouldCenter = !options || options.shouldCenter !== false;
-
-  if (!addressLocationMarker) {
-    addressLocationMarker = new window.google.maps.Marker({
-      position: position,
-      map: addressLocationGoogleMap,
-      draggable: true
-    });
-
-    addressLocationMarker.addListener("dragend", function (event) {
-      if (!event.latLng) {
-        return;
-      }
-
-      setAddressLocation(event.latLng.lat(), event.latLng.lng(), {
-        shouldCenter: false
-      });
-    });
-  } else {
-    addressLocationMarker.setPosition(position);
-  }
-
-  if (shouldCenter) {
-    addressLocationGoogleMap.setCenter(position);
-    addressLocationGoogleMap.setZoom(16);
-  }
-}
-
-function resetAddressLocationMap() {
-  initializeAddressLocationMap();
-
-  if (addressLocationMarker) {
-    addressLocationMarker.setMap(null);
-    addressLocationMarker = null;
-  }
-
-  if (addressLocationGoogleMap) {
-    addressLocationGoogleMap.setCenter({
-      lat: ADDRESS_LOCATION_DEFAULT_COORDS.latitude,
-      lng: ADDRESS_LOCATION_DEFAULT_COORDS.longitude
-    });
-    addressLocationGoogleMap.setZoom(6);
-  }
+function getAddressLocationDefaultEmbedUrl() {
+  return "https://maps.google.com/maps?q="
+    + encodeURIComponent("Egypt")
+    + "&z=6&output=embed";
 }
 
 function clearAddressLocation() {
@@ -3293,18 +3192,20 @@ function clearAddressLocation() {
   if (addressLocationLongitude) addressLocationLongitude.value = "";
   if (addressLocationMapUrl) addressLocationMapUrl.value = "";
 
-  resetAddressLocationMap();
+  if (addressLocationMap) {
+    addressLocationMap.src = getAddressLocationDefaultEmbedUrl();
+  }
 
   if (addressLocationMapWrap) addressLocationMapWrap.hidden = false;
   if (addressLocationOpenLink) addressLocationOpenLink.hidden = true;
   if (addressLocationClearButton) addressLocationClearButton.hidden = true;
 
   if (addressLocationNote) {
-    addressLocationNote.textContent = "Click the Google map to drop a pin, or use your current location.";
+    addressLocationNote.textContent = "Use your current location to attach a map pin to this address.";
   }
 }
 
-function setAddressLocation(latitude, longitude, options) {
+function setAddressLocation(latitude, longitude) {
   const lat = Number(latitude);
   const lng = Number(longitude);
 
@@ -3321,8 +3222,9 @@ function setAddressLocation(latitude, longitude, options) {
   if (addressLocationLongitude) addressLocationLongitude.value = normalizedLng;
   if (addressLocationMapUrl) addressLocationMapUrl.value = mapUrl;
 
-  initializeAddressLocationMap();
-  setAddressLocationMarker(lat, lng, options);
+  if (addressLocationMap) {
+    addressLocationMap.src = getAddressLocationEmbedUrl(normalizedLat, normalizedLng);
+  }
 
   if (addressLocationMapWrap) addressLocationMapWrap.hidden = false;
 
@@ -3415,15 +3317,11 @@ function openAddressModal(address) {
   addressModal.hidden = false;
   document.body.classList.add("account-security-modal-open");
 
-  initializeAddressLocationMap();
-  syncAddressLocationMapSize();
-
   if (!hasSavedLocation) {
     useCurrentAddressLocation();
   }
 
   setTimeout(function () {
-    syncAddressLocationMapSize();
     addressLabel.focus();
   }, 50);
 }
