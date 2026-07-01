@@ -805,25 +805,59 @@ function normalizeSessionCreationArgs(firstArg, secondArg, thirdArg) {
   };
 }
 
+function decodeUidFromIdToken(idToken) {
+  try {
+    const payloadPart = String(idToken || "").split(".")[1] || "";
+    const normalizedPayload = payloadPart.replace(/-/g, "+").replace(/_/g, "/");
+    const paddedPayload = normalizedPayload + "=".repeat((4 - normalizedPayload.length % 4) % 4);
+    const payload = JSON.parse(Buffer.from(paddedPayload, "base64").toString("utf8"));
+
+    return String(payload.user_id || payload.sub || "").trim();
+  } catch (error) {
+    return "";
+  }
+}
+
 async function createSiteSessionFromIdToken(firstArg, secondArg, thirdArg) {
   const args = normalizeSessionCreationArgs(firstArg, secondArg, thirdArg);
   const idToken = args.value;
   const res = args.res;
   const req = args.req;
-  const decodedToken = await admin.auth().verifyIdToken(idToken);
+  const decodedUid = decodeUidFromIdToken(idToken);
+  const fallbackSessionPrefix = "idtoken.";
+  let sessionCookie = "";
+  let sessionMaxAgeSeconds = Math.floor(SITE_SESSION_EXPIRES_MS / 1000);
 
-  const sessionCookie = await admin.auth().createSessionCookie(idToken, {
-    expiresIn: SITE_SESSION_EXPIRES_MS
-  });
+  try {
+    sessionCookie = await Promise.race([
+      admin.auth().createSessionCookie(idToken, {
+        expiresIn: SITE_SESSION_EXPIRES_MS
+      }),
+      new Promise(function (_, reject) {
+        setTimeout(function () {
+          const error = new Error("session-cookie-timeout");
+          error.sessionCookieTimeout = true;
+          reject(error);
+        }, 8000);
+      })
+    ]);
+  } catch (error) {
+    if (!error || !error.sessionCookieTimeout) {
+      throw error;
+    }
+
+    sessionCookie = fallbackSessionPrefix + idToken;
+    sessionMaxAgeSeconds = 55 * 60;
+  }
 
   setCookie(
     res,
     SITE_SESSION_COOKIE_NAME,
     sessionCookie,
-    Math.floor(SITE_SESSION_EXPIRES_MS / 1000)
+    sessionMaxAgeSeconds
   );
 
-  const accountSession = await createAccountSession(decodedToken.uid, res, req);
+  const accountSession = decodedUid ? await createAccountSession(decodedUid, res, req) : null;
 
   return {
     sessionCookie,
@@ -866,6 +900,7 @@ async function clearSiteSessionCookie(firstArg, secondArg) {
 async function getSiteSessionUser(req, options) {
   const settings = options || {};
   const sessionCookie = getCookie(req, SITE_SESSION_COOKIE_NAME);
+  const fallbackSessionPrefix = "idtoken.";
 
   if (!sessionCookie) {
     const error = new Error("not-signed-in");
@@ -873,13 +908,27 @@ async function getSiteSessionUser(req, options) {
     throw error;
   }
 
-  const decodedUser = await admin.auth().verifySessionCookie(sessionCookie, false);
+  const usesFallbackIdToken = sessionCookie.startsWith(fallbackSessionPrefix);
+  const cookieToken = usesFallbackIdToken
+    ? sessionCookie.slice(fallbackSessionPrefix.length)
+    : sessionCookie;
+
+  const decodedUser = usesFallbackIdToken
+    ? await admin.auth().verifyIdToken(cookieToken, false)
+    : await admin.auth().verifySessionCookie(cookieToken, false);
 
   const hasAccountSessionCookie = Boolean(getAccountSessionCookieParts(req));
   let currentAccountSession = null;
 
   try {
-    currentAccountSession = await touchCurrentAccountSession(req, decodedUser.uid);
+    currentAccountSession = await Promise.race([
+      touchCurrentAccountSession(req, decodedUser.uid),
+      new Promise(function (resolve) {
+        setTimeout(function () {
+          resolve(null);
+        }, 3000);
+      })
+    ]);
   } catch (error) {
     if (error && error.statusCode === 401) {
       throw error;
@@ -891,7 +940,11 @@ async function getSiteSessionUser(req, options) {
   }
 
   if (settings.checkRevoked !== false) {
-    await admin.auth().verifySessionCookie(sessionCookie, true);
+    if (usesFallbackIdToken) {
+      await admin.auth().verifyIdToken(cookieToken, true);
+    } else {
+      await admin.auth().verifySessionCookie(cookieToken, true);
+    }
   }
 
   return decodedUser;
