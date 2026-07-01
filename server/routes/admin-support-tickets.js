@@ -124,6 +124,9 @@ function serializeOrder(orderDoc) {
     companyName: data.companyName || "",
     streetName: data.streetName || "",
     additionalInfo: data.additionalInfo || "",
+    locationLatitude: data.locationLatitude || "",
+    locationLongitude: data.locationLongitude || "",
+    locationMapUrl: data.locationMapUrl || "",
     items: items.map(function (item) {
       return {
         id: item.id || "",
