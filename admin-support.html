@@ -582,17 +582,30 @@
       const quantity = Number(item.quantity || 1);
       const unitPrice = item.priceText || item.price || "Price not set";
       const lineTotal = item.lineTotalText || unitPrice;
+      const imageMarkup = item.image ? `
+            <div class="admin-order-item-image-frame">
+              <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name || "Product")}" loading="lazy" decoding="async">
+            </div>
+      ` : `
+            <div class="admin-order-item-image-frame empty" aria-hidden="true"></div>
+      `;
 
       return `
         <article class="account-support-message admin-order-item">
-          <div class="account-support-message-head">
-            <strong>${escapeHtml(item.name || "Product")}</strong>
-            <span>${escapeHtml("Qty " + quantity)}</span>
-          </div>
+          <div class="admin-order-item-content">
+            ${imageMarkup}
 
-          <div class="admin-order-item-row">
-            <span>${escapeHtml(unitPrice)}</span>
-            <strong>${escapeHtml(lineTotal)}</strong>
+            <div class="admin-order-item-details">
+              <div class="account-support-message-head">
+                <strong>${escapeHtml(item.name || "Product")}</strong>
+                <span>${escapeHtml("Qty " + quantity)}</span>
+              </div>
+
+              <div class="admin-order-item-row">
+                <span>${escapeHtml(unitPrice)}</span>
+                <strong>${escapeHtml(lineTotal)}</strong>
+              </div>
+            </div>
           </div>
         </article>
       `;
