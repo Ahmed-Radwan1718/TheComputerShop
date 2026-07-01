@@ -3180,13 +3180,9 @@ function getAddressLocationMapLink(latitude, longitude) {
 }
 
 function getAddressLocationEmbedUrl(latitude, longitude) {
-  const lat = Number(latitude);
-  const lng = Number(longitude);
-  const offset = 0.01;
-
-  return "https://www.openstreetmap.org/export/embed.html?bbox="
-    + encodeURIComponent((lng - offset) + "," + (lat - offset) + "," + (lng + offset) + "," + (lat + offset))
-    + "&marker=" + encodeURIComponent(lat + "," + lng);
+  return "https://maps.google.com/maps?q="
+    + encodeURIComponent(latitude + "," + longitude)
+    + "&z=16&output=embed";
 }
 
 function clearAddressLocation() {
