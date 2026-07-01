@@ -144,7 +144,13 @@
         <span class="chevron"></span>
       </button>
 
-      <div class="custom-select-menu" id="account-phone-country-menu"></div>
+      <div class="custom-select-menu" id="account-phone-country-menu">
+        <div class="account-phone-country-search-wrap">
+          <input class="account-phone-country-search" type="search" id="account-phone-country-search" placeholder="Search countries" autocomplete="off" aria-label="Search countries">
+        </div>
+
+        <div class="account-phone-country-options" id="account-phone-country-options"></div>
+      </div>
     </div>
 
     <input type="tel" id="account-phone" autocomplete="tel">
@@ -1063,6 +1069,8 @@ const accountPhoneCountry = document.getElementById("account-phone-country");
 const accountPhoneCountryDropdown = document.getElementById("account-phone-country-dropdown");
 const accountPhoneCountryValue = document.getElementById("account-phone-country-value");
 const accountPhoneCountryMenu = document.getElementById("account-phone-country-menu");
+const accountPhoneCountrySearch = document.getElementById("account-phone-country-search");
+const accountPhoneCountryOptions = document.getElementById("account-phone-country-options");
 const accountPhone = document.getElementById("account-phone");
 
 const statusEmailVerified = document.getElementById("status-email-verified");
@@ -5466,8 +5474,14 @@ function getAccountPhoneCountryValueMarkup(country) {
   `;
 }
 
+function getAccountPhoneCountryOptionsTarget() {
+  return accountPhoneCountryOptions || accountPhoneCountryMenu;
+}
+
 function renderAccountPhoneCountryDropdownOptions() {
-  if (!accountPhoneCountryMenu || accountPhoneCountryMenu.children.length) {
+  const optionsTarget = getAccountPhoneCountryOptionsTarget();
+
+  if (!accountPhoneCountryMenu || !optionsTarget || optionsTarget.children.length) {
     return;
   }
 
@@ -5476,11 +5490,24 @@ function renderAccountPhoneCountryDropdownOptions() {
     optionButton.className = "custom-select-option";
     optionButton.type = "button";
     optionButton.dataset.iso = country.iso;
+    optionButton.dataset.search = (country.name + " " + country.iso + " " + country.dial).toLowerCase();
     optionButton.innerHTML = `
       <img class="account-phone-country-flag" src="${getAccountPhoneCountryFlagUrl(country)}" alt="" aria-hidden="true">
       <span>${country.name} ${country.dial}</span>
     `;
-    accountPhoneCountryMenu.appendChild(optionButton);
+    optionsTarget.appendChild(optionButton);
+  });
+}
+
+function filterAccountPhoneCountryOptions(searchTerm) {
+  if (!accountPhoneCountryMenu) {
+    return;
+  }
+
+  const normalizedSearch = String(searchTerm || "").trim().toLowerCase();
+
+  accountPhoneCountryMenu.querySelectorAll(".custom-select-option").forEach(function (option) {
+    option.hidden = Boolean(normalizedSearch) && (option.dataset.search || "").indexOf(normalizedSearch) === -1;
   });
 }
 
@@ -5498,6 +5525,8 @@ function syncAccountPhoneCountryDropdown() {
   accountPhoneCountryMenu.querySelectorAll(".custom-select-option").forEach(function (option) {
     option.classList.toggle("active", option.dataset.iso === country.iso);
   });
+
+  filterAccountPhoneCountryOptions(accountPhoneCountrySearch ? accountPhoneCountrySearch.value : "");
 }
 
 function splitAccountPhoneValue(value) {
@@ -5560,7 +5589,30 @@ function initializeAccountPhoneCountryDropdown() {
   trigger.addEventListener("click", function () {
     const isOpen = accountPhoneCountryDropdown.classList.toggle("open");
     trigger.setAttribute("aria-expanded", String(isOpen));
+
+    if (isOpen && accountPhoneCountrySearch) {
+      accountPhoneCountrySearch.focus();
+      accountPhoneCountrySearch.select();
+    }
   });
+
+  if (accountPhoneCountrySearch) {
+    accountPhoneCountrySearch.addEventListener("input", function () {
+      filterAccountPhoneCountryOptions(accountPhoneCountrySearch.value);
+    });
+
+    accountPhoneCountrySearch.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+      }
+
+      if (event.key === "Escape") {
+        accountPhoneCountryDropdown.classList.remove("open");
+        trigger.setAttribute("aria-expanded", "false");
+        trigger.focus();
+      }
+    });
+  }
 
   accountPhoneCountryMenu.addEventListener("click", function (event) {
     const option = event.target.closest(".custom-select-option");
@@ -5570,6 +5622,12 @@ function initializeAccountPhoneCountryDropdown() {
     }
 
     accountPhoneCountry.value = option.dataset.iso || "EG";
+
+    if (accountPhoneCountrySearch) {
+      accountPhoneCountrySearch.value = "";
+      filterAccountPhoneCountryOptions("");
+    }
+
     syncAccountPhoneCountryDropdown();
     accountPhoneCountryDropdown.classList.remove("open");
     trigger.setAttribute("aria-expanded", "false");
