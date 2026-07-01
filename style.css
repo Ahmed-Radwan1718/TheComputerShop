@@ -7358,8 +7358,7 @@ body.account-photo-crop-modal-open {
 .account-photo-crop-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.72);
-  backdrop-filter: blur(14px);
+  background: rgba(0, 0, 0, 0.78);
 }
 
 .account-photo-crop-card {
@@ -7368,11 +7367,14 @@ body.account-photo-crop-modal-open {
   width: min(760px, 100%);
   max-height: calc(100vh - 48px);
   overflow: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   padding: 28px;
   border-radius: 28px;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(28, 30, 28, 0.98);
+  background: #1c1e1c;
   box-shadow: 0 30px 90px rgba(0, 0, 0, 0.42);
+  contain: layout paint;
 }
 
 .account-photo-crop-close {
@@ -7979,9 +7981,7 @@ body.account-photo-crop-modal-open {
 .account-email-modal-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.48);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(0, 0, 0, 0.72);
 }
 
 .account-email-modal-card {
@@ -7991,8 +7991,9 @@ body.account-photo-crop-modal-open {
   padding: 32px;
   border-radius: 22px;
   border: 1px solid rgba(255, 255, 255, 0.11);
-  background: rgba(31, 32, 34, 0.96);
+  background: #1f2022;
   box-shadow: 0 28px 80px rgba(0, 0, 0, 0.42);
+  contain: layout paint;
 }
 
 .account-email-modal-close {
@@ -8088,9 +8089,7 @@ body.account-security-modal-open {
 .account-security-modal-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.52);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(0, 0, 0, 0.72);
 }
 
 .account-security-modal-card {
@@ -8099,11 +8098,14 @@ body.account-security-modal-open {
   width: min(620px, 100%);
   max-height: calc(100vh - 48px);
   overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   padding: 36px;
   border-radius: 26px;
   border: 1px solid rgba(255, 255, 255, 0.11);
-  background: rgba(24, 25, 24, 0.96);
+  background: #181918;
   box-shadow: 0 22px 55px rgba(0, 0, 0, 0.32);
+  contain: layout paint;
 }
 
 .account-security-gate-card {
@@ -8491,9 +8493,7 @@ body.account-security-modal-open {
 .account-address-modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.62);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  background: rgba(0, 0, 0, 0.72);
 }
 
 .account-address-modal-card {
@@ -8502,6 +8502,8 @@ body.account-security-modal-open {
   width: min(760px, calc(100vw - 48px));
   max-height: min(820px, calc(100dvh - 48px));
   overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   padding: 36px;
   border-radius: 26px;
   border: 1px solid rgba(255, 255, 255, 0.11);
@@ -8510,6 +8512,7 @@ body.account-security-modal-open {
   color-scheme: dark;
   scrollbar-color: rgba(255, 255, 255, 0.55) #2a2b2a;
   scrollbar-width: auto;
+  contain: layout paint;
 }
 
 .account-address-modal-close {
@@ -10130,9 +10133,7 @@ body.account-security-modal-open {
 .account-order-modal-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.52);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(0, 0, 0, 0.72);
 }
 
 .account-order-modal-card {
@@ -10141,11 +10142,14 @@ body.account-security-modal-open {
   width: min(860px, 100%);
   max-height: calc(100vh - 48px);
   overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   padding: 32px;
   border-radius: 24px;
   border: 1px solid rgba(255, 255, 255, 0.11);
-  background: rgba(22, 23, 22, 0.98);
+  background: #161716;
   box-shadow: 0 20px 48px rgba(0, 0, 0, 0.34);
+  contain: layout paint;
 }
 
 .account-order-modal-close {
@@ -10932,9 +10936,7 @@ body.account-security-modal-open {
 .account-authenticator-modal-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.52);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(0, 0, 0, 0.72);
 }
 
 .account-authenticator-modal-card {
@@ -10943,11 +10945,14 @@ body.account-security-modal-open {
   width: min(680px, 100%);
   max-height: calc(100vh - 48px);
   overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   padding: 36px;
   border-radius: 26px;
   border: 1px solid rgba(255, 255, 255, 0.11);
-  background: rgba(24, 25, 24, 0.96);
+  background: #181918;
   box-shadow: 0 22px 55px rgba(0, 0, 0, 0.32);
+  contain: layout paint;
 }
 
 .account-authenticator-modal-close {
@@ -11160,8 +11165,7 @@ body.account-security-modal-open {
 .account-password-modal-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(16px);
+  background: rgba(0, 0, 0, 0.72);
 }
 
 .account-password-modal-card {
@@ -11170,11 +11174,14 @@ body.account-security-modal-open {
   width: min(620px, 100%);
   max-height: calc(100vh - 48px);
   overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   padding: 42px 42px 36px;
   border-radius: 22px;
-  background: rgba(31, 32, 34, 0.97);
+  background: #1f2022;
   border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.48);
+  contain: layout paint;
 }
 
 .account-password-modal-close {
