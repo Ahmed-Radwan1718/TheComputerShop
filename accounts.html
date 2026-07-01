@@ -149,23 +149,7 @@
 
     <input type="tel" id="account-phone" autocomplete="tel">
   </div>
-
-  <div class="account-phone-verification-actions">
-    <button class="account-phone-action-button" type="button" id="account-phone-send-code">
-      Send Verification Code
-    </button>
-  </div>
-
-  <div class="account-phone-code-row" id="account-phone-code-row" hidden>
-    <input type="text" id="account-phone-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="6-digit code">
-    <button class="account-phone-action-button" type="button" id="account-phone-confirm-code">
-      Verify Code
-    </button>
-  </div>
-
-  <div class="account-phone-recaptcha" id="account-phone-recaptcha"></div>
-  <p class="account-message" id="account-phone-message" aria-live="polite"></p>
-  </div>
+</div>
 </div>
               </div>
 
@@ -1050,7 +1034,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-  import { FacebookAuthProvider, GithubAuthProvider, GoogleAuthProvider, PhoneAuthProvider, RecaptchaVerifier, getAuth, getIdToken, linkWithPopup, signInWithCustomToken, signOut, updatePhoneNumber } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+  import { FacebookAuthProvider, GithubAuthProvider, GoogleAuthProvider, getAuth, linkWithPopup, signInWithCustomToken, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 
   const accountLoading = document.getElementById("account-loading");
   const accountHeaderText = document.getElementById("account-header-text");
@@ -1081,11 +1065,6 @@ const accountPhoneCountryDropdown = document.getElementById("account-phone-count
 const accountPhoneCountryValue = document.getElementById("account-phone-country-value");
 const accountPhoneCountryMenu = document.getElementById("account-phone-country-menu");
 const accountPhone = document.getElementById("account-phone");
-const accountPhoneSendCodeButton = document.getElementById("account-phone-send-code");
-const accountPhoneCodeRow = document.getElementById("account-phone-code-row");
-const accountPhoneCode = document.getElementById("account-phone-code");
-const accountPhoneConfirmCodeButton = document.getElementById("account-phone-confirm-code");
-const accountPhoneMessage = document.getElementById("account-phone-message");
 
 const statusEmailVerified = document.getElementById("status-email-verified");
 const sendEmailVerificationButton = document.getElementById("send-email-verification-button");
@@ -1277,12 +1256,6 @@ const passwordMessage = document.getElementById("password-message");
 let currentUser = null;
 let firebaseClientApp = null;
 let firebaseClientAuth = null;
-let accountPhoneRecaptchaVerifier = null;
-let pendingPhoneVerificationId = "";
-let verifiedAccountPhoneForSave = "";
-let verifiedAccountPhoneTokenForSave = "";
-let currentSavedAccountPhone = "";
-let currentSavedAccountPhoneVerified = false;
 const PROFILE_PHOTO_MAX_FILE_SIZE = 4 * 1024 * 1024;
 const PROFILE_PHOTO_ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
@@ -3667,7 +3640,7 @@ function updateAccountStatus(user, data) {
   }
 
   if (statusPhoneVerified) {
-    statusPhoneVerified.textContent = safeData.phone ? (safeData.phoneVerified ? "Verified" : "Not Verified") : "Not Added";
+    statusPhoneVerified.textContent = safeData.phone ? "Added" : "Not Added";
   }
 
   updateConnectedAccountStatus(connectedPasswordStatus, connectedPasswordBadge, null, connectedProviderIds.has("password"), "Email & Password");
@@ -5572,171 +5545,6 @@ function getAccountPhoneValueForSave() {
   return country.dial + localPhone;
 }
 
-function resetAccountPhoneVerificationState(clearMessage) {
-  pendingPhoneVerificationId = "";
-  verifiedAccountPhoneForSave = "";
-  verifiedAccountPhoneTokenForSave = "";
-
-  if (accountPhoneCodeRow) {
-    accountPhoneCodeRow.hidden = true;
-  }
-
-  if (accountPhoneCode) {
-    accountPhoneCode.value = "";
-  }
-
-  if (accountPhoneConfirmCodeButton) {
-    accountPhoneConfirmCodeButton.disabled = false;
-    accountPhoneConfirmCodeButton.textContent = "Verify Code";
-  }
-
-  if (accountPhoneSendCodeButton) {
-    accountPhoneSendCodeButton.disabled = false;
-    accountPhoneSendCodeButton.textContent = "Send Verification Code";
-  }
-
-  if (clearMessage && accountPhoneMessage) {
-    showMessage(accountPhoneMessage, "", "");
-  }
-}
-
-function getAccountPhoneAuthErrorMessage(error) {
-  if (error && error.code === "auth/credential-already-in-use") {
-    return "This phone number is already linked to another account.";
-  }
-
-  if (error && error.code === "auth/invalid-phone-number") {
-    return "Please enter a valid phone number.";
-  }
-
-  if (error && error.code === "auth/too-many-requests") {
-    return "Too many SMS attempts. Please try again later.";
-  }
-
-  if (error && error.code === "auth/code-expired") {
-    return "This verification code expired. Please send a new code.";
-  }
-
-  if (error && error.code === "auth/invalid-verification-code") {
-    return "The verification code is incorrect.";
-  }
-
-  return error.message || "Could not verify this phone number.";
-}
-
-async function getAccountPhoneRecaptchaVerifier(auth) {
-  if (!accountPhoneRecaptchaVerifier) {
-    accountPhoneRecaptchaVerifier = new RecaptchaVerifier(auth, "account-phone-recaptcha", {
-      size: "invisible"
-    });
-  }
-
-  return accountPhoneRecaptchaVerifier;
-}
-
-async function resetAccountPhoneRecaptcha() {
-  if (!accountPhoneRecaptchaVerifier) {
-    return;
-  }
-
-  try {
-    accountPhoneRecaptchaVerifier.clear();
-  } catch (error) {}
-
-  accountPhoneRecaptchaVerifier = null;
-}
-
-async function sendAccountPhoneVerificationCode() {
-  const phoneNumber = getAccountPhoneValueForSave();
-
-  if (!phoneNumber) {
-    showMessage(accountPhoneMessage, "Please enter your phone number.", "error");
-    return;
-  }
-
-  if (phoneNumber === currentSavedAccountPhone && currentSavedAccountPhoneVerified) {
-    showMessage(accountPhoneMessage, "This phone number is already verified.", "success");
-    return;
-  }
-
-  accountPhoneSendCodeButton.disabled = true;
-  accountPhoneSendCodeButton.textContent = "Sending...";
-  showMessage(accountPhoneMessage, "", "");
-
-  try {
-    const auth = await getFirebaseClientAuth();
-
-    if (!auth.currentUser) {
-      throw new Error("Please log in again before verifying your phone.");
-    }
-
-    const appVerifier = await getAccountPhoneRecaptchaVerifier(auth);
-    const provider = new PhoneAuthProvider(auth);
-    pendingPhoneVerificationId = await provider.verifyPhoneNumber(phoneNumber, appVerifier);
-
-    if (accountPhoneCodeRow) {
-      accountPhoneCodeRow.hidden = false;
-    }
-
-    if (accountPhoneCode) {
-      accountPhoneCode.focus();
-    }
-
-    showMessage(accountPhoneMessage, "Verification code sent.", "success");
-  } catch (error) {
-    await resetAccountPhoneRecaptcha();
-    showMessage(accountPhoneMessage, getAccountPhoneAuthErrorMessage(error), "error");
-  } finally {
-    accountPhoneSendCodeButton.disabled = false;
-    accountPhoneSendCodeButton.textContent = "Send Verification Code";
-  }
-}
-
-async function confirmAccountPhoneVerificationCode() {
-  const phoneNumber = getAccountPhoneValueForSave();
-  const code = accountPhoneCode ? accountPhoneCode.value.trim() : "";
-
-  if (!pendingPhoneVerificationId) {
-    showMessage(accountPhoneMessage, "Send a verification code first.", "error");
-    return;
-  }
-
-  if (!code || code.length < 6) {
-    showMessage(accountPhoneMessage, "Enter the 6-digit verification code.", "error");
-    return;
-  }
-
-  accountPhoneConfirmCodeButton.disabled = true;
-  accountPhoneConfirmCodeButton.textContent = "Verifying...";
-  showMessage(accountPhoneMessage, "", "");
-
-  try {
-    const auth = await getFirebaseClientAuth();
-
-    if (!auth.currentUser) {
-      throw new Error("Please log in again before verifying your phone.");
-    }
-
-    const credential = PhoneAuthProvider.credential(pendingPhoneVerificationId, code);
-    await updatePhoneNumber(auth.currentUser, credential);
-
-    verifiedAccountPhoneForSave = phoneNumber;
-    verifiedAccountPhoneTokenForSave = await getIdToken(auth.currentUser, true);
-    pendingPhoneVerificationId = "";
-
-    if (accountPhoneCodeRow) {
-      accountPhoneCodeRow.hidden = true;
-    }
-
-    showMessage(accountPhoneMessage, "Phone verified. Save changes to update your account.", "success");
-  } catch (error) {
-    showMessage(accountPhoneMessage, getAccountPhoneAuthErrorMessage(error), "error");
-  } finally {
-    accountPhoneConfirmCodeButton.disabled = false;
-    accountPhoneConfirmCodeButton.textContent = "Verify Code";
-  }
-}
-
 function initializeAccountPhoneCountryDropdown() {
   if (!accountPhoneCountryDropdown || !accountPhoneCountryMenu || !accountPhoneCountry) {
     return;
@@ -5764,7 +5572,6 @@ function initializeAccountPhoneCountryDropdown() {
 
     accountPhoneCountry.value = option.dataset.iso || "EG";
     syncAccountPhoneCountryDropdown();
-    resetAccountPhoneVerificationState(true);
     accountPhoneCountryDropdown.classList.remove("open");
     trigger.setAttribute("aria-expanded", "false");
   });
@@ -5781,32 +5588,11 @@ function initializeAccountPhoneCountryDropdown() {
 
 initializeAccountPhoneCountryDropdown();
 
-if (accountPhone) {
-  accountPhone.addEventListener("input", function () {
-    if (getAccountPhoneValueForSave() !== verifiedAccountPhoneForSave) {
-      resetAccountPhoneVerificationState(true);
-    }
-  });
-}
-
-if (accountPhoneSendCodeButton) {
-  accountPhoneSendCodeButton.addEventListener("click", sendAccountPhoneVerificationCode);
-}
-
-if (accountPhoneConfirmCodeButton) {
-  accountPhoneConfirmCodeButton.addEventListener("click", confirmAccountPhoneVerificationCode);
-}
-
 function hydrateAccountProfileFromServer(profile, user) {
   const safeProfile = profile || {};
 
-  currentSavedAccountPhone = safeProfile.phone || "";
-  currentSavedAccountPhoneVerified = Boolean(safeProfile.phone && safeProfile.phoneVerified);
-  resetAccountPhoneVerificationState(false);
-
   const profileDataForStatus = {
     phone: safeProfile.phone || "",
-    phoneVerified: Boolean(safeProfile.phone && safeProfile.phoneVerified),
     createdAt: safeProfile.createdAt || "",
     updatedAt: safeProfile.updatedAt || "",
     connectedProviders: Array.isArray(safeProfile.connectedProviders) ? safeProfile.connectedProviders : []
@@ -6130,20 +5916,9 @@ detailsForm.addEventListener("submit", async function (event) {
   showMessage(detailsMessage, "", "");
 
   try {
-    const phoneForSave = getAccountPhoneValueForSave();
-    const phoneNeedsVerification = Boolean(phoneForSave) && (phoneForSave !== currentSavedAccountPhone || !currentSavedAccountPhoneVerified);
-
-    if (phoneNeedsVerification && (verifiedAccountPhoneForSave !== phoneForSave || !verifiedAccountPhoneTokenForSave)) {
-      showMessage(accountPhoneMessage, "Please verify this phone number before saving.", "error");
-      detailsButton.disabled = false;
-      detailsButton.textContent = "Save Changes";
-      return;
-    }
-
     const profileData = {
       fullName: newUsername,
-      phone: phoneForSave,
-      phoneVerificationToken: phoneNeedsVerification ? verifiedAccountPhoneTokenForSave : ""
+      phone: getAccountPhoneValueForSave()
     };
 
     if (pendingProfilePhotoDataUrl) {
