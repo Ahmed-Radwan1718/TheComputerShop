@@ -7938,14 +7938,12 @@ body.account-photo-crop-modal-open {
   display: none;
 }
 
-.account-address-map-canvas {
+.account-address-map-preview iframe {
   width: 100%;
   height: 220px;
-  min-height: 220px;
-}
-
-.account-address-map-canvas .gm-style {
-  font-family: inherit;
+  border: 0;
+  display: block;
+  pointer-events: none;
 }
 
 .account-address-location-actions {
