@@ -251,6 +251,10 @@
                   <input type="text" id="checkout-additional-info">
                 </div>
 
+                <input type="hidden" id="checkout-location-latitude">
+                <input type="hidden" id="checkout-location-longitude">
+                <input type="hidden" id="checkout-location-map-url">
+
                 <div class="checkout-field checkout-address-field checkout-address-house">
                   <label for="checkout-house-number">House / Villa Number</label>
                   <input type="text" id="checkout-house-number">
@@ -332,6 +336,9 @@
   const checkoutOfficeName = document.getElementById("checkout-office-name");
   const checkoutCompanyName = document.getElementById("checkout-company-name");
   const checkoutAdditionalInfo = document.getElementById("checkout-additional-info");
+  const checkoutLocationLatitude = document.getElementById("checkout-location-latitude");
+  const checkoutLocationLongitude = document.getElementById("checkout-location-longitude");
+  const checkoutLocationMapUrl = document.getElementById("checkout-location-map-url");
   const checkoutCustomerNote = document.getElementById("checkout-customer-note");
   const checkoutSubmitButton = document.getElementById("checkout-submit-button");
   const checkoutMessage = document.getElementById("checkout-message");
@@ -491,8 +498,15 @@
     }
   }
 
+  function clearCheckoutAddressLocation() {
+    if (checkoutLocationLatitude) checkoutLocationLatitude.value = "";
+    if (checkoutLocationLongitude) checkoutLocationLongitude.value = "";
+    if (checkoutLocationMapUrl) checkoutLocationMapUrl.value = "";
+  }
+
   function fillCheckoutAddress(address) {
     if (!address) {
+      clearCheckoutAddressLocation();
       return;
     }
 
@@ -506,6 +520,11 @@
     checkoutOfficeName.value = address.officeName || "";
     checkoutCompanyName.value = address.companyName || "";
     checkoutAdditionalInfo.value = address.additionalInfo || "";
+
+    if (checkoutLocationLatitude) checkoutLocationLatitude.value = address.locationLatitude || "";
+    if (checkoutLocationLongitude) checkoutLocationLongitude.value = address.locationLongitude || "";
+    if (checkoutLocationMapUrl) checkoutLocationMapUrl.value = address.locationMapUrl || "";
+
     showCheckoutAddressFields();
   }
 
@@ -637,6 +656,9 @@
         officeName: checkoutOfficeName.value.trim(),
         companyName: checkoutCompanyName.value.trim(),
         additionalInfo: checkoutAdditionalInfo.value.trim(),
+        locationLatitude: checkoutLocationLatitude ? checkoutLocationLatitude.value : "",
+        locationLongitude: checkoutLocationLongitude ? checkoutLocationLongitude.value : "",
+        locationMapUrl: checkoutLocationMapUrl ? checkoutLocationMapUrl.value : "",
         customerNote: checkoutCustomerNote.value.trim()
       })
     });
