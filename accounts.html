@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Account - The Computer Shop</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="style.css?v=orders-progress-completed-calm-green-20260701" />
 </head>
 <body oncontextmenu="return false;">
@@ -1061,7 +1060,7 @@
   </div>
 </div>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY"></script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
   import { FacebookAuthProvider, GithubAuthProvider, GoogleAuthProvider, getAuth, linkWithPopup, signInWithCustomToken, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
@@ -3178,7 +3177,7 @@ const ADDRESS_LOCATION_DEFAULT_COORDS = {
   longitude: 30.8025
 };
 
-let addressLocationLeafletMap = null;
+let addressLocationGoogleMap = null;
 let addressLocationMarker = null;
 
 function getAddressLocationMapLink(latitude, longitude) {
@@ -3186,33 +3185,47 @@ function getAddressLocationMapLink(latitude, longitude) {
 }
 
 function syncAddressLocationMapSize() {
-  if (addressLocationLeafletMap) {
+  if (addressLocationGoogleMap && window.google && window.google.maps) {
+    const center = addressLocationGoogleMap.getCenter();
+
     setTimeout(function () {
-      addressLocationLeafletMap.invalidateSize();
+      window.google.maps.event.trigger(addressLocationGoogleMap, "resize");
+
+      if (center) {
+        addressLocationGoogleMap.setCenter(center);
+      }
     }, 50);
   }
 }
 
 function initializeAddressLocationMap() {
-  if (!addressLocationMap || !window.L) {
+  if (!addressLocationMap || !window.google || !window.google.maps) {
     return;
   }
 
-  if (addressLocationLeafletMap) {
+  if (addressLocationGoogleMap) {
     syncAddressLocationMapSize();
     return;
   }
 
-  addressLocationLeafletMap = window.L.map(addressLocationMap, {
-    scrollWheelZoom: false
-  }).setView([ADDRESS_LOCATION_DEFAULT_COORDS.latitude, ADDRESS_LOCATION_DEFAULT_COORDS.longitude], 6);
+  addressLocationGoogleMap = new window.google.maps.Map(addressLocationMap, {
+    center: {
+      lat: ADDRESS_LOCATION_DEFAULT_COORDS.latitude,
+      lng: ADDRESS_LOCATION_DEFAULT_COORDS.longitude
+    },
+    zoom: 6,
+    clickableIcons: false,
+    mapTypeControl: false,
+    streetViewControl: false,
+    fullscreenControl: true
+  });
 
-  window.L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution: "&copy; OpenStreetMap contributors"
-  }).addTo(addressLocationLeafletMap);
+  addressLocationGoogleMap.addListener("click", function (event) {
+    if (!event.latLng) {
+      return;
+    }
 
-  addressLocationLeafletMap.on("click", function (event) {
-    setAddressLocation(event.latlng.lat, event.latlng.lng, {
+    setAddressLocation(event.latLng.lat(), event.latLng.lng(), {
       shouldCenter: false
     });
     showMessage(addressModalMessage, "Map location added.", "success");
@@ -3222,43 +3235,56 @@ function initializeAddressLocationMap() {
 }
 
 function setAddressLocationMarker(latitude, longitude, options) {
-  if (!addressLocationLeafletMap || !window.L) {
+  if (!addressLocationGoogleMap || !window.google || !window.google.maps) {
     return;
   }
 
-  const position = [latitude, longitude];
+  const position = {
+    lat: latitude,
+    lng: longitude
+  };
   const shouldCenter = !options || options.shouldCenter !== false;
 
   if (!addressLocationMarker) {
-    addressLocationMarker = window.L.marker(position, {
+    addressLocationMarker = new window.google.maps.Marker({
+      position: position,
+      map: addressLocationGoogleMap,
       draggable: true
-    }).addTo(addressLocationLeafletMap);
+    });
 
-    addressLocationMarker.on("dragend", function () {
-      const markerPosition = addressLocationMarker.getLatLng();
-      setAddressLocation(markerPosition.lat, markerPosition.lng, {
+    addressLocationMarker.addListener("dragend", function (event) {
+      if (!event.latLng) {
+        return;
+      }
+
+      setAddressLocation(event.latLng.lat(), event.latLng.lng(), {
         shouldCenter: false
       });
     });
   } else {
-    addressLocationMarker.setLatLng(position);
+    addressLocationMarker.setPosition(position);
   }
 
   if (shouldCenter) {
-    addressLocationLeafletMap.setView(position, 16);
+    addressLocationGoogleMap.setCenter(position);
+    addressLocationGoogleMap.setZoom(16);
   }
 }
 
 function resetAddressLocationMap() {
   initializeAddressLocationMap();
 
-  if (addressLocationMarker && addressLocationLeafletMap) {
-    addressLocationLeafletMap.removeLayer(addressLocationMarker);
+  if (addressLocationMarker) {
+    addressLocationMarker.setMap(null);
     addressLocationMarker = null;
   }
 
-  if (addressLocationLeafletMap) {
-    addressLocationLeafletMap.setView([ADDRESS_LOCATION_DEFAULT_COORDS.latitude, ADDRESS_LOCATION_DEFAULT_COORDS.longitude], 6);
+  if (addressLocationGoogleMap) {
+    addressLocationGoogleMap.setCenter({
+      lat: ADDRESS_LOCATION_DEFAULT_COORDS.latitude,
+      lng: ADDRESS_LOCATION_DEFAULT_COORDS.longitude
+    });
+    addressLocationGoogleMap.setZoom(6);
   }
 }
 
@@ -3274,7 +3300,7 @@ function clearAddressLocation() {
   if (addressLocationClearButton) addressLocationClearButton.hidden = true;
 
   if (addressLocationNote) {
-    addressLocationNote.textContent = "Click the map to drop a pin, or use your current location.";
+    addressLocationNote.textContent = "Click the Google map to drop a pin, or use your current location.";
   }
 }
 
