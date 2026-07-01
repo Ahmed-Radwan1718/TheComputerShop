@@ -5507,7 +5507,9 @@ function filterAccountPhoneCountryOptions(searchTerm) {
   const normalizedSearch = String(searchTerm || "").trim().toLowerCase();
 
   accountPhoneCountryMenu.querySelectorAll(".custom-select-option").forEach(function (option) {
-    option.hidden = Boolean(normalizedSearch) && (option.dataset.search || "").indexOf(normalizedSearch) === -1;
+    const shouldHide = Boolean(normalizedSearch) && (option.dataset.search || "").indexOf(normalizedSearch) === -1;
+    option.hidden = shouldHide;
+    option.style.display = shouldHide ? "none" : "";
   });
 }
 
