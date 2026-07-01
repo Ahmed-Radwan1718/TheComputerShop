@@ -4971,6 +4971,53 @@ body.nav-menu-open {
   cursor: pointer;
 }
 
+.checkout-province-select {
+  position: relative;
+  z-index: 30;
+}
+
+.checkout-province-select.open {
+  z-index: 90;
+}
+
+.checkout-province-select .custom-select-trigger {
+  min-height: 50px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.045);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.checkout-province-select .custom-select-menu {
+  max-height: 260px;
+  overflow-y: auto;
+  background: rgba(42, 43, 42, 0.99);
+  color-scheme: dark;
+  scrollbar-color: rgba(255, 255, 255, 0.55) #2a2b2a;
+  scrollbar-width: auto;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  transform: none;
+  transition: opacity 0.12s ease;
+  will-change: opacity;
+  contain: paint;
+}
+
+.checkout-province-select.open .custom-select-menu {
+  transform: none;
+}
+
+.checkout-province-select .custom-select-option {
+  font-family: inherit;
+  transition:
+    color 0.12s ease,
+    background 0.12s ease;
+}
+
+.checkout-province-select .custom-select-option:hover {
+  transform: none;
+}
+
 .checkout-field input[readonly] {
   opacity: 0.72;
 }
