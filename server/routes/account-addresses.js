@@ -49,6 +49,8 @@ function serializeAddress(addressDoc) {
     id: addressDoc.id,
     label: data.label || "",
     addressType: data.addressType || "apartment",
+    province: data.province || "",
+    city: data.city || "",
     buildingName: data.buildingName || "",
     apartmentNumber: data.apartmentNumber || "",
     floorNumber: data.floorNumber || "",
@@ -67,6 +69,8 @@ function cleanAddressData(body) {
   return {
     label: cleanString(body.label, 80),
     addressType: cleanAddressType(body.addressType),
+    province: cleanString(body.province, 80),
+    city: cleanString(body.city, 80),
     buildingName: cleanString(body.buildingName, 80),
     apartmentNumber: cleanString(body.apartmentNumber, 40),
     floorNumber: cleanString(body.floorNumber, 40),
