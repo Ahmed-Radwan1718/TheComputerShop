@@ -7921,6 +7921,70 @@ body.account-photo-crop-modal-open {
   color: #111;
 }
 
+.account-address-location-field {
+  gap: 12px;
+}
+
+.account-address-map-preview {
+  width: 100%;
+  min-height: 220px;
+  overflow: hidden;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.account-address-map-preview[hidden] {
+  display: none;
+}
+
+.account-address-map-preview iframe {
+  width: 100%;
+  height: 220px;
+  border: 0;
+  display: block;
+}
+
+.account-address-location-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.account-address-location-button,
+.account-address-location-clear,
+.account-address-location-link {
+  min-height: 42px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.07);
+  color: white;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.account-address-location-clear {
+  border-color: rgba(255, 156, 156, 0.28);
+  background: rgba(255, 156, 156, 0.12);
+  color: rgba(255, 190, 190, 0.95);
+}
+
+.account-address-location-note {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
 .account-field input:focus,
 .account-field select:focus,
 .account-field textarea:focus {
@@ -9703,6 +9767,13 @@ body.account-security-modal-open {
   font-weight: 500;
   line-height: 1.65;
   overflow-wrap: anywhere;
+}
+
+.admin-order-map-link {
+  color: white;
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
 .admin-order-section {
