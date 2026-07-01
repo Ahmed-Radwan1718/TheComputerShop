@@ -286,6 +286,29 @@ async function handleOrderUpdate(req, res) {
   });
 }
 
+async function handleOrderDelete(req, res) {
+  const db = admin.firestore();
+  const orderId = cleanOrderId((req.body || {}).orderId);
+
+  if (!orderId) {
+    return res.status(400).json({ error: "Missing order id." });
+  }
+
+  const orderRef = db.collection("orders").doc(orderId);
+  const orderDoc = await orderRef.get();
+
+  if (!orderDoc.exists) {
+    return res.status(404).json({ error: "Order not found." });
+  }
+
+  await orderRef.delete();
+
+  return res.status(200).json({
+    success: true,
+    orderId
+  });
+}
+
 async function handleReply(req, res, adminUser) {
   const db = admin.firestore();
   const ticketId = cleanTicketId((req.body || {}).ticketId);
@@ -355,6 +378,10 @@ module.exports = async function handler(req, res) {
 
       if (action === "order-update") {
         return await handleOrderUpdate(req, res);
+      }
+
+      if (action === "order-delete") {
+        return await handleOrderDelete(req, res);
       }
 
       if (action === "status") {
