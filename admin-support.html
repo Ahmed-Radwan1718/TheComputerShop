@@ -771,30 +771,47 @@
   }
 
   async function updateAdminOrder(orderId, status, paymentStatus, adminNote) {
-    const response = await fetch("/api/admin-support-tickets", {
-      method: "POST",
-      credentials: "same-origin",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        action: "order-update",
-        orderId: orderId,
-        status: status,
-        paymentStatus: paymentStatus,
-        adminNote: adminNote
-      })
-    });
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(function () {
+      controller.abort();
+    }, 15000);
 
-    const data = await response.json().catch(function () {
-      return {};
-    });
+    try {
+      const response = await fetch("/api/admin-support-tickets", {
+        method: "POST",
+        credentials: "same-origin",
+        signal: controller.signal,
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({
+          action: "order-update",
+          orderId: orderId,
+          status: status,
+          paymentStatus: paymentStatus,
+          adminNote: adminNote
+        })
+      });
 
-    if (!response.ok || !data.order) {
-      throw new Error(data.error || "Could not save order.");
+      const data = await response.json().catch(function () {
+        return {};
+      });
+
+      if (!response.ok || !data.order) {
+        throw new Error(data.error || "Could not save order.");
+      }
+
+      return data.order;
+    } catch (error) {
+      if (error && error.name === "AbortError") {
+        throw new Error("Saving timed out. Please refresh and try again.");
+      }
+
+      throw error;
+    } finally {
+      window.clearTimeout(timeoutId);
     }
-
-    return data.order;
   }
 
   async function sendAdminTicketReply(ticketId, message) {
