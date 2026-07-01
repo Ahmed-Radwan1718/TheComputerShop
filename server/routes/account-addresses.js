@@ -29,6 +29,20 @@ function cleanAddressType(value) {
   return VALID_ADDRESS_TYPES.includes(addressType) ? addressType : "apartment";
 }
 
+function cleanCoordinate(value, maxAbs) {
+  const number = Number(value);
+
+  if (!Number.isFinite(number) || Math.abs(number) > maxAbs) {
+    return "";
+  }
+
+  return String(Math.round(number * 1000000) / 1000000);
+}
+
+function getMapUrl(latitude, longitude) {
+  return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(latitude + "," + longitude);
+}
+
 function serializeTimestamp(value) {
   if (!value) {
     return null;
@@ -59,6 +73,9 @@ function serializeAddress(addressDoc) {
     companyName: data.companyName || "",
     streetName: data.streetName || "",
     additionalInfo: data.additionalInfo || "",
+    locationLatitude: data.locationLatitude || "",
+    locationLongitude: data.locationLongitude || "",
+    locationMapUrl: data.locationMapUrl || "",
     isDefault: Boolean(data.isDefault),
     createdAt: serializeTimestamp(data.createdAt),
     updatedAt: serializeTimestamp(data.updatedAt)
@@ -66,6 +83,10 @@ function serializeAddress(addressDoc) {
 }
 
 function cleanAddressData(body) {
+  const locationLatitude = cleanCoordinate(body.locationLatitude, 90);
+  const locationLongitude = cleanCoordinate(body.locationLongitude, 180);
+  const locationMapUrl = locationLatitude && locationLongitude ? getMapUrl(locationLatitude, locationLongitude) : "";
+
   return {
     label: cleanString(body.label, 80),
     addressType: cleanAddressType(body.addressType),
@@ -78,7 +99,10 @@ function cleanAddressData(body) {
     officeName: cleanString(body.officeName, 80),
     companyName: cleanString(body.companyName, 80),
     streetName: cleanString(body.streetName, 120),
-    additionalInfo: cleanString(body.additionalInfo, 500)
+    additionalInfo: cleanString(body.additionalInfo, 500),
+    locationLatitude,
+    locationLongitude,
+    locationMapUrl
   };
 }
 
