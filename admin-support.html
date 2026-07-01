@@ -159,6 +159,11 @@
         <span>Delivery Address</span>
         <p id="admin-order-address">No address saved</p>
       </div>
+
+      <div class="admin-order-info-card admin-order-info-card-full" id="admin-order-map-card" hidden>
+        <span>Map Location</span>
+        <p id="admin-order-map">No map location saved</p>
+      </div>
     </div>
 
     <div class="admin-order-section">
@@ -262,6 +267,8 @@
   const adminOrderCustomer = document.getElementById("admin-order-customer");
   const adminOrderPhone = document.getElementById("admin-order-phone");
   const adminOrderAddress = document.getElementById("admin-order-address");
+  const adminOrderMapCard = document.getElementById("admin-order-map-card");
+  const adminOrderMap = document.getElementById("admin-order-map");
   const adminOrderItems = document.getElementById("admin-order-items");
   const adminOrderDelete = document.getElementById("admin-order-delete");
   const adminOrderSave = document.getElementById("admin-order-save");
@@ -413,6 +420,18 @@
     ].filter(Boolean);
 
     return parts.join(", ") || "No address saved";
+  }
+
+  function getOrderMapUrl(order) {
+    if (order.locationMapUrl) {
+      return order.locationMapUrl;
+    }
+
+    if (order.locationLatitude && order.locationLongitude) {
+      return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(order.locationLatitude + "," + order.locationLongitude);
+    }
+
+    return "";
   }
 
   function getOrderItems(order) {
@@ -577,6 +596,15 @@
     adminOrderCustomer.textContent = (order.userName || "Customer") + (order.userEmail ? " · " + order.userEmail : "");
     adminOrderPhone.textContent = order.phone || "Not provided";
     adminOrderAddress.textContent = getOrderAddressText(order);
+
+    const mapUrl = getOrderMapUrl(order);
+
+    if (adminOrderMapCard && adminOrderMap) {
+      adminOrderMapCard.hidden = !mapUrl;
+      adminOrderMap.innerHTML = mapUrl
+        ? `<a class="admin-order-map-link" href="${escapeHtml(mapUrl)}" target="_blank" rel="noopener">Open Map Location</a>`
+        : "No map location saved";
+    }
 
     adminOrderItems.innerHTML = items.length ? items.map(function (item) {
       const quantity = Number(item.quantity || 1);
