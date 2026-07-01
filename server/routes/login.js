@@ -12,6 +12,30 @@ const {
 const LOGIN_ATTEMPT_WINDOW_MS = 24 * 60 * 60 * 1000;
 const THIRTY_MINUTES_MS = 30 * 60 * 1000;
 const ONE_HOUR_MS = 60 * 60 * 1000;
+const LOGIN_OPTIONAL_TASK_TIMEOUT_MS = 3500;
+
+async function runOptionalLoginTask(task, fallbackValue) {
+  let timeoutId;
+
+  try {
+    return await Promise.race([
+      Promise.resolve().then(task),
+      new Promise(function (resolve) {
+        timeoutId = setTimeout(function () {
+          resolve(fallbackValue);
+        }, LOGIN_OPTIONAL_TASK_TIMEOUT_MS);
+      })
+    ]);
+  } catch (error) {
+    if (error && error.statusCode) {
+      throw error;
+    }
+
+    return fallbackValue;
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
 
 function cleanEmail(value) {
   return String(value || "").trim().toLowerCase();
@@ -211,7 +235,9 @@ module.exports = async function handler(req, res) {
       return res.status(400).json({ error: "Please enter your email and password." });
     }
 
-    await checkLoginRateLimit(email, ipAddress);
+    await runOptionalLoginTask(function () {
+      return checkLoginRateLimit(email, ipAddress);
+    }, null);
 
     let loginResult;
 
@@ -224,7 +250,12 @@ module.exports = async function handler(req, res) {
         });
       }
 
-      const failedAttempt = await recordFailedLoginAttempt(email, ipAddress);
+      const failedAttempt = await runOptionalLoginTask(function () {
+        return recordFailedLoginAttempt(email, ipAddress);
+      }, {
+        failedCount: 0,
+        lockedUntilMs: 0
+      });
 
       if (failedAttempt.lockedUntilMs) {
         return res.status(429).json({
@@ -237,7 +268,9 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    await clearFailedLoginAttempts(email, ipAddress);
+    await runOptionalLoginTask(function () {
+      return clearFailedLoginAttempts(email, ipAddress);
+    }, null);
 
     const uid = loginResult.localId || loginResult.uid;
 
@@ -245,17 +278,26 @@ module.exports = async function handler(req, res) {
       return res.status(500).json({ error: "Could not start login session." });
     }
 
-    const userRecord = await admin.auth().getUser(uid);
-    const userDoc = await admin.firestore().collection("users").doc(uid).get();
-    const userData = userDoc.exists ? userDoc.data() || {} : {};
+    const fallbackUserRecord = {
+      email: loginResult.email || email,
+      emailVerified: Boolean(loginResult.emailVerified),
+      displayName: loginResult.displayName || ""
+    };
+    const userRecord = await runOptionalLoginTask(function () {
+      return admin.auth().getUser(uid);
+    }, fallbackUserRecord);
+    const userDoc = await runOptionalLoginTask(function () {
+      return admin.firestore().collection("users").doc(uid).get();
+    }, null);
+    const userData = userDoc && userDoc.exists ? userDoc.data() || {} : {};
     const twoFactor = getSafeTwoFactorSettings(userData);
     const requiresTwoFactor = twoFactor.appEnabled;
 
     if (requiresTwoFactor) {
       const trustedDevice = typeof getCurrentTrustedDevice === "function"
-        ? await getCurrentTrustedDevice(req, uid, { touch: true }).catch(function () {
-            return null;
-          })
+        ? await runOptionalLoginTask(function () {
+            return getCurrentTrustedDevice(req, uid, { touch: true });
+          }, null)
         : null;
 
       if (trustedDevice) {
