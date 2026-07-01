@@ -197,6 +197,45 @@
                         </div>
                       </div>
 
+                      <div class="account-field">
+                        <label for="address-province">Province</label>
+                        <select id="address-province">
+                          <option value="">Select province</option>
+                          <option value="Alexandria">Alexandria</option>
+                          <option value="Aswan">Aswan</option>
+                          <option value="Asyut">Asyut</option>
+                          <option value="Beheira">Beheira</option>
+                          <option value="Beni Suef">Beni Suef</option>
+                          <option value="Cairo">Cairo</option>
+                          <option value="Dakahlia">Dakahlia</option>
+                          <option value="Damietta">Damietta</option>
+                          <option value="Faiyum">Faiyum</option>
+                          <option value="Gharbia">Gharbia</option>
+                          <option value="Giza">Giza</option>
+                          <option value="Ismailia">Ismailia</option>
+                          <option value="Kafr El Sheikh">Kafr El Sheikh</option>
+                          <option value="Luxor">Luxor</option>
+                          <option value="Matrouh">Matrouh</option>
+                          <option value="Minya">Minya</option>
+                          <option value="Monufia">Monufia</option>
+                          <option value="New Valley">New Valley</option>
+                          <option value="North Sinai">North Sinai</option>
+                          <option value="Port Said">Port Said</option>
+                          <option value="Qalyubia">Qalyubia</option>
+                          <option value="Qena">Qena</option>
+                          <option value="Red Sea">Red Sea</option>
+                          <option value="Sharqia">Sharqia</option>
+                          <option value="Sohag">Sohag</option>
+                          <option value="South Sinai">South Sinai</option>
+                          <option value="Suez">Suez</option>
+                        </select>
+                      </div>
+
+                      <div class="account-field">
+                        <label for="address-city">City</label>
+                        <input type="text" id="address-city" maxlength="80">
+                      </div>
+
                       <div class="account-field address-field address-apartment">
                         <label for="building-name">Building Name / Number</label>
                         <input type="text" id="building-name">
@@ -1033,6 +1072,8 @@ const connectedFacebookAction = document.getElementById("connected-facebook-acti
   }
 
   const addressType = document.getElementById("address-type");
+  const addressProvince = document.getElementById("address-province");
+  const addressCity = document.getElementById("address-city");
   const buildingName = document.getElementById("building-name");
   const apartmentNumber = document.getElementById("apartment-number");
   const floorNumber = document.getElementById("floor-number");
@@ -3012,6 +3053,14 @@ function getAddressTypeLabel(type) {
 function getAddressPreview(address) {
   const parts = [];
 
+  if (address.province) {
+    parts.push(address.province);
+  }
+
+  if (address.city) {
+    parts.push(address.city);
+  }
+
   if (address.addressType === "apartment") {
     if (address.buildingName) {
       parts.push(address.buildingName);
@@ -3053,6 +3102,8 @@ function clearAddressForm() {
   addressEditId.value = "";
   addressLabel.value = "";
   addressType.value = "apartment";
+  addressProvince.value = "";
+  addressCity.value = "";
   buildingName.value = "";
   apartmentNumber.value = "";
   floorNumber.value = "";
@@ -3071,6 +3122,8 @@ function openAddressModal(address) {
     addressEditId.value = address.id || "";
     addressLabel.value = address.label || "";
     addressType.value = address.addressType || "apartment";
+    addressProvince.value = address.province || "";
+    addressCity.value = address.city || "";
     buildingName.value = address.buildingName || "";
     apartmentNumber.value = address.apartmentNumber || "";
     floorNumber.value = address.floorNumber || "";
@@ -3104,6 +3157,8 @@ function getAddressFormData() {
   return {
     label: addressLabel.value.trim(),
     addressType: addressType.value,
+    province: addressProvince.value,
+    city: addressCity.value.trim(),
     buildingName: buildingName.value.trim(),
     apartmentNumber: apartmentNumber.value.trim(),
     floorNumber: floorNumber.value.trim(),
