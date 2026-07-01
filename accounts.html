@@ -5053,6 +5053,7 @@ async function initializeServerAccountPage() {
       return;
     }
 
+    localStorage.setItem("tcs-login-redirect", "accounts.html");
     window.location.href = "login.html";
     return;
   } finally {
