@@ -87,6 +87,35 @@ async function requireSecurityUnlock(req, uid) {
   }
 }
 
+async function verifyPhoneNumberForProfile(uid, phone, token) {
+  const safeToken = cleanString(token, 2500);
+
+  if (!safeToken) {
+    const error = new Error("Please verify this phone number before saving.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const decodedToken = await admin.auth().verifyIdToken(safeToken, true);
+
+  if (!decodedToken || decodedToken.uid !== uid) {
+    const error = new Error("Phone verification did not match this account.");
+    error.statusCode = 403;
+    throw error;
+  }
+
+  const userRecord = await admin.auth().getUser(uid);
+  const verifiedPhone = cleanString(userRecord.phoneNumber, 30);
+
+  if (!verifiedPhone || verifiedPhone !== phone) {
+    const error = new Error("Phone verification did not match this number.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  return true;
+}
+
 function getSafeTwoFactor(twoFactor) {
   const data = twoFactor && typeof twoFactor === "object" ? twoFactor : {};
 
@@ -308,6 +337,8 @@ async function getProfile(uid, req) {
     fullName: data.fullName || userRecord.displayName || "",
     photoURL: data.photoURL || userRecord.photoURL || "",
     phone: data.phone || "",
+    phoneVerified: Boolean(data.phone && data.phoneVerified),
+    phoneVerifiedAt: serializeTimestamp(data.phoneVerifiedAt),
     twoFactor: getSafeTwoFactor(data.twoFactor),
     connectedProviders: getConnectedProviders(userRecord, data),
     sessions,
@@ -435,6 +466,7 @@ async function handlePatch(req, res, uid) {
 
   const fullName = cleanString((req.body || {}).fullName, 80);
   const phone = cleanString((req.body || {}).phone, 30);
+  const phoneVerificationToken = cleanString((req.body || {}).phoneVerificationToken, 2500);
   const profilePhotoDataUrl = getProfilePhotoDataUrl((req.body || {}).profilePhotoDataUrl);
   const removeProfilePhoto = Boolean((req.body || {}).removeProfilePhoto) && !profilePhotoDataUrl;
 
@@ -455,6 +487,20 @@ async function handlePatch(req, res, uid) {
     }
   }
 
+  const storedPhone = cleanString(data.phone, 30);
+  const phoneChanged = phone !== storedPhone;
+  let phoneVerified = Boolean(data.phoneVerified) && Boolean(phone) && !phoneChanged;
+  let shouldStampPhoneVerified = false;
+
+  if (phone) {
+    if (phoneChanged || !phoneVerified) {
+      phoneVerified = await verifyPhoneNumberForProfile(uid, phone, phoneVerificationToken);
+      shouldStampPhoneVerified = true;
+    }
+  } else {
+    phoneVerified = false;
+  }
+
   let photoURL = data.photoURL || "";
 
   if (profilePhotoDataUrl) {
@@ -467,8 +513,17 @@ async function handlePatch(req, res, uid) {
   const updateData = {
     fullName,
     phone,
+    phoneVerified,
     updatedAt: admin.firestore.FieldValue.serverTimestamp()
   };
+
+  if (phone && shouldStampPhoneVerified) {
+    updateData.phoneVerifiedAt = admin.firestore.FieldValue.serverTimestamp();
+  }
+
+  if (!phone) {
+    updateData.phoneVerifiedAt = admin.firestore.FieldValue.delete();
+  }
 
   if (profilePhotoDataUrl && photoURL) {
     updateData.photoURL = photoURL;
