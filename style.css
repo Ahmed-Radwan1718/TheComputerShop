@@ -4971,16 +4971,19 @@ body.nav-menu-open {
   cursor: pointer;
 }
 
-.checkout-province-select {
+.checkout-province-select,
+.account-address-province-select {
   position: relative;
   z-index: 30;
 }
 
-.checkout-province-select.open {
+.checkout-province-select.open,
+.account-address-province-select.open {
   z-index: 90;
 }
 
-.checkout-province-select .custom-select-trigger {
+.checkout-province-select .custom-select-trigger,
+.account-address-province-select .custom-select-trigger {
   min-height: 50px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.045);
@@ -4988,7 +4991,8 @@ body.nav-menu-open {
   font-weight: 700;
 }
 
-.checkout-province-select .custom-select-menu {
+.checkout-province-select .custom-select-menu,
+.account-address-province-select .custom-select-menu {
   max-height: 260px;
   overflow-y: auto;
   background: rgba(42, 43, 42, 0.99);
@@ -5003,18 +5007,21 @@ body.nav-menu-open {
   contain: paint;
 }
 
-.checkout-province-select.open .custom-select-menu {
+.checkout-province-select.open .custom-select-menu,
+.account-address-province-select.open .custom-select-menu {
   transform: none;
 }
 
-.checkout-province-select .custom-select-option {
+.checkout-province-select .custom-select-option,
+.account-address-province-select .custom-select-option {
   font-family: inherit;
   transition:
     color 0.12s ease,
     background 0.12s ease;
 }
 
-.checkout-province-select .custom-select-option:hover {
+.checkout-province-select .custom-select-option:hover,
+.account-address-province-select .custom-select-option:hover {
   transform: none;
 }
 
