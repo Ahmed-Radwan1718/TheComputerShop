@@ -726,19 +726,39 @@ async function revokeAllTrustedDevices(uid, revokedBy, revokedReason) {
 }
 
 async function firebaseAuthRest(endpoint, payload) {
-  const response = await fetch(
-    "https://identitytoolkit.googleapis.com/v1/" +
-      endpoint +
-      "?key=" +
-      encodeURIComponent(getFirebaseWebApiKey()),
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(payload)
+  const controller = new AbortController();
+  const timeout = setTimeout(function () {
+    controller.abort();
+  }, 15000);
+
+  let response;
+
+  try {
+    response = await fetch(
+      "https://identitytoolkit.googleapis.com/v1/" +
+        endpoint +
+        "?key=" +
+        encodeURIComponent(getFirebaseWebApiKey()),
+      {
+        method: "POST",
+        signal: controller.signal,
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      }
+    );
+  } catch (error) {
+    if (error && error.name === "AbortError") {
+      const timeoutError = new Error("Authentication took too long. Please try again.");
+      timeoutError.statusCode = 504;
+      throw timeoutError;
     }
-  );
+
+    throw error;
+  } finally {
+    clearTimeout(timeout);
+  }
 
   const data = await response.json().catch(function () {
     return {};
