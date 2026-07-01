@@ -7774,6 +7774,15 @@ body.account-photo-crop-modal-open {
   white-space: nowrap;
 }
 
+.account-phone-country-flag {
+  width: 20px;
+  height: 14px;
+  border-radius: 3px;
+  object-fit: cover;
+  flex: 0 0 auto;
+  display: block;
+}
+
 .account-phone-country-dropdown .custom-select-menu {
   position: absolute;
   left: 0;
@@ -7802,6 +7811,13 @@ body.account-photo-crop-modal-open {
   transition:
     color 0.12s ease,
     background 0.12s ease;
+}
+
+.account-phone-country-dropdown .custom-select-option span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .account-phone-country-dropdown .custom-select-option:hover {
