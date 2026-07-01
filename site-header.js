@@ -140,10 +140,6 @@ if (floatingAccountWidget) {
     const logoutButton = document.getElementById("floating-logout-button");
 
     if (accountWidget && accountGreeting && accountButton && accountPhoto && accountMenu && loginLink && accountLink && savedLink && ordersLink && logoutButton) {
-      const firebaseAuth = {};
-      const auth = null;
-      const signOut = null;
-
       function closeAccountMenu() {
         accountMenu.hidden = true;
         accountButton.setAttribute("aria-expanded", "false");
