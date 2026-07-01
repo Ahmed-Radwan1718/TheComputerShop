@@ -7738,6 +7738,35 @@ body.account-photo-crop-modal-open {
   cursor: pointer;
 }
 
+.account-phone-row {
+  display: grid;
+  grid-template-columns: 118px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+}
+
+.account-phone-row input {
+  min-width: 0;
+}
+
+.account-phone-country-select {
+  padding: 0 12px;
+  text-align: center;
+  text-align-last: center;
+}
+
+@media (max-width: 620px) {
+  .account-phone-row {
+    grid-template-columns: 104px minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .account-phone-country-select {
+    padding: 0 8px;
+    font-size: 13px;
+  }
+}
+
 .address-field[hidden] {
   display: none;
 }
