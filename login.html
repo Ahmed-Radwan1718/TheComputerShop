@@ -187,10 +187,6 @@
     return "index.html";
   }
 
-  async function syncFirebaseClientSession() {
-    return;
-  }
-
   function finishLogin() {
     clearTwoFactorPending();
     showTwoFactorMessage("Logged in successfully.", "success");
@@ -471,8 +467,6 @@
         throw new Error("No two-factor method is available.");
       }
 
-      await syncFirebaseClientSession();
-
       showMessage("Logged in successfully.", "success");
 
       setTimeout(function () {
@@ -563,7 +557,6 @@
         return;
       }
 
-      await syncFirebaseClientSession();
       finishLogin();
     } catch (error) {
       showTwoFactorMessage(error.message || "The code is incorrect.", "error");
