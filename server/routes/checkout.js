@@ -12,6 +12,7 @@ const {
 } = require("../_lib/rateLimitHelpers");
 
 const VALID_ADDRESS_TYPES = ["apartment", "house", "office"];
+const VALID_FULFILLMENT_METHODS = ["delivery", "pickup"];
 
 function cleanString(value, maxLength) {
   return String(value || "").trim().slice(0, maxLength);
@@ -20,6 +21,11 @@ function cleanString(value, maxLength) {
 function cleanAddressType(value) {
   const addressType = cleanString(value, 30);
   return VALID_ADDRESS_TYPES.includes(addressType) ? addressType : "apartment";
+}
+
+function cleanFulfillmentMethod(value) {
+  const fulfillmentMethod = cleanString(value, 30);
+  return VALID_FULFILLMENT_METHODS.includes(fulfillmentMethod) ? fulfillmentMethod : "delivery";
 }
 
 function serializeTimestamp(value) {
@@ -158,23 +164,26 @@ function getCartSummary(cartItems) {
 }
 
 function getCheckoutDetails(body, profile) {
-  const addressType = cleanAddressType(body.addressType || profile.addressType);
+  const fulfillmentMethod = cleanFulfillmentMethod(body.fulfillmentMethod);
+  const usesDelivery = fulfillmentMethod === "delivery";
+  const addressType = usesDelivery ? cleanAddressType(body.addressType || profile.addressType) : "";
 
   return {
     fullName: cleanString(body.fullName || body.userName || profile.fullName, 80),
     email: cleanString(body.email || profile.email, 160),
     phone: cleanString(body.phone || profile.phone, 30),
     paymentMethod: cleanString(body.paymentMethod || "Instapay", 80),
+    fulfillmentMethod,
     customerNote: cleanString(body.customerNote || body.note || "", 1000),
     addressType,
-    buildingName: cleanString(body.buildingName || "", 80),
-    apartmentNumber: cleanString(body.apartmentNumber || "", 40),
-    floorNumber: cleanString(body.floorNumber || "", 40),
-    houseNumber: cleanString(body.houseNumber || "", 40),
-    officeName: cleanString(body.officeName || "", 80),
-    companyName: cleanString(body.companyName || "", 80),
-    streetName: cleanString(body.streetName || "", 120),
-    additionalInfo: cleanString(body.additionalInfo || "", 500)
+    buildingName: usesDelivery ? cleanString(body.buildingName || "", 80) : "",
+    apartmentNumber: usesDelivery ? cleanString(body.apartmentNumber || "", 40) : "",
+    floorNumber: usesDelivery ? cleanString(body.floorNumber || "", 40) : "",
+    houseNumber: usesDelivery ? cleanString(body.houseNumber || "", 40) : "",
+    officeName: usesDelivery ? cleanString(body.officeName || "", 80) : "",
+    companyName: usesDelivery ? cleanString(body.companyName || "", 80) : "",
+    streetName: usesDelivery ? cleanString(body.streetName || "", 120) : "",
+    additionalInfo: usesDelivery ? cleanString(body.additionalInfo || "", 500) : ""
   };
 }
 
@@ -230,6 +239,7 @@ async function handlePost(req, res, uid) {
     userEmail: details.email,
     phone: details.phone,
     paymentMethod: details.paymentMethod,
+    fulfillmentMethod: details.fulfillmentMethod,
     customerNote: details.customerNote,
     addressType: details.addressType,
     buildingName: details.buildingName,
