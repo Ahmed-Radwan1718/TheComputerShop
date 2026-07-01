@@ -9356,9 +9356,7 @@ body.account-security-modal-open {
 .account-support-modal-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.58);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(0, 0, 0, 0.72);
 }
 
 .account-support-modal-card {
@@ -9367,14 +9365,17 @@ body.account-security-modal-open {
   width: min(680px, 100%);
   max-height: calc(100vh - 48px);
   overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   padding: 34px;
   border-radius: 24px;
   border: 1px solid rgba(255, 255, 255, 0.11);
-  background: rgba(24, 25, 24, 0.96);
+  background: #181918;
   box-shadow: 0 22px 55px rgba(0, 0, 0, 0.32);
   color-scheme: dark;
   scrollbar-color: rgba(255, 255, 255, 0.55) #2a2b2a;
   scrollbar-width: auto;
+  contain: layout paint;
 }
 
 .account-support-detail-card {
