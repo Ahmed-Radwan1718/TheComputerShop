@@ -195,6 +195,50 @@
         <p class="tcs-home-kicker">Custom PC consultation</p>
         <h2>Turn a budget into a balanced build.</h2>
         <p>Instead of guessing between parts, start with what the PC needs to do. The recommendation can then balance performance, cooling, power, storage, case fit, and upgrade room.</p>
+
+        <form class="tcs-home-mini-consult-form" action="https://formsubmit.co/The_Computer_Shop@icloud.com" method="POST">
+          <input type="hidden" name="_subject" value="New Quick Custom PC Consultation Request">
+          <input type="hidden" name="_template" value="table">
+          <input type="hidden" name="_autoresponse" value="Thank you for reaching out to The Computer Shop. We received your quick consultation request successfully, and a representative will be in touch within 12 hours.">
+          <input type="text" name="_honey" style="display:none">
+
+          <div class="tcs-home-mini-consult-grid">
+            <div class="tcs-home-mini-consult-field">
+              <label for="home-mini-name">Full Name</label>
+              <input type="text" id="home-mini-name" name="Full Name" required>
+            </div>
+
+            <div class="tcs-home-mini-consult-field">
+              <label for="home-mini-phone">Phone Number</label>
+              <input type="tel" id="home-mini-phone" name="Phone Number" required>
+            </div>
+
+            <div class="tcs-home-mini-consult-field">
+              <label for="home-mini-budget">Budget</label>
+              <input type="text" id="home-mini-budget" name="Budget" placeholder="Example: 80,000 EGP" required>
+            </div>
+
+            <div class="tcs-home-mini-consult-field">
+              <label for="home-mini-use">Main Use</label>
+              <select id="home-mini-use" name="Main Use Case" required>
+                <option value="">Select one</option>
+                <option value="Gaming">Gaming</option>
+                <option value="Gaming + Streaming">Gaming + Streaming</option>
+                <option value="Content Creation">Content Creation</option>
+                <option value="Workstation">Workstation</option>
+                <option value="Mixed Use">Mixed Use</option>
+                <option value="Not sure yet">Not sure yet</option>
+              </select>
+            </div>
+
+            <div class="tcs-home-mini-consult-field tcs-home-mini-consult-field-full">
+              <label for="home-mini-notes">Anything important?</label>
+              <textarea id="home-mini-notes" name="Notes" placeholder="Games, software, preferred look, or upgrade plans"></textarea>
+            </div>
+          </div>
+
+          <button class="tcs-home-mini-consult-submit" type="submit">Request quick plan</button>
+        </form>
       </div>
 
       <div class="tcs-home-process-list">
