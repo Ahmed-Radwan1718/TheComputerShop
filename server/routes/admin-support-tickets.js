@@ -312,6 +312,29 @@ async function handleOrderDelete(req, res) {
   });
 }
 
+async function handleTicketDelete(req, res) {
+  const db = admin.firestore();
+  const ticketId = cleanTicketId((req.body || {}).ticketId);
+
+  if (!ticketId) {
+    return res.status(400).json({ error: "Missing support ticket id." });
+  }
+
+  const ticketRef = db.collection("supportTickets").doc(ticketId);
+  const ticketDoc = await ticketRef.get();
+
+  if (!ticketDoc.exists) {
+    return res.status(404).json({ error: "Support ticket not found." });
+  }
+
+  await ticketRef.delete();
+
+  return res.status(200).json({
+    success: true,
+    ticketId
+  });
+}
+
 async function handleReply(req, res, adminUser) {
   const db = admin.firestore();
   const ticketId = cleanTicketId((req.body || {}).ticketId);
@@ -385,6 +408,10 @@ module.exports = async function handler(req, res) {
 
       if (action === "order-delete") {
         return await handleOrderDelete(req, res);
+      }
+
+      if (action === "delete") {
+        return await handleTicketDelete(req, res);
       }
 
       if (action === "status") {
