@@ -9671,6 +9671,10 @@ body.account-security-modal-open {
   width: min(820px, 100%);
 }
 
+#admin-ticket-modal .account-form-grid {
+  margin-bottom: 20px;
+}
+
 .admin-order-status-grid {
   margin-bottom: 18px;
   overflow: visible;
