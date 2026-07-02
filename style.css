@@ -367,6 +367,7 @@ body {
   z-index: 1;
   width: 92%;
   height: 92%;
+  border-radius: 14px;
   object-fit: contain;
   object-position: center;
   display: block;
@@ -398,7 +399,7 @@ body {
 
 .tcs-home-component-arrow {
   position: absolute;
-  top: 102px;
+  top: 50%;
   z-index: 3;
   width: 32px;
   height: 38px;
@@ -412,6 +413,7 @@ body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transform: translateY(-50%);
   transition:
     color 0.2s ease,
     transform 0.2s ease;
@@ -422,7 +424,7 @@ body {
 }
 
 .tcs-home-component-arrow:active {
-  transform: translateY(1px);
+  transform: translateY(calc(-50% + 1px));
 }
 
 .tcs-home-component-arrow-left {
