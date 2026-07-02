@@ -309,7 +309,7 @@ body {
 
 .tcs-home-component-carousel {
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .tcs-home-component-track {
@@ -400,12 +400,12 @@ body {
   position: absolute;
   top: 102px;
   z-index: 3;
-  width: 38px;
+  width: 32px;
   height: 38px;
   border: 0;
-  background: rgba(24, 25, 24, 0.62);
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 30px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 34px;
   font-weight: 300;
   line-height: 1;
   display: flex;
@@ -414,12 +414,10 @@ body {
   cursor: pointer;
   transition:
     color 0.2s ease,
-    background 0.2s ease,
     transform 0.2s ease;
 }
 
 .tcs-home-component-arrow:hover {
-  background: rgba(24, 25, 24, 0.82);
   color: white;
 }
 
@@ -428,11 +426,11 @@ body {
 }
 
 .tcs-home-component-arrow-left {
-  left: 0;
+  left: -46px;
 }
 
 .tcs-home-component-arrow-right {
-  right: 0;
+  right: -46px;
 }
 
 .tcs-home-component-carousel-footer {
