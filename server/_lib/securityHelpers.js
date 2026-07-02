@@ -310,6 +310,7 @@ async function createAccountSession(uid, res, req) {
   ]);
 
   if (!sessionSaved) {
+    clearCookie(res, ACCOUNT_SESSION_COOKIE_NAME);
     return null;
   }
 
@@ -917,11 +918,8 @@ async function getSiteSessionUser(req, options) {
     ? await admin.auth().verifyIdToken(cookieToken, false)
     : await admin.auth().verifySessionCookie(cookieToken, false);
 
-  const hasAccountSessionCookie = Boolean(getAccountSessionCookieParts(req));
-  let currentAccountSession = null;
-
   try {
-    currentAccountSession = await Promise.race([
+    await Promise.race([
       touchCurrentAccountSession(req, decodedUser.uid),
       new Promise(function (resolve) {
         setTimeout(function () {
@@ -930,13 +928,9 @@ async function getSiteSessionUser(req, options) {
       })
     ]);
   } catch (error) {
-    if (error && error.statusCode === 401) {
+    if (error && error.message === "account-session-revoked") {
       throw error;
     }
-  }
-
-  if (hasAccountSessionCookie && !currentAccountSession) {
-    throw createAccountSessionError("account-session-invalid");
   }
 
   if (settings.checkRevoked !== false) {
@@ -954,10 +948,7 @@ async function getOptionalSiteSessionUser(req, options) {
   try {
     return await getSiteSessionUser(req, options);
   } catch (error) {
-    if (error && (
-      error.message === "account-session-revoked" ||
-      error.message === "account-session-invalid"
-    )) {
+    if (error && error.message === "account-session-revoked") {
       throw error;
     }
 
