@@ -59,6 +59,15 @@ body {
   text-transform: uppercase;
 }
 
+.tcs-home-process-copy .tcs-home-kicker {
+  color: rgba(192, 154, 92, 0.84);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
 .tcs-home-hero-copy h1 {
   margin-bottom: 22px;
   color: white;
