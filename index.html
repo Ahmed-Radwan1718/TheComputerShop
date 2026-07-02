@@ -129,55 +129,30 @@
     </div>
   </section>
 
-  <section class="tcs-home-categories">
+<section class="tcs-home-categories">
     <div class="tcs-home-section-head tcs-home-section-head-row">
       <div>
-        <p class="tcs-home-kicker">Shop by category</p>
-        <h2>Find the part that decides the build.</h2>
+        <p class="tcs-home-kicker">Featured components</p>
+        <h2 id="tcs-home-component-carousel-title">Graphics Cards</h2>
       </div>
       <a href="components.html" class="tcs-home-text-link">All components</a>
     </div>
 
-    <div class="tcs-home-category-grid">
-      <a href="graphics-cards.html" class="tcs-home-category-card">
-        <img src="https://res.cloudinary.com/dhtamisqn/image/upload/v1781349349/gigabyte-rtx-5090-aorus-master-1.jpg" alt="Graphics cards">
-        <span>Graphics Cards</span>
-      </a>
+    <div class="tcs-home-component-carousel">
+      <button class="tcs-home-component-arrow tcs-home-component-arrow-left" type="button" id="tcs-home-component-prev" aria-label="Previous component category">
+        ‹
+      </button>
 
-      <a href="cpus.html" class="tcs-home-category-card">
-        <img src="https://res.cloudinary.com/dhtamisqn/image/upload/v1781350192/intel-core-ultra-9-285k-1.jpg" alt="CPUs">
-        <span>CPUs</span>
-      </a>
+      <div class="tcs-home-component-track" id="tcs-home-component-track"></div>
 
-      <a href="motherboards.html" class="tcs-home-category-card">
-        <img src="https://res.cloudinary.com/dhtamisqn/image/upload/v1781311810/gigabyte-z890-aorus-master-1.jpg" alt="Motherboards">
-        <span>Motherboards</span>
-      </a>
+      <button class="tcs-home-component-arrow tcs-home-component-arrow-right" type="button" id="tcs-home-component-next" aria-label="Next component category">
+        ›
+      </button>
+    </div>
 
-      <a href="memory.html" class="tcs-home-category-card">
-        <img src="https://res.cloudinary.com/dhtamisqn/image/upload/v1781349399/corsair-dominator-titanium-rgb-96gb-ddr5-7000-cl40-1.jpg" alt="Memory">
-        <span>Memory</span>
-      </a>
-
-      <a href="storage.html" class="tcs-home-category-card">
-        <img src="https://res.cloudinary.com/dhtamisqn/image/upload/v1781349954/samsung-9100-pro-1tb-1.jpg" alt="Storage">
-        <span>Storage</span>
-      </a>
-
-      <a href="power-supplies.html" class="tcs-home-category-card">
-        <img src="https://res.cloudinary.com/dhtamisqn/image/upload/v1781348933/rog-strix-1000g-aura-gaming-1.jpg" alt="Power supplies">
-        <span>Power Supplies</span>
-      </a>
-
-      <a href="cases.html" class="tcs-home-category-card">
-        <img src="https://res.cloudinary.com/dhtamisqn/image/upload/v1781350125/gigabyte-c500-panoramic-stealth-1.jpg" alt="PC cases">
-        <span>Cases</span>
-      </a>
-
-      <a href="monitors.html" class="tcs-home-category-card">
-        <img src="https://res.cloudinary.com/dhtamisqn/image/upload/v1781350157/gigabyte-gs27fa-gaming-monitor-2.jpg" alt="Monitors">
-        <span>Monitors</span>
-      </a>
+    <div class="tcs-home-component-carousel-footer">
+      <a href="graphics-cards.html" class="tcs-home-text-link" id="tcs-home-component-link">View Graphics Cards</a>
+      <div class="tcs-home-component-dots" id="tcs-home-component-dots" aria-label="Component category carousel"></div>
     </div>
   </section>
 
