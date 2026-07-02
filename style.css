@@ -9902,31 +9902,39 @@ body.account-security-modal-open {
 
 .account-support-modal-header {
   margin-bottom: 24px;
-  padding-right: 34px;
+  padding-right: 52px;
+  min-width: 0;
 }
 
 .account-support-modal-header h2 {
+  max-width: 100%;
   margin-bottom: 12px;
   color: white;
   font-size: 32px;
   font-weight: 700;
   line-height: 1.12;
   text-transform: uppercase;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .account-support-modal-header p {
+  max-width: 100%;
   color: rgba(255, 255, 255, 0.66);
   font-size: 15px;
   line-height: 1.75;
+  overflow-wrap: anywhere;
 }
 
 .account-support-thread {
   margin-bottom: 24px;
   display: grid;
   gap: 14px;
+  min-width: 0;
 }
 
 .account-support-message {
+  min-width: 0;
   padding: 18px;
   border-radius: 20px;
   background: rgba(255, 255, 255, 0.055);
@@ -9942,29 +9950,36 @@ body.account-security-modal-open {
 
 .account-support-message-head {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 14px;
+  gap: 10px 14px;
+  flex-wrap: wrap;
+  min-width: 0;
 }
 
 .account-support-message-head strong {
+  min-width: 0;
   color: white;
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  overflow-wrap: anywhere;
 }
 
 .account-support-message-head span {
+  flex: 0 0 auto;
   color: rgba(255, 255, 255, 0.42);
   font-size: 12px;
   font-weight: 700;
 }
 
 .account-support-message p {
+  max-width: 100%;
   color: rgba(255, 255, 255, 0.68);
   font-size: 14px;
   line-height: 1.7;
+  overflow-wrap: anywhere;
 }
 
 .account-support-detail-actions {
@@ -9972,6 +9987,7 @@ body.account-security-modal-open {
   justify-content: flex-end;
   gap: 12px;
   flex-wrap: wrap;
+  min-width: 0;
 }
 
 .account-orders-loading {
