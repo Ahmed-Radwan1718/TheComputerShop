@@ -51,7 +51,7 @@ body {
 
 .tcs-home-kicker {
   margin-bottom: 16px;
-  color: rgba(126, 224, 161, 0.84);
+  color: rgba(192, 154, 92, 0.84);
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.14em;
@@ -189,7 +189,7 @@ body {
 .tcs-home-build-card span,
 .tcs-home-process-list span,
 .tcs-home-trust-grid span {
-  color: rgba(126, 224, 161, 0.78);
+  color: rgba(192, 154, 92, 0.78);
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 0.12em;
@@ -467,7 +467,7 @@ body {
   padding: 42px;
   border-radius: 30px;
   background:
-    linear-gradient(135deg, rgba(126, 224, 161, 0.13), rgba(255, 255, 255, 0.035)),
+    linear-gradient(135deg, rgba(192, 154, 92, 0.13), rgba(255, 255, 255, 0.035)),
     rgba(24, 25, 24, 0.66);
   border: 1px solid rgba(255, 255, 255, 0.12);
   display: flex;
