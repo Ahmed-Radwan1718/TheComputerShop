@@ -1672,12 +1672,64 @@ function getTrustedDevicePlatformIcon(platformLabel) {
   return "";
 }
 
+function getTrustedDeviceTimeValue(value) {
+  const date = getDateFromFirestoreValue(value);
+
+  return date ? date.getTime() : 0;
+}
+
+function getTrustedDeviceKey(device) {
+  return [
+    device.deviceName,
+    device.browserName,
+    device.platform
+  ].map(function (value) {
+    return String(value || "").trim().toLowerCase();
+  }).join("|");
+}
+
+function getVisibleTrustedDevices(devices) {
+  const visibleByDevice = new Map();
+
+  devices.forEach(function (device) {
+    const key = getTrustedDeviceKey(device);
+    const safeKey = key.replace(/\|/g, "");
+
+    if (!safeKey) {
+      visibleByDevice.set("device:" + String(device.trustedDeviceId || device.id || ""), device);
+      return;
+    }
+
+    const existingDevice = visibleByDevice.get(key);
+    const deviceTime = getTrustedDeviceTimeValue(device.lastUsedAt || device.lastTrustedAt || device.createdAt);
+    const existingTime = existingDevice
+      ? getTrustedDeviceTimeValue(existingDevice.lastUsedAt || existingDevice.lastTrustedAt || existingDevice.createdAt)
+      : 0;
+
+    if (!existingDevice || device.current || (!existingDevice.current && deviceTime > existingTime)) {
+      visibleByDevice.set(key, device);
+    }
+  });
+
+  return Array.from(visibleByDevice.values()).sort(function (a, b) {
+    if (a.current && !b.current) {
+      return -1;
+    }
+
+    if (!a.current && b.current) {
+      return 1;
+    }
+
+    return getTrustedDeviceTimeValue(b.lastUsedAt || b.lastTrustedAt || b.createdAt) - getTrustedDeviceTimeValue(a.lastUsedAt || a.lastTrustedAt || a.createdAt);
+  });
+}
+
 function renderTrustedDevices() {
   if (!trustedDevicesList || !trustedDevicesEmpty) {
     return;
   }
 
-  const devices = Array.isArray(trustedDevices) ? trustedDevices : [];
+  const devices = getVisibleTrustedDevices(Array.isArray(trustedDevices) ? trustedDevices : []);
 
   trustedDevicesEmpty.hidden = devices.length > 0;
 
