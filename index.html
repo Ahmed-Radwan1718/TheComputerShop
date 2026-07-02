@@ -313,161 +313,243 @@
 </footer>
 
 <script>
-  const featuredComponentTitle = document.getElementById("featured-components-title");
-  const featuredComponentRow = document.getElementById("featured-components-row");
-  const featuredComponentPrev = document.getElementById("featured-components-prev");
-  const featuredComponentNext = document.getElementById("featured-components-next");
+  const homeComponentTitle = document.getElementById("tcs-home-component-carousel-title");
+  const homeComponentTrack = document.getElementById("tcs-home-component-track");
+  const homeComponentLink = document.getElementById("tcs-home-component-link");
+  const homeComponentDots = document.getElementById("tcs-home-component-dots");
+  const homeComponentPrev = document.getElementById("tcs-home-component-prev");
+  const homeComponentNext = document.getElementById("tcs-home-component-next");
 
-  const featuredComponentGroups = [
+  const homeComponentGroups = [
     {
       title: "Graphics Cards",
       link: "graphics-cards.html",
       items: [
-        ["Aorus RTX 5090 Master 32GB", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781349349/gigabyte-rtx-5090-aorus-master-1.jpg"],
-        ["Aorus RTX 5060 Ti Elite 16GB", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781349326/gigabyte-rtx-5060-ti-aorus-elite-1.jpg"],
-        ["Gigabyte RTX 5070 Gaming OC 12GB", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781349308/gigabyte-rtx-5070-gaming-oc-1.jpg"],
-        ["Gigabyte RTX 5080 Windforce OC SFF 16GB", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781349148/gigabyte-rtx-5080-windforce-oc-sff-16g-1.jpg"]
-      ]
-    },
-    {
-      title: "Motherboards",
-      link: "motherboards.html",
-      items: [
-        ["Aorus Z890 Elite WiFi7", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781311811/gigabyte-z890-aorus-elite-wifi7-1.jpg"],
-        ["Aorus Z890 Master", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781311810/gigabyte-z890-aorus-master-1.jpg"],
-        ["Aorus X870E Xtreme X3D AI Top", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781311724/gigabyte-x870e-aorus-xtreme-x3d-ai-top-1.jpg"],
-        ["ROG Maximus Z890 Extreme", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781311699/rog-maximus-z890-extreme-motherboard-1.jpg"]
-      ]
-    },
-    {
-      title: "Storage",
-      link: "storage.html",
-      items: [
-        ["Western Digital Black SN8100", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781349963/wd-black-sn8100-nvme-ssd-1.jpg"],
-        ["Western Digital Black SN850X", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781349961/wd-black-sn850x-nvme-ssd-1.jpg"],
-        ["Western Digital Blue SN5100", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781349931/wd-blue-sn5100-nvme-ssd-1.jpg"],
-        ["Samsung 9100 Pro", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781349954/samsung-9100-pro-1tb-1.jpg"]
-      ]
-    },
-    {
-      title: "Cases",
-      link: "cases.html",
-      items: [
-        ["Gigabyte C500 Panoramic Stealth", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781350125/gigabyte-c500-panoramic-stealth-1.jpg"],
-        ["AORUS C500 GLASS", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781350108/gigabyte-aorus-c500-glass-1.jpg"],
-        ["Fractal Design North XL", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781350077/fractal-design-north-xl-charcoal-black-1.jpg"],
-        ["ROG Strix Helios II", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781350028/rog-strix-helios-ii-1.jpg"]
+        ["Aorus RTX 5090 Master 32GB", "Gigabyte | RTX 5090 | 32GB", "product.html?product=rtx-5090-aorus-master", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781349349/gigabyte-rtx-5090-aorus-master-1.jpg"],
+        ["Aorus RTX 5060 Ti Elite 16GB", "Gigabyte | RTX 5060 Ti | 16GB", "product.html?product=rtx-5060-ti-aorus-elite", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781349326/gigabyte-rtx-5060-ti-aorus-elite-1.jpg"],
+        ["Gigabyte RTX 5070 Gaming OC 12GB", "Gigabyte | RTX 5070 | 12GB", "product.html?product=rtx-5070-gaming-oc", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781349308/gigabyte-rtx-5070-gaming-oc-1.jpg"],
+        ["Gigabyte RTX 5060 Eagle OC 8GB", "Gigabyte | RTX 5060 | 8GB", "product.html?product=rtx-5060-eagle-oc", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781349198/gigabyte-rtx-5060-eagle-oc-1.jpg"],
+        ["Gigabyte RTX 5050 Gaming OC 8GB", "Gigabyte | RTX 5050 | 8GB", "product.html?product=rtx-5050-gaming-oc", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781349323/gigabyte-rtx-5050-gaming-oc-1.jpg"]
       ]
     },
     {
       title: "CPU Coolers",
       link: "cpu-coolers.html",
       items: [
-        ["AORUS WATERFORCE II 360", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781349498/gigabyte-aorus-waterforce-ii-360-1.jpg"],
-        ["Corsair NAUTILUS 360 RS ARGB", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781349447/corsair-nautilus-360-rs-argb-liquid-cpu-cooler-1.jpg"],
-        ["ASUS TUF Gaming LC III 360", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781349448/asus-tuf-gaming-lc-iii-360-argb-aio-cpu-cooler-360mm-radiator-1.jpg"],
-        ["ROG Ryujin III 360 ARGB Extreme", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781349485/rog-ryujin-iii-360-argb-extreme-1.jpg"]
+        ["AORUS WATERFORCE II 360", "Gigabyte | AIO Liquid Cooler | 360mm", "product.html?product=aorus-waterforce-ii-360", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781349498/gigabyte-aorus-waterforce-ii-360-1.jpg"],
+        ["Corsair NAUTILUS 360 RS ARGB", "Corsair | AIO Liquid Cooler | 360mm", "product.html?product=corsair-nautilus-360-rs-argb", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781349447/corsair-nautilus-360-rs-argb-liquid-cpu-cooler-1.jpg"],
+        ["ASUS TUF Gaming LC III 360 ARGB LCD", "ASUS TUF | AIO Liquid Cooler | 360mm", "product.html?product=asus-tuf-gaming-lc-iii-360-argb-lcd", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781349448/asus-tuf-gaming-lc-iii-360-argb-aio-cpu-cooler-360mm-radiator-1.jpg"],
+        ["AORUS WATERFORCE II 240", "Gigabyte | AIO Liquid Cooler | 240mm", "product.html?product=aorus-waterforce-ii-240", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781349463/aorus-waterforce-ii-240-1.jpg"],
+        ["ARCTIC Liquid Freezer III Pro 360 A-RGB", "ARCTIC | AIO Liquid Cooler | 360mm", "product.html?product=arctic-liquid-freezer-iii-pro-360-a-rgb", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781349420/arctic-liquid-freezer-iii-pro-360-a-rgb-black-1.jpg"]
       ]
     },
     {
       title: "CPUs",
       link: "cpus.html",
       items: [
-        ["Intel Core Ultra 5 245K", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781350193/intel-core-ultra-5-245k-1.jpg"],
-        ["Intel Core Ultra 7 265K", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781350179/intel-core-ultra-7-265k-1.jpg"],
-        ["Intel Core Ultra 9 285K", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781350192/intel-core-ultra-9-285k-1.jpg"],
-        ["AMD Ryzen 9 9950X3D2", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781350183/amd-ryzen-9-9950x3d2-dual-edition-desktop-processor-1.jpg"]
+        ["Intel Core Ultra 5", "Intel | LGA 1851 | 14 Cores", "product.html?product=intel-core-ultra-5-245k", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781350193/intel-core-ultra-5-245k-1.jpg"],
+        ["Intel Core Ultra 7", "Intel | LGA 1851 | 20 Cores", "product.html?product=intel-core-ultra-7-265k", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781350179/intel-core-ultra-7-265k-1.jpg"],
+        ["Intel Core Ultra 7 270K Plus", "Intel | LGA 1851 | 24 Cores", "product.html?product=intel-core-ultra-7-270k-plus", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781350169/intel-core-ultra-7-270k-plus-1.jpg"],
+        ["Intel Core Ultra 9 285K", "Intel | LGA 1851 | 24 Cores", "product.html?product=intel-core-ultra-9-285k", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781350192/intel-core-ultra-9-285k-1.jpg"],
+        ["AMD Ryzen 5 9600X", "AMD | AM5 | 6 Cores", "product.html?product=amd-ryzen-5-9600x", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781350191/AMD_Ryzen_5_9600X.jpg"]
+      ]
+    },
+    {
+      title: "Motherboards",
+      link: "motherboards.html",
+      items: [
+        ["Aorus Z890 Elite WiFi7", "Gigabyte | LGA1851 | ATX", "product.html?product=z890-aorus-elite-wifi7", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781311811/gigabyte-z890-aorus-elite-wifi7-1.jpg"],
+        ["Aorus Z890 Master", "Gigabyte | LGA1851 | ATX", "product.html?product=z890-aorus-master", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781311810/gigabyte-z890-aorus-master-1.jpg"],
+        ["Aorus Z890 Master AI Top", "Gigabyte | LGA1851 | E-ATX", "product.html?product=z890-aorus-master-ai-top", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781311657/z890-aorus-master-ai-top-1.jpg"],
+        ["Aorus X870 Elite WiFi7", "Gigabyte | AM5 | ATX", "product.html?product=x870-aorus-elite-wifi7", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781311596/x870-aorus-elite-wifi7-1.jpg"],
+        ["Aorus X870 Stealth", "Gigabyte | AM5 | ATX", "product.html?product=x870-aorus-stealth", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781311630/x870-aorus-stealth-1.jpg"]
+      ]
+    },
+    {
+      title: "Memory",
+      link: "memory.html",
+      items: [
+        ["Corsair Dominator Titanium RGB 96GB DDR5", "Corsair | 96GB | 7000MT/s", "product.html?product=corsair-dominator-titanium-rgb-96gb-ddr5-7000-cl40", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781349399/corsair-dominator-titanium-rgb-96gb-ddr5-7000-cl40-1.jpg"],
+        ["Corsair Vengeance RGB DDR5", "Corsair | 48GB-128GB | 6000MT/s", "product.html?product=corsair-vengeance-rgb-48gb-ddr5-6000-c36", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781349390/corsair-vengeance-rgb-48gb-ddr5-6000-c36-1.jpg"],
+        ["Klevv Cras V RGB DDR5", "Klevv | 32GB-64GB | 6000-7200MT/s", "product.html?product=klevv-cras-v-rgb-ddr5", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781349378/klevv-cras-v-rgb-ddr5-1.jpg"],
+        ["G.Skill Trident Z5 RGB DDR5", "G.Skill | 64GB-96GB | 6000-6400MT/s", "product.html?product=gskill-trident-z5-rgb-ddr5", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781349368/gskill-trident-z5-rgb-1.jpg"]
+      ]
+    },
+    {
+      title: "Storage",
+      link: "storage.html",
+      items: [
+        ["Western Digital Black SN8100", "WD_Black | Gen 5 | NVMe SSD", "product.html?product=wd-black-sn8100-nvme-ssd", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781349963/wd-black-sn8100-nvme-ssd-1.jpg"],
+        ["Western Digital Black SN850X", "WD_Black | Gen 4 | NVMe SSD", "product.html?product=wd-black-sn850x-nvme-ssd", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781349961/wd-black-sn850x-nvme-ssd-1.jpg"],
+        ["Western Digital Black SN7100", "WD_Black | Gen 4 | NVMe SSD", "product.html?product=wd-black-sn7100-nvme-ssd", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781349955/wd-black-sn7100-nvme-ssd-1.jpg"],
+        ["Western Digital Blue SN5100", "WD_Blue | Gen 4 | NVMe SSD", "product.html?product=wd-blue-sn5100-nvme-ssd", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781349931/wd-blue-sn5100-nvme-ssd-1.jpg"],
+        ["Samsung 9100 Pro", "Samsung | Gen 5 | NVMe SSD", "product.html?product=samsung-9100-pro-nvme-ssd", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781349954/samsung-9100-pro-1tb-1.jpg"]
+      ]
+    },
+    {
+      title: "Power Supplies",
+      link: "power-supplies.html",
+      items: [
+        ["UD1600PM PG5 AI TOP", "Gigabyte | 1600W | 80 Plus Platinum", "product.html?product=ud1600pm-pg5-ai-top", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781348976/gigabyte-ud1600pm-pg5-ai-top-1.jpg"],
+        ["AORUS ELITE P850W Platinum PG5", "Gigabyte | 850W | 80 Plus Platinum", "product.html?product=aorus-elite-p850w-platinum-pg5", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781348961/gigabyte-aorus-elite-p850w-platinum-pg5-1.jpg"],
+        ["AORUS ELITE P1000W Platinum PG5", "Gigabyte | 1000W | 80 Plus Platinum", "product.html?product=aorus-elite-p1000w-platinum-pg5", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781348951/gigabyte-aorus-elite-p1000w-platinum-pg5-1.jpg"],
+        ["ROG Thor III", "ASUS ROG | 1000W / 1200W / 1600W", "product.html?product=rog-thor-iii", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781348920/rog-thor-1000w-platinum-iii-1.jpg"],
+        ["Corsair RM1200x SHIFT", "Corsair | 1200W | 80 Plus Gold", "product.html?product=corsair-rm1200x-shift-1200w", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781348865/corsair-rm1200x-shift-1200w-1.jpg"]
+      ]
+    },
+    {
+      title: "Cases",
+      link: "cases.html",
+      items: [
+        ["Gigabyte C500 Panoramic Stealth", "Gigabyte | Mid Tower | ATX Support", "product.html?product=gigabyte-c500-panoramic-stealth", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781350125/gigabyte-c500-panoramic-stealth-1.jpg"],
+        ["AORUS C500 GLASS", "Gigabyte | Mid Tower | ATX Support", "product.html?product=aorus-c500-glass", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781350108/gigabyte-aorus-c500-glass-1.jpg"],
+        ["AORUS C400 GLASS", "Gigabyte | Mid Tower | ATX Support", "product.html?product=aorus-c400-glass", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781350087/gigabyte-aorus-c400-glass-1.jpg"],
+        ["Fractal Design North XL Charcoal Black", "Fractal | Full Tower | E-ATX Support", "product.html?product=fractal-design-north-xl-charcoal-black", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781350077/fractal-design-north-xl-charcoal-black-1.jpg"],
+        ["ROG Strix Helios II", "ASUS | Mid Tower | E-ATX Support", "product.html?product=rog-strix-helios-ii", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781350028/rog-strix-helios-ii-1.jpg"]
+      ]
+    },
+    {
+      title: "Monitors",
+      link: "monitors.html",
+      items: [
+        ["Gigabyte GS27FA Gaming Monitor", "Gigabyte | 1080p | 180Hz | IPS", "product.html?product=gigabyte-gs27fa-gaming-monitor", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781350157/gigabyte-gs27fa-gaming-monitor-2.jpg"],
+        ["Gigabyte GS27U Gaming Monitor", "Gigabyte | 2160p | 160Hz | IPS", "product.html?product=gigabyte-gs27u-gaming-monitor", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781350157/gigabyte-gs27fa-gaming-monitor-2.jpg"],
+        ["ROG Strix OLED XG27AQDNG", "ASUS ROG | 1440p | 360Hz | OLED", "product.html?product=rog-strix-oled-xg27aqdng", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781350153/rog-strix-oled-xg27aqdng-1.jpg"],
+        ["ROG Strix OLED XG27AQDMG Gen2", "ASUS ROG | 1440p | 240Hz | OLED", "product.html?product=rog-strix-oled-xg27aqdmg-gen2-xg27aqdmgr", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781350134/rog-strix-oled-xg27aqdmg-gen2-xg27aqdmgr-1.jpg"],
+        ["ROG Strix OLED XG27AQWMG", "ASUS ROG | 1440p | 280Hz | OLED", "product.html?product=rog-strix-oled-xg27aqwmg", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781350153/rog-strix-oled-xg27aqdng-1.jpg"]
+      ]
+    },
+    {
+      title: "Accessories",
+      link: "accessories.html",
+      items: [
+        ["Razer Huntsman V3 Pro TKL", "Razer | Keyboard | Wired", "product.html?product=razer-huntsman-v3-pro-tkl-keyboard", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781349812/razer-huntsman-v3-pro-tkl-keyboard-1.jpg"],
+        ["Razer Huntsman V3 Pro Mini", "Razer | Keyboard | Wired", "product.html?product=razer-huntsman-v3-pro-mini", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781349863/razer-huntsman-v3-pro-mini-rgb-wired-mini-keyboard-1.jpg"],
+        ["Razer Raiju V3 Pro for PS5", "Razer | Controller | Wireless", "product.html?product=razer-raiju-v3-pro-for-ps5", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781349794/razer-raiju-v3-pro-for-ps5-1.jpg"],
+        ["Razer Wolverine V3 Pro", "Razer | Controller | Wireless", "product.html?product=razer-wolverine-v3-pro", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781349787/razer-wolverine-v3-pro-1.jpg"],
+        ["Razer Seiren V3 Chroma USB Mic", "Razer | Gaming Microphone | USB", "product.html?product=razer-seiren-v3-chroma-usb-mic", "https://res.cloudinary.com/dhtamisqn/image/upload/v1781349852/razer-seiren-v3-chroma-usb-mic-1.jpg"]
+      ]
+    },
+    {
+      title: "Charging and Power",
+      link: "charging-and-power.html",
+      items: [
+        ["Anker Prime 20K 220W Power Bank", "Anker | 20,100mAh | 220W", "product.html?product=anker-prime-20k-220w-power-bank-black-myth-wukong-edition", "https://res.cloudinary.com/dhtamisqn/image/upload/v1782256183/anker-prime-20k-220w-power-bank-black-myth-wukong-edition-1.jpg"],
+        ["Anker Charger 140W 4-Port", "Anker | 4-Port PD 3.1 | 140W", "product.html?product=anker-charger-140w-4-port-pd-3-1", "https://res.cloudinary.com/dhtamisqn/image/upload/v1782261976/anker-charger-140w-4-port-dark-gray-1.jpg"],
+        ["Anker Laptop Power Bank 25K 165W", "Anker | 25,000mAh | 165W", "product.html?product=anker-laptop-power-bank-25k-165w-built-in-and-retractable-cables", "https://res.cloudinary.com/dhtamisqn/image/upload/v1782322406/anker-laptop-power-bank-25k-165w-built-in-and-retractable-cables-1.jpg"],
+        ["Anker Prime Charger 250W 6-Port", "Anker Prime | 6-Port | 250W", "product.html?product=anker-prime-charger-250w-6-ports-ganprime", "https://res.cloudinary.com/dhtamisqn/image/upload/v1782322407/anker-prime-charger-250w-6-ports-ganprime-1.jpg"],
+        ["Anker Prime Docking Station 14-in-1", "Anker Prime | Triple Display | DL7400", "product.html?product=anker-prime-docking-station-14-in-1-triple-display-displaylink-dl7400-black-myth-wukong-edition", "https://res.cloudinary.com/dhtamisqn/image/upload/v1782322406/anker-prime-docking-station-14-in-1-triple-display-displaylink-dl7400-black-myth-wukong-edition-1.jpg"]
       ]
     }
   ];
 
-  let featuredComponentIndex = 0;
-  let featuredComponentTimer;
-  let featuredComponentIsAnimating = false;
+  let homeComponentIndex = 0;
+  let homeComponentTimer;
+  let homeComponentIsChanging = false;
 
-  function renderFeaturedComponents(instant = false, direction = "next") {
-    const group = featuredComponentGroups[featuredComponentIndex];
-
-    const markup = group.items.map(([name, image]) => `
-      <a href="${group.link}" class="home-featured-component-item">
-        <img src="${image}" alt="${name}">
-        <span>${name}</span>
-      </a>
-    `).join("");
-
-    if (instant) {
-      featuredComponentTitle.textContent = group.title;
-      featuredComponentRow.innerHTML = markup;
+  function renderHomeComponents(instant = false) {
+    if (!homeComponentTitle || !homeComponentTrack || !homeComponentLink) {
       return;
     }
 
-    if (featuredComponentIsAnimating) return;
+    const group = homeComponentGroups[homeComponentIndex];
 
-    featuredComponentIsAnimating = true;
-    featuredComponentRow.classList.add(`is-switching-out-${direction}`);
+    const markup = group.items.map(([name, meta, href, image]) => `
+      <a href="${href}" class="tcs-home-component-card">
+        <div class="tcs-home-component-image-frame">
+          <img src="${image}" alt="${name}">
+        </div>
+        <div class="tcs-home-component-card-body">
+          <h3>${name}</h3>
+          <p>${meta}</p>
+        </div>
+      </a>
+    `).join("");
+
+    const paint = () => {
+      homeComponentTitle.textContent = group.title;
+      homeComponentLink.textContent = `View ${group.title}`;
+      homeComponentLink.href = group.link;
+      homeComponentTrack.innerHTML = markup;
+
+      if (homeComponentDots) {
+        homeComponentDots.querySelectorAll(".tcs-home-component-dot").forEach((dot, dotIndex) => {
+          dot.classList.toggle("is-active", dotIndex === homeComponentIndex);
+        });
+      }
+    };
+
+    if (instant) {
+      paint();
+      return;
+    }
+
+    if (homeComponentIsChanging) return;
+
+    homeComponentIsChanging = true;
+    homeComponentTrack.classList.add("is-changing");
 
     setTimeout(() => {
-      featuredComponentTitle.textContent = group.title;
-      featuredComponentRow.innerHTML = markup;
-
-      featuredComponentRow.classList.remove(`is-switching-out-${direction}`);
-      featuredComponentRow.classList.add(`is-switching-in-${direction}`);
-
-      const removeIncomingClass = () => {
-        featuredComponentRow.classList.remove(`is-switching-in-${direction}`);
-      };
-
-      if (typeof window.requestAnimationFrame === "function") {
-        window.requestAnimationFrame(() => {
-          window.requestAnimationFrame(removeIncomingClass);
-        });
-      } else {
-        setTimeout(removeIncomingClass, 0);
-      }
+      paint();
+      homeComponentTrack.classList.remove("is-changing");
 
       setTimeout(() => {
-        featuredComponentIsAnimating = false;
-      }, 560);
-    }, 550);
+        homeComponentIsChanging = false;
+      }, 340);
+    }, 260);
   }
 
-  function startFeaturedComponentsCycle() {
-    featuredComponentTimer = setInterval(() => {
-      featuredComponentIndex = (featuredComponentIndex + 1) % featuredComponentGroups.length;
-      renderFeaturedComponents(false, "next");
+  function goToHomeComponentGroup(index) {
+    homeComponentIndex = (index + homeComponentGroups.length) % homeComponentGroups.length;
+    renderHomeComponents(false);
+    resetHomeComponentCycle();
+  }
+
+  function startHomeComponentCycle() {
+    homeComponentTimer = setInterval(() => {
+      homeComponentIndex = (homeComponentIndex + 1) % homeComponentGroups.length;
+      renderHomeComponents(false);
     }, 7000);
   }
 
-  function resetFeaturedComponentsCycle() {
-    clearInterval(featuredComponentTimer);
-    startFeaturedComponentsCycle();
+  function resetHomeComponentCycle() {
+    clearInterval(homeComponentTimer);
+    startHomeComponentCycle();
   }
 
-  if (featuredComponentTitle && featuredComponentRow) {
-    renderFeaturedComponents(true);
-    startFeaturedComponentsCycle();
+  if (homeComponentTitle && homeComponentTrack && homeComponentLink) {
+    if (homeComponentDots) {
+      homeComponentDots.innerHTML = homeComponentGroups.map((group, index) => `
+        <button class="tcs-home-component-dot" type="button" aria-label="Show ${group.title}" data-index="${index}"></button>
+      `).join("");
 
-    featuredComponentRow.addEventListener("mouseenter", () => {
-      clearInterval(featuredComponentTimer);
-    });
-
-    featuredComponentRow.addEventListener("mouseleave", () => {
-      startFeaturedComponentsCycle();
-    });
-
-    if (featuredComponentPrev) {
-      featuredComponentPrev.addEventListener("click", () => {
-        featuredComponentIndex = (featuredComponentIndex - 1 + featuredComponentGroups.length) % featuredComponentGroups.length;
-        renderFeaturedComponents(false, "prev");
-        resetFeaturedComponentsCycle();
+      homeComponentDots.querySelectorAll(".tcs-home-component-dot").forEach((dot) => {
+        dot.addEventListener("click", () => {
+          goToHomeComponentGroup(Number(dot.dataset.index || 0));
+        });
       });
     }
 
-    if (featuredComponentNext) {
-      featuredComponentNext.addEventListener("click", () => {
-        featuredComponentIndex = (featuredComponentIndex + 1) % featuredComponentGroups.length;
-        renderFeaturedComponents(false, "next");
-        resetFeaturedComponentsCycle();
+    renderHomeComponents(true);
+    startHomeComponentCycle();
+
+    homeComponentTrack.addEventListener("mouseenter", () => {
+      clearInterval(homeComponentTimer);
+    });
+
+    homeComponentTrack.addEventListener("mouseleave", () => {
+      startHomeComponentCycle();
+    });
+
+    if (homeComponentPrev) {
+      homeComponentPrev.addEventListener("click", () => {
+        goToHomeComponentGroup(homeComponentIndex - 1);
+      });
+    }
+
+    if (homeComponentNext) {
+      homeComponentNext.addEventListener("click", () => {
+        goToHomeComponentGroup(homeComponentIndex + 1);
       });
     }
   }
