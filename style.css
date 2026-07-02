@@ -9315,7 +9315,8 @@ body.account-security-modal-open {
 }
 
 .account-support-filters {
-  margin-top: -4px;
+  margin-top: 4px;
+  margin-bottom: 18px;
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
