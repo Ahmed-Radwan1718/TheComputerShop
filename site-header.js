@@ -218,8 +218,6 @@ if (floatingAccountWidget) {
       }
 
       async function loadServerAccountState() {
-        closeAccountMenu();
-
         const twoFactorIsPending = sessionStorage.getItem("tcs-login-2fa-pending") === "1";
 
         if (twoFactorIsPending) {
