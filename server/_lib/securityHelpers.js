@@ -838,7 +838,7 @@ async function createSiteSessionFromIdToken(firstArg, secondArg, thirdArg) {
           const error = new Error("session-cookie-timeout");
           error.sessionCookieTimeout = true;
           reject(error);
-        }, 8000);
+        }, 2500);
       })
     ]);
   } catch (error) {
@@ -1071,12 +1071,18 @@ async function getLoginChallenge(req) {
 }
 
 async function clearLoginChallenge(req, res) {
-  try {
-    const challenge = await getLoginChallenge(req);
-    await challenge.ref.delete().catch(function () {});
-  } catch (error) {}
-
   clearCookie(res, LOGIN_CHALLENGE_COOKIE_NAME);
+
+  try {
+    await Promise.race([
+      getLoginChallenge(req).then(function (challenge) {
+        return challenge.ref.delete().catch(function () {});
+      }),
+      new Promise(function (resolve) {
+        setTimeout(resolve, 1000);
+      })
+    ]);
+  } catch (error) {}
 }
 
 function setLoginTwoFactorCookie(res, value, maxAgeSeconds) {
