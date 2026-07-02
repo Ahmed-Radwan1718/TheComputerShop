@@ -12,7 +12,7 @@ const {
 const LOGIN_ATTEMPT_WINDOW_MS = 24 * 60 * 60 * 1000;
 const THIRTY_MINUTES_MS = 30 * 60 * 1000;
 const ONE_HOUR_MS = 60 * 60 * 1000;
-const LOGIN_OPTIONAL_TASK_TIMEOUT_MS = 3500;
+const LOGIN_OPTIONAL_TASK_TIMEOUT_MS = 1200;
 
 async function runOptionalLoginTask(task, fallbackValue) {
   let timeoutId;
