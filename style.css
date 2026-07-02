@@ -581,6 +581,87 @@ body {
   max-width: 520px;
 }
 
+.tcs-home-mini-consult-form {
+  width: min(520px, 100%);
+  margin-top: 28px;
+  padding: 22px;
+  border-radius: 24px;
+  background: rgba(24, 25, 24, 0.58);
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  display: grid;
+  gap: 14px;
+}
+
+.tcs-home-mini-consult-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.tcs-home-mini-consult-field {
+  display: grid;
+  gap: 8px;
+}
+
+.tcs-home-mini-consult-field-full {
+  grid-column: 1 / -1;
+}
+
+.tcs-home-mini-consult-form label {
+  color: rgba(255, 255, 255, 0.64);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.tcs-home-mini-consult-form input,
+.tcs-home-mini-consult-form select,
+.tcs-home-mini-consult-form textarea {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  background: rgba(8, 9, 8, 0.42);
+  color: white;
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+.tcs-home-mini-consult-form input,
+.tcs-home-mini-consult-form select {
+  min-height: 46px;
+  padding: 0 14px;
+}
+
+.tcs-home-mini-consult-form textarea {
+  min-height: 86px;
+  padding: 13px 14px;
+  resize: vertical;
+}
+
+.tcs-home-mini-consult-form input::placeholder,
+.tcs-home-mini-consult-form textarea::placeholder {
+  color: rgba(255, 255, 255, 0.36);
+}
+
+.tcs-home-mini-consult-submit {
+  min-height: 48px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  color: white;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.tcs-home-mini-consult-submit:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
 .tcs-home-process-list {
   display: grid;
   gap: 16px;
