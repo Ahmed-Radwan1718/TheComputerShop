@@ -1553,12 +1553,65 @@ function getLoginSessionBrowserIcon(browserLabel) {
   return "";
 }
 
+function getLoginSessionTimeValue(value) {
+  const date = getDateFromFirestoreValue(value);
+
+  return date ? date.getTime() : 0;
+}
+
+function getLoginSessionDeviceKey(session) {
+  return [
+    session.deviceLabel,
+    session.browserLabel,
+    session.platformLabel,
+    session.ipAddress
+  ].map(function (value) {
+    return String(value || "").trim().toLowerCase();
+  }).join("|");
+}
+
+function getVisibleLoginSessions(sessions) {
+  const visibleByDevice = new Map();
+
+  sessions.forEach(function (session) {
+    const key = getLoginSessionDeviceKey(session);
+    const safeKey = key.replace(/\|/g, "");
+
+    if (!safeKey) {
+      visibleByDevice.set("session:" + String(session.id || Math.random()), session);
+      return;
+    }
+
+    const existingSession = visibleByDevice.get(key);
+    const sessionTime = getLoginSessionTimeValue(session.lastSeenAt || session.createdAt);
+    const existingTime = existingSession
+      ? getLoginSessionTimeValue(existingSession.lastSeenAt || existingSession.createdAt)
+      : 0;
+
+    if (!existingSession || session.current || (!existingSession.current && sessionTime > existingTime)) {
+      visibleByDevice.set(key, session);
+    }
+  });
+
+  return Array.from(visibleByDevice.values()).sort(function (a, b) {
+    if (a.current && !b.current) {
+      return -1;
+    }
+
+    if (!a.current && b.current) {
+      return 1;
+    }
+
+    return getLoginSessionTimeValue(b.lastSeenAt || b.createdAt) - getLoginSessionTimeValue(a.lastSeenAt || a.createdAt);
+  });
+}
+
 function renderLoginSessions() {
   if (!loginSessionsList || !loginSessionsEmpty) {
     return;
   }
 
-  const sessions = Array.isArray(loginSessions) ? loginSessions : [];
+  const sessions = getVisibleLoginSessions(Array.isArray(loginSessions) ? loginSessions : []);
 
   loginSessionsEmpty.hidden = sessions.length > 0;
 
