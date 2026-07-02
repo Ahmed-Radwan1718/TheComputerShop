@@ -419,10 +419,6 @@
 
     const email = document.getElementById("login-email").value.trim();
     const password = document.getElementById("login-password").value;
-    const loginAbortController = new AbortController();
-    const loginTimeout = window.setTimeout(function () {
-      loginAbortController.abort();
-    }, 15000);
 
     setPrimaryLoginControlsDisabled(true);
     loginButton.textContent = "Logging In...";
@@ -432,7 +428,6 @@
       const response = await fetch("/api/login", {
         method: "POST",
         credentials: "same-origin",
-        signal: loginAbortController.signal,
         headers: {
           "Content-Type": "application/json"
         },
@@ -481,14 +476,8 @@
       clearTwoFactorPending();
       cancelServerLogin();
 
-      if (error && error.name === "AbortError") {
-        showMessage("Login took too long. Please check your connection and try again.", "error");
-        return;
-      }
-
       showMessage(error.message || "Something went wrong. Please try again.", "error");
     } finally {
-      window.clearTimeout(loginTimeout);
       setPrimaryLoginControlsDisabled(false);
       loginButton.textContent = "Log In";
     }
