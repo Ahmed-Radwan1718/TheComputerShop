@@ -220,15 +220,23 @@
 
             <div class="tcs-home-mini-consult-field">
               <label for="home-mini-use">Main Use</label>
-              <select id="home-mini-use" name="Main Use Case" required>
-                <option value="">Select one</option>
-                <option value="Gaming">Gaming</option>
-                <option value="Gaming + Streaming">Gaming + Streaming</option>
-                <option value="Content Creation">Content Creation</option>
-                <option value="Workstation">Workstation</option>
-                <option value="Mixed Use">Mixed Use</option>
-                <option value="Not sure yet">Not sure yet</option>
-              </select>
+              <div class="custom-select-dropdown" data-custom-select>
+                <input type="hidden" id="home-mini-use" name="Main Use Case" data-required-select="true" value="">
+
+                <button class="custom-select-trigger" type="button" aria-expanded="false">
+                  <span class="custom-select-value">Select one</span>
+                  <span class="chevron"></span>
+                </button>
+
+                <div class="custom-select-menu">
+                  <button class="custom-select-option" type="button" data-value="Gaming">Gaming</button>
+                  <button class="custom-select-option" type="button" data-value="Gaming + Streaming">Gaming + Streaming</button>
+                  <button class="custom-select-option" type="button" data-value="Content Creation">Content Creation</button>
+                  <button class="custom-select-option" type="button" data-value="Workstation">Workstation</button>
+                  <button class="custom-select-option" type="button" data-value="Mixed Use">Mixed Use</button>
+                  <button class="custom-select-option" type="button" data-value="Not sure yet">Not sure yet</button>
+                </div>
+              </div>
             </div>
 
             <div class="tcs-home-mini-consult-field tcs-home-mini-consult-field-full">
@@ -629,6 +637,63 @@
       customProcessObserver.observe(step);
     });
   }
+</script>
+
+<script>
+  document.querySelectorAll("[data-custom-select]").forEach((dropdown) => {
+    const trigger = dropdown.querySelector(".custom-select-trigger");
+    const valueText = dropdown.querySelector(".custom-select-value");
+    const hiddenInput = dropdown.querySelector("input[type='hidden']");
+    const options = dropdown.querySelectorAll(".custom-select-option");
+
+    trigger.addEventListener("click", () => {
+      document.querySelectorAll("[data-custom-select]").forEach((otherDropdown) => {
+        if (otherDropdown !== dropdown) {
+          otherDropdown.classList.remove("open");
+        }
+      });
+
+      dropdown.classList.toggle("open");
+    });
+
+    options.forEach((option) => {
+      option.addEventListener("click", () => {
+        options.forEach((item) => item.classList.remove("active"));
+        option.classList.add("active");
+
+        valueText.textContent = option.textContent;
+        hiddenInput.value = option.dataset.value;
+
+        dropdown.classList.remove("open");
+        dropdown.classList.remove("invalid");
+      });
+    });
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!event.target.closest("[data-custom-select]")) {
+      document.querySelectorAll("[data-custom-select]").forEach((dropdown) => {
+        dropdown.classList.remove("open");
+      });
+    }
+  });
+
+  document.querySelectorAll("form").forEach((form) => {
+    form.addEventListener("submit", (event) => {
+      let valid = true;
+
+      form.querySelectorAll("[data-required-select='true']").forEach((input) => {
+        if (!input.value) {
+          input.closest("[data-custom-select]").classList.add("invalid");
+          valid = false;
+        }
+      });
+
+      if (!valid) {
+        event.preventDefault();
+      }
+    });
+  });
 </script>
 
 <script>
