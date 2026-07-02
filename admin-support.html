@@ -233,6 +233,10 @@
       </div>
 
       <div class="account-support-detail-actions">
+        <button class="account-danger-button" type="button" id="admin-ticket-delete">
+          Delete Request
+        </button>
+
         <button class="account-security-modal-cancel" type="button" id="admin-ticket-save-status">
           Save Status
         </button>
@@ -295,6 +299,7 @@
   const adminTicketReplyForm = document.getElementById("admin-ticket-reply-form");
   const adminTicketReply = document.getElementById("admin-ticket-reply");
   const adminTicketSendReply = document.getElementById("admin-ticket-send-reply");
+  const adminTicketDelete = document.getElementById("admin-ticket-delete");
   const adminTicketSaveStatus = document.getElementById("admin-ticket-save-status");
   const adminTicketReplyMessage = document.getElementById("admin-ticket-reply-message");
 
@@ -921,6 +926,31 @@
     }
   }
 
+  async function deleteAdminTicket(ticketId) {
+    const response = await fetch("/api/admin-support-tickets", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({
+        action: "delete",
+        ticketId: ticketId
+      })
+    });
+
+    const data = await response.json().catch(function () {
+      return {};
+    });
+
+    if (!response.ok || !data.success) {
+      throw new Error(data.error || "Could not delete support request.");
+    }
+
+    return data;
+  }
+
   async function sendAdminTicketReply(ticketId, message) {
     const response = await fetch("/api/admin-support-tickets", {
       method: "POST",
@@ -974,6 +1004,14 @@
 
     renderTickets();
     renderTicketModal(updatedTicket);
+  }
+
+  function removeTicket(ticketId) {
+    tickets = tickets.filter(function (ticket) {
+      return ticket.id !== ticketId;
+    });
+
+    renderTickets();
   }
 
   adminOrderSelects.forEach(function (dropdown) {
@@ -1143,6 +1181,41 @@
       adminOrderDelete.disabled = false;
       adminOrderDelete.textContent = "Delete Order";
       adminOrderSave.disabled = false;
+    }
+  });
+
+  adminTicketDelete.addEventListener("click", async function () {
+    if (!activeTicketId) {
+      return;
+    }
+
+    const activeTicket = getActiveTicket();
+    const ticketLabel = activeTicket && activeTicket.subject ? activeTicket.subject : "this support request";
+    const confirmed = window.confirm("Delete " + ticketLabel + " from admin and the customer's support requests? This cannot be undone.");
+
+    if (!confirmed) {
+      return;
+    }
+
+    adminTicketDelete.disabled = true;
+    adminTicketDelete.textContent = "Deleting...";
+    adminTicketSaveStatus.disabled = true;
+    adminTicketSendReply.disabled = true;
+    showMessage(adminTicketReplyMessage, "", "");
+
+    try {
+      const ticketId = activeTicketId;
+      await deleteAdminTicket(ticketId);
+      removeTicket(ticketId);
+      closeTicketModal();
+      showMessage(adminSupportMessage, "Support request deleted.", "success");
+    } catch (error) {
+      showMessage(adminTicketReplyMessage, error.message || "Could not delete support request.", "error");
+    } finally {
+      adminTicketDelete.disabled = false;
+      adminTicketDelete.textContent = "Delete Request";
+      adminTicketSaveStatus.disabled = false;
+      adminTicketSendReply.disabled = false;
     }
   });
 
