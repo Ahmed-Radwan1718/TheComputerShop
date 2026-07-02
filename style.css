@@ -60,12 +60,16 @@ body {
 }
 
 .tcs-home-hero-copy h1 {
-  margin-bottom: 22px;
+  margin-bottom: 26px;
   color: white;
-  font-size: 76px;
+  font-size: clamp(68px, 7.2vw, 98px);
   font-weight: 700;
-  line-height: 0.94;
+  line-height: 0.86;
   text-transform: uppercase;
+}
+
+.tcs-home-hero-copy h1 span {
+  display: block;
 }
 
 .tcs-home-hero-copy > p:not(.tcs-home-kicker) {
