@@ -53,7 +53,7 @@ body {
   margin-bottom: 16px;
   color: rgba(192, 154, 92, 0.84);
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.14em;
   line-height: 1.4;
   text-transform: uppercase;
@@ -63,7 +63,7 @@ body {
   margin-bottom: 22px;
   color: white;
   font-size: 76px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 0.94;
   text-transform: uppercase;
 }
@@ -92,7 +92,7 @@ body {
   border-radius: 999px;
   color: white;
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   text-decoration: none;
@@ -137,7 +137,7 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: rgba(255, 255, 255, 0.62);
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -191,7 +191,7 @@ body {
 .tcs-home-trust-grid span {
   color: rgba(192, 154, 92, 0.78);
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -200,7 +200,7 @@ body {
   margin: 14px 0 10px;
   color: white;
   font-size: 30px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.08;
   text-transform: uppercase;
 }
@@ -239,7 +239,7 @@ body {
 .tcs-home-final-panel h2 {
   color: white;
   font-size: 46px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.06;
   text-transform: uppercase;
 }
@@ -248,7 +248,7 @@ body {
 .tcs-home-text-link:visited {
   color: rgba(255, 255, 255, 0.62);
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   text-decoration: none;
@@ -362,7 +362,7 @@ body {
   z-index: 2;
   color: white;
   font-size: 20px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.1;
   text-transform: uppercase;
 }
@@ -402,7 +402,7 @@ body {
   margin: 8px 0;
   color: white;
   font-size: 24px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.1;
   text-transform: uppercase;
 }
@@ -410,7 +410,7 @@ body {
 .tcs-home-build-card p {
   color: rgba(255, 255, 255, 0.56);
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.08em;
   line-height: 1.45;
   text-transform: uppercase;
@@ -7557,7 +7557,7 @@ body.account-photo-crop-modal-open {
 .account-photo-crop-header h2 {
   color: white;
   font-size: 26px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0;
   line-height: 1.15;
 }
@@ -7721,7 +7721,7 @@ body.account-photo-crop-modal-open {
   border-radius: 999px;
   font-family: inherit;
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
@@ -9860,7 +9860,7 @@ body.account-security-modal-open {
 
 .admin-order-map-link {
   color: white;
-  font-weight: 800;
+  font-weight: 700;
   text-decoration: underline;
   text-underline-offset: 4px;
 }
@@ -10305,7 +10305,7 @@ body.account-security-modal-open {
   min-width: 0;
   color: rgba(255, 255, 255, 0.42);
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.08em;
   line-height: 1.2;
   text-align: center;
@@ -11028,7 +11028,7 @@ body.account-security-modal-open {
 
 .account-trusted-device-mark span {
   font-size: 22px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1;
   text-transform: uppercase;
 }
@@ -11046,7 +11046,7 @@ body.account-security-modal-open {
   gap: 10px;
   color: rgba(255, 255, 255, 0.42);
   font-size: 10px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -11059,7 +11059,7 @@ body.account-security-modal-open {
   background: rgba(255, 255, 255, 0.08);
   color: rgba(255, 255, 255, 0.78);
   font-size: 10px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -11067,7 +11067,7 @@ body.account-security-modal-open {
 .account-trusted-device-body h4 {
   color: white;
   font-size: 19px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.18;
   text-transform: uppercase;
 }
@@ -11099,7 +11099,7 @@ body.account-security-modal-open {
   margin-bottom: 2px;
   color: rgba(255, 255, 255, 0.34);
   font-size: 9px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -11114,7 +11114,7 @@ body.account-security-modal-open {
   color: rgba(255, 176, 176, 0.96);
   font-family: inherit;
   font-size: 10px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
