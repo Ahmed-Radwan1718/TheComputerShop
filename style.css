@@ -11046,7 +11046,7 @@ body.account-security-modal-open {
   border: 1px solid rgba(255, 255, 255, 0.105);
   background: rgba(255, 255, 255, 0.045);
   display: grid;
-  grid-template-columns: 54px minmax(0, 1fr) auto;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
   gap: 18px;
   align-items: center;
   content-visibility: auto;
@@ -11054,11 +11054,8 @@ body.account-security-modal-open {
 }
 
 .account-two-factor-icon {
-  width: 46px;
-  height: 46px;
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.06);
+  width: 30px;
+  height: 30px;
   color: white;
   display: flex;
   align-items: center;
@@ -11066,8 +11063,8 @@ body.account-security-modal-open {
 }
 
 .account-two-factor-icon img {
-  width: 22px;
-  height: 22px;
+  width: 28px;
+  height: 28px;
   display: block;
   object-fit: contain;
 }
