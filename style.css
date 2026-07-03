@@ -1598,8 +1598,8 @@ body {
 
 .component-search-box input:focus {
   background: rgba(255, 255, 255, 0.095);
-  border-color: rgba(255, 255, 255, 0.32);
-  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.055);
+  border-color: rgba(192, 154, 92, 0.58);
+  box-shadow: 0 0 0 4px rgba(192, 154, 92, 0.1);
 }
 
 .selected-filter-chips {
@@ -1611,10 +1611,10 @@ body {
 }
 
 .selected-filter-label {
-  color: rgba(255, 255, 255, 0.58);
+  color: rgba(192, 154, 92, 0.84);
   font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
@@ -2186,8 +2186,8 @@ body.nav-menu-open {
 
 .filter-toggle:hover,
 .filter-item.open .filter-toggle {
-  background: rgba(255, 255, 255, 0.095);
-  color: white;
+  background: rgba(192, 154, 92, 0.1);
+  color: rgba(192, 154, 92, 0.92);
 }
 
 .chevron {
@@ -2277,8 +2277,8 @@ body.nav-menu-open {
 }
 
 .filter-content label:has(input:checked) {
-  color: white;
-  background: rgba(255, 255, 255, 0.095);
+  color: rgba(192, 154, 92, 0.92);
+  background: rgba(192, 154, 92, 0.1);
   transform: translateX(2px);
 }
 
@@ -3479,10 +3479,11 @@ body.nav-menu-open {
 
 .component-hero-eyebrow {
   margin-bottom: 14px;
-  color: rgba(255, 255, 255, 0.72);
-  font-size: 13px;
+  color: rgba(192, 154, 92, 0.84);
+  font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.14em;
+  line-height: 1.4;
   text-transform: uppercase;
 }
 
