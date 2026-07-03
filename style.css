@@ -243,6 +243,14 @@ body {
   gap: 24px;
 }
 
+.tcs-home-categories .tcs-home-section-head-row {
+  position: relative;
+  left: 50%;
+  width: min(1680px, calc(100vw - clamp(44px, 8.6vw, 176px)));
+  max-width: none;
+  transform: translateX(-50%);
+}
+
 .tcs-home-section-head h2,
 .tcs-home-process-copy h2,
 .tcs-home-final-panel h2 {
@@ -464,11 +472,16 @@ body {
 }
 
 .tcs-home-component-carousel-footer {
-  margin-top: 22px;
+  position: relative;
+  left: 50%;
+  width: min(1680px, calc(100vw - clamp(44px, 8.6vw, 176px)));
+  max-width: none;
+  margin-top: 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 18px;
+  transform: translateX(-50%);
 }
 
 .tcs-home-component-dots {
