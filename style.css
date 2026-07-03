@@ -607,6 +607,9 @@ body {
 }
 
 .tcs-home-mini-consult-form {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   width: min(520px, 100%);
   margin-top: 28px;
   padding: 22px;
@@ -614,12 +617,53 @@ body {
   background:
     linear-gradient(135deg, rgba(192, 154, 92, 0.08), rgba(255, 255, 255, 0.025)),
     rgba(24, 25, 24, 0.58);
-  border: 1px solid rgba(192, 154, 92, 0.32);
+  border: 1px solid rgba(192, 154, 92, 0.22);
   box-shadow:
     0 22px 55px rgba(0, 0, 0, 0.18),
     0 0 0 1px rgba(192, 154, 92, 0.08);
   display: grid;
   gap: 14px;
+}
+
+.tcs-home-mini-consult-form::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 250deg,
+    rgba(192, 154, 92, 0.18) 285deg,
+    rgba(192, 154, 92, 1) 315deg,
+    rgba(255, 226, 170, 0.95) 330deg,
+    rgba(192, 154, 92, 0.18) 345deg,
+    transparent 360deg
+  );
+  filter: drop-shadow(0 0 12px rgba(192, 154, 92, 0.55));
+  pointer-events: none;
+  animation: tcs-home-mini-consult-border-pulse 4.2s linear infinite;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+.tcs-home-mini-consult-form > * {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes tcs-home-mini-consult-border-pulse {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .tcs-home-mini-consult-grid {
