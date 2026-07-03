@@ -319,6 +319,11 @@ body {
 .tcs-home-component-carousel {
   position: relative;
   overflow: visible;
+  display: grid;
+  grid-template-columns: auto auto auto;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
 }
 
 .tcs-home-component-track {
@@ -422,8 +427,7 @@ body {
 }
 
 .tcs-home-component-arrow {
-  position: absolute;
-  top: 50%;
+  position: static;
   z-index: 3;
   width: 32px;
   height: 38px;
@@ -437,7 +441,7 @@ body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transform: translateY(-50%);
+  transform: none;
   transition:
     color 0.2s ease,
     transform 0.2s ease;
@@ -448,7 +452,7 @@ body {
 }
 
 .tcs-home-component-arrow:active {
-  transform: translateY(calc(-50% + 1px));
+  transform: translateY(1px);
 }
 
 .tcs-home-component-arrow-left {
