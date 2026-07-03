@@ -3241,7 +3241,7 @@ function getAddressPreview(address) {
 
   if (address.addressType === "apartment") {
     if (address.buildingName) {
-      parts.push(address.buildingName);
+      parts.push("Building " + address.buildingName);
     }
 
     if (address.apartmentNumber) {
