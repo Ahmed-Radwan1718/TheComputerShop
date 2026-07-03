@@ -1546,6 +1546,10 @@ body {
   text-transform: uppercase;
 }
 
+.component-page .signature-builds-eyebrow {
+  display: none;
+}
+
 .signature-hero-content h1 {
   max-width: 760px;
   margin-bottom: 22px;
