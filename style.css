@@ -323,7 +323,7 @@ body {
 
 .tcs-home-component-track {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(280px, 1fr));
   gap: 18px;
   transition:
     opacity 0.32s ease,
