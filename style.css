@@ -7481,6 +7481,26 @@ body:has(:is(
   backface-visibility: hidden;
 }
 
+@media (max-width: 900px) {
+  body:has(:is(
+    .home-page,
+    .components-hub-page,
+    .signature-page,
+    .component-page,
+    .product-page,
+    .cart-page,
+    .checkout-page,
+    .consultation-page,
+    .about-us-page,
+    .faq-page,
+    .policies-page,
+    .auth-page,
+    .account-page
+  )) .site-header {
+    transform: none;
+  }
+}
+
 body:has(:is(
   .home-page,
   .components-hub-page,
