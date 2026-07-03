@@ -2336,10 +2336,11 @@ body.nav-menu-open {
 
 .faq-section-eyebrow {
   margin-bottom: 12px;
-  color: rgba(255, 255, 255, 0.58);
+  color: rgba(192, 154, 92, 0.84);
   font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
+  line-height: 1.4;
   text-transform: uppercase;
 }
 
@@ -2363,8 +2364,8 @@ body.nav-menu-open {
 
 .faq-category-label {
   margin-bottom: 14px;
-  color: rgba(255, 255, 255, 0.58);
-  font-size: 12px;
+  color: rgba(192, 154, 92, 0.78);
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -2401,15 +2402,19 @@ body.nav-menu-open {
 }
 
 .faq-icon {
-  color: rgba(255, 255, 255, 0.52);
+  color: rgba(192, 154, 92, 0.62);
   font-size: 28px;
   font-weight: 300;
   line-height: 1;
   transition: transform 0.24s ease, color 0.24s ease;
 }
 
+.faq-question:hover .faq-icon {
+  color: rgba(192, 154, 92, 0.92);
+}
+
 .faq-accordion-item.open .faq-icon {
-  color: white;
+  color: rgba(192, 154, 92, 0.92);
   transform: rotate(45deg);
 }
 
@@ -2437,8 +2442,8 @@ body.nav-menu-open {
 .faq-answer a,
 .faq-answer a:visited,
 .faq-answer a:hover {
-  color: rgba(255, 255, 255, 0.66);
-  font-weight: 400;
+  color: rgba(192, 154, 92, 0.84);
+  font-weight: 700;
   text-decoration: none;
 }
 
