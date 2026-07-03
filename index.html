@@ -197,34 +197,6 @@
         <p>Instead of guessing between parts, start with what the PC needs to do. The recommendation can then balance performance, cooling, power, storage, case fit, and upgrade room.</p>
 
         <form class="tcs-home-mini-consult-form" action="/api/consultation" method="POST" data-consultation-redirect="index.html#custom-pc-process">
-          <svg class="quick-plan-comet-border" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-            <defs>
-              <filter id="quickPlanCometGlow" x="-300%" y="-300%" width="700%" height="700%">
-                <feGaussianBlur stdDeviation="1.8" result="blur"></feGaussianBlur>
-                <feMerge>
-                  <feMergeNode in="blur"></feMergeNode>
-                  <feMergeNode in="SourceGraphic"></feMergeNode>
-                </feMerge>
-              </filter>
-            </defs>
-
-            <path
-              class="quick-plan-comet-path"
-              d="M 5 0.8 H 95 Q 99.2 0.8 99.2 5 V 95 Q 99.2 99.2 95 99.2 H 5 Q 0.8 99.2 0.8 95 V 5 Q 0.8 0.8 5 0.8 Z"
-            ></path>
-
-            <g class="quick-plan-comet">
-              <line class="quick-plan-comet-haze" x1="-4.2" y1="0" x2="4.2" y2="0"></line>
-              <line class="quick-plan-comet-core" x1="-2.4" y1="0" x2="2.4" y2="0"></line>
-
-              <animateMotion
-                dur="5s"
-                repeatCount="indefinite"
-                rotate="auto"
-                path="M 5 0.8 H 95 Q 99.2 0.8 99.2 5 V 95 Q 99.2 99.2 95 99.2 H 5 Q 0.8 99.2 0.8 95 V 5 Q 0.8 0.8 5 0.8 Z"
-              ></animateMotion>
-            </g>
-          </svg>
           <input type="hidden" name="Form Type" value="New Quick Custom PC Consultation Request">
           <input type="text" name="_honey" autocomplete="off" tabindex="-1" style="display:none">
 
