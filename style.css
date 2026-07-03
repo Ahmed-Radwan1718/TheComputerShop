@@ -3593,8 +3593,10 @@ body.nav-menu-open {
 .consultation-page .consultation-form {
   padding: 30px;
   border-radius: 26px;
-  border: 1px solid rgba(255, 255, 255, 0.11);
-  background: rgba(24, 25, 24, 0.56);
+  border: 1px solid rgba(192, 154, 92, 0.14);
+  background:
+    linear-gradient(135deg, rgba(192, 154, 92, 0.08), rgba(255, 255, 255, 0.025)),
+    rgba(24, 25, 24, 0.56);
   box-shadow: 0 22px 55px rgba(0, 0, 0, 0.18);
 }
 
@@ -3605,7 +3607,7 @@ body.nav-menu-open {
 .consultation-page .consultation-form-group-title {
   margin-top: 18px;
   padding-top: 22px;
-  border-top: 1px solid rgba(255, 255, 255, 0.11);
+  border-top: 1px solid rgba(192, 154, 92, 0.14);
 }
 
 .consultation-page .consultation-form-group-title:first-child {
@@ -3615,10 +3617,11 @@ body.nav-menu-open {
 }
 
 .consultation-page .consultation-form-group-title h2 {
-  color: rgba(255, 255, 255, 0.72);
+  color: rgba(192, 154, 92, 0.84);
   font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.14em;
+  line-height: 1.4;
   text-transform: uppercase;
 }
 
@@ -3980,8 +3983,8 @@ body.nav-menu-open {
 .consultation-field textarea:focus,
 .custom-select-trigger:focus {
   background: rgba(255, 255, 255, 0.065);
-  border-color: rgba(255, 255, 255, 0.34);
-  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.14);
+  border-color: rgba(192, 154, 92, 0.58);
+  box-shadow: 0 0 0 4px rgba(192, 154, 92, 0.1);
 }
 
 .consultation-submit-button {
