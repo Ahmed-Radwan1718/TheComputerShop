@@ -8529,8 +8529,7 @@ body.account-photo-crop-modal-open {
   transform: translateY(4px);
 }
 
-.account-username-info-button:hover .account-username-tooltip,
-.account-username-info-button:focus .account-username-tooltip {
+.account-username-info-button:hover .account-username-tooltip {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
@@ -8652,8 +8651,7 @@ body.account-photo-crop-modal-open {
   transform: translateY(4px);
 }
 
-.account-email-info-button:hover .account-email-tooltip,
-.account-email-info-button:focus .account-email-tooltip {
+.account-email-info-button:hover .account-email-tooltip {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
