@@ -539,16 +539,25 @@ body {
 
 .tcs-home-build-card,
 .tcs-home-build-card:visited {
+  min-height: 430px;
+  padding: 12px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.095);
+  background: rgba(24, 25, 24, 0.56);
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.18);
   color: white;
   text-decoration: none;
   display: block;
   transition:
     opacity 0.22s ease,
-    transform 0.22s ease;
+    transform 0.22s ease,
+    border-color 0.22s ease,
+    background 0.22s ease;
 }
 
 .tcs-home-build-card:hover {
-  opacity: 0.88;
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(24, 25, 24, 0.68);
   transform: translateY(-2px);
 }
 
