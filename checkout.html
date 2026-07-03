@@ -326,6 +326,15 @@
   </section>
 </main>
 
+<div class="checkout-success-overlay" id="checkout-success-overlay" hidden>
+  <div class="checkout-success-panel" role="status" aria-live="polite">
+    <div class="checkout-success-icon" aria-hidden="true">&#10003;</div>
+    <p class="checkout-success-kicker">Order placed</p>
+    <h2>Order placed successfully</h2>
+    <p>We received your request and will redirect you to your account.</p>
+  </div>
+</div>
+
 <script>
   const checkoutForm = document.getElementById("checkout-form");
   const checkoutName = document.getElementById("checkout-name");
@@ -366,6 +375,7 @@
   const checkoutCustomerNote = document.getElementById("checkout-customer-note");
   const checkoutSubmitButton = document.getElementById("checkout-submit-button");
   const checkoutMessage = document.getElementById("checkout-message");
+  const checkoutSuccessOverlay = document.getElementById("checkout-success-overlay");
   const checkoutItems = document.getElementById("checkout-items");
   const checkoutTotal = document.getElementById("checkout-total");
 
@@ -967,9 +977,17 @@
 
       showCheckoutMessage("Order request placed. Redirecting to your account...", "success");
 
+      if (checkoutSuccessOverlay) {
+        checkoutSuccessOverlay.hidden = false;
+
+        window.requestAnimationFrame(function () {
+          checkoutSuccessOverlay.classList.add("visible");
+        });
+      }
+
       setTimeout(function () {
         window.location.href = "accounts.html";
-      }, 1000);
+      }, 1800);
     } catch (error) {
       showCheckoutMessage(error.message || "Could not place your order request. Please try again.", "error");
       checkoutSubmitButton.disabled = false;
