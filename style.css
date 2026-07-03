@@ -620,56 +620,6 @@ body {
     0 0 0 1px rgba(192, 154, 92, 0.08);
   display: grid;
   gap: 14px;
-  position: relative;
-  overflow: visible;
-}
-
-.tcs-home-mini-consult-form > *:not(.quick-plan-comet-border) {
-  position: relative;
-  z-index: 1;
-}
-
-.quick-plan-comet-border {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 3;
-  overflow: visible;
-}
-
-.quick-plan-comet-path {
-  fill: none;
-  stroke: none;
-}
-
-.quick-plan-comet {
-  filter: url(#quickPlanCometGlow);
-}
-
-.quick-plan-comet-haze {
-  stroke: rgba(215, 168, 58, 0.55);
-  stroke-width: 4.8;
-  stroke-linecap: round;
-  vector-effect: non-scaling-stroke;
-}
-
-.quick-plan-comet-core {
-  stroke: #d7a83a;
-  stroke-width: 1.6;
-  stroke-linecap: round;
-  vector-effect: non-scaling-stroke;
-  filter:
-    drop-shadow(0 0 5px rgba(215, 168, 58, 1))
-    drop-shadow(0 0 14px rgba(215, 168, 58, 0.75))
-    drop-shadow(0 0 28px rgba(215, 168, 58, 0.35));
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .quick-plan-comet animateMotion {
-    display: none;
-  }
 }
 
 .tcs-home-mini-consult-grid {
