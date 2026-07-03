@@ -72,13 +72,12 @@
 
         <form
           class="consultation-form"
-          action="https://formsubmit.co/The_Computer_Shop@icloud.com"
+          action="/api/consultation"
           method="POST"
+          data-consultation-redirect="consultation.html"
         >
-          <input type="hidden" name="_subject" value="New Custom PC Consultation Request">
-          <input type="hidden" name="_template" value="table">
-          <input type="hidden" name="_autoresponse" value="Thank you for reaching out to The Computer Shop. We received your consultation request successfully, and a representative will be in touch within 12 hours.">
-          <input type="text" name="_honey" style="display:none">
+          <input type="hidden" name="Form Type" value="New Custom PC Consultation Request">
+          <input type="text" name="_honey" autocomplete="off" tabindex="-1" style="display:none">
 
           <div class="consultation-grid">
             <div class="consultation-form-group-title">
@@ -311,6 +310,7 @@
     });
 
     const consultationForm = document.querySelector(".consultation-form");
+    const consultationSuccess = document.getElementById("consultation-success");
 
     async function submitConsultationFormForSignedInUser(form, event) {
       event.preventDefault();
@@ -329,38 +329,78 @@
       }
 
       const submitButton = form.querySelector("button[type='submit']");
+      const originalButtonText = submitButton ? submitButton.textContent : "";
 
       if (submitButton) {
         submitButton.disabled = true;
-        submitButton.textContent = "Checking account...";
+        submitButton.textContent = "Submitting...";
       }
 
+      const payload = {};
+
+      new FormData(form).forEach((value, key) => {
+        payload[key] = typeof value === "string" ? value.trim() : "";
+      });
+
       try {
-        const response = await fetch("/api/me", {
-          method: "GET",
+        const response = await fetch(form.action, {
+          method: "POST",
           credentials: "same-origin",
           cache: "no-store",
           headers: {
-            "Accept": "application/json"
-          }
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
         });
 
         const data = await response.json().catch(() => {
           return {};
         });
 
-        if (!response.ok || !data.signedIn || !data.user) {
+        if (response.status === 401 || response.status === 403) {
           sessionStorage.setItem("tcs-login-message", "Please log in before submitting a consultation request.");
-          localStorage.setItem("tcs-login-redirect", "consultation.html");
+          localStorage.setItem("tcs-login-redirect", form.dataset.consultationRedirect || "consultation.html");
           window.location.href = "login.html";
           return;
         }
 
-        form.submit();
+        if (!response.ok || !data.success) {
+          throw new Error(data.error || "Could not submit consultation request.");
+        }
+
+        form.reset();
+
+        form.querySelectorAll("[data-custom-select]").forEach((dropdown) => {
+          dropdown.classList.remove("open", "invalid");
+
+          const hiddenInput = dropdown.querySelector("input[type='hidden']");
+          const valueText = dropdown.querySelector(".custom-select-value");
+
+          if (hiddenInput) {
+            hiddenInput.value = "";
+          }
+
+          if (valueText) {
+            valueText.textContent = "Select one";
+          }
+
+          dropdown.querySelectorAll(".custom-select-option").forEach((option) => {
+            option.classList.remove("active");
+          });
+        });
+
+        if (consultationSuccess) {
+          consultationSuccess.hidden = false;
+          consultationSuccess.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
       } catch (error) {
-        sessionStorage.setItem("tcs-login-message", "Please log in before submitting a consultation request.");
-        localStorage.setItem("tcs-login-redirect", "consultation.html");
-        window.location.href = "login.html";
+        alert(error.message || "Could not submit consultation request.");
+      } finally {
+        if (submitButton) {
+          submitButton.disabled = false;
+          submitButton.textContent = originalButtonText;
+        }
       }
     }
 
