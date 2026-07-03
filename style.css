@@ -2324,8 +2324,10 @@ body.nav-menu-open {
   margin: 0 auto;
   padding: 30px;
   border-radius: 26px;
-  border: 1px solid rgba(255, 255, 255, 0.11);
-  background: rgba(24, 25, 24, 0.56);
+  border: 1px solid rgba(192, 154, 92, 0.14);
+  background:
+    linear-gradient(135deg, rgba(192, 154, 92, 0.08), rgba(255, 255, 255, 0.025)),
+    rgba(24, 25, 24, 0.56);
   box-shadow: 0 22px 55px rgba(0, 0, 0, 0.18);
 }
 
@@ -2336,7 +2338,7 @@ body.nav-menu-open {
 
 .faq-section-eyebrow {
   margin-bottom: 12px;
-  color: rgba(192, 154, 92, 0.84);
+  color: rgba(192, 154, 92, 0.92);
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -2364,19 +2366,26 @@ body.nav-menu-open {
 
 .faq-category-label {
   margin-bottom: 14px;
-  color: rgba(192, 154, 92, 0.78);
-  font-size: 11px;
+  color: rgba(192, 154, 92, 0.84);
+  font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
+  line-height: 1.4;
   text-transform: uppercase;
 }
 
 .faq-accordion-item {
-  border-top: 1px solid rgba(255, 255, 255, 0.105);
+  border-top: 1px solid rgba(192, 154, 92, 0.14);
+  transition: border-color 0.24s ease;
 }
 
 .faq-accordion-item:last-child {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.105);
+  border-bottom: 1px solid rgba(192, 154, 92, 0.14);
+}
+
+.faq-accordion-item:hover,
+.faq-accordion-item.open {
+  border-color: rgba(192, 154, 92, 0.32);
 }
 
 .faq-question {
@@ -2395,14 +2404,21 @@ body.nav-menu-open {
 }
 
 .faq-question span:first-child {
+  color: white;
   font-size: 18px;
   font-weight: 700;
   line-height: 1.35;
   text-transform: none;
+  transition: color 0.24s ease;
+}
+
+.faq-question:hover span:first-child,
+.faq-accordion-item.open .faq-question span:first-child {
+  color: rgba(192, 154, 92, 0.92);
 }
 
 .faq-icon {
-  color: rgba(192, 154, 92, 0.62);
+  color: rgba(192, 154, 92, 0.84);
   font-size: 28px;
   font-weight: 300;
   line-height: 1;
@@ -2410,11 +2426,11 @@ body.nav-menu-open {
 }
 
 .faq-question:hover .faq-icon {
-  color: rgba(192, 154, 92, 0.92);
+  color: rgba(192, 154, 92, 1);
 }
 
 .faq-accordion-item.open .faq-icon {
-  color: rgba(192, 154, 92, 0.92);
+  color: rgba(192, 154, 92, 1);
   transform: rotate(45deg);
 }
 
@@ -2442,7 +2458,8 @@ body.nav-menu-open {
 .faq-answer a,
 .faq-answer a:visited,
 .faq-answer a:hover {
-  color: rgba(192, 154, 92, 0.84);
+  color: rgba(192, 154, 92, 0.92);
+  border-bottom: 1px solid rgba(192, 154, 92, 0.42);
   font-weight: 700;
   text-decoration: none;
 }
