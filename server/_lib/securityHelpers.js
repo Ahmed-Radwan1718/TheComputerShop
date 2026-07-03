@@ -193,61 +193,22 @@ function getSessionClientIp(req) {
   ).trim();
 }
 
-const ANDROID_DEVICE_MODEL_LABELS = [
-  { code: "SM-S928", label: "Samsung Galaxy S24 Ultra" },
-  { code: "SM-S926", label: "Samsung Galaxy S24+" },
-  { code: "SM-S921", label: "Samsung Galaxy S24" },
-  { code: "SM-S918", label: "Samsung Galaxy S23 Ultra" },
-  { code: "SM-S916", label: "Samsung Galaxy S23+" },
-  { code: "SM-S911", label: "Samsung Galaxy S23" },
-  { code: "SM-S908", label: "Samsung Galaxy S22 Ultra" },
-  { code: "SM-S906", label: "Samsung Galaxy S22+" },
-  { code: "SM-S901", label: "Samsung Galaxy S22" },
-  { code: "SM-F956", label: "Samsung Galaxy Z Fold6" },
-  { code: "SM-F946", label: "Samsung Galaxy Z Fold5" },
-  { code: "SM-F741", label: "Samsung Galaxy Z Flip6" },
-  { code: "SM-F731", label: "Samsung Galaxy Z Flip5" }
-];
-
-function cleanSessionHeaderValue(value) {
-  const firstValue = Array.isArray(value) ? value[0] : value;
-  return String(firstValue || "").replace(/^"|"$/g, "").trim();
-}
-
-function getRequestHeaderValue(req, headerName) {
-  if (!isRequestLike(req)) {
-    return "";
-  }
-
-  const key = String(headerName || "").toLowerCase();
-  return cleanSessionHeaderValue(req.headers[key] || req.headers[headerName]);
-}
-
 function getSessionBrowserLabel(userAgent) {
   const value = String(userAgent || "");
 
-  if (/EdgA?\/|EdgiOS\//i.test(value)) return "Microsoft Edge";
-  if (/OPR\/|Opera/i.test(value)) return "Opera";
-  if (/SamsungBrowser\//i.test(value)) return "Samsung Internet";
-  if (/FxiOS\/|Firefox\//i.test(value)) return "Firefox";
-  if (/CriOS\/|Chrome\//i.test(value)) return "Chrome";
+  if (/Edg\//i.test(value)) return "Microsoft Edge";
+  if (/OPR\//i.test(value)) return "Opera";
+  if (/Firefox\//i.test(value)) return "Firefox";
+  if (/Chrome\//i.test(value)) return "Chrome";
   if (/Safari\//i.test(value) && /Version\//i.test(value)) return "Safari";
 
   return "Browser";
 }
 
-function getSessionPlatformLabel(userAgent, req) {
-  const clientPlatform = getRequestHeaderValue(req, "sec-ch-ua-platform");
+function getSessionPlatformLabel(userAgent) {
   const value = String(userAgent || "");
 
-  if (/Android/i.test(clientPlatform)) return "Android";
-  if (/iOS/i.test(clientPlatform)) return "iOS";
-  if (/Windows/i.test(clientPlatform)) return "Windows";
-  if (/macOS|Mac OS/i.test(clientPlatform)) return "macOS";
-  if (/Linux/i.test(clientPlatform)) return "Linux";
-
-  if (/iPad/i.test(value) || (/Macintosh/i.test(value) && /Mobile\//i.test(value))) return "iPadOS";
-  if (/iPhone|iPod/i.test(value)) return "iOS";
+  if (/iPhone|iPad|iPod/i.test(value)) return "iOS";
   if (/Android/i.test(value)) return "Android";
   if (/Windows NT/i.test(value)) return "Windows";
   if (/Mac OS X/i.test(value)) return "macOS";
@@ -256,125 +217,17 @@ function getSessionPlatformLabel(userAgent, req) {
   return "Device";
 }
 
-function getAndroidModelFromUserAgent(userAgent) {
-  const value = String(userAgent || "");
-  const match = value.match(/\(([^)]*)\)/);
-
-  if (!match) {
-    return "";
-  }
-
-  const parts = match[1].split(";").map(function (part) {
-    return part.trim();
-  });
-
-  const androidIndex = parts.findIndex(function (part) {
-    return /^Android\b/i.test(part);
-  });
-
-  if (androidIndex === -1) {
-    return "";
-  }
-
-  const model = parts.slice(androidIndex + 1).find(function (part) {
-    return part && !/^(wv|Mobile|Tablet)$/i.test(part) && !/^Build\//i.test(part);
-  });
-
-  return String(model || "").replace(/\s+Build\/.*$/i, "").trim();
-}
-
-function getReadableAndroidModelLabel(model) {
-  const cleanedModel = cleanSessionHeaderValue(model)
-    .replace(/\s+Build\/.*$/i, "")
-    .replace(/\s+/g, " ")
-    .trim();
-
-  if (!cleanedModel || /^generic$/i.test(cleanedModel) || /^linux$/i.test(cleanedModel)) {
-    return "";
-  }
-
-  const upperModel = cleanedModel.toUpperCase();
-  const samsungMatch = ANDROID_DEVICE_MODEL_LABELS.find(function (entry) {
-    return upperModel.startsWith(entry.code);
-  });
-
-  if (samsungMatch) {
-    return samsungMatch.label;
-  }
-
-  if (/^SM-/i.test(cleanedModel)) {
-    return "Samsung " + upperModel;
-  }
-
-  if (/^Pixel/i.test(cleanedModel)) {
-    return "Google " + cleanedModel;
-  }
-
-  return cleanedModel;
-}
-
-function getSessionDeviceLabel(userAgent, platformLabel, req) {
-  const value = String(userAgent || "");
-
-  if (/iPad/i.test(value) || (/Macintosh/i.test(value) && /Mobile\//i.test(value))) return "iPad";
-  if (/iPhone/i.test(value)) return "iPhone";
-  if (/iPod/i.test(value)) return "iPod touch";
-
-  if (/Android/i.test(value) || platformLabel === "Android") {
-    const modelLabel = getReadableAndroidModelLabel(getRequestHeaderValue(req, "sec-ch-ua-model")) ||
-      getReadableAndroidModelLabel(getAndroidModelFromUserAgent(value));
-
-    if (modelLabel) {
-      return modelLabel;
-    }
-
-    return /Mobile/i.test(value) ? "Android phone" : "Android tablet";
-  }
-
-  if (/Windows NT/i.test(value) || platformLabel === "Windows") return "Windows PC";
-  if (/Macintosh|Mac OS X/i.test(value) || platformLabel === "macOS") return "Mac";
-  if (/Linux/i.test(value) || platformLabel === "Linux") return "Linux device";
-
-  return "Browser session";
-}
-
-function getBestSessionDeviceLabel(storedLabel, detectedLabel) {
-  const stored = String(storedLabel || "").trim();
-  const detected = String(detectedLabel || "").trim();
-
-  if (!stored) {
-    return detected || "Browser session";
-  }
-
-  if (/ on (iOS|iPadOS|Android|Windows|macOS|Linux|Device)$/i.test(stored)) {
-    return detected || stored;
-  }
-
-  return stored;
-}
-
-function getSessionLabelsFromUserAgent(userAgent, req) {
-  const browserLabel = getSessionBrowserLabel(userAgent);
-  const platformLabel = getSessionPlatformLabel(userAgent, req);
-  const deviceLabel = getSessionDeviceLabel(userAgent, platformLabel, req);
-
-  return {
-    browserLabel,
-    platformLabel,
-    deviceLabel
-  };
-}
-
 function getSessionDetailsFromRequest(req) {
   const userAgent = isRequestLike(req) ? String(req.headers["user-agent"] || "") : "";
-  const labels = getSessionLabelsFromUserAgent(userAgent, req);
+  const browserLabel = getSessionBrowserLabel(userAgent);
+  const platformLabel = getSessionPlatformLabel(userAgent);
 
   return {
     userAgent,
     ipAddress: getSessionClientIp(req),
-    browserLabel: labels.browserLabel,
-    platformLabel: labels.platformLabel,
-    deviceLabel: labels.deviceLabel
+    browserLabel,
+    platformLabel,
+    deviceLabel: browserLabel + " on " + platformLabel
   };
 }
 
@@ -584,13 +437,11 @@ async function listAccountSessions(req, uid) {
       return;
     }
 
-    const detectedLabels = data.userAgent ? getSessionLabelsFromUserAgent(data.userAgent) : {};
-
     sessions.push({
       id: doc.id,
-      deviceLabel: getBestSessionDeviceLabel(data.deviceLabel, detectedLabels.deviceLabel),
-      browserLabel: detectedLabels.browserLabel || data.browserLabel || "Browser",
-      platformLabel: detectedLabels.platformLabel || data.platformLabel || "Device",
+      deviceLabel: data.deviceLabel || "Browser session",
+      browserLabel: data.browserLabel || "Browser",
+      platformLabel: data.platformLabel || "Device",
       ipAddress: data.ipAddress || "",
       createdAt: serializeSessionTimestamp(data.createdAt),
       lastSeenAt: serializeSessionTimestamp(data.lastSeenAt || data.createdAt),
@@ -773,14 +624,12 @@ async function listTrustedDevices(req, uid) {
       return;
     }
 
-    const detectedLabels = data.userAgent ? getSessionLabelsFromUserAgent(data.userAgent) : {};
-
     trustedDevices.push({
       id: doc.id,
       trustedDeviceId: data.trustedDeviceId || doc.id,
-      deviceName: getBestSessionDeviceLabel(data.deviceName, detectedLabels.deviceLabel || data.browserName),
-      browserName: detectedLabels.browserLabel || data.browserName || "Browser",
-      platform: detectedLabels.platformLabel || data.platform || "Device",
+      deviceName: data.deviceName || data.browserName || "Trusted device",
+      browserName: data.browserName || "Browser",
+      platform: data.platform || "Device",
       createdAt: serializeSessionTimestamp(data.createdAt),
       lastTrustedAt: serializeSessionTimestamp(data.lastTrustedAt || data.createdAt),
       lastUsedAt: serializeSessionTimestamp(data.lastUsedAt),
