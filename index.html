@@ -196,11 +196,9 @@
         <h2>Turn a budget into a balanced build.</h2>
         <p>Instead of guessing between parts, start with what the PC needs to do. The recommendation can then balance performance, cooling, power, storage, case fit, and upgrade room.</p>
 
-        <form class="tcs-home-mini-consult-form" action="https://formsubmit.co/The_Computer_Shop@icloud.com" method="POST">
-          <input type="hidden" name="_subject" value="New Quick Custom PC Consultation Request">
-          <input type="hidden" name="_template" value="table">
-          <input type="hidden" name="_autoresponse" value="Thank you for reaching out to The Computer Shop. We received your quick consultation request successfully, and a representative will be in touch within 12 hours.">
-          <input type="text" name="_honey" style="display:none">
+        <form class="tcs-home-mini-consult-form" action="/api/consultation" method="POST" data-consultation-redirect="index.html#custom-pc-process">
+          <input type="hidden" name="Form Type" value="New Quick Custom PC Consultation Request">
+          <input type="text" name="_honey" autocomplete="off" tabindex="-1" style="display:none">
 
           <div class="tcs-home-mini-consult-grid">
             <div class="tcs-home-mini-consult-field">
@@ -695,38 +693,75 @@
     }
 
     const submitButton = form.querySelector("button[type='submit']");
+    const originalButtonText = submitButton ? submitButton.textContent : "";
 
     if (submitButton) {
       submitButton.disabled = true;
-      submitButton.textContent = "Checking account...";
+      submitButton.textContent = "Submitting...";
     }
 
+    const payload = {};
+
+    new FormData(form).forEach((value, key) => {
+      payload[key] = typeof value === "string" ? value.trim() : "";
+    });
+
     try {
-      const response = await fetch("/api/me", {
-        method: "GET",
+      const response = await fetch(form.action, {
+        method: "POST",
         credentials: "same-origin",
         cache: "no-store",
         headers: {
-          "Accept": "application/json"
-        }
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
       });
 
       const data = await response.json().catch(() => {
         return {};
       });
 
-      if (!response.ok || !data.signedIn || !data.user) {
+      if (response.status === 401 || response.status === 403) {
         sessionStorage.setItem("tcs-login-message", "Please log in before submitting a consultation request.");
-        localStorage.setItem("tcs-login-redirect", "index.html#custom-pc-process");
+        localStorage.setItem("tcs-login-redirect", form.dataset.consultationRedirect || "index.html#custom-pc-process");
         window.location.href = "login.html";
         return;
       }
 
-      form.submit();
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || "Could not submit consultation request.");
+      }
+
+      form.reset();
+
+      form.querySelectorAll("[data-custom-select]").forEach((dropdown) => {
+        dropdown.classList.remove("open", "invalid");
+
+        const hiddenInput = dropdown.querySelector("input[type='hidden']");
+        const valueText = dropdown.querySelector(".custom-select-value");
+
+        if (hiddenInput) {
+          hiddenInput.value = "";
+        }
+
+        if (valueText) {
+          valueText.textContent = "Select one";
+        }
+
+        dropdown.querySelectorAll(".custom-select-option").forEach((option) => {
+          option.classList.remove("active");
+        });
+      });
+
+      alert("Thank you. A representative will be in touch within 12 hours.");
     } catch (error) {
-      sessionStorage.setItem("tcs-login-message", "Please log in before submitting a consultation request.");
-      localStorage.setItem("tcs-login-redirect", "index.html#custom-pc-process");
-      window.location.href = "login.html";
+      alert(error.message || "Could not submit consultation request.");
+    } finally {
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.textContent = originalButtonText;
+      }
     }
   }
 
