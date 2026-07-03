@@ -5880,7 +5880,7 @@ body.nav-menu-open {
     position: fixed;
     top: 14px;
     left: 14px;
-    right: 70px;
+    right: 14px;
     z-index: 1002;
     width: auto;
     min-height: 58px;
