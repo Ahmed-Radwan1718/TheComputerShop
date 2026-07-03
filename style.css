@@ -3593,11 +3593,13 @@ body.nav-menu-open {
 .consultation-page .consultation-form {
   padding: 30px;
   border-radius: 26px;
-  border: 1px solid rgba(192, 154, 92, 0.14);
+  border: 1px solid rgba(192, 154, 92, 0.32);
   background:
     linear-gradient(135deg, rgba(192, 154, 92, 0.08), rgba(255, 255, 255, 0.025)),
     rgba(24, 25, 24, 0.56);
-  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.18);
+  box-shadow:
+    0 22px 55px rgba(0, 0, 0, 0.18),
+    0 0 0 1px rgba(192, 154, 92, 0.08);
 }
 
 .consultation-page .consultation-grid {
