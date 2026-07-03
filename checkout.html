@@ -975,7 +975,7 @@
         window.tcsRefreshCartCount();
       }
 
-      showCheckoutMessage("Order request placed. Redirecting to your account...", "success");
+      showCheckoutMessage("Order request placed. Redirecting to your order history...", "success");
 
       if (checkoutSuccessOverlay) {
         checkoutSuccessOverlay.hidden = false;
@@ -986,7 +986,7 @@
       }
 
       setTimeout(function () {
-        window.location.href = "accounts.html";
+        window.location.href = "accounts.html#orders";
       }, 1800);
     } catch (error) {
       showCheckoutMessage(error.message || "Could not place your order request. Please try again.", "error");
