@@ -243,6 +243,14 @@ body {
   gap: 24px;
 }
 
+.tcs-home-categories .tcs-home-section-head-row {
+  position: relative;
+  left: 50%;
+  width: min(1680px, calc(100vw - clamp(44px, 8.6vw, 176px)));
+  max-width: none;
+  transform: translateX(-50%);
+}
+
 .tcs-home-section-head h2,
 .tcs-home-process-copy h2,
 .tcs-home-final-panel h2 {
