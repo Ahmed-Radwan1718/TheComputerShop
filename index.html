@@ -678,20 +678,61 @@
     }
   });
 
-  document.querySelectorAll("form").forEach((form) => {
-    form.addEventListener("submit", (event) => {
-      let valid = true;
+  async function submitConsultationFormForSignedInUser(form, event) {
+    event.preventDefault();
 
-      form.querySelectorAll("[data-required-select='true']").forEach((input) => {
-        if (!input.value) {
-          input.closest("[data-custom-select]").classList.add("invalid");
-          valid = false;
+    let valid = true;
+
+    form.querySelectorAll("[data-required-select='true']").forEach((input) => {
+      if (!input.value) {
+        input.closest("[data-custom-select]").classList.add("invalid");
+        valid = false;
+      }
+    });
+
+    if (!valid) {
+      return;
+    }
+
+    const submitButton = form.querySelector("button[type='submit']");
+
+    if (submitButton) {
+      submitButton.disabled = true;
+      submitButton.textContent = "Checking account...";
+    }
+
+    try {
+      const response = await fetch("/api/me", {
+        method: "GET",
+        credentials: "same-origin",
+        cache: "no-store",
+        headers: {
+          "Accept": "application/json"
         }
       });
 
-      if (!valid) {
-        event.preventDefault();
+      const data = await response.json().catch(() => {
+        return {};
+      });
+
+      if (!response.ok || !data.signedIn || !data.user) {
+        sessionStorage.setItem("tcs-login-message", "Please log in before submitting a consultation request.");
+        localStorage.setItem("tcs-login-redirect", "index.html#custom-pc-process");
+        window.location.href = "login.html";
+        return;
       }
+
+      form.submit();
+    } catch (error) {
+      sessionStorage.setItem("tcs-login-message", "Please log in before submitting a consultation request.");
+      localStorage.setItem("tcs-login-redirect", "index.html#custom-pc-process");
+      window.location.href = "login.html";
+    }
+  }
+
+  document.querySelectorAll(".tcs-home-mini-consult-form").forEach((form) => {
+    form.addEventListener("submit", (event) => {
+      submitConsultationFormForSignedInUser(form, event);
     });
   });
 </script>
