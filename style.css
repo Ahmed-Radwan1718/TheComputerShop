@@ -8349,11 +8349,17 @@ body.account-photo-crop-modal-open {
 
 @media (max-width: 620px) {
   .account-phone-row {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(124px, 136px) minmax(0, 1fr);
     gap: 10px;
+    align-items: stretch;
+  }
+
+  .account-phone-country-dropdown {
+    width: 100%;
   }
 
   .account-phone-country-dropdown .custom-select-trigger {
+    min-height: 50px;
     padding: 0 10px;
     font-size: 13px;
   }
