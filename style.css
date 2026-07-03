@@ -607,9 +607,6 @@ body {
 }
 
 .tcs-home-mini-consult-form {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
   width: min(520px, 100%);
   margin-top: 28px;
   padding: 22px;
@@ -623,38 +620,6 @@ body {
     0 0 0 1px rgba(192, 154, 92, 0.08);
   display: grid;
   gap: 14px;
-}
-
-.tcs-home-mini-consult-form::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  padding: 1px;
-  border-radius: inherit;
-  background: conic-gradient(
-    from 0deg,
-    transparent 0deg,
-    transparent 292deg,
-    rgba(192, 154, 92, 0.12) 316deg,
-    rgba(245, 211, 151, 0.95) 338deg,
-    transparent 360deg
-  );
-  pointer-events: none;
-  animation: tcs-home-mini-consult-border-glow 4.8s linear infinite;
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  mask-composite: exclude;
-}
-
-@keyframes tcs-home-mini-consult-border-glow {
-  to {
-    transform: rotate(360deg);
-  }
 }
 
 .tcs-home-mini-consult-grid {
