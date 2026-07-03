@@ -251,9 +251,28 @@
                   <input type="text" id="checkout-additional-info">
                 </div>
 
-                <input type="hidden" id="checkout-location-latitude">
-                <input type="hidden" id="checkout-location-longitude">
-                <input type="hidden" id="checkout-location-map-url">
+                <div class="checkout-field checkout-field-full account-address-location-field">
+                  <label>Map Location</label>
+                  <input type="hidden" id="checkout-location-latitude">
+                  <input type="hidden" id="checkout-location-longitude">
+                  <input type="hidden" id="checkout-location-map-url">
+
+                  <div class="account-address-map-preview" id="checkout-location-map-wrap">
+                    <iframe id="checkout-location-map" title="Checkout delivery map" loading="lazy" src="https://maps.google.com/maps?q=Egypt&amp;z=6&amp;output=embed"></iframe>
+                  </div>
+
+                  <div class="account-address-location-actions">
+                    <button class="account-address-location-button" type="button" id="checkout-location-current-button">
+                      Use Current Location
+                    </button>
+
+                    <button class="account-address-location-clear" type="button" id="checkout-location-clear-button" hidden>
+                      Clear Location
+                    </button>
+                  </div>
+
+                  <p class="account-address-location-note" id="checkout-location-note">Use your current location to attach a map pin to this address.</p>
+                </div>
 
                 <div class="checkout-field checkout-address-field checkout-address-house">
                   <label for="checkout-house-number">House / Villa Number</label>
@@ -339,6 +358,11 @@
   const checkoutLocationLatitude = document.getElementById("checkout-location-latitude");
   const checkoutLocationLongitude = document.getElementById("checkout-location-longitude");
   const checkoutLocationMapUrl = document.getElementById("checkout-location-map-url");
+  const checkoutLocationMapWrap = document.getElementById("checkout-location-map-wrap");
+  const checkoutLocationMap = document.getElementById("checkout-location-map");
+  const checkoutLocationCurrentButton = document.getElementById("checkout-location-current-button");
+  const checkoutLocationClearButton = document.getElementById("checkout-location-clear-button");
+  const checkoutLocationNote = document.getElementById("checkout-location-note");
   const checkoutCustomerNote = document.getElementById("checkout-customer-note");
   const checkoutSubmitButton = document.getElementById("checkout-submit-button");
   const checkoutMessage = document.getElementById("checkout-message");
@@ -365,6 +389,22 @@
       .replaceAll(">", "&gt;")
       .replaceAll('"', "&quot;")
       .replaceAll("'", "&#039;");
+  }
+
+  function getCheckoutLocationMapLink(latitude, longitude) {
+    return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(latitude + "," + longitude);
+  }
+
+  function getCheckoutLocationEmbedUrl(latitude, longitude) {
+    return "https://maps.google.com/maps?q="
+      + encodeURIComponent(latitude + "," + longitude)
+      + "&z=16&output=embed";
+  }
+
+  function getCheckoutLocationDefaultEmbedUrl() {
+    return "https://maps.google.com/maps?q="
+      + encodeURIComponent("Egypt")
+      + "&z=6&output=embed";
   }
 
   function getCartTotalValue(cart) {
@@ -502,6 +542,71 @@
     if (checkoutLocationLatitude) checkoutLocationLatitude.value = "";
     if (checkoutLocationLongitude) checkoutLocationLongitude.value = "";
     if (checkoutLocationMapUrl) checkoutLocationMapUrl.value = "";
+
+    if (checkoutLocationMap) {
+      checkoutLocationMap.src = getCheckoutLocationDefaultEmbedUrl();
+    }
+
+    if (checkoutLocationMapWrap) checkoutLocationMapWrap.hidden = false;
+    if (checkoutLocationClearButton) checkoutLocationClearButton.hidden = true;
+
+    if (checkoutLocationNote) {
+      checkoutLocationNote.textContent = "Use your current location to attach a map pin to this address.";
+    }
+  }
+
+  function setCheckoutAddressLocation(latitude, longitude) {
+    const lat = Number(latitude);
+    const lng = Number(longitude);
+
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+      clearCheckoutAddressLocation();
+      return;
+    }
+
+    const normalizedLat = lat.toFixed(6);
+    const normalizedLng = lng.toFixed(6);
+    const mapUrl = getCheckoutLocationMapLink(normalizedLat, normalizedLng);
+
+    if (checkoutLocationLatitude) checkoutLocationLatitude.value = normalizedLat;
+    if (checkoutLocationLongitude) checkoutLocationLongitude.value = normalizedLng;
+    if (checkoutLocationMapUrl) checkoutLocationMapUrl.value = mapUrl;
+
+    if (checkoutLocationMap) {
+      checkoutLocationMap.src = getCheckoutLocationEmbedUrl(normalizedLat, normalizedLng);
+    }
+
+    if (checkoutLocationMapWrap) checkoutLocationMapWrap.hidden = false;
+    if (checkoutLocationClearButton) checkoutLocationClearButton.hidden = false;
+
+    if (checkoutLocationNote) {
+      checkoutLocationNote.textContent = "Map location saved for this address.";
+    }
+  }
+
+  function useCurrentCheckoutLocation() {
+    if (!navigator.geolocation) {
+      showCheckoutMessage("Location is not supported in this browser.", "error");
+      return;
+    }
+
+    checkoutLocationCurrentButton.disabled = true;
+    checkoutLocationCurrentButton.textContent = "Locating...";
+
+    navigator.geolocation.getCurrentPosition(function (position) {
+      setCheckoutAddressLocation(position.coords.latitude, position.coords.longitude);
+      showCheckoutMessage("Map location added.", "success");
+      checkoutLocationCurrentButton.disabled = false;
+      checkoutLocationCurrentButton.textContent = "Use Current Location";
+    }, function () {
+      showCheckoutMessage("Could not get your location. Please allow location access and try again.", "error");
+      checkoutLocationCurrentButton.disabled = false;
+      checkoutLocationCurrentButton.textContent = "Use Current Location";
+    }, {
+      enableHighAccuracy: true,
+      timeout: 15000,
+      maximumAge: 0
+    });
   }
 
   function fillCheckoutAddress(address) {
@@ -521,9 +626,11 @@
     checkoutCompanyName.value = address.companyName || "";
     checkoutAdditionalInfo.value = address.additionalInfo || "";
 
-    if (checkoutLocationLatitude) checkoutLocationLatitude.value = address.locationLatitude || "";
-    if (checkoutLocationLongitude) checkoutLocationLongitude.value = address.locationLongitude || "";
-    if (checkoutLocationMapUrl) checkoutLocationMapUrl.value = address.locationMapUrl || "";
+    if (address.locationLatitude && address.locationLongitude) {
+      setCheckoutAddressLocation(address.locationLatitude, address.locationLongitude);
+    } else {
+      clearCheckoutAddressLocation();
+    }
 
     showCheckoutAddressFields();
   }
@@ -804,8 +911,20 @@
       if (selectedAddress) {
         fillCheckoutAddress(selectedAddress);
       } else {
+        clearCheckoutAddressLocation();
         showCheckoutAddressFields();
       }
+    });
+  }
+
+  if (checkoutLocationCurrentButton) {
+    checkoutLocationCurrentButton.addEventListener("click", useCurrentCheckoutLocation);
+  }
+
+  if (checkoutLocationClearButton) {
+    checkoutLocationClearButton.addEventListener("click", function () {
+      clearCheckoutAddressLocation();
+      showCheckoutMessage("Map location cleared.", "success");
     });
   }
 
