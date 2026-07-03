@@ -320,13 +320,14 @@ body {
   position: relative;
   overflow: visible;
   display: grid;
-  grid-template-columns: auto auto auto;
+  grid-template-columns: auto max-content auto;
   align-items: center;
   justify-content: center;
-  gap: 18px;
+  gap: 28px;
 }
 
 .tcs-home-component-track {
+  width: max-content;
   display: grid;
   grid-template-columns: repeat(5, minmax(280px, 1fr));
   justify-content: center;
@@ -456,11 +457,11 @@ body {
 }
 
 .tcs-home-component-arrow-left {
-  left: -46px;
+  justify-self: end;
 }
 
 .tcs-home-component-arrow-right {
-  right: -46px;
+  justify-self: start;
 }
 
 .tcs-home-component-carousel-footer {
