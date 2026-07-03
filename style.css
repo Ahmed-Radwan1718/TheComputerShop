@@ -606,63 +606,44 @@ body {
   max-width: 520px;
 }
 
+@property --tcs-home-mini-consult-border-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
 .tcs-home-mini-consult-form {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
+  --tcs-home-mini-consult-border-angle: 0deg;
   width: min(520px, 100%);
   margin-top: 28px;
   padding: 22px;
   border-radius: 24px;
+  border: 1px solid transparent;
   background:
-    linear-gradient(135deg, rgba(192, 154, 92, 0.08), rgba(255, 255, 255, 0.025)),
-    rgba(24, 25, 24, 0.58);
-  border: 1px solid rgba(192, 154, 92, 0.22);
+    linear-gradient(135deg, rgba(192, 154, 92, 0.08), rgba(255, 255, 255, 0.025)) padding-box,
+    rgba(24, 25, 24, 0.58) padding-box,
+    conic-gradient(
+      from var(--tcs-home-mini-consult-border-angle),
+      rgba(192, 154, 92, 0.24) 0deg,
+      rgba(192, 154, 92, 0.24) 250deg,
+      rgba(255, 213, 79, 0.45) 276deg,
+      rgba(255, 239, 164, 1) 292deg,
+      rgba(255, 200, 45, 1) 302deg,
+      rgba(192, 154, 92, 0.45) 318deg,
+      rgba(192, 154, 92, 0.24) 340deg,
+      rgba(192, 154, 92, 0.24) 360deg
+    ) border-box;
   box-shadow:
     0 22px 55px rgba(0, 0, 0, 0.18),
-    0 0 0 1px rgba(192, 154, 92, 0.08);
+    0 0 18px rgba(192, 154, 92, 0.16);
   display: grid;
   gap: 14px;
+  animation: tcs-home-mini-consult-border-trace 3.8s linear infinite;
 }
 
-.tcs-home-mini-consult-form::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  padding: 1px;
-  border-radius: inherit;
-  background: conic-gradient(
-    from 0deg,
-    transparent 0deg,
-    transparent 250deg,
-    rgba(192, 154, 92, 0.18) 285deg,
-    rgba(192, 154, 92, 1) 315deg,
-    rgba(255, 226, 170, 0.95) 330deg,
-    rgba(192, 154, 92, 0.18) 345deg,
-    transparent 360deg
-  );
-  filter: drop-shadow(0 0 12px rgba(192, 154, 92, 0.55));
-  pointer-events: none;
-  animation: tcs-home-mini-consult-border-pulse 4.2s linear infinite;
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  mask-composite: exclude;
-}
-
-.tcs-home-mini-consult-form > * {
-  position: relative;
-  z-index: 1;
-}
-
-@keyframes tcs-home-mini-consult-border-pulse {
+@keyframes tcs-home-mini-consult-border-trace {
   to {
-    transform: rotate(360deg);
+    --tcs-home-mini-consult-border-angle: 360deg;
   }
 }
 
