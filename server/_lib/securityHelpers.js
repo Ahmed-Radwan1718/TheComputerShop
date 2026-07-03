@@ -196,10 +196,10 @@ function getSessionClientIp(req) {
 function getSessionBrowserLabel(userAgent) {
   const value = String(userAgent || "");
 
-  if (/Edg\/|EdgA|EdgiOS/i.test(value)) return "Microsoft Edge";
-  if (/OPR\/|OPiOS/i.test(value)) return "Opera";
-  if (/Firefox\/|FxiOS/i.test(value)) return "Firefox";
-  if (/Chrome\/|CriOS/i.test(value)) return "Chrome";
+  if (/Edg\//i.test(value)) return "Microsoft Edge";
+  if (/OPR\//i.test(value)) return "Opera";
+  if (/Firefox\//i.test(value)) return "Firefox";
+  if (/Chrome\//i.test(value)) return "Chrome";
   if (/Safari\//i.test(value) && /Version\//i.test(value)) return "Safari";
 
   return "Browser";
@@ -217,48 +217,6 @@ function getSessionPlatformLabel(userAgent) {
   return "Device";
 }
 
-function cleanSessionMobileDeviceLabel(value) {
-  const label = String(value || "")
-    .replace(/\s+Build\/.*$/i, "")
-    .replace(/\s+wv$/i, "")
-    .trim();
-
-  if (!label || /^(K|Mobile|wv)$/i.test(label) || /^Build\//i.test(label)) {
-    return "";
-  }
-
-  return label;
-}
-
-function getSessionMobileDeviceLabel(userAgent) {
-  const value = String(userAgent || "");
-
-  if (/iPhone/i.test(value)) return "iPhone";
-  if (/iPad/i.test(value)) return "iPad";
-  if (/iPod/i.test(value)) return "iPod";
-
-  if (/Android/i.test(value)) {
-    const androidMatch = value.match(/Android\s[\d._]+;\s*([^;)]+)/i);
-    const androidModel = androidMatch ? cleanSessionMobileDeviceLabel(androidMatch[1]) : "";
-
-    if (androidModel) {
-      return androidModel;
-    }
-
-    return /Mobile/i.test(value) ? "Android phone" : "Android device";
-  }
-
-  return "";
-}
-
-function getSessionDeviceLabel(userAgent, browserLabel, platformLabel) {
-  const browser = browserLabel || "Browser";
-  const platform = platformLabel || "Device";
-  const mobileDeviceLabel = getSessionMobileDeviceLabel(userAgent);
-
-  return browser + " on " + (mobileDeviceLabel || platform);
-}
-
 function getSessionDetailsFromRequest(req) {
   const userAgent = isRequestLike(req) ? String(req.headers["user-agent"] || "") : "";
   const browserLabel = getSessionBrowserLabel(userAgent);
@@ -269,7 +227,7 @@ function getSessionDetailsFromRequest(req) {
     ipAddress: getSessionClientIp(req),
     browserLabel,
     platformLabel,
-    deviceLabel: getSessionDeviceLabel(userAgent, browserLabel, platformLabel)
+    deviceLabel: browserLabel + " on " + platformLabel
   };
 }
 
@@ -479,17 +437,11 @@ async function listAccountSessions(req, uid) {
       return;
     }
 
-    const browserLabel = data.browserLabel || getSessionBrowserLabel(data.userAgent);
-    const platformLabel = data.platformLabel || getSessionPlatformLabel(data.userAgent);
-    const deviceLabel = data.userAgent
-      ? getSessionDeviceLabel(data.userAgent, browserLabel, platformLabel)
-      : (data.deviceLabel || "Browser session");
-
     sessions.push({
       id: doc.id,
-      deviceLabel,
-      browserLabel,
-      platformLabel,
+      deviceLabel: data.deviceLabel || "Browser session",
+      browserLabel: data.browserLabel || "Browser",
+      platformLabel: data.platformLabel || "Device",
       ipAddress: data.ipAddress || "",
       createdAt: serializeSessionTimestamp(data.createdAt),
       lastSeenAt: serializeSessionTimestamp(data.lastSeenAt || data.createdAt),
@@ -672,18 +624,12 @@ async function listTrustedDevices(req, uid) {
       return;
     }
 
-    const browserName = data.browserName || getSessionBrowserLabel(data.userAgent);
-    const platform = data.platform || getSessionPlatformLabel(data.userAgent);
-    const deviceName = data.userAgent
-      ? getSessionDeviceLabel(data.userAgent, browserName, platform)
-      : (data.deviceName || data.browserName || "Trusted device");
-
     trustedDevices.push({
       id: doc.id,
       trustedDeviceId: data.trustedDeviceId || doc.id,
-      deviceName,
-      browserName,
-      platform,
+      deviceName: data.deviceName || data.browserName || "Trusted device",
+      browserName: data.browserName || "Browser",
+      platform: data.platform || "Device",
       createdAt: serializeSessionTimestamp(data.createdAt),
       lastTrustedAt: serializeSessionTimestamp(data.lastTrustedAt || data.createdAt),
       lastUsedAt: serializeSessionTimestamp(data.lastUsedAt),
