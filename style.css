@@ -248,6 +248,7 @@ body {
   left: 50%;
   width: min(1680px, calc(100vw - clamp(44px, 8.6vw, 176px)));
   max-width: none;
+  padding-left: 132px;
   transform: translateX(-50%);
 }
 
