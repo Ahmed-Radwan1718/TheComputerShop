@@ -262,6 +262,7 @@
           <button class="consultation-submit-button" type="submit">
             Submit Consultation Request
           </button>
+          <p class="auth-message error" data-consultation-auth-message aria-live="polite"></p>
         </form>
       </div>
     </section>
@@ -315,6 +316,12 @@
     async function submitConsultationFormForSignedInUser(form, event) {
       event.preventDefault();
 
+      const authMessage = form.querySelector("[data-consultation-auth-message]");
+
+      if (authMessage) {
+        authMessage.textContent = "";
+      }
+
       let valid = true;
 
       form.querySelectorAll("[data-required-select='true']").forEach((input) => {
@@ -359,9 +366,10 @@
         });
 
         if (response.status === 401 || response.status === 403) {
-          sessionStorage.setItem("tcs-login-message", "Please log in before submitting a consultation request.");
-          localStorage.setItem("tcs-login-redirect", form.dataset.consultationRedirect || "consultation.html");
-          window.location.href = "login.html";
+          if (authMessage) {
+            authMessage.textContent = "You need to be logged in to submit a consultation request.";
+          }
+
           return;
         }
 
@@ -395,7 +403,9 @@
           consultationSuccess.scrollIntoView({ behavior: "smooth", block: "center" });
         }
       } catch (error) {
-        alert(error.message || "Could not submit consultation request.");
+        if (authMessage) {
+          authMessage.textContent = error.message || "Could not submit consultation request.";
+        }
       } finally {
         if (submitButton) {
           submitButton.disabled = false;
