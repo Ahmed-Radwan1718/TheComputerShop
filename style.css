@@ -1534,10 +1534,10 @@ body {
 .signature-hero-eyebrow,
 .signature-builds-eyebrow {
   margin-bottom: 12px;
-  color: rgba(255, 255, 255, 0.58);
+  color: rgba(192, 154, 92, 0.84);
   font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
@@ -1720,6 +1720,7 @@ body {
 .signature-build-image-frame {
   width: 100%;
   aspect-ratio: 75 / 56;
+  margin-bottom: 18px;
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.055);
 }
@@ -1752,9 +1753,17 @@ body {
   opacity: 0.88;
 }
 
+.signature-build-card span {
+  color: rgba(192, 154, 92, 0.78);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  display: block;
+}
+
 .signature-build-card h3 {
-  margin-top: 18px;
-  margin-bottom: 8px;
+  margin: 8px 0;
   color: white;
   font-size: 18px;
   font-weight: 700;
@@ -2135,10 +2144,10 @@ body.nav-menu-open {
 .filters-heading {
   margin: 0;
   padding: 10px 14px 6px;
-  color: rgba(255, 255, 255, 0.58);
+  color: rgba(192, 154, 92, 0.84);
   font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
@@ -2245,7 +2254,7 @@ body.nav-menu-open {
   bottom: 10px;
   width: 2px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.92);
+  background: rgba(192, 154, 92, 0.92);
   opacity: 0;
   transform: scaleY(0.35);
   transform-origin: center;
