@@ -151,6 +151,53 @@ body {
   text-transform: uppercase;
 }
 
+.home-whatsapp-float,
+.home-whatsapp-float:visited {
+  position: fixed;
+  right: 28px;
+  bottom: 28px;
+  z-index: 80;
+  width: 62px;
+  height: 62px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(24, 25, 24, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.34);
+  text-decoration: none;
+  transition: transform 0.22s ease, border-color 0.22s ease, background 0.22s ease;
+}
+
+.home-whatsapp-float:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.28);
+  background: rgba(24, 25, 24, 0.92);
+}
+
+.home-whatsapp-float img {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  display: block;
+}
+
+@media (max-width: 620px) {
+  .home-whatsapp-float,
+  .home-whatsapp-float:visited {
+    right: 18px;
+    bottom: 18px;
+    width: 56px;
+    height: 56px;
+  }
+
+  .home-whatsapp-float img {
+    width: 31px;
+    height: 31px;
+  }
+}
+
 .tcs-home-hero-visual {
   position: relative;
   min-height: 560px;
