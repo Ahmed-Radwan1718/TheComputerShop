@@ -64,6 +64,7 @@
         height: 26px;
         display: block;
         object-fit: contain;
+        filter: invert(1);
       }
 
       .tcs-language-panel {
