@@ -177,6 +177,9 @@
       <div class="tcs-language-panel" id="tcs-language-panel" hidden>
         <button class="tcs-language-option" type="button" data-tcs-language="en">English</button>
         <button class="tcs-language-option" type="button" data-tcs-language="ar">Arabic</button>
+        <button class="tcs-language-option" type="button" data-tcs-language="fr">French</button>
+        <button class="tcs-language-option" type="button" data-tcs-language="de">German</button>
+        <button class="tcs-language-option" type="button" data-tcs-language="es">Spanish</button>
       </div>
 
       <div id="google_translate_element" aria-hidden="true"></div>
@@ -260,7 +263,7 @@
 
       new google.translate.TranslateElement({
         pageLanguage: "en",
-        includedLanguages: "en,ar",
+        includedLanguages: "en,ar,fr,de,es",
         autoDisplay: false
       }, "google_translate_element");
     };
