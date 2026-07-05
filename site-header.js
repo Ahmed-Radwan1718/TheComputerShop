@@ -105,57 +105,14 @@
       }
 
       .tcs-language-flag {
-        position: relative;
         width: 22px;
         height: 15px;
         flex: 0 0 22px;
         border-radius: 2px;
-        overflow: hidden;
+        object-fit: contain;
         display: inline-block;
         box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.18);
         background: #ffffff;
-      }
-
-      .tcs-language-flag-us {
-        background: repeating-linear-gradient(to bottom, #b22234 0 1.15px, #ffffff 1.15px 2.3px);
-      }
-
-      .tcs-language-flag-us::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 10px;
-        height: 8px;
-        background: #3c3b6e;
-      }
-
-      .tcs-language-flag-eg {
-        background: linear-gradient(to bottom, #ce1126 0 33.333%, #ffffff 33.333% 66.666%, #000000 66.666% 100%);
-      }
-
-      .tcs-language-flag-eg::before {
-        content: "";
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 3px;
-        height: 5px;
-        border-radius: 1px;
-        background: #c09300;
-        transform: translate(-50%, -50%);
-      }
-
-      .tcs-language-flag-fr {
-        background: linear-gradient(to right, #0055a4 0 33.333%, #ffffff 33.333% 66.666%, #ef4135 66.666% 100%);
-      }
-
-      .tcs-language-flag-de {
-        background: linear-gradient(to bottom, #000000 0 33.333%, #dd0000 33.333% 66.666%, #ffce00 66.666% 100%);
-      }
-
-      .tcs-language-flag-es {
-        background: linear-gradient(to bottom, #aa151b 0 25%, #f1bf00 25% 75%, #aa151b 75% 100%);
       }
 
       .tcs-language-option:hover {
@@ -232,11 +189,11 @@
       </button>
 
       <div class="tcs-language-panel" id="tcs-language-panel" hidden>
-        <button class="tcs-language-option" type="button" data-tcs-language="en"><span class="tcs-language-flag tcs-language-flag-us" aria-hidden="true"></span><span>English</span></button>
-        <button class="tcs-language-option" type="button" data-tcs-language="ar"><span class="tcs-language-flag tcs-language-flag-eg" aria-hidden="true"></span><span>Arabic</span></button>
-        <button class="tcs-language-option" type="button" data-tcs-language="fr"><span class="tcs-language-flag tcs-language-flag-fr" aria-hidden="true"></span><span>French</span></button>
-        <button class="tcs-language-option" type="button" data-tcs-language="de"><span class="tcs-language-flag tcs-language-flag-de" aria-hidden="true"></span><span>German</span></button>
-        <button class="tcs-language-option" type="button" data-tcs-language="es"><span class="tcs-language-flag tcs-language-flag-es" aria-hidden="true"></span><span>Spanish</span></button>
+        <button class="tcs-language-option" type="button" data-tcs-language="en"><img class="tcs-language-flag" src="united-states.png" alt=""><span>English</span></button>
+        <button class="tcs-language-option" type="button" data-tcs-language="ar"><img class="tcs-language-flag" src="egypt.png" alt=""><span>Arabic</span></button>
+        <button class="tcs-language-option" type="button" data-tcs-language="fr"><img class="tcs-language-flag" src="france.png" alt=""><span>French</span></button>
+        <button class="tcs-language-option" type="button" data-tcs-language="de"><img class="tcs-language-flag" src="germany.png" alt=""><span>German</span></button>
+        <button class="tcs-language-option" type="button" data-tcs-language="es"><img class="tcs-language-flag" src="spain.png" alt=""><span>Spanish</span></button>
       </div>
 
       <div id="google_translate_element" aria-hidden="true"></div>
