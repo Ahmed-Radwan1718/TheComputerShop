@@ -113,13 +113,27 @@
         pointer-events: none;
       }
 
+      .goog-te-banner-frame,
       .goog-te-banner-frame.skiptranslate,
+      iframe.goog-te-banner-frame,
+      body > .skiptranslate:not(.tcs-language-switcher),
       .goog-te-gadget {
         display: none !important;
+        visibility: hidden !important;
+        width: 0 !important;
+        height: 0 !important;
+        border: 0 !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+      }
+
+      html {
+        margin-top: 0 !important;
       }
 
       body {
         top: 0 !important;
+        margin-top: 0 !important;
       }
 
       @media (max-width: 1168px) {
