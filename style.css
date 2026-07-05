@@ -9016,6 +9016,12 @@ body.account-security-modal-open {
   color: #181918;
 }
 
+.account-security-modal-danger {
+  background: rgba(255, 156, 156, 0.18);
+  color: #ffc4c9;
+  box-shadow: inset 0 0 0 1px rgba(255, 156, 156, 0.42);
+}
+
 .account-security-modal-cancel:hover,
 .account-security-code-cancel:hover {
   background: rgba(255, 255, 255, 0.16);
@@ -11272,6 +11278,7 @@ body.translated-rtl .account-order-card-meta {
 .account-change-password-section,
 .account-login-sessions-section,
 .account-sign-out-everywhere-section,
+.account-delete-account-section,
 .account-two-factor-section {
   display: grid;
   gap: 18px;
