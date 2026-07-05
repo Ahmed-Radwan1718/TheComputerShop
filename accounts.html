@@ -531,6 +531,49 @@
     <p class="account-message" id="sign-out-everywhere-message" aria-live="polite"></p>
   </div>
 
+  <div class="account-divider"></div>
+
+  <div class="account-delete-account-section">
+    <div class="account-panel-subheader">
+      <h3>Delete Account</h3>
+      <p>This permanently deletes your account, saved data, sessions, trusted devices, orders, and support requests.</p>
+    </div>
+
+    <button class="account-danger-button" type="button" id="delete-account-button">
+      Delete account
+    </button>
+
+    <p class="account-message" id="delete-account-message" aria-live="polite"></p>
+  </div>
+
+  <div class="account-security-modal" id="delete-account-modal" hidden>
+    <div class="account-security-modal-backdrop" id="delete-account-modal-backdrop"></div>
+
+    <div class="account-security-modal-card account-security-gate-card" role="dialog" aria-modal="true" aria-labelledby="delete-account-modal-title">
+      <div class="account-security-modal-header">
+        <h2 id="delete-account-modal-title">Delete account permanently?</h2>
+        <p>This cannot be undone. Type DELETE to confirm permanent account deletion.</p>
+      </div>
+
+      <div class="account-field">
+        <label for="delete-account-confirm-text">Confirmation</label>
+        <input type="text" id="delete-account-confirm-text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="6" placeholder="DELETE">
+      </div>
+
+      <div class="account-security-modal-actions">
+        <button class="account-security-modal-cancel" type="button" id="delete-account-modal-cancel">
+          Cancel
+        </button>
+
+        <button class="account-security-modal-continue account-security-modal-danger" type="button" id="delete-account-modal-confirm" disabled>
+          Delete Account
+        </button>
+      </div>
+
+      <p class="account-message" id="delete-account-modal-message" aria-live="polite"></p>
+    </div>
+  </div>
+
   <div class="account-security-modal" id="sign-out-session-modal" hidden>
     <div class="account-security-modal-backdrop" id="sign-out-session-modal-backdrop"></div>
 
@@ -1207,6 +1250,14 @@ const passwordMessage = document.getElementById("password-message");
 
   const signOutEverywhereButton = document.getElementById("sign-out-everywhere-button");
   const signOutEverywhereMessage = document.getElementById("sign-out-everywhere-message");
+  const deleteAccountButton = document.getElementById("delete-account-button");
+  const deleteAccountMessage = document.getElementById("delete-account-message");
+  const deleteAccountModal = document.getElementById("delete-account-modal");
+  const deleteAccountModalBackdrop = document.getElementById("delete-account-modal-backdrop");
+  const deleteAccountModalCancel = document.getElementById("delete-account-modal-cancel");
+  const deleteAccountModalConfirm = document.getElementById("delete-account-modal-confirm");
+  const deleteAccountModalMessage = document.getElementById("delete-account-modal-message");
+  const deleteAccountConfirmText = document.getElementById("delete-account-confirm-text");
   const signOutSessionModal = document.getElementById("sign-out-session-modal");
   const signOutSessionModalBackdrop = document.getElementById("sign-out-session-modal-backdrop");
   const signOutSessionCancel = document.getElementById("sign-out-session-modal-cancel");
