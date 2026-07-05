@@ -1827,6 +1827,10 @@ body {
   text-transform: uppercase;
 }
 
+.signature-build-card h3 .case-sensitive-unit {
+  text-transform: none;
+}
+
 .signature-build-card p {
   max-width: 95%;
   color: rgba(255, 255, 255, 0.64);
