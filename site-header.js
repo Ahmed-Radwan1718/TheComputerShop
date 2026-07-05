@@ -20,6 +20,251 @@
     return;
   }
 
+  function setupLanguageSwitcher() {
+    if (document.getElementById("tcs-language-switcher")) {
+      return;
+    }
+
+    const languageStyles = document.createElement("style");
+    languageStyles.id = "tcs-language-switcher-styles";
+    languageStyles.textContent = `
+      .tcs-language-switcher {
+        position: fixed;
+        left: 24px;
+        bottom: 24px;
+        z-index: 2400;
+        font-family: Arial, sans-serif;
+      }
+
+      .tcs-language-toggle {
+        min-height: 48px;
+        padding: 0 16px;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: 999px;
+        background: rgba(24, 25, 24, 0.82);
+        color: white;
+        box-shadow: 0 18px 38px rgba(0, 0, 0, 0.34);
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        backdrop-filter: blur(16px);
+      }
+
+      .tcs-language-toggle span {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+      }
+
+      .tcs-language-toggle strong {
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .tcs-language-panel {
+        position: absolute;
+        left: 0;
+        bottom: calc(100% + 10px);
+        min-width: 142px;
+        padding: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.13);
+        border-radius: 16px;
+        background: rgba(24, 25, 24, 0.94);
+        box-shadow: 0 18px 38px rgba(0, 0, 0, 0.34);
+        backdrop-filter: blur(16px);
+        display: grid;
+        gap: 6px;
+      }
+
+      .tcs-language-panel[hidden] {
+        display: none;
+      }
+
+      .tcs-language-option {
+        width: 100%;
+        min-height: 38px;
+        padding: 0 12px;
+        border: 0;
+        border-radius: 12px;
+        background: transparent;
+        color: rgba(255, 255, 255, 0.78);
+        font: inherit;
+        font-size: 12px;
+        font-weight: 700;
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .tcs-language-option:hover {
+        background: rgba(255, 255, 255, 0.09);
+        color: white;
+      }
+
+      #google_translate_element {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .goog-te-banner-frame.skiptranslate,
+      .goog-te-gadget {
+        display: none !important;
+      }
+
+      body {
+        top: 0 !important;
+      }
+
+      @media (max-width: 620px) {
+        .tcs-language-switcher {
+          left: 16px;
+          bottom: 16px;
+        }
+
+        .tcs-language-toggle {
+          min-height: 44px;
+          padding: 0 14px;
+        }
+      }
+    `;
+
+    document.head.appendChild(languageStyles);
+
+    const languageSwitcher = document.createElement("div");
+    languageSwitcher.id = "tcs-language-switcher";
+    languageSwitcher.className = "tcs-language-switcher";
+    languageSwitcher.innerHTML = `
+      <button class="tcs-language-toggle" id="tcs-language-toggle" type="button" aria-label="Change language" aria-expanded="false">
+        <span>Language</span>
+        <strong>EN / AR</strong>
+      </button>
+
+      <div class="tcs-language-panel" id="tcs-language-panel" hidden>
+        <button class="tcs-language-option" type="button" data-tcs-language="en">English</button>
+        <button class="tcs-language-option" type="button" data-tcs-language="ar">Arabic</button>
+      </div>
+
+      <div id="google_translate_element" aria-hidden="true"></div>
+    `;
+
+    document.body.appendChild(languageSwitcher);
+
+    const languageToggle = document.getElementById("tcs-language-toggle");
+    const languagePanel = document.getElementById("tcs-language-panel");
+
+    function closeLanguagePanel() {
+      languagePanel.hidden = true;
+      languageToggle.setAttribute("aria-expanded", "false");
+    }
+
+    function openLanguagePanel() {
+      languagePanel.hidden = false;
+      languageToggle.setAttribute("aria-expanded", "true");
+    }
+
+    function clearGoogleTranslateCookie() {
+      document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+
+      if (window.location.hostname.includes(".")) {
+        document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; domain=." + window.location.hostname.split(".").slice(-2).join(".");
+      }
+    }
+
+    function setGoogleTranslateCookie(languageCode) {
+      const cookieValue = "/en/" + languageCode;
+      document.cookie = "googtrans=" + cookieValue + "; path=/";
+
+      if (window.location.hostname.includes(".")) {
+        document.cookie = "googtrans=" + cookieValue + "; path=/; domain=." + window.location.hostname.split(".").slice(-2).join(".");
+      }
+    }
+
+    window.googleTranslateElementInit = function () {
+      new google.translate.TranslateElement({
+        pageLanguage: "en",
+        includedLanguages: "en,ar",
+        autoDisplay: false
+      }, "google_translate_element");
+    };
+
+    function loadGoogleTranslateScript() {
+      if (document.getElementById("google-translate-script")) {
+        return;
+      }
+
+      const script = document.createElement("script");
+      script.id = "google-translate-script";
+      script.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+      document.body.appendChild(script);
+    }
+
+    function applyLanguage(languageCode, attemptCount) {
+      if (languageCode === "en") {
+        clearGoogleTranslateCookie();
+        window.location.reload();
+        return;
+      }
+
+      setGoogleTranslateCookie(languageCode);
+      loadGoogleTranslateScript();
+
+      const translateCombo = document.querySelector(".goog-te-combo");
+
+      if (translateCombo) {
+        translateCombo.value = languageCode;
+        translateCombo.dispatchEvent(new Event("change"));
+        return;
+      }
+
+      if (attemptCount < 12) {
+        window.setTimeout(function () {
+          applyLanguage(languageCode, attemptCount + 1);
+        }, 500);
+        return;
+      }
+
+      window.location.reload();
+    }
+
+    languageToggle.addEventListener("click", function (event) {
+      event.stopPropagation();
+
+      if (languagePanel.hidden) {
+        openLanguagePanel();
+      } else {
+        closeLanguagePanel();
+      }
+    });
+
+    document.querySelectorAll(".tcs-language-option").forEach(function (button) {
+      button.addEventListener("click", function () {
+        closeLanguagePanel();
+        applyLanguage(button.dataset.tcsLanguage, 0);
+      });
+    });
+
+    document.addEventListener("click", function (event) {
+      if (!languageSwitcher.contains(event.target)) {
+        closeLanguagePanel();
+      }
+    });
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") {
+        closeLanguagePanel();
+      }
+    });
+
+    loadGoogleTranslateScript();
+  }
+
+  setupLanguageSwitcher();
+
   headerRoot.outerHTML = `
 <header class="site-header">
   <a href="index.html" class="site-header-logo">The Computer Shop</a>
