@@ -99,6 +99,17 @@
         font-weight: 700;
         text-align: left;
         cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .tcs-language-flag {
+        width: 20px;
+        flex: 0 0 20px;
+        font-size: 16px;
+        line-height: 1;
+        text-align: center;
       }
 
       .tcs-language-option:hover {
@@ -175,11 +186,11 @@
       </button>
 
       <div class="tcs-language-panel" id="tcs-language-panel" hidden>
-        <button class="tcs-language-option" type="button" data-tcs-language="en">English</button>
-        <button class="tcs-language-option" type="button" data-tcs-language="ar">Arabic</button>
-        <button class="tcs-language-option" type="button" data-tcs-language="fr">French</button>
-        <button class="tcs-language-option" type="button" data-tcs-language="de">German</button>
-        <button class="tcs-language-option" type="button" data-tcs-language="es">Spanish</button>
+        <button class="tcs-language-option" type="button" data-tcs-language="en"><span class="tcs-language-flag">🇺🇸</span><span>English</span></button>
+        <button class="tcs-language-option" type="button" data-tcs-language="ar"><span class="tcs-language-flag">🇪🇬</span><span>Arabic</span></button>
+        <button class="tcs-language-option" type="button" data-tcs-language="fr"><span class="tcs-language-flag">🇫🇷</span><span>French</span></button>
+        <button class="tcs-language-option" type="button" data-tcs-language="de"><span class="tcs-language-flag">🇩🇪</span><span>German</span></button>
+        <button class="tcs-language-option" type="button" data-tcs-language="es"><span class="tcs-language-flag">🇪🇸</span><span>Spanish</span></button>
       </div>
 
       <div id="google_translate_element" aria-hidden="true"></div>
