@@ -1168,7 +1168,7 @@ async function userRequiresTwoFactor(uid) {
 
   const twoFactor = userDoc.data().twoFactor || {};
 
-  return Boolean(twoFactor.appEnabled);
+  return Boolean(twoFactor.appEnabled || twoFactor.emailEnabled);
 }
 
 async function getUserFromRequest(req, options) {
