@@ -1828,6 +1828,14 @@ body {
 }
 
 .signature-build-card h3 .case-sensitive-unit {
+  text-transform: uppercase;
+}
+
+.signature-build-card h3 .case-sensitive-unit::first-letter {
+  text-transform: lowercase;
+}
+
+.signature-build-card h3 .case-sensitive-unit {
   text-transform: none;
 }
 
