@@ -170,9 +170,7 @@
     languageSwitcher.setAttribute("translate", "no");
     languageSwitcher.innerHTML = `
       <button class="tcs-language-toggle" id="tcs-language-toggle" type="button" aria-label="Change language" aria-expanded="false">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm6.92 9h-3.03a15.7 15.7 0 0 0-1.05-5.02A8.02 8.02 0 0 1 18.92 11ZM12 4.04c.72 1.04 1.54 3.24 1.82 6.96h-3.64C10.46 7.28 11.28 5.08 12 4.04ZM4.26 13h3.85c.13 1.88.47 3.58.98 4.96A8.02 8.02 0 0 1 4.26 13Zm3.85-2H4.26a8.02 8.02 0 0 1 4.83-4.96A16.52 16.52 0 0 0 8.11 11ZM12 19.96c-.72-1.04-1.54-3.24-1.82-6.96h3.64c-.28 3.72-1.1 5.92-1.82 6.96Zm2.91-2A16.52 16.52 0 0 0 15.89 13h3.03a8.02 8.02 0 0 1-4.01 4.96Z" fill="currentColor"/>
-        </svg>
+        <img src="language-icon.png" alt="">
       </button>
 
       <div class="tcs-language-panel" id="tcs-language-panel" hidden>
