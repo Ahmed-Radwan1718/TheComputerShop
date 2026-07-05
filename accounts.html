@@ -2160,6 +2160,107 @@ async function removeSelectedTrustedDevice() {
   }
 }
 
+function updateDeleteAccountConfirmButton() {
+  if (!deleteAccountModalConfirm || !deleteAccountConfirmText) {
+    return;
+  }
+
+  deleteAccountModalConfirm.disabled = deleteAccountConfirmText.value.trim().toUpperCase() !== "DELETE";
+}
+
+async function openDeleteAccountModal() {
+  if (!currentUser || !deleteAccountModal) {
+    return;
+  }
+
+  const unlocked = await ensureSecurityUnlocked();
+
+  if (!unlocked) {
+    openSecurityGateModal();
+    return;
+  }
+
+  deleteAccountConfirmText.value = "";
+  showMessage(deleteAccountModalMessage, "", "");
+  deleteAccountModalConfirm.disabled = true;
+  deleteAccountModalConfirm.textContent = "Delete Account";
+  deleteAccountModal.hidden = false;
+  document.body.classList.add("account-security-modal-open");
+  deleteAccountConfirmText.focus();
+}
+
+function closeDeleteAccountModal() {
+  if (deleteAccountModal) {
+    deleteAccountModal.hidden = true;
+  }
+
+  if (deleteAccountConfirmText) {
+    deleteAccountConfirmText.value = "";
+  }
+
+  if (deleteAccountModalConfirm) {
+    deleteAccountModalConfirm.disabled = true;
+    deleteAccountModalConfirm.textContent = "Delete Account";
+  }
+
+  showMessage(deleteAccountModalMessage, "", "");
+  document.body.classList.remove("account-security-modal-open");
+}
+
+async function deleteAccountPermanently() {
+  if (!currentUser || !deleteAccountConfirmText || deleteAccountConfirmText.value.trim().toUpperCase() !== "DELETE") {
+    showMessage(deleteAccountModalMessage, "Type DELETE to confirm.", "error");
+    return;
+  }
+
+  deleteAccountModalConfirm.disabled = true;
+  deleteAccountModalConfirm.textContent = "Deleting...";
+  showMessage(deleteAccountModalMessage, "", "");
+
+  try {
+    const response = await fetch("/api/delete-account", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: await getSecurityRequestHeaders(),
+      body: JSON.stringify({
+        confirmation: "DELETE"
+      })
+    });
+
+    const data = await response.json().catch(function () {
+      return {};
+    });
+
+    if (!response.ok) {
+      throw new Error(data.error || "Could not delete your account.");
+    }
+
+    stopSavedItemsSync();
+    stopAddressesSync();
+    stopSupportTicketsSync();
+    stopOrderHistorySync();
+    clearSecurityUnlock();
+
+    try {
+      const authForSignOut = firebaseClientAuth || (firebaseClientApp ? getAuth(firebaseClientApp) : null);
+
+      if (authForSignOut) {
+        await signOut(authForSignOut);
+      }
+    } catch (error) {}
+
+    sessionStorage.removeItem("tcs-login-2fa-pending");
+    localStorage.removeItem("tcs-login-redirect");
+    sessionStorage.setItem("tcs-login-message", "Your account has been deleted.");
+    window.location.href = "login.html";
+  } catch (error) {
+    showMessage(deleteAccountModalMessage, error.message || "Could not delete your account.", "error");
+    deleteAccountModalConfirm.disabled = false;
+    deleteAccountModalConfirm.textContent = "Delete Account";
+    updateDeleteAccountConfirmButton();
+  }
+}
+
 async function signOutEverywhere() {
   if (!currentUser) {
     return;
@@ -6692,6 +6793,16 @@ if (!requestedEmail) {
 
   signOutEverywhereButton.addEventListener("click", function () {
     signOutEverywhere();
+  });
+
+  deleteAccountButton.addEventListener("click", openDeleteAccountModal);
+  deleteAccountModalCancel.addEventListener("click", closeDeleteAccountModal);
+  deleteAccountModalBackdrop.addEventListener("click", closeDeleteAccountModal);
+  deleteAccountModalConfirm.addEventListener("click", deleteAccountPermanently);
+
+  deleteAccountConfirmText.addEventListener("input", function () {
+    deleteAccountConfirmText.value = deleteAccountConfirmText.value.toUpperCase();
+    updateDeleteAccountConfirmButton();
   });
 
   if (loginSessionsList) {
