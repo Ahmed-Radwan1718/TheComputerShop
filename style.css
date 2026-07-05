@@ -10670,6 +10670,12 @@ body.account-security-modal-open {
   font-weight: 700;
 }
 
+html.translated-rtl .account-order-card-meta,
+body.translated-rtl .account-order-card-meta {
+  font-size: 13px;
+  line-height: 1.6;
+}
+
 .account-order-progress {
   --order-progress-gap: 32px;
   position: relative;
