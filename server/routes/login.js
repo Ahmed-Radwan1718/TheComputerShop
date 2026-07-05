@@ -321,7 +321,6 @@ module.exports = async function handler(req, res) {
       await createCompatibleLoginChallenge(req, res, {
         uid,
         email: userRecord.email || email,
-        idToken: loginResult.idToken,
         twoFactor
       });
 
