@@ -663,6 +663,53 @@
     componentSearchInput.addEventListener("input", scheduleComponentFilterUpdate);
   }
 
+  const chargingSearchSuggestions = [
+    "Search Anker Prime 20K 220W Power Bank",
+    "Search Anker Charger 140W 4-Port",
+    "Search UGREEN Nexode 500W 6-Port",
+    "Search UGREEN USB-C Gen4 240W Cable",
+    "Search Anker MagGo 10000mAh Power Bank"
+  ];
+
+  let chargingSuggestionIndex = 0;
+  let chargingCharacterIndex = 0;
+  let isDeletingChargingSuggestion = false;
+
+  function animateChargingSearchPlaceholder() {
+    if (!componentSearchInput) {
+      return;
+    }
+
+    const currentSuggestion = chargingSearchSuggestions[chargingSuggestionIndex];
+
+    if (componentSearchInput.value.trim().length === 0) {
+      componentSearchInput.placeholder = currentSuggestion.substring(0, chargingCharacterIndex);
+    }
+
+    if (!isDeletingChargingSuggestion && chargingCharacterIndex < currentSuggestion.length) {
+      chargingCharacterIndex += 1;
+      setTimeout(animateChargingSearchPlaceholder, 70);
+      return;
+    }
+
+    if (!isDeletingChargingSuggestion && chargingCharacterIndex === currentSuggestion.length) {
+      isDeletingChargingSuggestion = true;
+      setTimeout(animateChargingSearchPlaceholder, 1200);
+      return;
+    }
+
+    if (isDeletingChargingSuggestion && chargingCharacterIndex > 0) {
+      chargingCharacterIndex -= 1;
+      setTimeout(animateChargingSearchPlaceholder, 35);
+      return;
+    }
+
+    isDeletingChargingSuggestion = false;
+    chargingSuggestionIndex = (chargingSuggestionIndex + 1) % chargingSearchSuggestions.length;
+    setTimeout(animateChargingSearchPlaceholder, 250);
+  }
+
+  animateChargingSearchPlaceholder();
   updateComponentFilters();
 </script>
 
