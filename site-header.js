@@ -59,10 +59,11 @@
         background: rgba(24, 25, 24, 0.96);
       }
 
-      .tcs-language-toggle svg {
-        width: 24px;
-        height: 24px;
+      .tcs-language-toggle img {
+        width: 26px;
+        height: 26px;
         display: block;
+        object-fit: contain;
       }
 
       .tcs-language-panel {
@@ -154,9 +155,9 @@
           height: 44px;
         }
 
-        .tcs-language-toggle svg {
-          width: 22px;
-          height: 22px;
+        .tcs-language-toggle img {
+          width: 24px;
+          height: 24px;
         }
       }
     `;
