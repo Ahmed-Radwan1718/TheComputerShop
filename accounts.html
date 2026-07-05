@@ -651,7 +651,7 @@
           <label for="new-password">New password</label>
 
           <div class="account-password-input-wrap">
-            <input type="password" id="new-password" autocomplete="new-password" required>
+            <input type="password" id="new-password" autocomplete="new-password" minlength="10" maxlength="48" required>
 
             <button class="account-password-visibility-toggle" type="button" data-target="new-password" aria-label="Show new password">
               <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -664,10 +664,11 @@
         <div class="account-password-rules">
           <strong>You must:</strong>
           <ul>
-            <li>Use at least 7 characters</li>
-            <li>Use at least 1 letter</li>
-            <li>Use at least 1 number</li>
-            <li>Not use spaces</li>
+            <li>Use 10 to 48 characters</li>
+            <li>Use at least 1 uppercase character</li>
+            <li>Use at least 1 lowercase character</li>
+            <li>Use at least 1 special character</li>
+            <li>Use at least 1 numeric character</li>
           </ul>
         </div>
 
@@ -6387,10 +6388,12 @@ if (!requestedEmail) {
 
   function isValidNewPassword(password) {
     return (
-      password.length >= 8 &&
-      /[A-Za-z]/.test(password) &&
+      password.length >= 10 &&
+      password.length <= 48 &&
+      /[A-Z]/.test(password) &&
+      /[a-z]/.test(password) &&
       /[0-9]/.test(password) &&
-      !/\s/.test(password)
+      /[^A-Za-z0-9\s]/.test(password)
     );
   }
 
@@ -6525,7 +6528,7 @@ if (!requestedEmail) {
     }
 
     if (!isValidNewPassword(newPassword)) {
-      showMessage(passwordMessage, "Password must be at least 8 characters and include at least 1 letter and 1 number, with no spaces.", "error");
+      showMessage(passwordMessage, "Password must be 10 to 48 characters and include uppercase, lowercase, special, and numeric characters.", "error");
       return;
     }
 
