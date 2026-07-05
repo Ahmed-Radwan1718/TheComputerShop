@@ -30,43 +30,45 @@
     languageStyles.textContent = `
       .tcs-language-switcher {
         position: fixed;
-        left: 24px;
-        bottom: 24px;
+        top: 30px;
+        right: 34px;
         z-index: 2400;
         font-family: Arial, sans-serif;
       }
 
       .tcs-language-toggle {
-        min-height: 48px;
-        padding: 0 16px;
+        width: 48px;
+        height: 48px;
+        padding: 0;
         border: 1px solid rgba(255, 255, 255, 0.16);
         border-radius: 999px;
-        background: rgba(24, 25, 24, 0.82);
+        background: rgba(24, 25, 24, 0.86);
         color: white;
         box-shadow: 0 18px 38px rgba(0, 0, 0, 0.34);
         cursor: pointer;
         display: inline-flex;
         align-items: center;
-        gap: 10px;
+        justify-content: center;
         backdrop-filter: blur(16px);
+        transition: transform 0.22s ease, border-color 0.22s ease, background 0.22s ease;
       }
 
-      .tcs-language-toggle span {
-        font-size: 11px;
-        font-weight: 700;
-        letter-spacing: 0.09em;
-        text-transform: uppercase;
+      .tcs-language-toggle:hover {
+        transform: translateY(-1px);
+        border-color: rgba(255, 255, 255, 0.28);
+        background: rgba(24, 25, 24, 0.96);
       }
 
-      .tcs-language-toggle strong {
-        font-size: 12px;
-        font-weight: 700;
+      .tcs-language-toggle svg {
+        width: 24px;
+        height: 24px;
+        display: block;
       }
 
       .tcs-language-panel {
         position: absolute;
-        left: 0;
-        bottom: calc(100% + 10px);
+        top: calc(100% + 10px);
+        right: 0;
         min-width: 142px;
         padding: 8px;
         border: 1px solid rgba(255, 255, 255, 0.13);
@@ -120,15 +122,27 @@
         top: 0 !important;
       }
 
+      @media (max-width: 1168px) {
+        .tcs-language-switcher {
+          top: 94px;
+          right: 24px;
+        }
+      }
+
       @media (max-width: 620px) {
         .tcs-language-switcher {
-          left: 16px;
-          bottom: 16px;
+          top: 86px;
+          right: 16px;
         }
 
         .tcs-language-toggle {
-          min-height: 44px;
-          padding: 0 14px;
+          width: 44px;
+          height: 44px;
+        }
+
+        .tcs-language-toggle svg {
+          width: 22px;
+          height: 22px;
         }
       }
     `;
@@ -137,11 +151,13 @@
 
     const languageSwitcher = document.createElement("div");
     languageSwitcher.id = "tcs-language-switcher";
-    languageSwitcher.className = "tcs-language-switcher";
+    languageSwitcher.className = "tcs-language-switcher skiptranslate notranslate";
+    languageSwitcher.setAttribute("translate", "no");
     languageSwitcher.innerHTML = `
       <button class="tcs-language-toggle" id="tcs-language-toggle" type="button" aria-label="Change language" aria-expanded="false">
-        <span>Language</span>
-        <strong>EN / AR</strong>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm6.92 9h-3.03a15.7 15.7 0 0 0-1.05-5.02A8.02 8.02 0 0 1 18.92 11ZM12 4.04c.72 1.04 1.54 3.24 1.82 6.96h-3.64C10.46 7.28 11.28 5.08 12 4.04ZM4.26 13h3.85c.13 1.88.47 3.58.98 4.96A8.02 8.02 0 0 1 4.26 13Zm3.85-2H4.26a8.02 8.02 0 0 1 4.83-4.96A16.52 16.52 0 0 0 8.11 11ZM12 19.96c-.72-1.04-1.54-3.24-1.82-6.96h3.64c-.28 3.72-1.1 5.92-1.82 6.96Zm2.91-2A16.52 16.52 0 0 0 15.89 13h3.03a8.02 8.02 0 0 1-4.01 4.96Z" fill="currentColor"/>
+        </svg>
       </button>
 
       <div class="tcs-language-panel" id="tcs-language-panel" hidden>
