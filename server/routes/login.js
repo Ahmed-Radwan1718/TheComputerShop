@@ -291,7 +291,7 @@ module.exports = async function handler(req, res) {
     }, null);
     const userData = userDoc && userDoc.exists ? userDoc.data() || {} : {};
     const twoFactor = getSafeTwoFactorSettings(userData);
-    const requiresTwoFactor = twoFactor.appEnabled;
+    const requiresTwoFactor = twoFactor.appEnabled || twoFactor.emailEnabled;
 
     if (requiresTwoFactor) {
       const trustedDevice = typeof getCurrentTrustedDevice === "function"
