@@ -120,8 +120,8 @@
         width: 100%;
         height: 100%;
         display: block;
-        object-fit: cover;
-        transform: scale(1.55);
+        object-fit: contain;
+        transform: none;
       }
 
       .tcs-language-option:hover {
