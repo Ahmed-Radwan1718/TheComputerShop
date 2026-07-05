@@ -184,7 +184,50 @@
       }
     }
 
+    function protectProductNamesFromTranslation() {
+      const productNameSelectors = [
+        ".signature-build-card h3",
+        ".tcs-home-component-card-body h3",
+        ".tcs-home-build-card h3",
+        ".product-title-block h1",
+        ".product-specifications-table .product-spec-row:first-child strong",
+        ".cart-item h3",
+        ".checkout-item h3",
+        ".account-saved-item-info h3",
+        ".account-order-detail-item-info h3",
+        ".order-item h3"
+      ];
+
+      document.querySelectorAll(productNameSelectors.join(", ")).forEach(function (element) {
+        element.classList.add("notranslate");
+        element.setAttribute("translate", "no");
+      });
+    }
+
+    function startProductNameTranslationProtection() {
+      protectProductNamesFromTranslation();
+
+      if (window.tcsProductNameTranslationObserverStarted) {
+        return;
+      }
+
+      window.tcsProductNameTranslationObserverStarted = true;
+
+      const observer = new MutationObserver(function () {
+        protectProductNamesFromTranslation();
+      });
+
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
+
+      document.addEventListener("DOMContentLoaded", protectProductNamesFromTranslation);
+    }
+
     window.googleTranslateElementInit = function () {
+      startProductNameTranslationProtection();
+
       new google.translate.TranslateElement({
         pageLanguage: "en",
         includedLanguages: "en,ar",
@@ -193,6 +236,8 @@
     };
 
     function loadGoogleTranslateScript() {
+      startProductNameTranslationProtection();
+
       if (document.getElementById("google-translate-script")) {
         return;
       }
