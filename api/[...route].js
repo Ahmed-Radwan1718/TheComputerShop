@@ -179,6 +179,7 @@ const routeLoaders = {
   "checkout": function () { return require("../server/routes/checkout"); },
   "client-token": function () { return require("../server/routes/client-token"); },
   "consultation": function () { return handleConsultationRequest; },
+  "delete-account": function () { return require("../server/routes/sign-out-everywhere").deleteAccount; },
   "disable-authenticator": function () { return require("../server/routes/disable-authenticator"); },
   "forgot-password": function () { return require("../server/routes/forgot-password"); },
   "login": function () { return require("../server/routes/login"); },
