@@ -226,6 +226,7 @@
 
     .pc-builder-stat {
       display: flex;
+      align-items: center;
       justify-content: space-between;
       gap: 16px;
       padding: 13px 14px;
@@ -233,6 +234,19 @@
       background: rgba(255, 255, 255, 0.06);
       color: rgba(255, 255, 255, 0.64);
       font-size: 13px;
+    }
+
+    .pc-builder-stat-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pc-builder-stat-icon {
+      width: 16px;
+      height: 16px;
+      object-fit: contain;
+      flex: 0 0 auto;
     }
 
     .pc-builder-stat strong {
@@ -851,7 +865,7 @@
 
       <div class="pc-builder-summary-body">
         <div class="pc-builder-stat-grid">
-          <div class="pc-builder-stat"><span>Estimated wattage</span><strong id="pc-builder-wattage">0W</strong></div>
+          <div class="pc-builder-stat"><span class="pc-builder-stat-label"><img src="lightning.png" alt="" class="pc-builder-stat-icon">Estimated wattage</span><strong id="pc-builder-wattage">0W</strong></div>
           <div class="pc-builder-stat"><span>Total</span><strong id="pc-builder-total">Pending prices</strong></div>
         </div>
 
