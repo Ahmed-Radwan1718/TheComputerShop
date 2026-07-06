@@ -553,6 +553,20 @@
     setTimeout(animateStorageSearchPlaceholder, 250);
   }
 
+  const componentPriceOverrides = {
+    "samsung-9100-pro-nvme-ssd": "From 15,999 EGP",
+    "aorus-gen5-14000-ssd": "13,999 EGP",
+    "wd-black-sn850x-nvme-ssd": "From 30,999 EGP"
+  };
+
+  Object.entries(componentPriceOverrides).forEach(([productId, priceText]) => {
+    const priceElement = document.querySelector(`a[href="product.html?product=${productId}"] .signature-build-price`);
+
+    if (priceElement) {
+      priceElement.textContent = priceText;
+    }
+  });
+
   animateStorageSearchPlaceholder();
   updateComponentFilters();
 </script>
