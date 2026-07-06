@@ -245,8 +245,11 @@
     .pc-builder-stat-icon {
       width: 16px;
       height: 16px;
-      object-fit: contain;
+      display: inline-block;
       flex: 0 0 auto;
+      background: #c09a5c;
+      -webkit-mask: url("lightning.png") center / contain no-repeat;
+      mask: url("lightning.png") center / contain no-repeat;
     }
 
     .pc-builder-stat strong {
@@ -865,7 +868,7 @@
 
       <div class="pc-builder-summary-body">
         <div class="pc-builder-stat-grid">
-          <div class="pc-builder-stat"><span class="pc-builder-stat-label"><img src="lightning.png" alt="" class="pc-builder-stat-icon">Estimated wattage</span><strong id="pc-builder-wattage">0W</strong></div>
+          <div class="pc-builder-stat"><span class="pc-builder-stat-label"><span class="pc-builder-stat-icon" aria-hidden="true"></span>Estimated wattage</span><strong id="pc-builder-wattage">0W</strong></div>
           <div class="pc-builder-stat"><span>Total</span><strong id="pc-builder-total">Pending prices</strong></div>
         </div>
 
