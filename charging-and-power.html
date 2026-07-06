@@ -709,6 +709,18 @@
     setTimeout(animateChargingSearchPlaceholder, 250);
   }
 
+  const componentPriceOverrides = {
+    "anker-nano-charger-30w": "999 EGP"
+  };
+
+  Object.entries(componentPriceOverrides).forEach(([productId, priceText]) => {
+    const priceElement = document.querySelector(`a[href="product.html?product=${productId}"] .signature-build-price`);
+
+    if (priceElement) {
+      priceElement.textContent = priceText;
+    }
+  });
+
   animateChargingSearchPlaceholder();
   updateComponentFilters();
 </script>
