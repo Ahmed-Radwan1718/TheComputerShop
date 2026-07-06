@@ -605,6 +605,27 @@
     setTimeout(animateCpuSearchPlaceholder, 250);
   }
 
+  const componentPriceOverrides = {
+    "intel-core-ultra-7-270k-plus": "18,999 EGP",
+    "intel-core-ultra-9-285k": "32,999 EGP",
+    "amd-ryzen-5-9600x": "12,999 EGP",
+    "amd-ryzen-7-9700x": "16,999 EGP",
+    "amd-ryzen-7-9800x3d": "From 25,999 EGP",
+    "amd-ryzen-9-9900x": "23,999 EGP",
+    "amd-ryzen-9-9950x": "28,999 EGP",
+    "amd-ryzen-9-9900x3d": "32,999 EGP",
+    "amd-ryzen-9-9950x3d": "From 35,999 EGP",
+    "amd-ryzen-9-9950x3d2-dual-edition": "57,999 EGP"
+  };
+
+  Object.entries(componentPriceOverrides).forEach(([productId, priceText]) => {
+    const priceElement = document.querySelector(`a[href="product.html?product=${productId}"] .signature-build-price`);
+
+    if (priceElement) {
+      priceElement.textContent = priceText;
+    }
+  });
+
   animateCpuSearchPlaceholder();
   updateComponentFilters();
 </script>
