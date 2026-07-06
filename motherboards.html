@@ -964,6 +964,23 @@
     componentSearchInput.addEventListener("input", runMotherboardSearchUpdate);
   }
 
+  const componentPriceOverrides = {
+    "b850-aorus-elite-wifi7-ice": "13,999 EGP",
+    "b850-aorus-elite-wifi7": "13,999 EGP",
+    "x870e-aorus-master": "31,999 EGP",
+    "x870e-aorus-pro-ice": "24,999 EGP",
+    "rog-crosshair-x870e-hero": "33,999 EGP",
+    "rog-strix-x870e-e-gaming-wifi": "31,999 EGP"
+  };
+
+  Object.entries(componentPriceOverrides).forEach(([productId, priceText]) => {
+    const priceElement = document.querySelector(`a[href="product.html?product=${productId}"] .signature-build-price`);
+
+    if (priceElement) {
+      priceElement.textContent = priceText;
+    }
+  });
+
   updateComponentFilters();
 </script>
 
