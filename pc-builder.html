@@ -424,12 +424,14 @@
 
   <style>
     .pc-builder-page {
-      padding: 124px 44px 76px;
+      min-height: 100vh;
+      padding: 124px 44px 86px;
       background:
-        linear-gradient(180deg, rgba(15, 16, 15, 0.32), rgba(42, 43, 42, 0) 340px),
+        linear-gradient(180deg, rgba(15, 16, 15, 0.24), rgba(42, 43, 42, 0) 320px),
         #2a2b2a;
+      color: #ffffff;
       font-family: Arial, sans-serif;
-      overflow: hidden;
+      overflow: visible;
     }
 
     .pc-builder-hero,
@@ -453,9 +455,10 @@
 
     .pc-builder-hero h1 {
       color: #ffffff;
-      font-size: clamp(44px, 7vw, 76px);
+      font-size: 76px;
       font-weight: 700;
       line-height: 1.08;
+      letter-spacing: 0;
       text-transform: uppercase;
     }
 
@@ -467,44 +470,59 @@
       line-height: 1.8;
     }
 
+    .pc-builder-shell {
+      grid-template-columns: minmax(0, 1fr) 340px;
+      gap: 24px;
+    }
+
     .pc-builder-panel,
     .pc-builder-summary,
     .pc-builder-modal-panel {
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 18px;
-      background: rgba(24, 25, 24, 0.94);
-      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.26);
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      border-radius: 24px;
+      background: rgba(24, 25, 24, 0.58);
+      box-shadow: 0 22px 55px rgba(0, 0, 0, 0.18);
       backdrop-filter: none;
       -webkit-backdrop-filter: none;
+    }
+
+    .pc-builder-panel,
+    .pc-builder-summary {
+      overflow: hidden;
     }
 
     .pc-builder-toolbar,
     .pc-builder-summary-header,
     .pc-builder-modal-header,
     .pc-builder-modal-tools {
-      padding: 22px;
-      border-bottom-color: rgba(255, 255, 255, 0.1);
+      padding: 24px;
+      border-bottom-color: rgba(255, 255, 255, 0.08);
     }
 
     .pc-builder-toolbar h2,
     .pc-builder-summary h2,
     .pc-builder-modal-header h2 {
       color: #ffffff;
-      font-size: 22px;
+      font-size: 24px;
       font-weight: 700;
-      line-height: 1.2;
+      line-height: 1.12;
+      letter-spacing: 0;
+      text-transform: uppercase;
     }
 
     .pc-builder-button,
     .pc-builder-link-button {
       border-radius: 999px;
+      font-family: Arial, sans-serif;
+      font-size: 12px;
       font-weight: 700;
       letter-spacing: 0;
       text-transform: uppercase;
       transition:
-        border-color 0.18s ease,
-        background 0.18s ease,
-        color 0.18s ease;
+        border-color 0.2s ease,
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
     }
 
     .pc-builder-button,
@@ -525,6 +543,7 @@
     .pc-builder-link-button:hover {
       border-color: rgba(255, 255, 255, 0.34);
       background: rgba(255, 255, 255, 0.18);
+      transform: translateY(-1px);
     }
 
     .pc-builder-table-wrap {
@@ -555,11 +574,13 @@
       text-transform: uppercase;
     }
 
-    .pc-builder-part img,
-    .pc-builder-option img {
-      border-radius: 14px;
-      background: transparent;
-      object-fit: cover;
+    .pc-builder-part img {
+      width: 66px;
+      height: 66px;
+      flex-basis: 66px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.06);
+      object-fit: contain;
       object-position: center;
     }
 
@@ -567,6 +588,7 @@
     .pc-builder-option h3 {
       color: #ffffff;
       font-weight: 700;
+      letter-spacing: 0;
     }
 
     .pc-builder-part span,
@@ -576,8 +598,7 @@
     }
 
     .pc-builder-stat,
-    .pc-builder-issue,
-    .pc-builder-option {
+    .pc-builder-issue {
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 16px;
       background: rgba(255, 255, 255, 0.055);
@@ -592,19 +613,126 @@
     }
 
     .pc-builder-modal {
-      background: rgba(0, 0, 0, 0.76);
+      padding: 22px;
+      background: rgba(0, 0, 0, 0.78);
       backdrop-filter: none;
       -webkit-backdrop-filter: none;
     }
 
     .pc-builder-modal-panel {
-      background: rgba(24, 25, 24, 0.98);
+      width: min(1240px, calc(100vw - 44px));
+      max-height: min(780px, calc(100vh - 44px));
+      grid-template-rows: auto auto minmax(0, 1fr);
+      background: #181918;
+    }
+
+    .pc-builder-modal-header {
+      padding: 28px;
+    }
+
+    .pc-builder-modal-header h2 {
+      font-size: 28px;
+    }
+
+    .pc-builder-modal-tools {
+      padding: 22px 28px;
+      background: rgba(255, 255, 255, 0.02);
     }
 
     .pc-builder-modal-tools input {
+      width: min(520px, 100%);
+      height: 52px;
+      padding: 0 18px;
       border-radius: 999px;
       background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
       font-family: Arial, sans-serif;
+      font-size: 15px;
+    }
+
+    .pc-builder-modal-tools input::placeholder {
+      color: rgba(255, 255, 255, 0.42);
+    }
+
+    .pc-builder-toggle {
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .pc-builder-toggle input {
+      accent-color: #c09a5c;
+    }
+
+    .pc-builder-parts-list {
+      padding: 16px;
+      gap: 14px;
+      background: rgba(0, 0, 0, 0.08);
+    }
+
+    .pc-builder-option {
+      grid-template-columns: 90px minmax(0, 1fr) auto;
+      gap: 18px;
+      padding: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.105);
+      border-radius: 22px;
+      background: rgba(24, 25, 24, 0.56);
+      transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        transform 0.2s ease;
+    }
+
+    .pc-builder-option:hover {
+      border-color: rgba(255, 255, 255, 0.18);
+      background: rgba(24, 25, 24, 0.72);
+      transform: translateY(-1px);
+    }
+
+    .pc-builder-option img {
+      width: 90px;
+      height: 90px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.06);
+      object-fit: contain;
+      object-position: center;
+    }
+
+    .pc-builder-option h3 {
+      font-size: 18px;
+      line-height: 1.25;
+      text-transform: uppercase;
+    }
+
+    .pc-builder-option p {
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .pc-builder-option .pc-builder-link-button {
+      min-width: 72px;
+      justify-content: center;
+    }
+
+    @media (max-width: 960px) {
+      .pc-builder-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .pc-builder-summary {
+        position: static;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .pc-builder-page {
+        padding: 106px 20px 64px;
+      }
+
+      .pc-builder-hero h1 {
+        font-size: 52px;
+      }
     }
 
     @media (max-width: 620px) {
@@ -621,6 +749,45 @@
       }
 
       .pc-builder-hero p {
+        font-size: 16px;
+        line-height: 1.65;
+      }
+
+      .pc-builder-toolbar,
+      .pc-builder-summary-header,
+      .pc-builder-modal-header,
+      .pc-builder-modal-tools {
+        padding: 18px;
+      }
+
+      .pc-builder-modal {
+        padding: 14px;
+      }
+
+      .pc-builder-modal-panel {
+        width: 100%;
+        max-height: calc(100dvh - 28px);
+        border-radius: 22px;
+      }
+
+      .pc-builder-parts-list {
+        padding: 12px;
+      }
+
+      .pc-builder-option {
+        grid-template-columns: 64px minmax(0, 1fr);
+        gap: 12px;
+        padding: 12px;
+        border-radius: 18px;
+      }
+
+      .pc-builder-option img {
+        width: 64px;
+        height: 64px;
+        border-radius: 14px;
+      }
+
+      .pc-builder-option h3 {
         font-size: 16px;
       }
     }
