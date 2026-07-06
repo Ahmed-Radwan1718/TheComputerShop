@@ -845,7 +845,7 @@
 
       <div class="pc-builder-summary-body">
         <div class="pc-builder-stat-grid">
-          <div class="pc-builder-stat"><span>Selected parts</span><strong id="pc-builder-selected-count">0 / 8</strong></div>
+          <div class="pc-builder-stat"><span>Selected parts</span><strong id="pc-builder-selected-count">0 / 11</strong></div>
           <div class="pc-builder-stat"><span>Estimated wattage</span><strong id="pc-builder-wattage">0W</strong></div>
           <div class="pc-builder-stat"><span>Total</span><strong id="pc-builder-total">Pending prices</strong></div>
         </div>
@@ -884,6 +884,7 @@
     { key: "memory", label: "Memory", file: "memory.html", required: true },
     { key: "storage", label: "Storage", file: "storage.html", required: true },
     { key: "gpu", label: "Video Card", file: "graphics-cards.html", required: true },
+    { key: "gpu2", label: "Video Card 2", file: "graphics-cards.html", required: false },
     { key: "case", label: "Case", file: "cases.html", required: true },
     { key: "psu", label: "Power Supply", file: "power-supplies.html", required: true },
     { key: "monitor", label: "Monitor", file: "monitors.html", required: false },
@@ -1014,7 +1015,7 @@
       part.watts = part.interface === "NVMe" ? 8 : 6;
     }
 
-    if (part.category === "gpu") {
+    if (part.category === "gpu" || part.category === "gpu2") {
       part.brand = meta[0] || "";
       part.gpuModel = meta[1] || "";
       part.vram = meta[2] || "";
@@ -1121,7 +1122,7 @@
   function recommendedPsuWattage(build) {
     const estimated = estimateWattage(build);
 
-    if (!build.cpu && !build.gpu) {
+    if (!build.cpu && !build.gpu && !build.gpu2) {
       return 0;
     }
 
@@ -1175,7 +1176,7 @@
     if (build.psu && recommendedPsu && build.psu.wattageMax && build.psu.wattageMax < recommendedPsu) {
       issues.push({
         level: "bad",
-        parts: ["psu", "cpu", "gpu"],
+        parts: ["psu", "cpu", "gpu", "gpu2"],
         text: build.psu.name + " is below the recommended " + recommendedPsu + "W PSU capacity for this build."
       });
     }
