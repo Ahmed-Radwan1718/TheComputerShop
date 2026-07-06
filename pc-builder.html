@@ -960,14 +960,12 @@
 
   function extractPriceOverrides(source) {
     const overrides = {};
-    const match = source.match(/productCardPriceOverrides\s*=\s*\{([\s\S]*?)\};/);
+    const priceOverrideBlocks = source.matchAll(/(?:productCardPriceOverrides|componentPriceOverrides)\s*=\s*\{([\s\S]*?)\};/g);
 
-    if (!match) {
-      return overrides;
-    }
-
-    Array.from(match[1].matchAll(/["']([^"']+)["']\s*:\s*["']([^"']+)["']/g)).forEach(function (entry) {
-      overrides[entry[1]] = entry[2];
+    Array.from(priceOverrideBlocks).forEach(function (block) {
+      Array.from(block[1].matchAll(/["']([^"']+)["']\s*:\s*["']([^"']+)["']/g)).forEach(function (entry) {
+        overrides[entry[1]] = entry[2];
+      });
     });
 
     return overrides;
