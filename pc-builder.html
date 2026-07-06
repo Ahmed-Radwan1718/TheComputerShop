@@ -851,7 +851,6 @@
 
       <div class="pc-builder-summary-body">
         <div class="pc-builder-stat-grid">
-          <div class="pc-builder-stat"><span>Selected parts</span><strong id="pc-builder-selected-count">0 / 11</strong></div>
           <div class="pc-builder-stat"><span>Estimated wattage</span><strong id="pc-builder-wattage">0W</strong></div>
           <div class="pc-builder-stat"><span>Total</span><strong id="pc-builder-total">Pending prices</strong></div>
         </div>
@@ -1287,8 +1286,6 @@
     } else {
       status.textContent = "Compatible";
     }
-
-    document.getElementById("pc-builder-selected-count").textContent = selectedCount + " / " + (categories.length + 1);
 
     const wattage = estimateWattage(build);
     document.getElementById("pc-builder-wattage").textContent = selectedCount ? wattage + "W" : "0W";
