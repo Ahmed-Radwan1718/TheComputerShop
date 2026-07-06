@@ -252,6 +252,25 @@
 </main>
 
 <script>
+  const productCardPriceOverrides = {
+    "aorus-waterforce-ii-360": "7,200 EGP",
+    "corsair-nautilus-360-rs-argb": "7,500 EGP",
+    "asus-tuf-gaming-lc-iii-360-argb-lcd": "8,850 EGP",
+    "aorus-waterforce-ii-240": "6,050 EGP",
+    "arctic-liquid-freezer-iii-pro-360-a-rgb": "7,950 EGP",
+    "cooler-master-masterliquid-360-core-ii": "4,850 EGP",
+    "rog-ryujin-iii-360-argb-extreme": "19,999 EGP"
+  };
+
+  document.querySelectorAll(".product-card-link").forEach((card) => {
+    const productId = new URL(card.getAttribute("href"), window.location.href).searchParams.get("product");
+    const priceElement = card.querySelector(".signature-build-price");
+
+    if (priceElement && productCardPriceOverrides[productId]) {
+      priceElement.textContent = productCardPriceOverrides[productId];
+    }
+  });
+
   function normalizeFilterValue(value) {
     return String(value || "")
       .toLowerCase()
