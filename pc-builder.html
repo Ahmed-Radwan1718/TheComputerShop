@@ -421,6 +421,208 @@
       }
     }
   </style>
+
+  <style>
+    .pc-builder-page {
+      padding: 124px 44px 76px;
+      background:
+        linear-gradient(180deg, rgba(15, 16, 15, 0.32), rgba(42, 43, 42, 0) 340px),
+        #2a2b2a;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    .pc-builder-hero,
+    .pc-builder-shell {
+      width: min(1280px, 100%);
+    }
+
+    .pc-builder-hero {
+      padding: 58px 0 34px;
+    }
+
+    .pc-builder-eyebrow {
+      margin-bottom: 16px;
+      color: rgba(192, 154, 92, 0.84);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0;
+      line-height: 1.4;
+      text-transform: uppercase;
+    }
+
+    .pc-builder-hero h1 {
+      color: #ffffff;
+      font-size: clamp(44px, 7vw, 76px);
+      font-weight: 700;
+      line-height: 1.08;
+      text-transform: uppercase;
+    }
+
+    .pc-builder-hero p {
+      max-width: 760px;
+      margin-top: 22px;
+      color: rgba(255, 255, 255, 0.68);
+      font-size: 18px;
+      line-height: 1.8;
+    }
+
+    .pc-builder-panel,
+    .pc-builder-summary,
+    .pc-builder-modal-panel {
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 18px;
+      background: rgba(24, 25, 24, 0.68);
+      box-shadow: 0 18px 38px rgba(0, 0, 0, 0.34);
+      backdrop-filter: blur(16px);
+    }
+
+    .pc-builder-toolbar,
+    .pc-builder-summary-header,
+    .pc-builder-modal-header,
+    .pc-builder-modal-tools {
+      padding: 22px;
+      border-bottom-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .pc-builder-toolbar h2,
+    .pc-builder-summary h2,
+    .pc-builder-modal-header h2 {
+      color: #ffffff;
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .pc-builder-button,
+    .pc-builder-link-button {
+      border-radius: 999px;
+      font-weight: 700;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      transition:
+        transform 0.22s ease,
+        border-color 0.22s ease,
+        background 0.22s ease,
+        color 0.22s ease;
+    }
+
+    .pc-builder-button,
+    .pc-builder-link-button.primary {
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: rgba(255, 255, 255, 0.14);
+      color: #ffffff;
+    }
+
+    .pc-builder-button.secondary,
+    .pc-builder-link-button {
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(24, 25, 24, 0.55);
+      color: #ffffff;
+    }
+
+    .pc-builder-button:hover,
+    .pc-builder-link-button:hover {
+      border-color: rgba(255, 255, 255, 0.34);
+      background: rgba(255, 255, 255, 0.18);
+      transform: translateY(-1px);
+    }
+
+    .pc-builder-table th {
+      color: rgba(192, 154, 92, 0.84);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .pc-builder-table th,
+    .pc-builder-table td {
+      padding: 18px 22px;
+      border-bottom-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .pc-builder-table tbody tr {
+      transition: background 0.22s ease;
+    }
+
+    .pc-builder-table tbody tr:hover {
+      background: rgba(255, 255, 255, 0.035);
+    }
+
+    .pc-builder-category {
+      color: rgba(192, 154, 92, 0.92);
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .pc-builder-part img,
+    .pc-builder-option img {
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .pc-builder-part strong,
+    .pc-builder-option h3 {
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    .pc-builder-part span,
+    .pc-builder-option p,
+    .pc-builder-empty {
+      color: rgba(255, 255, 255, 0.62);
+    }
+
+    .pc-builder-stat,
+    .pc-builder-issue,
+    .pc-builder-option {
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.055);
+    }
+
+    .pc-builder-status {
+      min-height: 34px;
+      padding: 0 13px;
+      font-weight: 700;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .pc-builder-modal {
+      background: rgba(0, 0, 0, 0.76);
+      backdrop-filter: blur(18px);
+    }
+
+    .pc-builder-modal-panel {
+      background: rgba(24, 25, 24, 0.96);
+    }
+
+    .pc-builder-modal-tools input {
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      font-family: Arial, sans-serif;
+    }
+
+    @media (max-width: 620px) {
+      .pc-builder-page {
+        padding: 106px 16px 44px;
+      }
+
+      .pc-builder-hero {
+        padding-top: 34px;
+      }
+
+      .pc-builder-hero h1 {
+        font-size: 44px;
+      }
+
+      .pc-builder-hero p {
+        font-size: 16px;
+      }
+    }
+  </style>
 </head>
 
 <body oncontextmenu="return false;">
