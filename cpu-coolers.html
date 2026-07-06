@@ -584,6 +584,20 @@
     setTimeout(animateCoolerSearchPlaceholder, 250);
   }
 
+  const componentPriceOverrides = {
+    "arctic-liquid-freezer-iii-pro-360-a-rgb": "6,999 EGP",
+    "cooler-master-masterliquid-360-core-ii": "5,999 EGP",
+    "aorus-waterforce-ii-240": "6,999 EGP"
+  };
+
+  Object.entries(componentPriceOverrides).forEach(([productId, priceText]) => {
+    const priceElement = document.querySelector(`a[href="product.html?product=${productId}"] .signature-build-price`);
+
+    if (priceElement) {
+      priceElement.textContent = priceText;
+    }
+  });
+
   animateCoolerSearchPlaceholder();
   updateComponentFilters();
 </script>
