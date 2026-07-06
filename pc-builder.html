@@ -597,6 +597,12 @@
       color: rgba(255, 255, 255, 0.62);
     }
 
+    .pc-builder-gpu-stack {
+      display: grid;
+      gap: 14px;
+      justify-items: start;
+    }
+
     .pc-builder-stat,
     .pc-builder-issue {
       border: 1px solid rgba(255, 255, 255, 0.1);
@@ -884,7 +890,6 @@
     { key: "memory", label: "Memory", file: "memory.html", required: true },
     { key: "storage", label: "Storage", file: "storage.html", required: true },
     { key: "gpu", label: "Video Card", file: "graphics-cards.html", required: true },
-    { key: "gpu2", label: "Video Card 2", file: "graphics-cards.html", required: false },
     { key: "case", label: "Case", file: "cases.html", required: true },
     { key: "psu", label: "Power Supply", file: "power-supplies.html", required: true },
     { key: "monitor", label: "Monitor", file: "monitors.html", required: false },
@@ -1102,6 +1107,10 @@
       }) || null;
     });
 
+    build.gpu2 = (catalog.gpu || []).find(function (part) {
+      return part.id === source.gpu2;
+    }) || null;
+
     return build;
   }
 
@@ -1115,6 +1124,10 @@
         total += part.watts;
       }
     });
+
+    if (build.gpu2 && build.gpu2.watts) {
+      total += build.gpu2.watts;
+    }
 
     return total;
   }
@@ -1215,7 +1228,7 @@
 
     const build = getSelectedBuild();
     const issues = getCompatibilityIssues(build);
-    const selectedCount = categories.filter(function (category) { return Boolean(build[category.key]); }).length;
+    const selectedCount = categories.filter(function (category) { return Boolean(build[category.key]); }).length + (build.gpu2 ? 1 : 0);
     const missingRequired = categories.some(function (category) { return category.required && !build[category.key]; });
     const hardIssue = issues.some(function (issue) { return issue.level === "bad"; });
     const warningIssue = issues.some(function (issue) { return issue.level === "warn"; });
@@ -1227,7 +1240,25 @@
         return '<tr><td class="pc-builder-category">' + escapeHtml(category.label) + '</td><td><span class="pc-builder-empty">No part selected</span></td><td class="pc-builder-price">-</td><td><div class="pc-builder-row-actions"><button class="pc-builder-link-button primary" type="button" data-choose="' + category.key + '">Choose</button></div></td></tr>';
       }
 
-      return '<tr><td class="pc-builder-category">' + escapeHtml(category.label) + '</td><td><div class="pc-builder-part"><img src="' + escapeHtml(part.image) + '" alt=""><div><strong>' + escapeHtml(part.name) + '</strong><span>' + escapeHtml(part.meta) + '</span></div></div></td><td class="pc-builder-price">' + escapeHtml(part.price) + '</td><td><div class="pc-builder-row-actions"><a class="pc-builder-link-button" href="' + escapeHtml(part.url) + '">View</a><button class="pc-builder-link-button" type="button" data-choose="' + category.key + '">Change</button><button class="pc-builder-link-button" type="button" data-remove="' + category.key + '">Remove</button></div></td></tr>';
+      let selectionHtml = '<div class="pc-builder-part"><img src="' + escapeHtml(part.image) + '" alt=""><div><strong>' + escapeHtml(part.name) + '</strong><span>' + escapeHtml(part.meta) + '</span></div></div>';
+      let priceHtml = escapeHtml(part.price);
+      let actionsHtml = '<a class="pc-builder-link-button" href="' + escapeHtml(part.url) + '">View</a><button class="pc-builder-link-button" type="button" data-choose="' + category.key + '">Change</button><button class="pc-builder-link-button" type="button" data-remove="' + category.key + '">Remove</button>';
+
+      if (category.key === "gpu") {
+        selectionHtml = '<div class="pc-builder-gpu-stack">' + selectionHtml;
+
+        if (build.gpu2) {
+          selectionHtml += '<div class="pc-builder-part"><img src="' + escapeHtml(build.gpu2.image) + '" alt=""><div><strong>' + escapeHtml(build.gpu2.name) + '</strong><span>' + escapeHtml(build.gpu2.meta) + '</span></div></div>';
+          priceHtml += '<br><span class="pc-builder-empty">+ ' + escapeHtml(build.gpu2.price) + '</span>';
+          actionsHtml += '<a class="pc-builder-link-button" href="' + escapeHtml(build.gpu2.url) + '">View 2</a><button class="pc-builder-link-button" type="button" data-choose="gpu2">Change 2</button><button class="pc-builder-link-button" type="button" data-remove="gpu2">Remove 2</button>';
+        } else {
+          selectionHtml += '<button class="pc-builder-link-button primary" type="button" data-choose="gpu2">+ Add Another Video Card</button>';
+        }
+
+        selectionHtml += '</div>';
+      }
+
+      return '<tr><td class="pc-builder-category">' + escapeHtml(category.label) + '</td><td>' + selectionHtml + '</td><td class="pc-builder-price">' + priceHtml + '</td><td><div class="pc-builder-row-actions">' + actionsHtml + '</div></td></tr>';
     }).join("");
 
     rowsElement.querySelectorAll("[data-choose]").forEach(function (button) {
@@ -1257,7 +1288,7 @@
       status.textContent = "Compatible";
     }
 
-    document.getElementById("pc-builder-selected-count").textContent = selectedCount + " / " + categories.length;
+    document.getElementById("pc-builder-selected-count").textContent = selectedCount + " / " + (categories.length + 1);
 
     const wattage = estimateWattage(build);
     document.getElementById("pc-builder-wattage").textContent = selectedCount ? wattage + "W" : "0W";
@@ -1265,7 +1296,7 @@
     const total = categories.reduce(function (sum, category) {
       const part = build[category.key];
       return sum + (part ? priceToNumber(part.price) : 0);
-    }, 0);
+    }, 0) + (build.gpu2 ? priceToNumber(build.gpu2.price) : 0);
 
     document.getElementById("pc-builder-total").textContent = total ? total.toLocaleString("en-US") + " EGP" : "Pending prices";
 
@@ -1288,9 +1319,10 @@
 
   function openChooser(categoryKey) {
     activeCategory = categoryKey;
-    const category = categories.find(function (item) { return item.key === categoryKey; });
+    const catalogCategoryKey = categoryKey === "gpu2" ? "gpu" : categoryKey;
+    const category = categories.find(function (item) { return item.key === catalogCategoryKey; });
 
-    modalTitle.textContent = "Choose " + category.label;
+    modalTitle.textContent = categoryKey === "gpu2" ? "Add Another Video Card" : "Choose " + category.label;
     searchInput.value = "";
     compatibleOnlyInput.checked = true;
     modal.classList.add("open");
@@ -1309,7 +1341,8 @@
   function renderChooser() {
     const query = normalizeText(searchInput.value);
     const compatibleOnly = compatibleOnlyInput.checked;
-    let parts = catalog[activeCategory] || [];
+    const catalogCategoryKey = activeCategory === "gpu2" ? "gpu" : activeCategory;
+    let parts = catalog[catalogCategoryKey] || [];
 
     if (compatibleOnly) {
       parts = parts.filter(function (part) {
@@ -1357,6 +1390,13 @@
     categories.forEach(function (category) {
       state[category.key] = params.get(category.key) || saved[category.key] || "";
     });
+
+    state.gpu2 = params.get("gpu2") || saved.gpu2 || "";
+
+    if (!state.gpu && state.gpu2) {
+      state.gpu = state.gpu2;
+      state.gpu2 = "";
+    }
   }
 
   function updateUrl() {
@@ -1367,6 +1407,10 @@
         params.set(category.key, state[category.key]);
       }
     });
+
+    if (state.gpu2) {
+      params.set("gpu2", state.gpu2);
+    }
 
     const query = params.toString();
     const nextUrl = window.location.pathname + (query ? "?" + query : "");
@@ -1409,6 +1453,8 @@
     categories.forEach(function (category) {
       state[category.key] = "";
     });
+
+    state.gpu2 = "";
 
     saveState();
     render();
