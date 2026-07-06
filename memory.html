@@ -547,6 +547,18 @@
     setTimeout(animateMemorySearchPlaceholder, 250);
   }
 
+  const componentPriceOverrides = {
+    "corsair-vengeance-rgb-48gb-ddr5-6000-c36": "96GB: 66,999 EGP"
+  };
+
+  Object.entries(componentPriceOverrides).forEach(([productId, priceText]) => {
+    const priceElement = document.querySelector(`a[href="product.html?product=${productId}"] .signature-build-price`);
+
+    if (priceElement) {
+      priceElement.textContent = priceText;
+    }
+  });
+
   animateMemorySearchPlaceholder();
   updateComponentFilters();
 </script>
