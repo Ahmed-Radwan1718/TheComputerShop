@@ -520,6 +520,42 @@
 </main>
 
 <script>
+  const productCardPriceOverrides = {
+    "rtx-5080-aorus-master": "89,000 EGP",
+    "rtx-5070-aorus-master": "47,999 EGP",
+    "rtx-5060-ti-aorus-elite": "37,499 EGP",
+    "rtx-5070-gaming-oc": "41,999 EGP",
+    "rtx-5060-eagle-oc": "20,999 EGP",
+    "rtx-5050-gaming-oc": "16,999 EGP",
+    "rtx-5060-windforce-max-oc-8g": "20,499 EGP",
+    "rtx-5060-ti-windforce-max-oc": "27,999 EGP",
+    "rtx-5070-ti-eagle-oc-sff-16g": "63,999 EGP",
+    "rtx-5070-eagle-oc-sff": "43,499 EGP",
+    "zotac-gaming-rtx5080-amp-extreme-infinity": "82,999 EGP",
+    "gigabyte-rx9070xt-gaming-oc-16gb": "44,999 EGP",
+    "aorus-rx9070xt-elite-16gb": "45,499 EGP",
+    "gigabyte-rx9060xt-gaming-oc-16gb": "25,499 EGP",
+    "gigabyte-rx9060xt-gaming-oc-8gb": "21,499 EGP",
+    "gigabyte-rtx5080-windforce-oc-sff-16gb": "78,499 EGP",
+    "gigabyte-rtx5060-eagle-max-oc": "19,999 EGP",
+    "rog-strix-rtx5070ti-o16g-gaming": "75,499 EGP",
+    "asus-rog-astral-rtx5090-oc-32gb": "236,000 EGP",
+    "asus-dual-rtx5060-o8g": "19,999 EGP",
+    "asus-proart-rtx5080-o16g": "104,999 EGP",
+    "msi-rtx5070-ti-gaming-trio-oc-16gb": "55,999 EGP",
+    "asus-tuf-rtx5070ti-o16g-gaming": "67,999 EGP",
+    "asus-tuf-rtx5080-o16g-gaming": "94,499 EGP"
+  };
+
+  document.querySelectorAll(".product-card-link").forEach((card) => {
+    const productId = new URL(card.getAttribute("href"), window.location.href).searchParams.get("product");
+    const priceElement = card.querySelector(".signature-build-price");
+
+    if (priceElement && productCardPriceOverrides[productId]) {
+      priceElement.textContent = productCardPriceOverrides[productId];
+    }
+  });
+
   function normalizeFilterValue(value) {
     return String(value || "")
       .toLowerCase()
