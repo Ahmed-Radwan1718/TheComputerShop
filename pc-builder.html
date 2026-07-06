@@ -236,19 +236,8 @@
     }
 
     .pc-builder-stat strong {
-      display: inline-flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 6px;
       color: #ffffff;
       text-align: right;
-    }
-
-    .pc-builder-wattage-icon {
-      width: 16px;
-      height: 16px;
-      object-fit: contain;
-      flex: 0 0 auto;
     }
 
     .pc-builder-status {
@@ -862,7 +851,7 @@
 
       <div class="pc-builder-summary-body">
         <div class="pc-builder-stat-grid">
-          <div class="pc-builder-stat"><span>Estimated wattage</span><strong><img src="lightning.png" alt="" class="pc-builder-wattage-icon" aria-hidden="true"><span id="pc-builder-wattage">0W</span></strong></div>
+          <div class="pc-builder-stat"><span>Estimated wattage</span><strong id="pc-builder-wattage">0W</strong></div>
           <div class="pc-builder-stat"><span>Total</span><strong id="pc-builder-total">Pending prices</strong></div>
         </div>
 
