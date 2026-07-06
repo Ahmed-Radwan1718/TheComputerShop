@@ -938,6 +938,23 @@
     setTimeout(animateAccessoriesSearchPlaceholder, 250);
   }
 
+  const componentPriceOverrides = {
+    "corsair-icue-link-rx120-rgb": "6,999 EGP",
+    "razer-huntsman-v3-pro-mini": "11,999 EGP",
+    "razer-basilisk-v3-pro-wireless": "8,999 EGP",
+    "hyperx-quadcast-2-s-usb-microphone": "9,999 EGP",
+    "razer-viper-v3-pro": "9,999–10,999 EGP",
+    "aorus-ez-chain-fan-120": "3,999 EGP"
+  };
+
+  Object.entries(componentPriceOverrides).forEach(([productId, priceText]) => {
+    const priceElement = document.querySelector(`a[href="product.html?product=${productId}"] .signature-build-price`);
+
+    if (priceElement) {
+      priceElement.textContent = priceText;
+    }
+  });
+
   animateAccessoriesSearchPlaceholder();
   updateComponentFilters();
 </script>
