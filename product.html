@@ -10622,6 +10622,54 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
     throw new Error(`Unknown product key: ${productKey}`);
   }
 
+  const productPriceOverrides = {
+    "aorus-waterforce-ii-360": { priceText: "7,200 EGP", priceNumber: 7200 },
+    "corsair-nautilus-360-rs-argb": { priceText: "7,500 EGP", priceNumber: 7500 },
+    "asus-tuf-gaming-lc-iii-360-argb-lcd": { priceText: "8,850 EGP", priceNumber: 8850 },
+    "aorus-waterforce-ii-240": { priceText: "6,050 EGP", priceNumber: 6050 },
+    "arctic-liquid-freezer-iii-pro-360-a-rgb": { priceText: "7,950 EGP", priceNumber: 7950 },
+    "cooler-master-masterliquid-360-core-ii": { priceText: "4,850 EGP", priceNumber: 4850 },
+    "rog-ryujin-iii-360-argb-extreme": { priceText: "19,999 EGP", priceNumber: 19999 },
+    "rtx-5080-aorus-master": { priceText: "89,000 EGP", priceNumber: 89000 },
+    "rtx-5070-aorus-master": { priceText: "47,999 EGP", priceNumber: 47999 },
+    "rtx-5060-ti-aorus-elite": { priceText: "37,499 EGP", priceNumber: 37499 },
+    "rtx-5070-gaming-oc": { priceText: "41,999 EGP", priceNumber: 41999 },
+    "rtx-5060-eagle-oc": { priceText: "20,999 EGP", priceNumber: 20999 },
+    "rtx-5050-gaming-oc": { priceText: "16,999 EGP", priceNumber: 16999 },
+    "rtx-5060-windforce-max-oc-8g": { priceText: "20,499 EGP", priceNumber: 20499 },
+    "rtx-5060-ti-windforce-max-oc": { priceText: "27,999 EGP", priceNumber: 27999 },
+    "rtx-5070-ti-eagle-oc-sff-16g": { priceText: "63,999 EGP", priceNumber: 63999 },
+    "rtx-5070-eagle-oc-sff": { priceText: "43,499 EGP", priceNumber: 43499 },
+    "zotac-gaming-rtx5080-amp-extreme-infinity": { priceText: "82,999 EGP", priceNumber: 82999 },
+    "gigabyte-rx9070xt-gaming-oc-16gb": { priceText: "44,999 EGP", priceNumber: 44999 },
+    "aorus-rx9070xt-elite-16gb": { priceText: "45,499 EGP", priceNumber: 45499 },
+    "gigabyte-rx9060xt-gaming-oc-16gb": { priceText: "25,499 EGP", priceNumber: 25499 },
+    "gigabyte-rx9060xt-gaming-oc-8gb": { priceText: "21,499 EGP", priceNumber: 21499 },
+    "gigabyte-rtx5080-windforce-oc-sff-16gb": { priceText: "78,499 EGP", priceNumber: 78499 },
+    "gigabyte-rtx5060-eagle-max-oc": { priceText: "19,999 EGP", priceNumber: 19999 },
+    "rog-strix-rtx5070ti-o16g-gaming": { priceText: "75,499 EGP", priceNumber: 75499 },
+    "asus-rog-astral-rtx5090-oc-32gb": { priceText: "236,000 EGP", priceNumber: 236000 },
+    "asus-dual-rtx5060-o8g": { priceText: "19,999 EGP", priceNumber: 19999 },
+    "asus-proart-rtx5080-o16g": { priceText: "104,999 EGP", priceNumber: 104999 },
+    "msi-rtx5070-ti-gaming-trio-oc-16gb": { priceText: "55,999 EGP", priceNumber: 55999 },
+    "asus-tuf-rtx5070ti-o16g-gaming": { priceText: "67,999 EGP", priceNumber: 67999 },
+    "asus-tuf-rtx5080-o16g-gaming": { priceText: "94,499 EGP", priceNumber: 94499 }
+  };
+
+  const currentProductPriceOverride = productPriceOverrides[productKey];
+
+  if (currentProductPriceOverride) {
+    currentProduct.priceText = currentProductPriceOverride.priceText;
+    currentProduct.priceNumber = currentProductPriceOverride.priceNumber;
+
+    if (Array.isArray(currentProduct.variants)) {
+      currentProduct.variants.forEach((variant) => {
+        variant.priceText = currentProductPriceOverride.priceText;
+        variant.priceNumber = currentProductPriceOverride.priceNumber;
+      });
+    }
+  }
+
   let selectedVariantKey = currentProduct.defaultVariant || null;
   let selectedHeatsinkKey = currentProduct.defaultHeatsinkOption || null;
   let selectedCoolingKey = currentProduct.defaultCoolingOption || null;
