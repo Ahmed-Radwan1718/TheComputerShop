@@ -10622,7 +10622,115 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
     throw new Error(`Unknown product key: ${productKey}`);
   }
 
-  const productPriceOverrides = {};
+  const productPriceOverrides = {
+    "anker-nano-charger-30w": { priceText: "999 EGP", priceNumber: 999 },
+    "rtx-5090-aorus-master": { priceText: "215,999 EGP", priceNumber: 215999 },
+    "rtx-5080-aorus-master": { priceText: "98,999 EGP", priceNumber: 98999 },
+    "rtx-5070-aorus-master": { priceText: "46,999 EGP", priceNumber: 46999 },
+    "asus-rog-astral-rtx5090-oc-32gb": { priceText: "225,999 EGP", priceNumber: 225999 },
+    "asus-proart-rtx5080-o16g": { priceText: "99,999 EGP", priceNumber: 99999 },
+    "asus-tuf-rtx5070ti-o16g-gaming": { priceText: "56,999 EGP", priceNumber: 56999 },
+    "rtx-5070-gaming-oc": { priceText: "45,999 EGP", priceNumber: 45999 },
+    "rtx-5060-eagle-oc": { priceText: "21,999 EGP", priceNumber: 21999 },
+    "rtx-5060-windforce-max-oc-8g": { priceText: "22,999 EGP", priceNumber: 22999 },
+    "rtx-5060-ti-windforce-max-oc": { priceText: "36,999 EGP", priceNumber: 36999 },
+    "rtx-5070-eagle-oc-sff": { priceText: "43,999 EGP", priceNumber: 43999 },
+    "rtx-5060-eagle-max-oc": { priceText: "23,999 EGP", priceNumber: 23999 },
+    "ud1600pm-pg5-ai-top": { priceText: "20,999 EGP", priceNumber: 20999 },
+    "corsair-rm1200x-shift-1200w": { priceText: "13,999 EGP", priceNumber: 13999 },
+    "corsair-icue-link-rx120-rgb": {
+      priceText: "6,999 EGP",
+      priceNumber: 6999,
+      variantPrices: {
+        "triple-pack": { priceText: "6,999 EGP", priceNumber: 6999 }
+      }
+    },
+    "corsair-vengeance-rgb-48gb-ddr5-6000-c36": {
+      priceText: "96GB: 66,999 EGP",
+      priceNumber: 66999,
+      defaultVariant: "96gb-6000-cl36",
+      variantPrices: {
+        "96gb-6000-cl36": { priceText: "66,999 EGP", priceNumber: 66999 }
+      }
+    },
+    "intel-core-ultra-7-270k-plus": { priceText: "18,999 EGP", priceNumber: 18999 },
+    "intel-core-ultra-9-285k": { priceText: "32,999 EGP", priceNumber: 32999 },
+    "amd-ryzen-5-9600x": { priceText: "12,999 EGP", priceNumber: 12999 },
+    "amd-ryzen-7-9700x": { priceText: "16,999 EGP", priceNumber: 16999 },
+    "amd-ryzen-7-9800x3d": {
+      priceText: "From 25,999 EGP",
+      priceNumber: 25999,
+      defaultVariant: "tray",
+      variantSelectorLabel: "Choose Packaging",
+      variants: [
+        { id: "tray", capacity: "Tray", priceText: "25,999 EGP", priceNumber: 25999, specs: [["Packaging", "Tray"]] },
+        { id: "boxed", capacity: "Boxed", priceText: "26,999 EGP", priceNumber: 26999, specs: [["Packaging", "Boxed"]] }
+      ]
+    },
+    "amd-ryzen-9-9900x": { priceText: "23,999 EGP", priceNumber: 23999 },
+    "amd-ryzen-9-9950x": { priceText: "28,999 EGP", priceNumber: 28999 },
+    "amd-ryzen-9-9900x3d": { priceText: "32,999 EGP", priceNumber: 32999 },
+    "amd-ryzen-9-9950x3d": {
+      priceText: "From 35,999 EGP",
+      priceNumber: 35999,
+      defaultVariant: "tray",
+      variantSelectorLabel: "Choose Packaging",
+      variants: [
+        { id: "tray", capacity: "Tray", priceText: "35,999 EGP", priceNumber: 35999, specs: [["Packaging", "Tray"]] },
+        { id: "boxed", capacity: "Boxed", priceText: "39,999 EGP", priceNumber: 39999, specs: [["Packaging", "Boxed"]] }
+      ]
+    },
+    "amd-ryzen-9-9950x3d2-dual-edition": { priceText: "57,999 EGP", priceNumber: 57999 },
+    "arctic-liquid-freezer-iii-pro-360-a-rgb": { priceText: "6,999 EGP", priceNumber: 6999 },
+    "cooler-master-masterliquid-360-core-ii": { priceText: "5,999 EGP", priceNumber: 5999 },
+    "aorus-waterforce-ii-240": { priceText: "6,999 EGP", priceNumber: 6999 },
+    "b850-aorus-elite-wifi7-ice": { priceText: "13,999 EGP", priceNumber: 13999 },
+    "b850-aorus-elite-wifi7": { priceText: "13,999 EGP", priceNumber: 13999 },
+    "x870e-aorus-master": { priceText: "31,999 EGP", priceNumber: 31999 },
+    "x870e-aorus-pro-ice": { priceText: "24,999 EGP", priceNumber: 24999 },
+    "rog-crosshair-x870e-hero": { priceText: "33,999 EGP", priceNumber: 33999 },
+    "rog-strix-x870e-e-gaming-wifi": { priceText: "31,999 EGP", priceNumber: 31999 },
+    "samsung-9100-pro-nvme-ssd": {
+      priceText: "From 15,999 EGP",
+      priceNumber: 15999,
+      variantPrices: {
+        "1tb": { priceText: "15,999 EGP", priceNumber: 15999 },
+        "2tb": { priceText: "21,999 EGP", priceNumber: 21999 },
+        "4tb": { priceText: "26,999 EGP", priceNumber: 26999 }
+      }
+    },
+    "aorus-gen5-14000-ssd": {
+      priceText: "13,999 EGP",
+      priceNumber: 13999,
+      variantPrices: {
+        "1tb": { priceText: "13,999 EGP", priceNumber: 13999 }
+      }
+    },
+    "wd-black-sn850x-nvme-ssd": {
+      priceText: "From 30,999 EGP",
+      priceNumber: 30999,
+      defaultVariant: "4tb",
+      variantPrices: {
+        "4tb": { priceText: "30,999 EGP", priceNumber: 30999 },
+        "8tb": { priceText: "60,999 EGP", priceNumber: 60999 }
+      }
+    },
+    "gigabyte-gs27fa-gaming-monitor": { priceText: "8,999 EGP", priceNumber: 8999 },
+    "gigabyte-gs27u-gaming-monitor": { priceText: "18,999 EGP", priceNumber: 18999 },
+    "rog-strix-oled-xg27aqdng": { priceText: "41,999 EGP", priceNumber: 41999 },
+    "fractal-design-north-xl-charcoal-black": { priceText: "10,999 EGP", priceNumber: 10999 },
+    "razer-huntsman-v3-pro-mini": { priceText: "11,999 EGP", priceNumber: 11999 },
+    "razer-basilisk-v3-pro-wireless": { priceText: "8,999 EGP", priceNumber: 8999 },
+    "hyperx-quadcast-2-s-usb-microphone": { priceText: "9,999 EGP", priceNumber: 9999 },
+    "razer-viper-v3-pro": { priceText: "9,999–10,999 EGP", priceNumber: null },
+    "aorus-ez-chain-fan-120": {
+      priceText: "3,999 EGP",
+      priceNumber: 3999,
+      variantPrices: {
+        "3-pack": { priceText: "3,999 EGP", priceNumber: 3999 }
+      }
+    }
+  };
 
   const currentProductPriceOverride = productPriceOverrides[productKey];
 
@@ -10630,10 +10738,32 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
     currentProduct.priceText = currentProductPriceOverride.priceText;
     currentProduct.priceNumber = currentProductPriceOverride.priceNumber;
 
+    if (currentProductPriceOverride.defaultVariant) {
+      currentProduct.defaultVariant = currentProductPriceOverride.defaultVariant;
+    }
+
+    if (currentProductPriceOverride.variantSelectorLabel) {
+      currentProduct.variantSelectorLabel = currentProductPriceOverride.variantSelectorLabel;
+    }
+
+    if (Array.isArray(currentProductPriceOverride.variants)) {
+      currentProduct.variants = currentProductPriceOverride.variants;
+    }
+
     if (Array.isArray(currentProduct.variants)) {
       currentProduct.variants.forEach((variant) => {
-        variant.priceText = currentProductPriceOverride.priceText;
-        variant.priceNumber = currentProductPriceOverride.priceNumber;
+        const variantPriceOverride = currentProductPriceOverride.variantPrices && currentProductPriceOverride.variantPrices[variant.id];
+
+        if (variantPriceOverride) {
+          variant.priceText = variantPriceOverride.priceText;
+          variant.priceNumber = variantPriceOverride.priceNumber;
+          return;
+        }
+
+        if (!currentProductPriceOverride.variantPrices && !currentProductPriceOverride.variants) {
+          variant.priceText = currentProductPriceOverride.priceText;
+          variant.priceNumber = currentProductPriceOverride.priceNumber;
+        }
       });
     }
   }
