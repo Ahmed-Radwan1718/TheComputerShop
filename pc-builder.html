@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>PC Builder Egypt | The Computer Shop</title>
+  <meta name="description" content="Build a compatible custom PC using only components available at The Computer Shop." />
+  <link rel="canonical" href="https://the-computer-shop.vercel.app/pc-builder.html">
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    .pc-builder-page {
+      min-height: 100vh;
+      padding: 118px 22px 64px;
+      background: #101110;
+      color: #ffffff;
+    }
+
+    .pc-builder-hero,
+    .pc-builder-shell {
+      width: min(1240px, 100%);
+      margin: 0 auto;
+    }
+
+    .pc-builder-hero {
+      padding: 28px 0 22px;
+    }
+
+    .pc-builder-eyebrow {
+      margin: 0 0 8px;
+      color: rgba(255, 255, 255, 0.58);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .pc-builder-hero h1 {
+      margin: 0;
+      font-size: clamp(34px, 5vw, 64px);
+      line-height: 0.95;
+      letter-spacing: 0;
+    }
+
+    .pc-builder-hero p {
+      max-width: 720px;
+      margin: 16px 0 0;
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    .pc-builder-shell {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 330px;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .pc-builder-panel,
+    .pc-builder-summary,
+    .pc-builder-modal-panel {
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.045);
+      box-shadow: 0 22px 60px rgba(0, 0, 0, 0.28);
+    }
+
+    .pc-builder-toolbar,
+    .pc-builder-summary-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .pc-builder-toolbar h2,
+    .pc-builder-summary h2 {
+      margin: 0;
+      font-size: 19px;
+      letter-spacing: 0;
+    }
+
+    .pc-builder-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pc-builder-button {
+      min-height: 42px;
+      padding: 0 15px;
+      border: 0;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #141414;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .pc-builder-button.secondary {
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+    }
+
+    .pc-builder-table-wrap {
+      overflow-x: auto;
+    }
+
+    .pc-builder-table {
+      width: 100%;
+      min-width: 760px;
+      border-collapse: collapse;
+    }
+
+    .pc-builder-table th,
+    .pc-builder-table td {
+      padding: 16px 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    .pc-builder-table th {
+      color: rgba(255, 255, 255, 0.56);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .pc-builder-category {
+      width: 150px;
+      color: #ffffff;
+      font-weight: 800;
+    }
+
+    .pc-builder-part {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .pc-builder-part img {
+      width: 58px;
+      height: 58px;
+      flex: 0 0 58px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      object-fit: contain;
+    }
+
+    .pc-builder-part strong {
+      display: block;
+      color: #ffffff;
+      font-size: 15px;
+      line-height: 1.35;
+    }
+
+    .pc-builder-part span {
+      display: block;
+      margin-top: 4px;
+      color: rgba(255, 255, 255, 0.58);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .pc-builder-empty {
+      color: rgba(255, 255, 255, 0.52);
+      font-size: 14px;
+    }
+
+    .pc-builder-price {
+      white-space: nowrap;
+      color: rgba(255, 255, 255, 0.86);
+      font-weight: 800;
+    }
+
+    .pc-builder-row-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .pc-builder-link-button {
+      min-height: 38px;
+      padding: 0 12px;
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.07);
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 800;
+      text-decoration: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .pc-builder-link-button.primary {
+      background: #ffffff;
+      color: #141414;
+    }
+
+    .pc-builder-summary {
+      position: sticky;
+      top: 104px;
+      overflow: hidden;
+    }
+
+    .pc-builder-summary-body {
+      padding: 18px;
+    }
+
+    .pc-builder-stat-grid {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .pc-builder-stat {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 13px 14px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      color: rgba(255, 255, 255, 0.64);
+      font-size: 13px;
+    }
+
+    .pc-builder-stat strong {
+      color: #ffffff;
+      text-align: right;
+    }
+
+    .pc-builder-status {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: rgba(71, 215, 146, 0.16);
+      color: #8ff0c2;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .pc-builder-status.warn {
+      background: rgba(245, 190, 88, 0.16);
+      color: #ffd88e;
+    }
+
+    .pc-builder-status.bad {
+      background: rgba(255, 95, 95, 0.16);
+      color: #ffaaaa;
+    }
+
+    .pc-builder-issues {
+      display: grid;
+      gap: 10px;
+    }
+
+    .pc-builder-issue {
+      padding: 12px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      color: rgba(255, 255, 255, 0.74);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .pc-builder-issue.bad {
+      border-left: 3px solid #ff6b6b;
+    }
+
+    .pc-builder-issue.warn {
+      border-left: 3px solid #f5be58;
+    }
+
+    .pc-builder-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 2600;
+      padding: 22px;
+      background: rgba(0, 0, 0, 0.72);
+      backdrop-filter: blur(14px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pc-builder-modal.open {
+      display: flex;
+    }
+
+    .pc-builder-modal-panel {
+      width: min(1040px, 100%);
+      max-height: min(760px, 92vh);
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      overflow: hidden;
+      background: #181918;
+    }
+
+    .pc-builder-modal-header,
+    .pc-builder-modal-tools {
+      padding: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .pc-builder-modal-header h2 {
+      margin: 0;
+      font-size: 19px;
+    }
+
+    .pc-builder-modal-tools input {
+      width: min(420px, 100%);
+      height: 44px;
+      padding: 0 14px;
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.07);
+      color: #ffffff;
+      outline: none;
+    }
+
+    .pc-builder-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .pc-builder-parts-list {
+      overflow: auto;
+      padding: 10px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .pc-builder-option {
+      display: grid;
+      grid-template-columns: 72px minmax(0, 1fr) auto;
+      gap: 14px;
+      align-items: center;
+      padding: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.045);
+    }
+
+    .pc-builder-option img {
+      width: 72px;
+      height: 72px;
+      border-radius: 6px;
+      object-fit: contain;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .pc-builder-option h3 {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.35;
+    }
+
+    .pc-builder-option p {
+      margin: 5px 0 0;
+      color: rgba(255, 255, 255, 0.58);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    @media (max-width: 960px) {
+      .pc-builder-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .pc-builder-summary {
+        position: static;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .pc-builder-page {
+        padding: 106px 14px 44px;
+      }
+
+      .pc-builder-toolbar,
+      .pc-builder-modal-header,
+      .pc-builder-modal-tools {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .pc-builder-option {
+        grid-template-columns: 58px minmax(0, 1fr);
+      }
+
+      .pc-builder-option img {
+        width: 58px;
+        height: 58px;
+      }
+
+      .pc-builder-option .pc-builder-link-button {
+        grid-column: 1 / -1;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+
+<body oncontextmenu="return false;">
+<div id="site-header-root"></div>
+<script src="site-header.js"></script>
+
+<main class="pc-builder-page">
+  <section class="pc-builder-hero">
+    <p class="pc-builder-eyebrow">Custom PC compatibility</p>
+    <h1>PC Builder</h1>
+    <p>Pick parts from the current store catalog. The builder filters by CPU socket, motherboard socket, memory type, case form factor support, cooler support, and power supply headroom.</p>
+  </section>
+
+  <section class="pc-builder-shell">
+    <div class="pc-builder-panel">
+      <div class="pc-builder-toolbar">
+        <h2>Choose Your Parts</h2>
+        <div class="pc-builder-actions">
+          <button class="pc-builder-button secondary" type="button" id="pc-builder-copy-link">Copy Link</button>
+          <button class="pc-builder-button secondary" type="button" id="pc-builder-reset">Start Over</button>
+        </div>
+      </div>
+
+      <div class="pc-builder-table-wrap">
+        <table class="pc-builder-table">
+          <thead>
+            <tr>
+              <th>Component</th>
+              <th>Selection</th>
+              <th>Price</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="pc-builder-rows">
+            <tr>
+              <td colspan="4" class="pc-builder-empty">Loading store components...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <aside class="pc-builder-summary">
+      <div class="pc-builder-summary-header">
+        <h2>Build Summary</h2>
+        <span class="pc-builder-status" id="pc-builder-status">Loading</span>
+      </div>
+
+      <div class="pc-builder-summary-body">
+        <div class="pc-builder-stat-grid">
+          <div class="pc-builder-stat"><span>Selected parts</span><strong id="pc-builder-selected-count">0 / 8</strong></div>
+          <div class="pc-builder-stat"><span>Estimated wattage</span><strong id="pc-builder-wattage">0W</strong></div>
+          <div class="pc-builder-stat"><span>Recommended PSU</span><strong id="pc-builder-recommended-psu">Select CPU/GPU</strong></div>
+          <div class="pc-builder-stat"><span>Total</span><strong id="pc-builder-total">Pending prices</strong></div>
+        </div>
+
+        <div class="pc-builder-issues" id="pc-builder-issues"></div>
+      </div>
+    </aside>
+  </section>
+</main>
+
+<div class="pc-builder-modal" id="pc-builder-modal" aria-hidden="true">
+  <div class="pc-builder-modal-panel" role="dialog" aria-modal="true" aria-labelledby="pc-builder-modal-title">
+    <div class="pc-builder-modal-header">
+      <h2 id="pc-builder-modal-title">Choose Part</h2>
+      <button class="pc-builder-link-button" type="button" id="pc-builder-close">Close</button>
+    </div>
+
+    <div class="pc-builder-modal-tools">
+      <input id="pc-builder-search" type="search" placeholder="Search parts..." aria-label="Search parts">
+      <label class="pc-builder-toggle">
+        <input id="pc-builder-compatible-only" type="checkbox" checked>
+        Compatibility filter
+      </label>
+    </div>
+
+    <div class="pc-builder-parts-list" id="pc-builder-parts-list"></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  const categories = [
+    { key: "cpu", label: "CPU", file: "cpus.html", required: true },
+    { key: "cooler", label: "CPU Cooler", file: "cpu-coolers.html", required: true },
+    { key: "motherboard", label: "Motherboard", file: "motherboards.html", required: true },
+    { key: "memory", label: "Memory", file: "memory.html", required: true },
+    { key: "storage", label: "Storage", file: "storage.html", required: true },
+    { key: "gpu", label: "Video Card", file: "graphics-cards.html", required: true },
+    { key: "case", label: "Case", file: "cases.html", required: true },
+    { key: "psu", label: "Power Supply", file: "power-supplies.html", required: true }
+  ];
+
+  const catalog = {};
+  const state = {};
+  let activeCategory = "";
+  let catalogLoaded = false;
+
+  const rowsElement = document.getElementById("pc-builder-rows");
+  const modal = document.getElementById("pc-builder-modal");
+  const modalTitle = document.getElementById("pc-builder-modal-title");
+  const modalList = document.getElementById("pc-builder-parts-list");
+  const searchInput = document.getElementById("pc-builder-search");
+  const compatibleOnlyInput = document.getElementById("pc-builder-compatible-only");
+
+  function escapeHtml(value) {
+    return String(value || "").replace(/[&<>"']/g, function (character) {
+      return {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[character];
+    });
+  }
+
+  function normalizeText(value) {
+    return String(value || "").toLowerCase().replace(/\s+/g, " ").trim();
+  }
+
+  function normalizeSocket(value) {
+    return String(value || "").toUpperCase().replace(/\s+/g, "");
+  }
+
+  function normalizeFormFactor(value) {
+    const text = String(value || "").toUpperCase().replace(/\s+/g, "");
+    if (text.includes("E-ATX") || text.includes("EATX")) return "E-ATX";
+    if (text.includes("MICRO") || text.includes("MATX")) return "Micro-ATX";
+    if (text.includes("ATX")) return "ATX";
+    return value || "";
+  }
+
+  function extractNumbersBeforeW(value) {
+    return Array.from(String(value || "").matchAll(/(\d{3,4})\s*W/gi)).map(function (match) {
+      return Number(match[1]);
+    }).filter(Boolean);
+  }
+
+  function extractPriceOverrides(source) {
+    const overrides = {};
+    const match = source.match(/productCardPriceOverrides\s*=\s*\{([\s\S]*?)\};/);
+
+    if (!match) {
+      return overrides;
+    }
+
+    Array.from(match[1].matchAll(/["']([^"']+)["']\s*:\s*["']([^"']+)["']/g)).forEach(function (entry) {
+      overrides[entry[1]] = entry[2];
+    });
+
+    return overrides;
+  }
+
+  function parseCards(source, category) {
+    const documentFromSource = new DOMParser().parseFromString(source, "text/html");
+    const priceOverrides = extractPriceOverrides(source);
+
+    return Array.from(documentFromSource.querySelectorAll('a[href*="product.html?product="]'))
+      .filter(function (card) {
+        return card.querySelector("h3");
+      })
+      .map(function (card) {
+        const productUrl = new URL(card.getAttribute("href"), window.location.href);
+        const id = productUrl.searchParams.get("product");
+        const image = card.querySelector("img");
+        const title = card.querySelector("h3");
+        const meta = card.querySelector("p");
+        const price = card.querySelector(".signature-build-price");
+
+        return enrichPart({
+          id: id,
+          category: category.key,
+          categoryLabel: category.label,
+          name: title ? title.textContent.trim() : id,
+          meta: meta ? meta.textContent.replace(/\s+/g, " ").trim() : "",
+          metaParts: meta ? meta.textContent.split("|").map(function (item) { return item.trim(); }) : [],
+          price: priceOverrides[id] || (price ? price.textContent.trim() : "Price coming soon"),
+          image: image ? image.getAttribute("src") : "",
+          url: "product.html?product=" + encodeURIComponent(id)
+        });
+      });
+  }
+
+  function enrichPart(part) {
+    const meta = part.metaParts;
+    const fullText = part.name + " " + part.meta;
+
+    if (part.category === "cpu") {
+      part.brand = meta[0] || "";
+      part.socket = normalizeSocket(meta[1]);
+      part.cores = meta[2] || "";
+      part.watts = estimateCpuWatts(part.name);
+    }
+
+    if (part.category === "motherboard") {
+      part.brand = meta[0] || "";
+      part.socket = normalizeSocket(meta[1]);
+      part.formFactor = normalizeFormFactor(meta[2]);
+      part.memoryType = "DDR5";
+      part.watts = 70;
+    }
+
+    if (part.category === "memory") {
+      part.brand = meta[0] || "";
+      part.capacity = meta[1] || "";
+      part.speed = meta[2] || "";
+      part.memoryType = fullText.toUpperCase().includes("DDR5") ? "DDR5" : "";
+      part.watts = 12;
+    }
+
+    if (part.category === "storage") {
+      part.brand = meta[0] || "";
+      part.interface = fullText.toUpperCase().includes("NVME") ? "NVMe" : "SATA";
+      part.watts = part.interface === "NVMe" ? 8 : 6;
+    }
+
+    if (part.category === "gpu") {
+      part.brand = meta[0] || "";
+      part.gpuModel = meta[1] || "";
+      part.vram = meta[2] || "";
+      part.watts = estimateGpuWatts(fullText);
+    }
+
+    if (part.category === "case") {
+      part.brand = meta[0] || "";
+      part.caseType = meta[1] || "";
+      part.supportsFormFactors = getCaseFormFactorSupport(fullText);
+      part.radiators = ["240mm", "360mm"];
+      part.watts = 8;
+    }
+
+    if (part.category === "cooler") {
+      part.brand = meta[0] || "";
+      part.radiator = (fullText.match(/(240|280|360|420)mm/i) || [])[0] || "";
+      part.sockets = ["AM5", "LGA1851"];
+      part.watts = 12;
+    }
+
+    if (part.category === "psu") {
+      const watts = extractNumbersBeforeW(fullText);
+      part.wattageMin = watts.length ? Math.min.apply(null, watts) : 0;
+      part.wattageMax = watts.length ? Math.max.apply(null, watts) : 0;
+      part.watts = 0;
+    }
+
+    return part;
+  }
+
+  function estimateCpuWatts(name) {
+    const text = name.toUpperCase();
+
+    if (text.includes("ULTRA 9")) return 250;
+    if (text.includes("ULTRA 7")) return 220;
+    if (text.includes("ULTRA 5")) return 160;
+    if (text.includes("9950") || text.includes("9900")) return 170;
+    if (text.includes("9800X3D")) return 140;
+    if (text.includes("9700")) return 120;
+    if (text.includes("9600")) return 105;
+
+    return 125;
+  }
+
+  function estimateGpuWatts(value) {
+    const text = value.toUpperCase();
+
+    if (text.includes("RTX 5090")) return 575;
+    if (text.includes("RTX 5080")) return 360;
+    if (text.includes("RTX 5070 TI")) return 300;
+    if (text.includes("RTX 5070")) return 250;
+    if (text.includes("RTX 5060 TI")) return 180;
+    if (text.includes("RTX 5060")) return 150;
+    if (text.includes("RTX 5050")) return 130;
+    if (text.includes("RX 9070 XT")) return 330;
+    if (text.includes("RX 9060 XT")) return 180;
+    if (text.includes("ARC B580")) return 190;
+
+    return 250;
+  }
+
+  function getCaseFormFactorSupport(value) {
+    const text = value.toUpperCase();
+
+    if (text.includes("E-ATX")) {
+      return ["E-ATX", "ATX", "Micro-ATX"];
+    }
+
+    if (text.includes("ATX")) {
+      return ["ATX", "Micro-ATX"];
+    }
+
+    return ["ATX", "Micro-ATX"];
+  }
+
+  function getSelectedBuild(values) {
+    const source = values || state;
+    const build = {};
+
+    categories.forEach(function (category) {
+      build[category.key] = (catalog[category.key] || []).find(function (part) {
+        return part.id === source[category.key];
+      }) || null;
+    });
+
+    return build;
+  }
+
+  function estimateWattage(build) {
+    let total = 35;
+
+    categories.forEach(function (category) {
+      const part = build[category.key];
+
+      if (part && part.watts) {
+        total += part.watts;
+      }
+    });
+
+    return total;
+  }
+
+  function recommendedPsuWattage(build) {
+    const estimated = estimateWattage(build);
+
+    if (!build.cpu && !build.gpu) {
+      return 0;
+    }
+
+    return Math.ceil((estimated * 1.35) / 50) * 50;
+  }
+
+  function getCompatibilityIssues(build) {
+    const issues = [];
+    const recommendedPsu = recommendedPsuWattage(build);
+
+    if (build.cpu && build.motherboard && build.cpu.socket !== build.motherboard.socket) {
+      issues.push({
+        level: "bad",
+        parts: ["cpu", "motherboard"],
+        text: "CPU socket " + build.cpu.socket + " does not match motherboard socket " + build.motherboard.socket + "."
+      });
+    }
+
+    if (build.memory && build.motherboard && build.memory.memoryType && build.memory.memoryType !== build.motherboard.memoryType) {
+      issues.push({
+        level: "bad",
+        parts: ["memory", "motherboard"],
+        text: "Memory type " + build.memory.memoryType + " does not match motherboard memory type " + build.motherboard.memoryType + "."
+      });
+    }
+
+    if (build.motherboard && build.case && !build.case.supportsFormFactors.includes(build.motherboard.formFactor)) {
+      issues.push({
+        level: "bad",
+        parts: ["motherboard", "case"],
+        text: build.case.name + " does not list support for " + build.motherboard.formFactor + " motherboards."
+      });
+    }
+
+    if (build.cpu && build.cooler && !build.cooler.sockets.includes(build.cpu.socket)) {
+      issues.push({
+        level: "bad",
+        parts: ["cpu", "cooler"],
+        text: build.cooler.name + " is not marked as compatible with " + build.cpu.socket + "."
+      });
+    }
+
+    if (build.case && build.cooler && build.cooler.radiator && !build.case.radiators.includes(build.cooler.radiator)) {
+      issues.push({
+        level: "bad",
+        parts: ["case", "cooler"],
+        text: build.case.name + " is not marked as supporting a " + build.cooler.radiator + " radiator."
+      });
+    }
+
+    if (build.psu && recommendedPsu && build.psu.wattageMax && build.psu.wattageMax < recommendedPsu) {
+      issues.push({
+        level: "bad",
+        parts: ["psu", "cpu", "gpu"],
+        text: build.psu.name + " is below the recommended " + recommendedPsu + "W PSU capacity for this build."
+      });
+    }
+
+    if (build.psu && recommendedPsu && build.psu.wattageMin && build.psu.wattageMax && build.psu.wattageMin < recommendedPsu && build.psu.wattageMax >= recommendedPsu) {
+      issues.push({
+        level: "warn",
+        parts: ["psu"],
+        text: "Choose a " + recommendedPsu + "W or higher variant of " + build.psu.name + "."
+      });
+    }
+
+    return issues;
+  }
+
+  function partIsCompatible(categoryKey, part) {
+    const testState = Object.assign({}, state);
+    testState[categoryKey] = part.id;
+
+    const issues = getCompatibilityIssues(getSelectedBuild(testState));
+
+    return !issues.some(function (issue) {
+      return issue.level === "bad" && issue.parts.includes(categoryKey);
+    });
+  }
+
+  function priceToNumber(price) {
+    const number = Number(String(price || "").replace(/[^0-9.]/g, ""));
+    return Number.isFinite(number) && number > 0 ? number : 0;
+  }
+
+  function render() {
+    if (!catalogLoaded) {
+      return;
+    }
+
+    const build = getSelectedBuild();
+    const issues = getCompatibilityIssues(build);
+    const selectedCount = categories.filter(function (category) { return Boolean(build[category.key]); }).length;
+    const missingRequired = categories.some(function (category) { return category.required && !build[category.key]; });
+    const hardIssue = issues.some(function (issue) { return issue.level === "bad"; });
+    const warningIssue = issues.some(function (issue) { return issue.level === "warn"; });
+
+    rowsElement.innerHTML = categories.map(function (category) {
+      const part = build[category.key];
+
+      if (!part) {
+        return '<tr><td class="pc-builder-category">' + escapeHtml(category.label) + '</td><td><span class="pc-builder-empty">No part selected</span></td><td class="pc-builder-price">-</td><td><div class="pc-builder-row-actions"><button class="pc-builder-link-button primary" type="button" data-choose="' + category.key + '">Choose</button></div></td></tr>';
+      }
+
+      return '<tr><td class="pc-builder-category">' + escapeHtml(category.label) + '</td><td><div class="pc-builder-part"><img src="' + escapeHtml(part.image) + '" alt=""><div><strong>' + escapeHtml(part.name) + '</strong><span>' + escapeHtml(part.meta) + '</span></div></div></td><td class="pc-builder-price">' + escapeHtml(part.price) + '</td><td><div class="pc-builder-row-actions"><a class="pc-builder-link-button" href="' + escapeHtml(part.url) + '">View</a><button class="pc-builder-link-button" type="button" data-choose="' + category.key + '">Change</button><button class="pc-builder-link-button" type="button" data-remove="' + category.key + '">Remove</button></div></td></tr>';
+    }).join("");
+
+    rowsElement.querySelectorAll("[data-choose]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        openChooser(button.dataset.choose);
+      });
+    });
+
+    rowsElement.querySelectorAll("[data-remove]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        state[button.dataset.remove] = "";
+        saveState();
+        render();
+      });
+    });
+
+    const status = document.getElementById("pc-builder-status");
+    status.className = "pc-builder-status";
+
+    if (hardIssue) {
+      status.textContent = "Incompatible";
+      status.classList.add("bad");
+    } else if (missingRequired || warningIssue) {
+      status.textContent = missingRequired ? "Incomplete" : "Check";
+      status.classList.add("warn");
+    } else {
+      status.textContent = "Compatible";
+    }
+
+    document.getElementById("pc-builder-selected-count").textContent = selectedCount + " / " + categories.length;
+
+    const wattage = estimateWattage(build);
+    const recommendedPsu = recommendedPsuWattage(build);
+    document.getElementById("pc-builder-wattage").textContent = selectedCount ? wattage + "W" : "0W";
+    document.getElementById("pc-builder-recommended-psu").textContent = recommendedPsu ? recommendedPsu + "W+" : "Select CPU/GPU";
+
+    const total = categories.reduce(function (sum, category) {
+      const part = build[category.key];
+      return sum + (part ? priceToNumber(part.price) : 0);
+    }, 0);
+
+    document.getElementById("pc-builder-total").textContent = total ? total.toLocaleString("en-US") + " EGP" : "Pending prices";
+
+    const issuesElement = document.getElementById("pc-builder-issues");
+    const missingText = missingRequired ? [{
+      level: "warn",
+      text: "Choose all required component categories to complete the build."
+    }] : [];
+
+    const allIssues = issues.length ? issues : missingText;
+
+    issuesElement.innerHTML = allIssues.length
+      ? allIssues.map(function (issue) {
+        return '<div class="pc-builder-issue ' + issue.level + '">' + escapeHtml(issue.text) + '</div>';
+      }).join("")
+      : '<div class="pc-builder-issue">No compatibility issues found.</div>';
+
+    updateUrl();
+  }
+
+  function openChooser(categoryKey) {
+    activeCategory = categoryKey;
+    const category = categories.find(function (item) { return item.key === categoryKey; });
+
+    modalTitle.textContent = "Choose " + category.label;
+    searchInput.value = "";
+    compatibleOnlyInput.checked = true;
+    modal.classList.add("open");
+    modal.setAttribute("aria-hidden", "false");
+
+    renderChooser();
+    searchInput.focus();
+  }
+
+  function closeChooser() {
+    modal.classList.remove("open");
+    modal.setAttribute("aria-hidden", "true");
+    activeCategory = "";
+  }
+
+  function renderChooser() {
+    const query = normalizeText(searchInput.value);
+    const compatibleOnly = compatibleOnlyInput.checked;
+    let parts = catalog[activeCategory] || [];
+
+    if (compatibleOnly) {
+      parts = parts.filter(function (part) {
+        return partIsCompatible(activeCategory, part);
+      });
+    }
+
+    if (query) {
+      parts = parts.filter(function (part) {
+        return normalizeText(part.name + " " + part.meta).includes(query);
+      });
+    }
+
+    parts = parts.slice().sort(function (a, b) {
+      return a.name.localeCompare(b.name);
+    });
+
+    if (!parts.length) {
+      modalList.innerHTML = '<div class="pc-builder-issue warn">No compatible store parts match this search.</div>';
+      return;
+    }
+
+    modalList.innerHTML = parts.map(function (part) {
+      return '<article class="pc-builder-option"><img src="' + escapeHtml(part.image) + '" alt=""><div><h3>' + escapeHtml(part.name) + '</h3><p>' + escapeHtml(part.meta) + '</p><p>' + escapeHtml(part.price) + '</p></div><button class="pc-builder-link-button primary" type="button" data-pick="' + escapeHtml(part.id) + '">Add</button></article>';
+    }).join("");
+
+    modalList.querySelectorAll("[data-pick]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        state[activeCategory] = button.dataset.pick;
+        saveState();
+        closeChooser();
+        render();
+      });
+    });
+  }
+
+  function saveState() {
+    localStorage.setItem("tcs-pc-builder", JSON.stringify(state));
+  }
+
+  function loadState() {
+    const saved = JSON.parse(localStorage.getItem("tcs-pc-builder") || "{}");
+    const params = new URLSearchParams(window.location.search);
+
+    categories.forEach(function (category) {
+      state[category.key] = params.get(category.key) || saved[category.key] || "";
+    });
+  }
+
+  function updateUrl() {
+    const params = new URLSearchParams();
+
+    categories.forEach(function (category) {
+      if (state[category.key]) {
+        params.set(category.key, state[category.key]);
+      }
+    });
+
+    const query = params.toString();
+    const nextUrl = window.location.pathname + (query ? "?" + query : "");
+    window.history.replaceState(null, "", nextUrl);
+  }
+
+  async function loadCatalog() {
+    await Promise.all(categories.map(async function (category) {
+      try {
+        const response = await fetch(category.file, { cache: "no-store" });
+        const source = await response.text();
+        catalog[category.key] = parseCards(source, category);
+      } catch (error) {
+        catalog[category.key] = [];
+      }
+    }));
+
+    catalogLoaded = true;
+    loadState();
+    render();
+  }
+
+  document.getElementById("pc-builder-close").addEventListener("click", closeChooser);
+  searchInput.addEventListener("input", renderChooser);
+  compatibleOnlyInput.addEventListener("change", renderChooser);
+
+  modal.addEventListener("click", function (event) {
+    if (event.target === modal) {
+      closeChooser();
+    }
+  });
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape" && modal.classList.contains("open")) {
+      closeChooser();
+    }
+  });
+
+  document.getElementById("pc-builder-reset").addEventListener("click", function () {
+    categories.forEach(function (category) {
+      state[category.key] = "";
+    });
+
+    saveState();
+    render();
+  });
+
+  document.getElementById("pc-builder-copy-link").addEventListener("click", async function () {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      this.textContent = "Copied";
+      window.setTimeout(() => { this.textContent = "Copy Link"; }, 1200);
+    } catch (error) {
+      this.textContent = "Copy Failed";
+      window.setTimeout(() => { this.textContent = "Copy Link"; }, 1200);
+    }
+  });
+
+  loadCatalog();
+})();
+</script>
+
+<div id="site-footer-root"></div>
+<script src="site-footer.js"></script>
+
+<script>
+  document.addEventListener("keydown", function (event) {
+    if (
+      event.key === "F12" ||
+      (event.ctrlKey && event.shiftKey && ["I", "J", "C"].includes(event.key.toUpperCase())) ||
+      (event.ctrlKey && event.key.toUpperCase() === "U") ||
+      (event.metaKey && event.altKey && ["I", "J", "C"].includes(event.key.toUpperCase()))
+    ) {
+      event.preventDefault();
+      return false;
+    }
+  });
+</script>
+</body>
+</html>
