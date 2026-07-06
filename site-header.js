@@ -372,6 +372,7 @@
 
   <nav class="site-header-nav" aria-label="Main navigation">
     <a href="signature-builds.html">Signature Builds</a>
+    <a href="pc-builder.html">PC Builder</a>
     <a href="components.html">Components</a>
     <a href="consultation.html">Need a Custom PC?</a>
   </nav>
@@ -421,6 +422,7 @@
 <div class="nav-menu-overlay" aria-hidden="true">
   <div class="nav-menu-panel nav-menu-main active">
     <div class="nav-menu-links">
+      <a href="pc-builder.html" class="nav-menu-link">PC Builder</a>
       <a href="components.html" class="nav-menu-link">Components</a>
       <a href="signature-builds.html" class="nav-menu-link">Signature Builds</a>
       <a href="consultation.html" class="nav-menu-link">Need a Custom PC?</a>
