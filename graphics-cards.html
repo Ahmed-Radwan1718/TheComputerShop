@@ -841,6 +841,29 @@
     setTimeout(animateGpuSearchPlaceholder, 250);
   }
 
+  const componentPriceOverrides = {
+    "rtx-5090-aorus-master": "215,999 EGP",
+    "rtx-5080-aorus-master": "98,999 EGP",
+    "rtx-5070-aorus-master": "46,999 EGP",
+    "asus-rog-astral-rtx5090-oc-32gb": "225,999 EGP",
+    "asus-proart-rtx5080-o16g": "99,999 EGP",
+    "asus-tuf-rtx5070ti-o16g-gaming": "56,999 EGP",
+    "rtx-5070-gaming-oc": "45,999 EGP",
+    "rtx-5060-eagle-oc": "21,999 EGP",
+    "rtx-5060-windforce-max-oc-8g": "22,999 EGP",
+    "rtx-5060-ti-windforce-max-oc": "36,999 EGP",
+    "rtx-5070-eagle-oc-sff": "43,999 EGP",
+    "rtx-5060-eagle-max-oc": "23,999 EGP"
+  };
+
+  Object.entries(componentPriceOverrides).forEach(([productId, priceText]) => {
+    const priceElement = document.querySelector(`a[href="product.html?product=${productId}"] .signature-build-price`);
+
+    if (priceElement) {
+      priceElement.textContent = priceText;
+    }
+  });
+
   animateGpuSearchPlaceholder();
   updateComponentFilters();
 </script>
