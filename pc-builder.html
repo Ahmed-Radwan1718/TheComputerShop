@@ -1980,7 +1980,10 @@
   }
 
   function priceToNumber(price) {
-    const number = Number(String(price || "").replace(/[^0-9.]/g, ""));
+    const text = String(price || "");
+    const egpMatch = text.match(/(\d[\d,]*(?:\.\d+)?)\s*EGP/i);
+    const priceText = egpMatch ? egpMatch[1] : text;
+    const number = Number(priceText.replace(/,/g, "").replace(/[^0-9.]/g, ""));
     return Number.isFinite(number) && number > 0 ? number : 0;
   }
 
