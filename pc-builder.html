@@ -701,6 +701,10 @@
       color-scheme: dark;
       scrollbar-color: rgba(255, 255, 255, 0.55) #2a2b2a;
       scrollbar-width: auto;
+      contain: layout paint style;
+      will-change: scroll-position;
+      -webkit-overflow-scrolling: touch;
+      transform: translateZ(0);
     }
 
     .pc-builder-products-column {
@@ -1046,6 +1050,10 @@
       scrollbar-color: rgba(255, 255, 255, 0.55) #2a2b2a;
       scrollbar-width: auto;
       overscroll-behavior: contain;
+      contain: layout paint style;
+      will-change: scroll-position;
+      -webkit-overflow-scrolling: touch;
+      transform: translateZ(0);
     }
 
     .pc-builder-option {
@@ -1055,6 +1063,9 @@
       border: 1px solid rgba(255, 255, 255, 0.105);
       border-radius: 22px;
       background: rgba(24, 25, 24, 0.56);
+      content-visibility: auto;
+      contain-intrinsic-size: 120px;
+      contain: layout paint style;
       transition:
         border-color 0.2s ease,
         background 0.2s ease,
