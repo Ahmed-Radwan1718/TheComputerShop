@@ -1941,7 +1941,7 @@
   }
 
   function parseGpuLength(part) {
-    const size = getPartSpec(part, ["Card Size", "Card Dimensions", "Dimensions"]);
+    const size = getPartSpec(part, ["Card Size", "Card Dimensions", "Card Length", "Dimensions", "Dimensions (Length x Width)"]);
     const lengthMatch = String(size || "").match(/\bL\s*=\s*(\d+(?:\.\d+)?)/i);
 
     if (lengthMatch) {
@@ -1953,10 +1953,16 @@
   }
 
   function parseGpuSlotWidth(part) {
-    const size = getPartSpec(part, ["Card Size", "Card Dimensions", "Dimensions"]);
+    const listedSlots = parseFirstNumber(getPartSpec(part, ["Slot Size", "Slots"]));
+
+    if (listedSlots) {
+      return listedSlots;
+    }
+
+    const size = getPartSpec(part, ["Card Size", "Card Dimensions", "Card Length", "Dimensions"]);
     const heightMatch = String(size || "").match(/\bH\s*=\s*(\d+(?:\.\d+)?)/i);
     const dimensions = parseDimensionNumbers(size);
-    const thickness = heightMatch ? Number(heightMatch[1]) : (dimensions.length >= 3 ? dimensions[2] : 0);
+    const thickness = heightMatch ? Number(lengthMatch[1]) : (dimensions.length >= 3 ? dimensions[2] : 0);
 
     return thickness ? Math.max(1, Math.ceil(thickness / 20)) : 0;
   }
@@ -2113,12 +2119,14 @@
     }
 
     if (part.category === "motherboard") {
+      const motherboardMemorySpec = getPartSpec(part, ["Memory Capacity", "Memory Slots", "Memory Support"]);
+
       part.brand = meta[0] || "";
       part.socket = normalizeSocket(getPartSpec(part, "CPU Socket") || meta[1]);
       part.formFactor = normalizeFormFactor(getPartSpec(part, "Form Factor") || meta[2]);
       part.memoryType = normalizeMemoryType(getPartSpec(part, ["Memory Support", "Memory Capacity", "Memory Slots"]) || fullText);
-      part.ramSlots = parseMemorySlotCount(getPartSpec(part, ["Memory Capacity", "Memory Slots"]));
-      part.maxRamGb = parseMaxGb(getPartSpec(part, "Memory Capacity"));
+      part.ramSlots = parseMemorySlotCount(motherboardMemorySpec);
+      part.maxRamGb = parseMaxGb(motherboardMemorySpec);
       part.cpuSupport = getPartSpec(part, "CPU Support");
       part.chipset = getPartSpec(part, "Chipset");
       part.m2Slots = parseStorageConnectorCount(getPartSpec(part, "Storage"), "M\\.?2");
@@ -2157,15 +2165,18 @@
     }
 
     if (part.category === "case") {
+      const caseRadiatorSpec = getPartSpec(part, ["Radiator Support", "Radiator Compatibility"]);
+      const casePsuSpec = getPartSpec(part, ["Power Supply Type", "Power Supply Support"]);
+
       part.brand = meta[0] || "";
       part.caseType = meta[1] || "";
       part.supportsFormFactors = getCaseFormFactorSupport(getPartSpec(part, "Motherboard Support") || fullText);
-      part.radiators = extractRadiatorSupport(getPartSpec(part, "Radiator Support"));
+      part.radiators = extractRadiatorSupport(caseRadiatorSpec);
       part.maxGpuLength = parseFirstNumber(getPartSpec(part, "Maximum GPU Length"));
       part.maxCpuCoolerHeight = parseFirstNumber(getPartSpec(part, "Maximum CPU Cooler Height"));
-      part.maxPsuLength = parseFirstNumber(getPartSpec(part, "Maximum PSU Length"));
+      part.maxPsuLength = parseFirstNumber(getPartSpec(part, "Maximum PSU Length") || casePsuSpec);
       part.expansionSlots = parseFirstNumber(getPartSpec(part, "Expansion Slots"));
-      part.psuFormFactors = normalizeFormFactor(getPartSpec(part, "Power Supply Type"));
+      part.psuFormFactors = normalizeFormFactor(casePsuSpec);
       part.frontPanel = getCaseFrontPanelRequirements(part);
       part.watts = 8;
     }
