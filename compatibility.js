@@ -35,8 +35,14 @@ window.TCS_COMPATIBILITY = (function () {
     "aorus-gen5-14000-ssd": { category: "storage", interface: "M.2 NVMe", formFactor: "M.2 2280", watts: 8 },
     "wd-black-gaming-hard-drive": { category: "storage", interface: "SATA", formFactor: "3.5-inch", watts: 8 },
 
-    "fractal-design-north-xl-charcoal-black": { category: "case", motherboardSupport: ["E-ATX", "ATX", "Micro-ATX", "Mini-ITX"], maxGpuLengthMm: 413, maxCpuCoolerHeightMm: 155, maxPsuLengthMm: 290, radiatorSupportMm: [120, 280, 420] },
-    "corsair-6500d-airflow-case": { category: "case", motherboardSupport: ["E-ATX", "ATX", "Micro-ATX", "Mini-ITX"], maxGpuLengthMm: 400, maxCpuCoolerHeightMm: 190, maxPsuLengthMm: 225, radiatorSupportMm: [140, 280, 360] },
+    "gigabyte-c500-panoramic-stealth": { category: "case", motherboardSupport: ["ATX", "Micro-ATX", "Mini-ITX"], maxGpuLengthMm: 410, maxCpuCoolerHeightMm: 170, maxPsuLengthMm: 200, radiatorSupportMm: [120, 140, 240, 360] },
+    "aorus-c500-glass": { category: "case", motherboardSupport: ["E-ATX", "ATX", "Micro-ATX", "Mini-ITX"], maxGpuLengthMm: 420, maxCpuCoolerHeightMm: 190, maxPsuLengthMm: 220, radiatorSupportMm: [120, 140, 240, 280, 360, 420] },
+    "aorus-c400-glass": { category: "case", motherboardSupport: ["ATX", "Micro-ATX", "Mini-ITX"], maxGpuLengthMm: 360, maxCpuCoolerHeightMm: 168, maxPsuLengthMm: 160, radiatorSupportMm: [120, 240, 360] },
+    "fractal-design-north-xl-charcoal-black": { category: "case", motherboardSupport: ["E-ATX", "ATX", "Micro-ATX", "Mini-ITX"], maxGpuLengthMm: 413, maxCpuCoolerHeightMm: 155, maxPsuLengthMm: 290, radiatorSupportMm: [120, 140, 240, 280, 360, 420] },
+    "rog-strix-helios-ii": { category: "case", motherboardSupport: ["E-ATX", "ATX", "Micro-ATX", "Mini-ITX"], maxGpuLengthMm: 450, maxCpuCoolerHeightMm: 190, maxPsuLengthMm: 220, radiatorSupportMm: [120, 140, 240, 280, 360, 420] },
+    "rog-cronox": { category: "case", motherboardSupport: ["E-ATX", "ATX", "Micro-ATX", "Mini-ITX"], maxGpuLengthMm: 400, maxCpuCoolerHeightMm: 180, maxPsuLengthMm: 200, radiatorSupportMm: [120, 240, 360] },
+    "lian-li-o11-dynamic-evo-xl": { category: "case", motherboardSupport: ["E-ATX", "ATX", "Micro-ATX", "Mini-ITX"], maxGpuLengthMm: 460, maxCpuCoolerHeightMm: 167, maxPsuLengthMm: 220, radiatorSupportMm: [240, 280, 360, 420] },
+    "corsair-6500d-airflow-case": { category: "case", motherboardSupport: ["E-ATX", "ATX", "Micro-ATX", "Mini-ITX"], maxGpuLengthMm: 400, maxCpuCoolerHeightMm: 190, maxPsuLengthMm: 225, radiatorSupportMm: [120, 140, 240, 280, 360] },
 
     "aorus-elite-p850w-platinum-pg5": { category: "psu", wattageW: 850, formFactor: "ATX", lengthMm: 150, pcie16Pin: 1, pcie8Pin: 6 },
     "aorus-elite-p1000w-platinum-pg5": { category: "psu", wattageW: 1000, formFactor: "ATX", lengthMm: 150, pcie16Pin: 1, pcie8Pin: 6 },
