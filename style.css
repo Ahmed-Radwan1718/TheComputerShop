@@ -9697,6 +9697,14 @@ body.account-security-modal-open {
   line-height: 1.75;
 }
 
+#account-panel-saved .account-panel-subheader {
+  margin-bottom: 16px;
+}
+
+#account-panel-saved .account-empty-state + .account-panel-subheader {
+  margin-top: 34px;
+}
+
 .account-saved-loading {
   padding: 18px 0;
   color: rgba(255, 255, 255, 0.58);
