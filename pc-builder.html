@@ -2150,6 +2150,7 @@
 
     if (part.category === "motherboard") {
       const motherboardMemorySpec = getPartSpec(part, ["Memory Capacity", "Memory Slots", "Memory Support"]);
+      const motherboardStorageSpec = getPartSpec(part, "Storage");
 
       part.brand = meta[0] || "";
       part.socket = normalizeSocket(getPartSpec(part, "CPU Socket") || meta[1]);
@@ -2159,8 +2160,8 @@
       part.maxRamGb = parseMaxGb(motherboardMemorySpec);
       part.cpuSupport = getPartSpec(part, "CPU Support");
       part.chipset = getPartSpec(part, "Chipset");
-      part.m2Slots = parseStorageConnectorCount(getPartSpec(part, "Storage"), "M\\.?2");
-      part.sataPorts = parseStorageConnectorCount(getPartSpec(part, "Storage"), "SATA");
+      part.m2Slots = parseFirstNumber(getPartSpec(part, ["M.2 Slots", "M2 Slots"])) || parseStorageConnectorCount(motherboardStorageSpec, "M\\.?2");
+      part.sataPorts = parseFirstNumber(getPartSpec(part, ["SATA Ports", "SATA Connectors"])) || parseStorageConnectorCount(motherboardStorageSpec, "SATA");
       part.headers = getMotherboardHeaderSupport(part);
       part.watts = 70;
     }
