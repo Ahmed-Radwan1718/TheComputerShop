@@ -658,16 +658,22 @@
 
     .pc-builder-modal {
       padding: 22px;
-      background: rgba(0, 0, 0, 0.78);
-      backdrop-filter: none;
-      -webkit-backdrop-filter: none;
+      background: rgba(0, 0, 0, 0.72);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      overscroll-behavior: contain;
+    }
+
+    body.pc-builder-modal-lock {
+      overflow: hidden;
     }
 
     .pc-builder-modal-panel {
       width: min(1240px, calc(100vw - 44px));
       max-height: min(780px, calc(100vh - 44px));
-      grid-template-rows: auto auto minmax(0, 1fr);
+      grid-template-rows: auto minmax(0, 1fr);
       background: #181918;
+      overscroll-behavior: contain;
     }
 
     .pc-builder-modal-header {
@@ -678,23 +684,53 @@
       font-size: 28px;
     }
 
-    .pc-builder-modal-tools {
-      padding: 22px 28px;
-      background: rgba(255, 255, 255, 0.02);
+    .pc-builder-modal-body {
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      overflow: hidden;
     }
 
-    .pc-builder-modal-tools input {
-      width: min(520px, 100%);
-      height: 52px;
-      padding: 0 18px;
+    .pc-builder-filter-panel {
+      min-height: 0;
+      padding: 18px;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.025);
+      overflow: auto;
+      overscroll-behavior: contain;
+      color-scheme: dark;
+      scrollbar-color: rgba(255, 255, 255, 0.55) #2a2b2a;
+      scrollbar-width: auto;
+    }
+
+    .pc-builder-filter-search {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .pc-builder-filter-search span,
+    .pc-builder-filter-heading {
+      color: rgba(192, 154, 92, 0.84);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .pc-builder-filter-search input {
+      width: 100%;
+      height: 48px;
+      padding: 0 16px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 999px;
       background: rgba(255, 255, 255, 0.08);
       color: #ffffff;
       font-family: Arial, sans-serif;
-      font-size: 15px;
+      font-size: 14px;
+      outline: none;
     }
 
-    .pc-builder-modal-tools input::placeholder {
+    .pc-builder-filter-search input::placeholder {
       color: rgba(255, 255, 255, 0.42);
     }
 
@@ -709,7 +745,105 @@
       accent-color: #c09a5c;
     }
 
+    .pc-builder-filter-panel .pc-builder-toggle {
+      width: 100%;
+      min-height: 40px;
+      margin-bottom: 14px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      justify-content: flex-start;
+    }
+
+    .pc-builder-filter-groups {
+      display: grid;
+      gap: 12px;
+    }
+
+    .pc-builder-filter-item {
+      border: 1px solid rgba(255, 255, 255, 0.105);
+      border-radius: 18px;
+      background: rgba(24, 25, 24, 0.56);
+      overflow: hidden;
+    }
+
+    .pc-builder-filter-toggle {
+      width: 100%;
+      min-height: 46px;
+      padding: 0 14px;
+      border: 0;
+      background: transparent;
+      color: #ffffff;
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      text-align: left;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .pc-builder-filter-toggle .chevron {
+      transition: transform 0.2s ease;
+    }
+
+    .pc-builder-filter-item.open .chevron {
+      transform: rotate(180deg);
+    }
+
+    .pc-builder-filter-content {
+      display: none;
+      gap: 10px;
+      padding: 0 14px 14px;
+    }
+
+    .pc-builder-filter-item.open .pc-builder-filter-content {
+      display: grid;
+    }
+
+    .pc-builder-filter-content label {
+      color: rgba(255, 255, 255, 0.68);
+      font-size: 13px;
+      line-height: 1.35;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      cursor: pointer;
+    }
+
+    .pc-builder-filter-content input {
+      accent-color: #c09a5c;
+    }
+
+    .pc-builder-filter-empty {
+      color: rgba(255, 255, 255, 0.56);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .pc-builder-filter-clear {
+      width: 100%;
+      min-height: 42px;
+      margin-top: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 999px;
+      background: rgba(24, 25, 24, 0.55);
+      color: #ffffff;
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .pc-builder-filter-clear[hidden] {
+      display: none;
+    }
+
     .pc-builder-parts-list {
+      min-height: 0;
       overflow: auto;
       padding: 16px;
       gap: 14px;
@@ -717,6 +851,7 @@
       color-scheme: dark;
       scrollbar-color: rgba(255, 255, 255, 0.55) #2a2b2a;
       scrollbar-width: auto;
+      overscroll-behavior: contain;
     }
 
     .pc-builder-option {
@@ -761,6 +896,23 @@
     .pc-builder-option .pc-builder-link-button {
       min-width: 72px;
       justify-content: center;
+    }
+
+    @media (max-width: 760px) {
+      .pc-builder-modal-body {
+        grid-template-columns: 1fr;
+        overflow: auto;
+      }
+
+      .pc-builder-filter-panel {
+        border-right: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        overflow: visible;
+      }
+
+      .pc-builder-parts-list {
+        overflow: visible;
+      }
     }
 
     @media (max-width: 960px) {
@@ -906,15 +1058,25 @@
       <button class="pc-builder-link-button" type="button" id="pc-builder-close">Close</button>
     </div>
 
-    <div class="pc-builder-modal-tools">
-      <input id="pc-builder-search" type="search" placeholder="Search parts..." aria-label="Search parts">
-      <label class="pc-builder-toggle">
-        <input id="pc-builder-compatible-only" type="checkbox" checked>
-        Compatibility filter
-      </label>
-    </div>
+    <div class="pc-builder-modal-body">
+      <aside class="pc-builder-filter-panel" aria-label="Part filters">
+        <div class="pc-builder-filter-search">
+          <span>Search</span>
+          <input id="pc-builder-search" type="search" placeholder="Search parts..." aria-label="Search parts">
+        </div>
 
-    <div class="pc-builder-parts-list" id="pc-builder-parts-list"></div>
+        <label class="pc-builder-toggle">
+          <input id="pc-builder-compatible-only" type="checkbox" checked>
+          Compatibility filter
+        </label>
+
+        <div class="pc-builder-filter-heading">Filters</div>
+        <div class="pc-builder-filter-groups" id="pc-builder-filter-groups"></div>
+        <button class="pc-builder-filter-clear" type="button" id="pc-builder-clear-filters">Clear Filters</button>
+      </aside>
+
+      <div class="pc-builder-parts-list" id="pc-builder-parts-list"></div>
+    </div>
   </div>
 </div>
 
@@ -941,7 +1103,9 @@
   const multiPartCategoryKeys = Object.keys(multiPartCategoryLabels);
 
   const catalog = {};
+  const catalogFilters = {};
   const state = {};
+  const chooserFilters = {};
   let activeCategory = "";
   let activeExtraIndex = null;
   let catalogLoaded = false;
@@ -952,6 +1116,8 @@
   const modalList = document.getElementById("pc-builder-parts-list");
   const searchInput = document.getElementById("pc-builder-search");
   const compatibleOnlyInput = document.getElementById("pc-builder-compatible-only");
+  const filterGroupsElement = document.getElementById("pc-builder-filter-groups");
+  const clearFiltersButton = document.getElementById("pc-builder-clear-filters");
 
   function escapeHtml(value) {
     return String(value || "").replace(/[&<>"']/g, function (character) {
@@ -967,6 +1133,19 @@
 
   function normalizeText(value) {
     return String(value || "").toLowerCase().replace(/\s+/g, " ").trim();
+  }
+
+  function compactFilterText(value) {
+    return normalizeText(value).replace(/[^a-z0-9]/g, "");
+  }
+
+  function textIncludesFilterValue(text, selectedValue) {
+    const normalizedText = normalizeText(text);
+    const normalizedValue = normalizeText(selectedValue);
+    const compactText = compactFilterText(text);
+    const compactValue = compactFilterText(selectedValue);
+
+    return normalizedText.includes(normalizedValue) || (compactValue && compactText.includes(compactValue));
   }
 
   function getExtraStateKey(categoryKey) {
@@ -1233,6 +1412,30 @@
     return baseMeta ? baseMeta + " | " + variantLabel : variantLabel;
   }
 
+  function parseFilterGroups(source) {
+    const documentFromSource = new DOMParser().parseFromString(source, "text/html");
+
+    return Array.from(documentFromSource.querySelectorAll(".filters-panel .filter-item")).map(function (filterItem) {
+      const titleSpans = filterItem.querySelectorAll(".filter-toggle span");
+      const name = titleSpans[0] ? titleSpans[0].textContent.replace(/\s+/g, " ").trim() : "Filter";
+      const options = Array.from(filterItem.querySelectorAll(".filter-content label")).map(function (label) {
+        const labelText = label.textContent.replace(/\s+/g, " ").trim();
+        const checkbox = label.querySelector('input[type="checkbox"]');
+        const checkboxValue = checkbox && checkbox.value && checkbox.value !== "on" ? checkbox.value : labelText;
+
+        return labelText ? {
+          label: labelText,
+          value: checkboxValue
+        } : null;
+      }).filter(Boolean);
+
+      return options.length ? {
+        name: name,
+        options: options
+      } : null;
+    }).filter(Boolean);
+  }
+
   function createBasePart(card, category, priceOverrides) {
     const productUrl = new URL(card.getAttribute("href"), window.location.href);
     const id = productUrl.searchParams.get("product");
@@ -1248,6 +1451,7 @@
       name: title ? title.textContent.trim() : id,
       meta: meta ? meta.textContent.replace(/\s+/g, " ").trim() : "",
       metaParts: meta ? meta.textContent.split("|").map(function (item) { return item.trim(); }) : [],
+      filterTags: card.getAttribute("data-filter-tags") || "",
       price: priceOverrides[id] || (price ? price.textContent.trim() : "Price coming soon"),
       image: image ? image.getAttribute("src") : "",
       url: "product.html?product=" + encodeURIComponent(id)
@@ -1275,6 +1479,7 @@
         name: basePart.name + " " + variantLabel,
         meta: variantMeta,
         metaParts: variantMeta.split("|").map(function (item) { return item.trim(); }),
+        filterTags: [basePart.filterTags, variantLabel].filter(Boolean).join(" "),
         price: variant.priceText || basePart.price,
         image: variantImages[0] || basePart.image,
         url: basePart.url + "&variant=" + encodeURIComponent(variantId)
@@ -1298,6 +1503,10 @@
       });
 
     return parts;
+  }
+
+  function getPartFilterText(part) {
+    return [part.name, part.meta, part.price, part.filterTags].filter(Boolean).join(" ");
   }
 
   function enrichPart(part) {
@@ -1682,10 +1891,76 @@
     updateUrl();
   }
 
+  function getActiveCatalogCategoryKey() {
+    return activeCategory === "gpu2" ? "gpu" : activeCategory;
+  }
+
+  function getSelectedChooserFilterGroups(categoryKey) {
+    return Object.values(chooserFilters[categoryKey] || {}).filter(function (group) {
+      return Array.isArray(group) && group.length;
+    });
+  }
+
+  function partMatchesChooserFilters(part, selectedGroups) {
+    const partFilterText = getPartFilterText(part);
+
+    return selectedGroups.every(function (group) {
+      return group.some(function (selectedValue) {
+        return textIncludesFilterValue(partFilterText, selectedValue);
+      });
+    });
+  }
+
+  function renderFilterGroups(categoryKey) {
+    const groups = catalogFilters[categoryKey] || [];
+    const selectedGroups = chooserFilters[categoryKey] || {};
+
+    clearFiltersButton.hidden = !groups.length;
+
+    if (!groups.length) {
+      filterGroupsElement.innerHTML = '<div class="pc-builder-filter-empty">No filters available for this category.</div>';
+      return;
+    }
+
+    filterGroupsElement.innerHTML = groups.map(function (group) {
+      const selectedValues = selectedGroups[group.name] || [];
+
+      return '<div class="pc-builder-filter-item open" data-filter-group="' + escapeHtml(group.name) + '"><button class="pc-builder-filter-toggle" type="button"><span>' + escapeHtml(group.name) + '</span><span class="chevron">⌄</span></button><div class="pc-builder-filter-content">' + group.options.map(function (option) {
+        const checked = selectedValues.includes(option.value) ? " checked" : "";
+        return '<label><input type="checkbox" value="' + escapeHtml(option.value) + '"' + checked + '> <span>' + escapeHtml(option.label) + '</span></label>';
+      }).join("") + '</div></div>';
+    }).join("");
+
+    filterGroupsElement.querySelectorAll(".pc-builder-filter-toggle").forEach(function (button) {
+      button.addEventListener("click", function () {
+        button.closest(".pc-builder-filter-item").classList.toggle("open");
+      });
+    });
+
+    filterGroupsElement.querySelectorAll('input[type="checkbox"]').forEach(function (checkbox) {
+      checkbox.addEventListener("change", function () {
+        const filterItem = checkbox.closest(".pc-builder-filter-item");
+        const groupName = filterItem.dataset.filterGroup;
+        const selectedValues = Array.from(filterItem.querySelectorAll('input[type="checkbox"]:checked')).map(function (input) {
+          return input.value;
+        });
+
+        if (selectedValues.length) {
+          selectedGroups[groupName] = selectedValues;
+        } else {
+          delete selectedGroups[groupName];
+        }
+
+        chooserFilters[categoryKey] = selectedGroups;
+        renderChooser();
+      });
+    });
+  }
+
   function openChooser(categoryKey, extraIndex) {
     activeCategory = categoryKey;
     activeExtraIndex = Number.isFinite(extraIndex) ? extraIndex : null;
-    const catalogCategoryKey = categoryKey === "gpu2" ? "gpu" : categoryKey;
+    const catalogCategoryKey = getActiveCatalogCategoryKey();
     const category = categories.find(function (item) { return item.key === catalogCategoryKey; });
     const isExtraChoice = activeExtraIndex !== null;
 
@@ -1696,24 +1971,30 @@
         : "Choose " + category.label;
     searchInput.value = "";
     compatibleOnlyInput.checked = true;
+    chooserFilters[catalogCategoryKey] = {};
+    renderFilterGroups(catalogCategoryKey);
     modal.classList.add("open");
     modal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("pc-builder-modal-lock");
 
     renderChooser();
+    modalList.scrollTop = 0;
     searchInput.focus();
   }
 
   function closeChooser() {
     modal.classList.remove("open");
     modal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("pc-builder-modal-lock");
     activeCategory = "";
     activeExtraIndex = null;
   }
 
   function renderChooser() {
-    const query = normalizeText(searchInput.value);
+    const query = searchInput.value;
     const compatibleOnly = compatibleOnlyInput.checked;
-    const catalogCategoryKey = activeCategory === "gpu2" ? "gpu" : activeCategory;
+    const catalogCategoryKey = getActiveCatalogCategoryKey();
+    const selectedFilterGroups = getSelectedChooserFilterGroups(catalogCategoryKey);
     let parts = catalog[catalogCategoryKey] || [];
 
     if (compatibleOnly) {
@@ -1722,9 +2003,15 @@
       });
     }
 
+    if (selectedFilterGroups.length) {
+      parts = parts.filter(function (part) {
+        return partMatchesChooserFilters(part, selectedFilterGroups);
+      });
+    }
+
     if (query) {
       parts = parts.filter(function (part) {
-        return normalizeText(part.name + " " + part.meta).includes(query);
+        return textIncludesFilterValue(getPartFilterText(part), query);
       });
     }
 
@@ -1733,7 +2020,7 @@
     });
 
     if (!parts.length) {
-      modalList.innerHTML = '<div class="pc-builder-issue warn">No compatible store parts match this search.</div>';
+      modalList.innerHTML = '<div class="pc-builder-issue warn">No store parts match the selected filters or search.</div>';
       return;
     }
 
@@ -1829,8 +2116,10 @@
       try {
         const response = await fetch(category.file, { cache: "no-store" });
         const source = await response.text();
+        catalogFilters[category.key] = parseFilterGroups(source);
         catalog[category.key] = parseCards(source, category, productVariantData);
       } catch (error) {
+        catalogFilters[category.key] = [];
         catalog[category.key] = [];
       }
     }));
@@ -1843,6 +2132,12 @@
   document.getElementById("pc-builder-close").addEventListener("click", closeChooser);
   searchInput.addEventListener("input", renderChooser);
   compatibleOnlyInput.addEventListener("change", renderChooser);
+  clearFiltersButton.addEventListener("click", function () {
+    const catalogCategoryKey = getActiveCatalogCategoryKey();
+    chooserFilters[catalogCategoryKey] = {};
+    renderFilterGroups(catalogCategoryKey);
+    renderChooser();
+  });
 
   modal.addEventListener("click", function (event) {
     if (event.target === modal) {
