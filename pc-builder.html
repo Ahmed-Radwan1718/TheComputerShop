@@ -2540,7 +2540,7 @@
 
     if (build.cpu && !build.gpu && !build.gpu2) {
       if (build.cpu.hasIntegratedGraphics === false) {
-        addCompatibilityIssue(issues, "warning", "No display output", build.cpu.name + " does not include integrated graphics, so this build needs a video card.", ["cpu", "gpu"]);
+        addCompatibilityIssue(issues, "warning", "No integrated graphics", build.cpu.name + " does not have integrated graphics.", ["cpu", "gpu"]);
       } else if (build.cpu.hasIntegratedGraphics === null) {
         addMissingDataIssue(issues, build.cpu, "integrated graphics support", ["cpu", "gpu"]);
       }
