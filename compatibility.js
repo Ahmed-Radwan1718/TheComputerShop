@@ -14,6 +14,15 @@ window.TCS_COMPATIBILITY = (function () {
     "intel-core-ultra-7-270k-plus": { category: "cpu", socket: "LGA1851", memoryType: "DDR5", tdpW: 125, maxTurboW: 250, hasIntegratedGraphics: true },
     "intel-core-ultra-9-285k": { category: "cpu", socket: "LGA1851", memoryType: "DDR5", tdpW: 125, maxTurboW: 250, hasIntegratedGraphics: true },
 
+    "aorus-waterforce-ii-360": { category: "cooler", socketSupport: ["LGA1851", "LGA1700", "LGA1200", "LGA115x", "AM5", "AM4"], radiatorMm: 360 },
+    "aorus-waterforce-x-ii-360-ice": { category: "cooler", socketSupport: ["LGA1851", "LGA1700", "LGA1200", "LGA115x", "AM5", "AM4", "TR4", "sTR5"], radiatorMm: 360 },
+    "corsair-nautilus-360-rs-argb": { category: "cooler", socketSupport: ["LGA1851", "LGA1700", "AM5", "AM4"], radiatorMm: 360 },
+    "asus-tuf-gaming-lc-iii-360-argb-lcd": { category: "cooler", socketSupport: ["LGA1851", "LGA1700", "LGA1200", "AM5", "AM4"], radiatorMm: 360 },
+    "aorus-waterforce-ii-240": { category: "cooler", socketSupport: ["LGA1851", "LGA1700", "LGA1200", "LGA115x", "AM5", "AM4"], radiatorMm: 240 },
+    "arctic-liquid-freezer-iii-pro-360-a-rgb": { category: "cooler", socketSupport: ["LGA1851", "LGA1700", "LGA1200", "LGA115x", "AM5", "AM4"], radiatorMm: 360 },
+    "cooler-master-masterliquid-360-core-ii": { category: "cooler", socketSupport: ["LGA1851", "LGA1700", "LGA1200", "LGA115x", "AM5", "AM4"], radiatorMm: 360 },
+    "rog-ryujin-iii-360-argb-extreme": { category: "cooler", socketSupport: ["LGA1851", "LGA1700", "LGA1200", "LGA115x", "AM5", "AM4"], radiatorMm: 360 },
+
     "b860m-aorus-elite-wifi6e": { category: "motherboard", socket: "LGA1851", chipset: "B860", formFactor: "Micro-ATX", memoryType: "DDR5", memorySlots: 4, maxMemoryGb: 256, m2Slots: 3, sataPorts: 4 },
     "b850-aorus-elite-wifi7": { category: "motherboard", socket: "AM5", chipset: "B850", formFactor: "ATX", memoryType: "DDR5", memorySlots: 4, maxMemoryGb: 256, m2Slots: 3, sataPorts: 4 },
 
