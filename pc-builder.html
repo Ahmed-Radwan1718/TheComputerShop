@@ -693,9 +693,15 @@
 
     .pc-builder-filter-panel {
       min-height: 0;
-      padding: 18px;
-      border-right: 1px solid rgba(255, 255, 255, 0.08);
-      background: rgba(255, 255, 255, 0.025);
+      margin: 16px 0 16px 16px;
+      padding: 14px;
+      border-radius: 26px;
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      background: rgba(24, 25, 24, 0.56);
+      box-shadow: 0 22px 55px rgba(0, 0, 0, 0.18);
+      display: grid;
+      gap: 8px;
+      align-content: start;
       overflow: auto;
       overscroll-behavior: contain;
       color-scheme: dark;
@@ -705,25 +711,28 @@
 
     .pc-builder-filter-search {
       display: grid;
-      gap: 8px;
-      margin-bottom: 16px;
+      gap: 10px;
+      padding: 10px 4px 8px;
     }
 
     .pc-builder-filter-search span,
     .pc-builder-filter-heading {
+      margin: 0;
+      padding: 0 10px;
       color: rgba(192, 154, 92, 0.84);
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 700;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
     }
 
     .pc-builder-filter-search input {
       width: 100%;
-      height: 48px;
-      padding: 0 16px;
+      height: 50px;
+      padding: 0 18px;
       border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.055);
       color: #ffffff;
       font-family: Arial, sans-serif;
       font-size: 14px;
@@ -746,78 +755,210 @@
     }
 
     .pc-builder-filter-panel .pc-builder-toggle {
+      position: relative;
       width: 100%;
-      min-height: 40px;
-      margin-bottom: 14px;
-      padding-bottom: 14px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      min-height: 44px;
+      margin: 0;
+      padding: 0 12px 0 22px;
+      border-radius: 14px;
+      color: rgba(255, 255, 255, 0.62);
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.4;
+      cursor: pointer;
+      user-select: none;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
       justify-content: flex-start;
+      gap: 0;
+      transition:
+        color 0.24s ease,
+        background 0.24s ease,
+        transform 0.24s ease;
+    }
+
+    .pc-builder-filter-panel .pc-builder-toggle::before {
+      content: "";
+      position: absolute;
+      left: 8px;
+      top: 10px;
+      bottom: 10px;
+      width: 2px;
+      border-radius: 999px;
+      background: rgba(192, 154, 92, 0.92);
+      opacity: 0;
+      transform: scaleY(0.35);
+      transform-origin: center;
+      transition:
+        opacity 0.24s ease,
+        transform 0.24s ease;
+    }
+
+    .pc-builder-filter-panel .pc-builder-toggle input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+      pointer-events: none;
+    }
+
+    .pc-builder-filter-panel .pc-builder-toggle:hover {
+      color: white;
+      background: rgba(255, 255, 255, 0.055);
+    }
+
+    .pc-builder-filter-panel .pc-builder-toggle:has(input:checked) {
+      color: rgba(192, 154, 92, 0.92);
+      background: rgba(192, 154, 92, 0.1);
+      transform: translateX(2px);
+    }
+
+    .pc-builder-filter-panel .pc-builder-toggle:has(input:checked)::before {
+      opacity: 1;
+      transform: scaleY(1);
     }
 
     .pc-builder-filter-groups {
       display: grid;
-      gap: 12px;
+      gap: 8px;
     }
 
     .pc-builder-filter-item {
-      border: 1px solid rgba(255, 255, 255, 0.105);
-      border-radius: 18px;
-      background: rgba(24, 25, 24, 0.56);
+      border: 0;
       overflow: hidden;
     }
 
     .pc-builder-filter-toggle {
       width: 100%;
-      min-height: 46px;
-      padding: 0 14px;
+      min-height: 48px;
+      padding: 0 16px;
       border: 0;
+      border-radius: 999px;
       background: transparent;
-      color: #ffffff;
-      font-family: Arial, sans-serif;
+      color: rgba(255, 255, 255, 0.62);
+      font-family: inherit;
       font-size: 12px;
       font-weight: 700;
-      text-align: left;
+      letter-spacing: 0.08em;
+      line-height: 1.2;
       text-transform: uppercase;
       cursor: pointer;
+      text-align: left;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
+      transition:
+        background 0.2s ease,
+        color 0.2s ease;
+    }
+
+    .pc-builder-filter-toggle:hover,
+    .pc-builder-filter-item.open .pc-builder-filter-toggle {
+      background: rgba(192, 154, 92, 0.1);
+      color: rgba(192, 154, 92, 0.92);
     }
 
     .pc-builder-filter-toggle .chevron {
+      width: 9px;
+      height: 9px;
+      border-right: 1.5px solid currentColor;
+      border-bottom: 1.5px solid currentColor;
+      transform: rotate(45deg);
       transition: transform 0.2s ease;
+      flex-shrink: 0;
+      margin-right: 4px;
+      font-size: 0;
     }
 
     .pc-builder-filter-item.open .chevron {
-      transform: rotate(180deg);
+      transform: rotate(225deg);
     }
 
     .pc-builder-filter-content {
-      display: none;
-      gap: 10px;
-      padding: 0 14px 14px;
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(-8px);
+      padding: 0 8px;
+      transition:
+        max-height 0.42s ease,
+        opacity 0.28s ease,
+        padding 0.42s ease;
     }
 
     .pc-builder-filter-item.open .pc-builder-filter-content {
-      display: grid;
+      max-height: 560px;
+      opacity: 1;
+      transform: translateY(0);
+      padding: 8px 8px 10px;
     }
 
     .pc-builder-filter-content label {
-      color: rgba(255, 255, 255, 0.68);
+      position: relative;
+      min-height: 40px;
+      margin: 0;
+      padding: 0 12px 0 22px;
+      border-radius: 14px;
+      color: rgba(255, 255, 255, 0.62);
       font-size: 13px;
-      line-height: 1.35;
+      font-weight: 700;
+      line-height: 1.4;
+      cursor: pointer;
+      user-select: none;
+      overflow: hidden;
       display: flex;
       align-items: center;
-      gap: 9px;
-      cursor: pointer;
+      transition:
+        color 0.24s ease,
+        background 0.24s ease,
+        transform 0.24s ease;
+    }
+
+    .pc-builder-filter-content label::before {
+      content: "";
+      position: absolute;
+      left: 8px;
+      top: 10px;
+      bottom: 10px;
+      width: 2px;
+      border-radius: 999px;
+      background: rgba(192, 154, 92, 0.92);
+      opacity: 0;
+      transform: scaleY(0.35);
+      transform-origin: center;
+      transition:
+        opacity 0.24s ease,
+        transform 0.24s ease;
     }
 
     .pc-builder-filter-content input {
-      accent-color: #c09a5c;
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+      pointer-events: none;
+    }
+
+    .pc-builder-filter-content label:hover {
+      color: white;
+      background: rgba(255, 255, 255, 0.055);
+    }
+
+    .pc-builder-filter-content label:has(input:checked) {
+      color: rgba(192, 154, 92, 0.92);
+      background: rgba(192, 154, 92, 0.1);
+      transform: translateX(2px);
+    }
+
+    .pc-builder-filter-content label:has(input:checked)::before {
+      opacity: 1;
+      transform: scaleY(1);
     }
 
     .pc-builder-filter-empty {
+      padding: 10px 14px;
       color: rgba(255, 255, 255, 0.56);
       font-size: 13px;
       line-height: 1.55;
@@ -825,17 +966,26 @@
 
     .pc-builder-filter-clear {
       width: 100%;
-      min-height: 42px;
-      margin-top: 14px;
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      min-height: 48px;
+      margin-top: 4px;
+      border: 0;
       border-radius: 999px;
-      background: rgba(24, 25, 24, 0.55);
-      color: #ffffff;
-      font-family: Arial, sans-serif;
+      background: transparent;
+      color: rgba(255, 255, 255, 0.62);
+      font-family: inherit;
       font-size: 12px;
       font-weight: 700;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
       cursor: pointer;
+      transition:
+        background 0.2s ease,
+        color 0.2s ease;
+    }
+
+    .pc-builder-filter-clear:hover {
+      background: rgba(192, 154, 92, 0.1);
+      color: rgba(192, 154, 92, 0.92);
     }
 
     .pc-builder-filter-clear[hidden] {
