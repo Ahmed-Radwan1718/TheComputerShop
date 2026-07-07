@@ -635,10 +635,34 @@
       color: rgba(255, 255, 255, 0.62);
     }
 
+    .pc-builder-part {
+      width: 100%;
+    }
+
+    .pc-builder-part-info {
+      min-width: 0;
+    }
+
+    .pc-builder-part-actions {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 0 0 auto;
+    }
+
+    .pc-builder-part-actions .pc-builder-link-button {
+      width: 82px;
+      flex: 0 0 82px;
+      justify-content: center;
+      white-space: nowrap;
+    }
+
     .pc-builder-gpu-stack {
+      width: 100%;
       display: grid;
       gap: 14px;
-      justify-items: start;
+      justify-items: stretch;
     }
 
     .pc-builder-stat,
@@ -1983,18 +2007,16 @@
         return '<tr><td class="pc-builder-category">' + escapeHtml(category.label) + '</td><td><span class="pc-builder-empty">No part selected</span></td><td class="pc-builder-price">-</td><td><div class="pc-builder-row-actions"><button class="pc-builder-link-button primary" type="button" data-choose="' + category.key + '">Choose</button></div></td></tr>';
       }
 
-      let selectionHtml = '<div class="pc-builder-part"><img src="' + escapeHtml(part.image) + '" alt=""><div><strong>' + escapeHtml(part.name) + '</strong><span>' + escapeHtml(part.meta) + '</span></div></div>';
+      let selectionHtml = '<div class="pc-builder-part"><img src="' + escapeHtml(part.image) + '" alt=""><div class="pc-builder-part-info"><strong>' + escapeHtml(part.name) + '</strong><span>' + escapeHtml(part.meta) + '</span></div><div class="pc-builder-part-actions"><a class="pc-builder-link-button" href="' + escapeHtml(part.url) + '">View</a><button class="pc-builder-link-button danger" type="button" data-remove="' + category.key + '">Remove</button></div></div>';
       let priceHtml = escapeHtml(part.price);
-      let actionsHtml = '<a class="pc-builder-link-button" href="' + escapeHtml(part.url) + '">View</a><button class="pc-builder-link-button danger" type="button" data-remove="' + category.key + '">Remove</button>';
+      let actionsHtml = "";
 
       if (multiPartCategoryKeys.includes(category.key)) {
         selectionHtml = '<div class="pc-builder-gpu-stack">' + selectionHtml;
 
         extraParts.forEach(function (extraPart, index) {
-          const itemNumber = index + 2;
-          selectionHtml += '<div class="pc-builder-part"><img src="' + escapeHtml(extraPart.image) + '" alt=""><div><strong>' + escapeHtml(extraPart.name) + '</strong><span>' + escapeHtml(extraPart.meta) + '</span></div></div>';
+          selectionHtml += '<div class="pc-builder-part"><img src="' + escapeHtml(extraPart.image) + '" alt=""><div class="pc-builder-part-info"><strong>' + escapeHtml(extraPart.name) + '</strong><span>' + escapeHtml(extraPart.meta) + '</span></div><div class="pc-builder-part-actions"><a class="pc-builder-link-button" href="' + escapeHtml(extraPart.url) + '">View</a><button class="pc-builder-link-button danger" type="button" data-remove-extra="' + category.key + '" data-extra-index="' + index + '">Remove</button></div></div>';
           priceHtml += '<br><span class="pc-builder-empty">+ ' + escapeHtml(extraPart.price) + '</span>';
-          actionsHtml += '<a class="pc-builder-link-button" href="' + escapeHtml(extraPart.url) + '">View ' + itemNumber + '</a><button class="pc-builder-link-button danger" type="button" data-remove-extra="' + category.key + '" data-extra-index="' + index + '">Remove ' + itemNumber + '</button>';
         });
 
         selectionHtml += '<button class="pc-builder-link-button primary" type="button" data-choose="' + category.key + '" data-extra-index="-1">+ Add Another ' + escapeHtml(getAdditionalLabel(category.key)) + '</button>';
@@ -2005,9 +2027,8 @@
         selectionHtml = '<div class="pc-builder-gpu-stack">' + selectionHtml;
 
         if (build.gpu2) {
-          selectionHtml += '<div class="pc-builder-part"><img src="' + escapeHtml(build.gpu2.image) + '" alt=""><div><strong>' + escapeHtml(build.gpu2.name) + '</strong><span>' + escapeHtml(build.gpu2.meta) + '</span></div></div>';
+          selectionHtml += '<div class="pc-builder-part"><img src="' + escapeHtml(build.gpu2.image) + '" alt=""><div class="pc-builder-part-info"><strong>' + escapeHtml(build.gpu2.name) + '</strong><span>' + escapeHtml(build.gpu2.meta) + '</span></div><div class="pc-builder-part-actions"><a class="pc-builder-link-button" href="' + escapeHtml(build.gpu2.url) + '">View</a><button class="pc-builder-link-button danger" type="button" data-remove="gpu2">Remove</button></div></div>';
           priceHtml += '<br><span class="pc-builder-empty">+ ' + escapeHtml(build.gpu2.price) + '</span>';
-          actionsHtml += '<a class="pc-builder-link-button" href="' + escapeHtml(build.gpu2.url) + '">View 2</a><button class="pc-builder-link-button danger" type="button" data-remove="gpu2">Remove 2</button>';
         } else {
           selectionHtml += '<button class="pc-builder-link-button primary" type="button" data-choose="gpu2">+ Add Another Video Card</button>';
         }
