@@ -912,9 +912,17 @@
     { key: "peripherals", label: "Peripherals", file: "accessories.html", required: false }
   ];
 
+  const multiPartCategoryLabels = {
+    memory: "RAM",
+    storage: "Storage",
+    peripherals: "Peripheral"
+  };
+  const multiPartCategoryKeys = Object.keys(multiPartCategoryLabels);
+
   const catalog = {};
   const state = {};
   let activeCategory = "";
+  let activeExtraIndex = null;
   let catalogLoaded = false;
 
   const rowsElement = document.getElementById("pc-builder-rows");
@@ -938,6 +946,50 @@
 
   function normalizeText(value) {
     return String(value || "").toLowerCase().replace(/\s+/g, " ").trim();
+  }
+
+  function getExtraStateKey(categoryKey) {
+    return categoryKey + "Extras";
+  }
+
+  function getExtraUrlKey(categoryKey) {
+    return categoryKey + "Extra";
+  }
+
+  function getExtraIds(categoryKey, values) {
+    const source = values || state;
+    const extras = source[getExtraStateKey(categoryKey)];
+    return Array.isArray(extras) ? extras.filter(Boolean) : [];
+  }
+
+  function getCatalogPart(categoryKey, id) {
+    return (catalog[categoryKey] || []).find(function (part) {
+      return part.id === id;
+    }) || null;
+  }
+
+  function getAdditionalParts(categoryKey, values) {
+    return getExtraIds(categoryKey, values).map(function (id) {
+      return getCatalogPart(categoryKey, id);
+    }).filter(Boolean);
+  }
+
+  function getBuildParts(build, categoryKey) {
+    const parts = [];
+
+    if (build[categoryKey]) {
+      parts.push(build[categoryKey]);
+    }
+
+    if (build.extraParts && Array.isArray(build.extraParts[categoryKey])) {
+      parts.push.apply(parts, build.extraParts[categoryKey]);
+    }
+
+    return parts;
+  }
+
+  function getAdditionalLabel(categoryKey) {
+    return multiPartCategoryLabels[categoryKey] || categoryKey;
   }
 
   function normalizeSocket(value) {
@@ -1121,6 +1173,11 @@
       }) || null;
     });
 
+    build.extraParts = {};
+    multiPartCategoryKeys.forEach(function (categoryKey) {
+      build.extraParts[categoryKey] = getAdditionalParts(categoryKey, source);
+    });
+
     build.gpu2 = (catalog.gpu || []).find(function (part) {
       return part.id === source.gpu2;
     }) || null;
@@ -1137,6 +1194,14 @@
       if (part && part.watts) {
         total += part.watts;
       }
+    });
+
+    multiPartCategoryKeys.forEach(function (categoryKey) {
+      (build.extraParts[categoryKey] || []).forEach(function (part) {
+        if (part && part.watts) {
+          total += part.watts;
+        }
+      });
     });
 
     if (build.gpu2 && build.gpu2.watts) {
@@ -1168,13 +1233,15 @@
       });
     }
 
-    if (build.memory && build.motherboard && build.memory.memoryType && build.memory.memoryType !== build.motherboard.memoryType) {
-      issues.push({
-        level: "bad",
-        parts: ["memory", "motherboard"],
-        text: "Memory type " + build.memory.memoryType + " does not match motherboard memory type " + build.motherboard.memoryType + "."
-      });
-    }
+    getBuildParts(build, "memory").forEach(function (memoryPart) {
+      if (memoryPart && build.motherboard && memoryPart.memoryType && memoryPart.memoryType !== build.motherboard.memoryType) {
+        issues.push({
+          level: "bad",
+          parts: ["memory", "motherboard"],
+          text: "Memory type " + memoryPart.memoryType + " does not match motherboard memory type " + build.motherboard.memoryType + "."
+        });
+      }
+    });
 
     if (build.motherboard && build.case && !build.case.supportsFormFactors.includes(build.motherboard.formFactor)) {
       issues.push({
@@ -1242,13 +1309,17 @@
 
     const build = getSelectedBuild();
     const issues = getCompatibilityIssues(build);
-    const selectedCount = categories.filter(function (category) { return Boolean(build[category.key]); }).length + (build.gpu2 ? 1 : 0);
+    const extraSelectedCount = multiPartCategoryKeys.reduce(function (sum, categoryKey) {
+      return sum + (build.extraParts[categoryKey] || []).length;
+    }, 0);
+    const selectedCount = categories.filter(function (category) { return Boolean(build[category.key]); }).length + extraSelectedCount + (build.gpu2 ? 1 : 0);
     const missingRequired = categories.some(function (category) { return category.required && !build[category.key]; });
     const hardIssue = issues.some(function (issue) { return issue.level === "bad"; });
     const warningIssue = issues.some(function (issue) { return issue.level === "warn"; });
 
     rowsElement.innerHTML = categories.map(function (category) {
       const part = build[category.key];
+      const extraParts = build.extraParts[category.key] || [];
 
       if (!part) {
         return '<tr><td class="pc-builder-category">' + escapeHtml(category.label) + '</td><td><span class="pc-builder-empty">No part selected</span></td><td class="pc-builder-price">-</td><td><div class="pc-builder-row-actions"><button class="pc-builder-link-button primary" type="button" data-choose="' + category.key + '">Choose</button></div></td></tr>';
@@ -1257,6 +1328,20 @@
       let selectionHtml = '<div class="pc-builder-part"><img src="' + escapeHtml(part.image) + '" alt=""><div><strong>' + escapeHtml(part.name) + '</strong><span>' + escapeHtml(part.meta) + '</span></div></div>';
       let priceHtml = escapeHtml(part.price);
       let actionsHtml = '<a class="pc-builder-link-button" href="' + escapeHtml(part.url) + '">View</a><button class="pc-builder-link-button" type="button" data-choose="' + category.key + '">Change</button><button class="pc-builder-link-button" type="button" data-remove="' + category.key + '">Remove</button>';
+
+      if (multiPartCategoryKeys.includes(category.key)) {
+        selectionHtml = '<div class="pc-builder-gpu-stack">' + selectionHtml;
+
+        extraParts.forEach(function (extraPart, index) {
+          const itemNumber = index + 2;
+          selectionHtml += '<div class="pc-builder-part"><img src="' + escapeHtml(extraPart.image) + '" alt=""><div><strong>' + escapeHtml(extraPart.name) + '</strong><span>' + escapeHtml(extraPart.meta) + '</span></div></div>';
+          priceHtml += '<br><span class="pc-builder-empty">+ ' + escapeHtml(extraPart.price) + '</span>';
+          actionsHtml += '<a class="pc-builder-link-button" href="' + escapeHtml(extraPart.url) + '">View ' + itemNumber + '</a><button class="pc-builder-link-button" type="button" data-choose="' + category.key + '" data-extra-index="' + index + '">Change ' + itemNumber + '</button><button class="pc-builder-link-button" type="button" data-remove-extra="' + category.key + '" data-extra-index="' + index + '">Remove ' + itemNumber + '</button>';
+        });
+
+        selectionHtml += '<button class="pc-builder-link-button primary" type="button" data-choose="' + category.key + '" data-extra-index="-1">+ Add Another ' + escapeHtml(getAdditionalLabel(category.key)) + '</button>';
+        selectionHtml += '</div>';
+      }
 
       if (category.key === "gpu") {
         selectionHtml = '<div class="pc-builder-gpu-stack">' + selectionHtml;
@@ -1277,13 +1362,30 @@
 
     rowsElement.querySelectorAll("[data-choose]").forEach(function (button) {
       button.addEventListener("click", function () {
-        openChooser(button.dataset.choose);
+        const extraIndex = button.hasAttribute("data-extra-index") ? Number(button.dataset.extraIndex) : null;
+        openChooser(button.dataset.choose, extraIndex);
       });
     });
 
     rowsElement.querySelectorAll("[data-remove]").forEach(function (button) {
       button.addEventListener("click", function () {
         state[button.dataset.remove] = "";
+
+        if (multiPartCategoryKeys.includes(button.dataset.remove)) {
+          state[getExtraStateKey(button.dataset.remove)] = [];
+        }
+
+        saveState();
+        render();
+      });
+    });
+
+    rowsElement.querySelectorAll("[data-remove-extra]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        const categoryKey = button.dataset.removeExtra;
+        const extras = getExtraIds(categoryKey).slice();
+        extras.splice(Number(button.dataset.extraIndex), 1);
+        state[getExtraStateKey(categoryKey)] = extras;
         saveState();
         render();
       });
@@ -1305,10 +1407,18 @@
     const wattage = estimateWattage(build);
     document.getElementById("pc-builder-wattage").textContent = selectedCount ? wattage + "W" : "0W";
 
-    const total = categories.reduce(function (sum, category) {
+    const baseTotal = categories.reduce(function (sum, category) {
       const part = build[category.key];
       return sum + (part ? priceToNumber(part.price) : 0);
-    }, 0) + (build.gpu2 ? priceToNumber(build.gpu2.price) : 0);
+    }, 0);
+
+    const extraTotal = multiPartCategoryKeys.reduce(function (sum, categoryKey) {
+      return sum + (build.extraParts[categoryKey] || []).reduce(function (extraSum, part) {
+        return extraSum + priceToNumber(part.price);
+      }, 0);
+    }, 0);
+
+    const total = baseTotal + extraTotal + (build.gpu2 ? priceToNumber(build.gpu2.price) : 0);
 
     document.getElementById("pc-builder-total").textContent = total ? total.toLocaleString("en-US") + " EGP" : "Pending prices";
 
@@ -1329,12 +1439,18 @@
     updateUrl();
   }
 
-  function openChooser(categoryKey) {
+  function openChooser(categoryKey, extraIndex) {
     activeCategory = categoryKey;
+    activeExtraIndex = Number.isFinite(extraIndex) ? extraIndex : null;
     const catalogCategoryKey = categoryKey === "gpu2" ? "gpu" : categoryKey;
     const category = categories.find(function (item) { return item.key === catalogCategoryKey; });
+    const isExtraChoice = activeExtraIndex !== null;
 
-    modalTitle.textContent = categoryKey === "gpu2" ? "Add Another Video Card" : "Choose " + category.label;
+    modalTitle.textContent = categoryKey === "gpu2"
+      ? "Add Another Video Card"
+      : isExtraChoice
+        ? (activeExtraIndex >= 0 ? "Change Additional " : "Add Another ") + getAdditionalLabel(categoryKey)
+        : "Choose " + category.label;
     searchInput.value = "";
     compatibleOnlyInput.checked = true;
     modal.classList.add("open");
@@ -1348,6 +1464,7 @@
     modal.classList.remove("open");
     modal.setAttribute("aria-hidden", "true");
     activeCategory = "";
+    activeExtraIndex = null;
   }
 
   function renderChooser() {
@@ -1383,7 +1500,20 @@
 
     modalList.querySelectorAll("[data-pick]").forEach(function (button) {
       button.addEventListener("click", function () {
-        state[activeCategory] = button.dataset.pick;
+        if (activeExtraIndex !== null) {
+          const extras = getExtraIds(activeCategory).slice();
+
+          if (activeExtraIndex >= 0) {
+            extras[activeExtraIndex] = button.dataset.pick;
+          } else {
+            extras.push(button.dataset.pick);
+          }
+
+          state[getExtraStateKey(activeCategory)] = extras;
+        } else {
+          state[activeCategory] = button.dataset.pick;
+        }
+
         saveState();
         closeChooser();
         render();
@@ -1403,6 +1533,12 @@
       state[category.key] = params.get(category.key) || saved[category.key] || "";
     });
 
+    multiPartCategoryKeys.forEach(function (categoryKey) {
+      const savedExtras = Array.isArray(saved[getExtraStateKey(categoryKey)]) ? saved[getExtraStateKey(categoryKey)].filter(Boolean) : [];
+      const urlExtras = params.getAll(getExtraUrlKey(categoryKey)).filter(Boolean);
+      state[getExtraStateKey(categoryKey)] = urlExtras.length ? urlExtras : savedExtras;
+    });
+
     state.gpu2 = params.get("gpu2") || saved.gpu2 || "";
 
     if (!state.gpu && state.gpu2) {
@@ -1418,6 +1554,12 @@
       if (state[category.key]) {
         params.set(category.key, state[category.key]);
       }
+    });
+
+    multiPartCategoryKeys.forEach(function (categoryKey) {
+      getExtraIds(categoryKey).forEach(function (id) {
+        params.append(getExtraUrlKey(categoryKey), id);
+      });
     });
 
     if (state.gpu2) {
@@ -1466,7 +1608,12 @@
       state[category.key] = "";
     });
 
+    multiPartCategoryKeys.forEach(function (categoryKey) {
+      state[getExtraStateKey(categoryKey)] = [];
+    });
+
     state.gpu2 = "";
+
 
     saveState();
     render();
