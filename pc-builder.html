@@ -2376,9 +2376,7 @@
 
       const cpuSupport = motherboardSupportsCpu(build.cpu, build.motherboard);
 
-      if (cpuSupport === null) {
-        addMissingDataIssue(issues, build.motherboard, "CPU generation support", ["cpu", "motherboard"]);
-      } else if (cpuSupport === false) {
+      if (cpuSupport === false) {
         addCompatibilityIssue(issues, "error", "CPU generation unsupported", build.motherboard.name + " does not list support for " + (build.cpu.generation || build.cpu.name) + ".", ["cpu", "motherboard"]);
       }
 
