@@ -526,9 +526,10 @@
       gap: 24px;
     }
 
-    .pc-builder-issues-panel {
-      width: min(1280px, 100%);
-      margin: 24px auto 0;
+    .pc-builder-main-column {
+      min-width: 0;
+      display: grid;
+      gap: 24px;
     }
 
     .pc-builder-panel,
@@ -1267,32 +1268,44 @@
   </section>
 
   <section class="pc-builder-shell">
-    <div class="pc-builder-panel">
-      <div class="pc-builder-toolbar">
-        <h2>Choose Your Parts</h2>
-        <div class="pc-builder-actions">
-          <button class="pc-builder-button secondary" type="button" id="pc-builder-copy-link">Copy Link</button>
-          <button class="pc-builder-button secondary" type="button" id="pc-builder-reset">Start Over</button>
+    <div class="pc-builder-main-column">
+      <div class="pc-builder-panel">
+        <div class="pc-builder-toolbar">
+          <h2>Choose Your Parts</h2>
+          <div class="pc-builder-actions">
+            <button class="pc-builder-button secondary" type="button" id="pc-builder-copy-link">Copy Link</button>
+            <button class="pc-builder-button secondary" type="button" id="pc-builder-reset">Start Over</button>
+          </div>
+        </div>
+
+        <div class="pc-builder-table-wrap">
+          <table class="pc-builder-table">
+            <thead>
+              <tr>
+                <th>Component</th>
+                <th>Selection</th>
+                <th>Price</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="pc-builder-rows">
+              <tr>
+                <td colspan="4" class="pc-builder-empty">Loading store components...</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
-      <div class="pc-builder-table-wrap">
-        <table class="pc-builder-table">
-          <thead>
-            <tr>
-              <th>Component</th>
-              <th>Selection</th>
-              <th>Price</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody id="pc-builder-rows">
-            <tr>
-              <td colspan="4" class="pc-builder-empty">Loading store components...</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <section class="pc-builder-issues-panel" aria-labelledby="pc-builder-issues-title">
+        <div class="pc-builder-summary-header">
+          <h2 id="pc-builder-issues-title">Potential Issues</h2>
+        </div>
+
+        <div class="pc-builder-summary-body">
+          <div class="pc-builder-issues" id="pc-builder-issues"></div>
+        </div>
+      </section>
     </div>
 
     <aside class="pc-builder-summary">
@@ -1314,6 +1327,7 @@
       </div>
     </aside>
   </section>
+</main>
 
   <section class="pc-builder-issues-panel" aria-labelledby="pc-builder-issues-title">
     <div class="pc-builder-summary-header">
