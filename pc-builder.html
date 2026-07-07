@@ -293,6 +293,31 @@
       gap: 10px;
     }
 
+    .pc-builder-save-actions {
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .pc-builder-save-actions .pc-builder-button {
+      width: 100%;
+    }
+
+    .pc-builder-save-message {
+      min-height: 18px;
+      color: rgba(255, 255, 255, 0.62);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .pc-builder-save-message.success {
+      color: #8ff0c2;
+    }
+
+    .pc-builder-save-message.error {
+      color: #ffaaaa;
+    }
+
     .pc-builder-issue {
       padding: 12px;
       border-radius: 6px;
@@ -1275,6 +1300,11 @@
         </div>
 
         <div class="pc-builder-issues" id="pc-builder-issues"></div>
+
+        <div class="pc-builder-save-actions">
+          <button class="pc-builder-button secondary" type="button" id="pc-builder-save-build">Save Build</button>
+          <p class="pc-builder-save-message" id="pc-builder-save-message" aria-live="polite"></p>
+        </div>
       </div>
     </aside>
   </section>
@@ -1348,6 +1378,8 @@
   const compatibleOnlyInput = document.getElementById("pc-builder-compatible-only");
   const filterGroupsElement = document.getElementById("pc-builder-filter-groups");
   const clearFiltersButton = document.getElementById("pc-builder-clear-filters");
+  const saveBuildButton = document.getElementById("pc-builder-save-build");
+  const saveBuildMessage = document.getElementById("pc-builder-save-message");
 
   function escapeHtml(value) {
     return String(value || "").replace(/[&<>"']/g, function (character) {
@@ -1987,6 +2019,95 @@
     return Number.isFinite(number) && number > 0 ? number : 0;
   }
 
+  function showSaveBuildMessage(message, type) {
+    if (!saveBuildMessage) {
+      return;
+    }
+
+    saveBuildMessage.textContent = message || "";
+    saveBuildMessage.className = "pc-builder-save-message";
+
+    if (type) {
+      saveBuildMessage.classList.add(type);
+    }
+  }
+
+  function getBuildSaveParts(build) {
+    const parts = [];
+
+    categories.forEach(function (category) {
+      if (build[category.key]) {
+        parts.push(build[category.key]);
+      }
+    });
+
+    multiPartCategoryKeys.forEach(function (categoryKey) {
+      parts.push.apply(parts, build.extraParts[categoryKey] || []);
+    });
+
+    if (build.gpu2) {
+      parts.push(build.gpu2);
+    }
+
+    return parts.filter(Boolean);
+  }
+
+  function getSavedBuildPayload() {
+    const build = getSelectedBuild();
+    const parts = getBuildSaveParts(build);
+
+    if (!parts.length) {
+      return null;
+    }
+
+    updateUrl();
+
+    const totalText = document.getElementById("pc-builder-total").textContent || "Pending prices";
+    const mainParts = [build.cpu, build.gpu].filter(Boolean).map(function (part) {
+      return part.name;
+    }).slice(0, 2).join(" + ");
+    const buildName = mainParts ? "PC Build - " + mainParts : "Saved PC Build";
+
+    return {
+      id: "pc-build-" + Date.now(),
+      name: buildName,
+      category: "Saved Build",
+      price: totalText,
+      priceText: totalText,
+      image: "lightning.png",
+      url: "pc-builder.html" + window.location.search
+    };
+  }
+
+  async function saveCurrentBuildToAccount() {
+    const buildPayload = getSavedBuildPayload();
+
+    if (!buildPayload) {
+      throw new Error("Choose at least one part before saving this build.");
+    }
+
+    const response = await fetch("/api/saved-items", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        product: buildPayload
+      })
+    });
+
+    const data = await response.json().catch(function () {
+      return {};
+    });
+
+    if (!response.ok) {
+      throw new Error(data.error || "Log in to save this build.");
+    }
+
+    return data;
+  }
+
   function render() {
     if (!catalogLoaded) {
       return;
@@ -2396,6 +2517,26 @@
     saveState();
     render();
   });
+
+  if (saveBuildButton) {
+    saveBuildButton.addEventListener("click", async function () {
+      const originalText = this.textContent;
+      this.disabled = true;
+      this.textContent = "Saving...";
+      showSaveBuildMessage("", "");
+
+      try {
+        await saveCurrentBuildToAccount();
+        this.textContent = "Saved";
+        showSaveBuildMessage("Build saved to your account.", "success");
+        window.setTimeout(() => { this.textContent = originalText; this.disabled = false; }, 1200);
+      } catch (error) {
+        this.textContent = originalText;
+        this.disabled = false;
+        showSaveBuildMessage(error.message || "Could not save this build.", "error");
+      }
+    });
+  }
 
   document.getElementById("pc-builder-copy-link").addEventListener("click", async function () {
     try {
