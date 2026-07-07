@@ -7,6 +7,7 @@ window.TCS_COMPATIBILITY = (function () {
     "amd-ryzen-9-9900x3d": { category: "cpu", socket: "AM5", memoryType: "DDR5", tdpW: 120, hasIntegratedGraphics: true },
     "amd-ryzen-9-9950x": { category: "cpu", socket: "AM5", memoryType: "DDR5", tdpW: 170, hasIntegratedGraphics: true },
     "amd-ryzen-9-9950x3d": { category: "cpu", socket: "AM5", memoryType: "DDR5", tdpW: 170, hasIntegratedGraphics: true },
+    "amd-ryzen-9-9950x3d2-dual-edition": { category: "cpu", socket: "AM5", memoryType: "DDR5", tdpW: 200, hasIntegratedGraphics: true },
 
     "intel-core-ultra-5-245k": { category: "cpu", socket: "LGA1851", memoryType: "DDR5", tdpW: 125, maxTurboW: 159, hasIntegratedGraphics: true },
     "intel-core-ultra-7-265k": { category: "cpu", socket: "LGA1851", memoryType: "DDR5", tdpW: 125, maxTurboW: 250, hasIntegratedGraphics: true },
