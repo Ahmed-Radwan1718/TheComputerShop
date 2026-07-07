@@ -734,11 +734,32 @@
           <article class="account-panel" id="account-panel-saved">
             <div class="account-panel-header">
               <h2>Saved Items</h2>
-              <p>Products you save for later are synced to your account and will appear on every device you sign in from.</p>
+              <p>Products and PC builds you save are synced to your account and will appear on every device you sign in from.</p>
             </div>
 
             <div class="account-saved-loading" id="account-saved-loading">
               Loading saved items...
+            </div>
+
+            <div class="account-panel-subheader">
+              <div>
+                <h3>Saved Builds</h3>
+                <p>PC Builder configurations you saved for later.</p>
+              </div>
+            </div>
+
+            <div class="account-saved-list" id="account-saved-builds-list"></div>
+
+            <div class="account-empty-state" id="account-saved-builds-empty">
+              <h3>No saved builds yet</h3>
+              <p>Open PC Builder and press Save Build to keep a configuration here.</p>
+            </div>
+
+            <div class="account-panel-subheader">
+              <div>
+                <h3>Saved Products</h3>
+                <p>Products you saved from product pages.</p>
+              </div>
             </div>
 
             <div class="account-saved-list" id="account-saved-list"></div>
@@ -1270,6 +1291,8 @@ const passwordMessage = document.getElementById("password-message");
   const removeTrustedDeviceMessage = document.getElementById("remove-trusted-device-message");
 
   const savedItemsLoading = document.getElementById("account-saved-loading");
+  const savedBuildsList = document.getElementById("account-saved-builds-list");
+  const savedBuildsEmpty = document.getElementById("account-saved-builds-empty");
   const savedItemsList = document.getElementById("account-saved-list");
   const savedItemsEmpty = document.getElementById("account-saved-empty");
   const savedItemsMessage = document.getElementById("saved-items-message");
@@ -2468,21 +2491,51 @@ async function deleteServerSavedItem(savedItemId) {
 }
 
 function renderSavedItems(items) {
-  if (!savedItemsList || !savedItemsEmpty || !savedItemsLoading) {
+  if (!savedItemsList || !savedItemsEmpty || !savedItemsLoading || !savedBuildsList || !savedBuildsEmpty) {
     return;
   }
 
   savedItemsLoading.hidden = true;
 
-  if (!items.length) {
-    savedItemsList.innerHTML = "";
-    savedItemsEmpty.hidden = false;
-    return;
-  }
+  const savedBuildItems = items.filter(function (item) {
+    return item.category === "Saved Build";
+  });
 
-  savedItemsEmpty.hidden = true;
+  const savedProductItems = items.filter(function (item) {
+    return item.category !== "Saved Build";
+  });
 
-  savedItemsList.innerHTML = items.map(function (item) {
+  savedBuildsList.innerHTML = savedBuildItems.map(function (item) {
+    const image = item.image || "lightning.png";
+    const name = item.name || "Saved PC Build";
+    const priceText = item.priceText || "Pending prices";
+    const url = item.url || "pc-builder.html";
+
+    return `
+      <article class="account-saved-item">
+        <a class="account-saved-item-main" href="${escapeHtml(url)}">
+          <div class="account-saved-item-image-frame">
+            <img src="${escapeHtml(image)}" alt="${escapeHtml(name)}" loading="lazy" decoding="async">
+          </div>
+
+          <div class="account-saved-item-info">
+            <span>Saved Build</span>
+            <h3>${escapeHtml(name)}</h3>
+            <p>Open this saved PC Builder configuration.</p>
+            <strong>${escapeHtml(priceText)}</strong>
+          </div>
+        </a>
+
+        <button class="account-saved-remove-button" type="button" data-remove-saved-id="${escapeHtml(item.docId)}">
+          Remove
+        </button>
+      </article>
+    `;
+  }).join("");
+
+  savedBuildsEmpty.hidden = Boolean(savedBuildItems.length);
+
+  savedItemsList.innerHTML = savedProductItems.map(function (item) {
     const image = item.image || "";
     const name = item.name || "Saved product";
     const category = item.category || "Product";
@@ -2511,18 +2564,22 @@ function renderSavedItems(items) {
       </article>
     `;
   }).join("");
+
+  savedItemsEmpty.hidden = Boolean(savedProductItems.length);
 }
 
 async function startSavedItemsSync(uid) {
   stopSavedItemsSync();
 
-  if (!savedItemsList || !savedItemsEmpty || !savedItemsLoading) {
+  if (!savedItemsList || !savedItemsEmpty || !savedItemsLoading || !savedBuildsList || !savedBuildsEmpty) {
     return;
   }
 
   savedItemsLoading.hidden = false;
   savedItemsEmpty.hidden = true;
+  savedBuildsEmpty.hidden = true;
   savedItemsList.innerHTML = "";
+  savedBuildsList.innerHTML = "";
   showMessage(savedItemsMessage, "", "");
 
   try {
@@ -2532,6 +2589,7 @@ async function startSavedItemsSync(uid) {
     savedItems = [];
     savedItemsLoading.hidden = true;
     savedItemsEmpty.hidden = false;
+    savedBuildsEmpty.hidden = false;
     showMessage(savedItemsMessage, error.message || "Could not load saved items. Please refresh and try again.", "error");
   }
 }
@@ -7058,8 +7116,12 @@ if (!requestedEmail) {
     });
   }
 
-  if (savedItemsList) {
-    savedItemsList.addEventListener("click", async function (event) {
+  [savedItemsList, savedBuildsList].forEach(function (savedList) {
+    if (!savedList) {
+      return;
+    }
+
+    savedList.addEventListener("click", async function (event) {
       const removeButton = event.target.closest("[data-remove-saved-id]");
 
       if (!removeButton || !currentUser) {
