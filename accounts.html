@@ -7152,7 +7152,7 @@ if (!requestedEmail) {
         showMessage(savedItemsMessage, error.message || "Could not remove this saved item. Please try again.", "error");
       }
     });
-  }
+  });
 
   logoutButton.addEventListener("click", async function () {
     stopSavedItemsSync();
