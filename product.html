@@ -921,6 +921,7 @@
       }),
       whoIsThisFor: "A value-focused 12GB graphics card for 1080p and 1440p gaming, everyday creator workloads, streaming, and users who want modern Intel Arc features with strong VRAM capacity.",
       specs: [
+        // Official source: https://www.intel.com/content/www/us/en/products/sku/241598/intel-arc-b580-graphics/specifications.html
         ["Product Name", "Intel Arc B580 Graphics 12GB"],
         ["Brand", "Intel"],
         ["GPU Model", "Intel Arc B580"],
@@ -929,12 +930,16 @@
         ["Ray Tracing Units", "20"],
         ["XMX Engines", "160"],
         ["Graphics Clock", "2670 MHz"],
+        ["Card Bus", "PCIe 4.0 x8"],
         ["Memory Size", "12GB"],
         ["Memory Type", "GDDR6"],
         ["Memory Speed", "19Gbps"],
         ["Memory Bus", "192-bit"],
         ["Memory Bandwidth", "456GB/s"],
         ["Total Board Power", "190W"],
+        ["Card Size", "272 x 115 mm"],
+        ["Slot Size", "2"],
+        ["Recommended PSU", "600W"],
         ["Power Connector", "1 x 8-pin"],
         ["Use Case", "1080p and 1440p gaming, streaming, and everyday creator workloads"]
       ],
@@ -1012,6 +1017,7 @@
       }),
       whoIsThisFor: "High-end graphics performance for 4K gaming, streaming, rendering, AI workloads, and premium creator systems that need strong cooling and 16GB of GDDR7 memory.",
       specs: [
+        // TODO: Confirm Card Size and Slot Size from the official Gigabyte specification page before adding compatibility values.
         ["Product Name", "AORUS GeForce RTX 5080 MASTER 16G"],
         ["Graphics Processing", "GeForce RTX 5080"],
         ["CUDA Cores", "10,752"],
@@ -5259,6 +5265,7 @@ images: Array.from({ length: 8 }, (_, index) => {
       }),
       whoIsThisFor: "A premium ZOTAC RTX 5080 graphics card for high-end 4K gaming, high-refresh 1440p gaming, streaming, rendering, AI-assisted creator work, and showcase builds that need 16GB of GDDR7 memory, strong cooling, DLSS 4 support, and a bold infinity mirror design.",
       specs: [
+        // Official source: https://www.zotac.com/us/product/graphics_card/zotac-gaming-geforce-rtx-5080-amp-extreme-infinity
         ["Product Name", "ZOTAC Gaming GeForce RTX 5080 AMP Extreme INFINITY"],
         ["Brand", "ZOTAC Gaming"],
         ["Graphic Engine", "NVIDIA GeForce RTX 5080"],
@@ -5272,10 +5279,12 @@ images: Array.from({ length: 8 }, (_, index) => {
         ["Cooling", "Vapor chamber cooling"],
         ["Design Features", "Infinity mirror front design, reinforced mid-frame"],
         ["NVIDIA Features", "DLSS 4, Ray Tracing, AI acceleration"],
-        ["Power Connector", "16-pin"],
+        ["Power Consumption", "360W"],
+        ["Power Connector", "1 x 12v-2x6 power input"],
         ["Recommended PSU", "850W"],
+        ["Card Length", "332.1mm x 137.5mm x 69.6mm"],
         ["Display Outputs", "1× HDMI, 3× DisplayPort"],
-        ["Slot Size", "3.5-slot"]
+        ["Slot Size", "3.5"]
       ],
       included: [
         {
@@ -5894,19 +5903,22 @@ images: Array.from({ length: 8 }, (_, index) => {
       }),
       whoIsThisFor: "A clean white AMD X870 motherboard for AM5 Ryzen builds that need hidden-connector styling, Wi-Fi 7, 5GbE LAN, USB4, PCIe 5.0 graphics, and strong storage support.",
       specs: [
+        // Official source: https://www.gigabyte.com/Motherboard/X870-AORUS-STEALTH-ICE-rev-10/sp
         ["Product Name", "X870 AORUS STEALTH ICE"],
         ["CPU Socket", "AMD Socket AM5"],
         ["CPU Support", "AMD Ryzen 9000 / 8000 / 7000 Series Processors"],
         ["Chipset", "AMD X870"],
-        ["Memory Support", "DDR5 with EXPO and overclocking support"],
-        ["Memory Capacity", "4x DDR5 DIMM"],
+        ["Memory Support", "DDR5 up to 8200 MT/s OC"],
+        ["Memory Capacity", "4x DDR5 DIMM, up to 256GB"],
         ["Memory Architecture", "Dual Channel"],
         ["Main PCIe Slot", "1x PCIe 5.0 x16"],
         ["Additional PCIe Slot", "1x PCIe 4.0 x16 running at x4"],
         ["Storage", "4x M.2, 2x SATA 6Gb/s"],
         ["LAN", "Realtek 5GbE"],
         ["Wireless", "Wi-Fi 7, Bluetooth 5.4"],
-        ["USB-C / USB4", "2x rear USB4 Type-C"],
+        ["USB-C / USB4", "2x rear USB4 Type-C, 1x internal USB-C 3.2 Gen 2x2 header"],
+        ["Internal USB Headers", "1x internal USB-C 3.2 Gen 2x2 header, 1x internal USB 3.2 Gen 1 header, 2x internal USB 2.0 headers"],
+        ["Front Panel Audio Header", "1x front panel audio header"],
         ["Display Outputs", "HDMI, USB4 DisplayPort output"],
         ["Audio", "Realtek ALC1220"],
         ["Form Factor", "ATX, 30.5cm x 24.4cm"],
@@ -6045,17 +6057,20 @@ images: Array.from({ length: 8 }, (_, index) => {
       }),
       whoIsThisFor: "A white AM5 motherboard for Ryzen gaming and productivity builds that need Wi-Fi 7, DDR5 support, PCIe 5.0 graphics, fast M.2 storage, and a clean ICE-themed ATX platform.",
       specs: [
+        // Official source: https://www.gigabyte.com/Motherboard/B850-AORUS-ELITE-WIFI7-ICE-rev-1x/sp
         ["Product Name", "B850 AORUS ELITE WIFI7 ICE"],
         ["CPU Socket", "AMD Socket AM5"],
         ["CPU Support", "AMD Ryzen 9000 / 8000 / 7000 Series Processors"],
         ["Chipset", "AMD B850"],
-        ["Memory Support", "DDR5"],
-        ["Memory Capacity", "4× DDR5 DIMM"],
+        ["Memory Support", "DDR5 up to 8200 MT/s OC"],
+        ["Memory Capacity", "4× DDR5 DIMM, up to 256GB"],
         ["Memory Architecture", "Dual Channel"],
         ["Main PCIe Slot", "1× PCIe 5.0 x16"],
-        ["Storage", "3× M.2 including PCIe 5.0 x4"],
+        ["Storage", "3× M.2, 4× SATA 6Gb/s"],
         ["LAN", "2.5GbE"],
         ["Wireless", "Wi-Fi 7, Bluetooth 5.4"],
+        ["Internal USB Headers", "1x internal USB-C 3.2 Gen 2x2 header, 1x internal USB 3.2 Gen 1 header, 2x internal USB 2.0 headers"],
+        ["Front Panel Audio Header", "1x front panel audio header"],
         ["Audio", "8-channel HD Audio"],
         ["Style", "White ICE design"],
         ["Form Factor", "ATX"]
@@ -6247,22 +6262,25 @@ images: Array.from({ length: 8 }, (_, index) => {
       }),
       whoIsThisFor: "A strong choice for modern Intel Core Ultra gaming and productivity builds that need DDR5 support, Wi-Fi 6E, PCIe 5.0 graphics, multiple M.2 SSD slots, and a compact Micro-ATX footprint.",
       specs: [
+        // Official source: https://www.gigabyte.com/Motherboard/B860M-AORUS-ELITE-WIFI6E/sp
         ["Product Name", "B860M AORUS ELITE WIFI6E"],
         ["CPU Socket", "LGA1851"],
         ["CPU Support", "Intel Core Ultra Processors Series 2"],
         ["Chipset", "Intel B860"],
-        ["Memory Support", "DDR5"],
-        ["Memory Slots", "4× DDR5 DIMM"],
+        ["Memory Support", "DDR5 up to 9200 MT/s OC"],
+        ["Memory Slots", "4× DDR5 DIMM, up to 256GB"],
         ["Memory Architecture", "Dual Channel"],
         ["Main PCIe Slot", "1× PCIe 5.0 x16"],
         ["Additional PCIe Slot", "1× PCIe 4.0 x4"],
         ["Storage", "3× M.2, 4× SATA 6Gb/s"],
         ["LAN", "2.5GbE LAN"],
         ["Wireless", "Wi-Fi 6E"],
-        ["USB-C", "USB4 Type-C with DP-Alt"],
+        ["USB-C", "USB4 Type-C with DP-Alt, internal USB-C 3.2 Gen 2 header"],
+        ["Internal USB Headers", "1x internal USB-C 3.2 Gen 2 header, 1x internal USB 3.2 Gen 1 header, 2x internal USB 2.0 headers"],
+        ["Front Panel Audio Header", "1x front panel audio header"],
         ["Display Outputs", "DisplayPort, HDMI"],
         ["Audio", "8-channel HD Audio"],
-        ["Form Factor", "Micro-ATX"]
+        ["Form Factor", "Micro-ATX, 24.4cm x 24.4cm"]
       ],
       included: [
         {
@@ -7153,6 +7171,7 @@ text: "The ASUS ProArt is included as a complete configured PC build using the l
       ],
       whoIsThisFor: "For high-end builds that need a spacious showcase case with flexible layout options and strong cooling support.",
       specs: [
+        // Official source: https://lian-li.com/product/o11-dynamic-evo-xl/
         ["Product Name", "Lian Li O11 Dynamic EVO XL"],
         ["Case Type", "Tower Chassis"],
         ["Material", "Steel, 4.0mm Tempered Glass, Aluminum"],
@@ -7164,8 +7183,8 @@ text: "The ASUS ProArt is included as a complete configured PC build using the l
         ["Maximum CPU Cooler Height", "167mm"],
         ["Power Supply Support", "ATX under 220mm"],
         ["Fan Support", "Top 3× 120/140mm, Side 3× 120/140mm, Bottom 3× 120/140mm, Rear up to 2× 120mm"],
-        ["Radiator Support", "Top, side, and bottom up to 420mm"],
-        ["Front I/O", "Power button, reset button, audio, USB ports, and Type-C support"],
+        ["Radiator Support", "Top 360/420/240/280mm, side 360/420/240/280mm, bottom 360/420/240/280mm"],
+        ["Front I/O", "1× power button, 1× reset button, 4× USB 3.0, 1× USB Type-C, 1× audio, LED color and mode buttons"],
         ["Layout", "Adjustable motherboard tray with multiple height positions"]
       ],
       included: [
@@ -7202,14 +7221,21 @@ text: "The ASUS ProArt is included as a complete configured PC build using the l
       }),
       whoIsThisFor: "For high-end ASUS ROG builds that need a panoramic showcase case, E-ATX support, BTF motherboard compatibility, a built-in 9.2-inch LCD screen module, and strong cooling support.",
       specs: [
+        // Official source: https://rog.asus.com/cases/rog-cronox/
         ["Product Name", "ROG Cronox"],
-        ["Case Size", "EATX Panoramic Case"],
+        ["Case Size", "Full-Tower Panoramic Case"],
         ["Brand", "ASUS ROG"],
-        ["Motherboard Support", "EATX, ATX, Micro-ATX, Mini-ITX"],
-        ["BTF Motherboard Support", "Yes"],
+        ["Motherboard Support", "E-ATX, ATX, Micro-ATX, Mini-ITX"],
+        ["BTF Motherboard Support", "ASUS ATX BTF motherboard support"],
         ["Drive Bays", "1× 3.5-inch + 2× 2.5-inch or 4× 2.5-inch"],
         ["Maximum GPU Length", "400mm"],
-        ["Radiator Support", "Up to dual 360mm radiators"],
+        ["Maximum CPU Cooler Height", "180mm"],
+        ["Maximum PSU Length", "200mm"],
+        ["Power Supply Support", "ATX up to 200mm"],
+        ["Radiator Support", "Top 120/240/360mm, side 120/240/360mm, rear 120mm"],
+        ["Fan Support", "Up to 14× 120mm fans"],
+        ["Front I/O", "2× USB 20Gbps Type-C, 4× USB 5Gbps Type-A, audio input/output jacks"],
+        // TODO: Confirm expansion slot count from an official ASUS ROG specification row before adding.
         ["Display", "9.2-inch LCD screen module"],
         ["Lighting", "ARGB / Aura Sync"],
         ["Style", "Panoramic glass showcase design"]
@@ -7248,6 +7274,7 @@ text: "The ASUS ProArt is included as a complete configured PC build using the l
       }),
       whoIsThisFor: "For high-end builds that need strong airflow, clean cable management, dual-chamber layout, and wide cooling flexibility.",
       specs: [
+        // Official source: https://www.corsair.com/us/en/p/pc-cases/cc-9011259-ww/6500d-airflow-mid-tower-dual-chamber-pc-case-black-cc-9011259-ww
         ["Product Name", "6500D AIRFLOW Mid-Tower Dual Chamber PC Case - Black"],
         ["Case Size", "Mid-Tower"],
         ["Color", "Black"],
@@ -7257,11 +7284,14 @@ text: "The ASUS ProArt is included as a complete configured PC build using the l
         ["Maximum GPU Length", "400mm"],
         ["Maximum CPU Cooler Height", "190mm"],
         ["Maximum PSU Length", "225mm"],
+        ["Power Supply Support", "ATX"],
         ["Radiator Compatibility", "120mm, 140mm, 240mm, 280mm, 360mm"],
+        ["Radiator Support", "Top 360/280/240mm, front 360/280/240mm, bottom 360/280/240mm, side 360/240mm, rear 140/120mm"],
         ["Fan Support", "Up to 13× 120mm or 9× 140mm fans"],
         ["Drive Bays", "2× 3.5-inch and 2× 2.5-inch"],
         ["Expansion Slots", "8 horizontal (+4 vertical with vertical mount accessory)"],
         ["Front I/O", "1× USB 3.2 Gen 2 Type-C, 4× USB 3.2 Gen 1 Type-A, 1× audio in/out"],
+        ["Front IO Motherboard Connections", "1x HD Audio, 2x USB 3.2 Gen1, 1x USB 3.2 Gen2 Type-E, 1x F_PANEL"],
         ["Reverse Connector Support", "Yes"],
         ["Warranty", "2 years"]
       ],
