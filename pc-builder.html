@@ -963,8 +963,15 @@
   }
 
   function getCatalogPart(categoryKey, id) {
-    return (catalog[categoryKey] || []).find(function (part) {
+    if (!id) {
+      return null;
+    }
+
+    const parts = catalog[categoryKey] || [];
+    return parts.find(function (part) {
       return part.id === id;
+    }) || parts.find(function (part) {
+      return part.productId === id && part.isDefaultVariant;
     }) || null;
   }
 
@@ -1023,34 +1030,253 @@
     return overrides;
   }
 
-  function parseCards(source, category) {
+  function extractObjectLiteral(source, declarationName) {
+    const declarationIndex = source.indexOf("const " + declarationName + " =");
+
+    if (declarationIndex === -1) {
+      return "";
+    }
+
+    const startIndex = source.indexOf("{", declarationIndex);
+
+    if (startIndex === -1) {
+      return "";
+    }
+
+    let depth = 0;
+    let quote = "";
+    let escaped = false;
+    let inLineComment = false;
+    let inBlockComment = false;
+
+    for (let index = startIndex; index < source.length; index += 1) {
+      const character = source[index];
+      const nextCharacter = source[index + 1];
+
+      if (inLineComment) {
+        if (character === "\n") {
+          inLineComment = false;
+        }
+        continue;
+      }
+
+      if (inBlockComment) {
+        if (character === "*" && nextCharacter === "/") {
+          inBlockComment = false;
+          index += 1;
+        }
+        continue;
+      }
+
+      if (quote) {
+        if (escaped) {
+          escaped = false;
+          continue;
+        }
+
+        if (character === "\\") {
+          escaped = true;
+          continue;
+        }
+
+        if (character === quote) {
+          quote = "";
+        }
+
+        continue;
+      }
+
+      if (character === "/" && nextCharacter === "/") {
+        inLineComment = true;
+        index += 1;
+        continue;
+      }
+
+      if (character === "/" && nextCharacter === "*") {
+        inBlockComment = true;
+        index += 1;
+        continue;
+      }
+
+      if (character === '"' || character === "'" || character === "`") {
+        quote = character;
+        continue;
+      }
+
+      if (character === "{") {
+        depth += 1;
+      }
+
+      if (character === "}") {
+        depth -= 1;
+
+        if (depth === 0) {
+          return source.slice(startIndex, index + 1);
+        }
+      }
+    }
+
+    return "";
+  }
+
+  function evaluateObjectLiteral(literal) {
+    if (!literal) {
+      return {};
+    }
+
+    try {
+      return Function('"use strict"; return (' + literal + ');')();
+    } catch (error) {
+      return {};
+    }
+  }
+
+  function applyProductPriceOverrides(products, productPriceOverrides) {
+    Object.entries(productPriceOverrides || {}).forEach(function (entry) {
+      const productId = entry[0];
+      const override = entry[1];
+      const product = products[productId];
+
+      if (!product || !override) {
+        return;
+      }
+
+      if (override.priceText) {
+        product.priceText = override.priceText;
+      }
+
+      if (override.priceNumber !== undefined) {
+        product.priceNumber = override.priceNumber;
+      }
+
+      if (override.defaultVariant) {
+        product.defaultVariant = override.defaultVariant;
+      }
+
+      if (override.variantSelectorLabel) {
+        product.variantSelectorLabel = override.variantSelectorLabel;
+      }
+
+      if (Array.isArray(override.variants)) {
+        product.variants = override.variants;
+      }
+
+      if (Array.isArray(product.variants)) {
+        product.variants.forEach(function (variant) {
+          const variantPriceOverride = override.variantPrices && override.variantPrices[variant.id];
+
+          if (variantPriceOverride) {
+            variant.priceText = variantPriceOverride.priceText;
+            variant.priceNumber = variantPriceOverride.priceNumber;
+            return;
+          }
+
+          if (!override.variantPrices && !override.variants && override.priceText) {
+            variant.priceText = override.priceText;
+            variant.priceNumber = override.priceNumber;
+          }
+        });
+      }
+    });
+  }
+
+  function parseProductVariantData(source) {
+    const products = evaluateObjectLiteral(extractObjectLiteral(source, "products"));
+    const productPriceOverrides = evaluateObjectLiteral(extractObjectLiteral(source, "productPriceOverrides"));
+
+    applyProductPriceOverrides(products, productPriceOverrides);
+
+    return products;
+  }
+
+  function getVariantId(variant, index) {
+    return String(variant.id || [variant.capacityOption, variant.heatsinkOption, variant.coolingOption, variant.capacity].filter(Boolean).join("-") || "variant-" + (index + 1))
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+  }
+
+  function getVariantLabel(variant, index) {
+    return variant.capacity || [variant.capacityOption, variant.heatsinkOption, variant.coolingOption].filter(Boolean).join(" / ") || "Variant " + (index + 1);
+  }
+
+  function buildVariantMeta(baseMeta, variantLabel, categoryKey) {
+    const metaParts = String(baseMeta || "").split("|").map(function (item) {
+      return item.trim();
+    }).filter(Boolean);
+
+    if (categoryKey === "psu" && metaParts.length) {
+      return [metaParts[0], variantLabel].join(" | ");
+    }
+
+    return baseMeta ? baseMeta + " | " + variantLabel : variantLabel;
+  }
+
+  function createBasePart(card, category, priceOverrides) {
+    const productUrl = new URL(card.getAttribute("href"), window.location.href);
+    const id = productUrl.searchParams.get("product");
+    const image = card.querySelector("img");
+    const title = card.querySelector("h3");
+    const meta = card.querySelector("p");
+    const price = card.querySelector(".signature-build-price");
+
+    return {
+      id: id,
+      category: category.key,
+      categoryLabel: category.label,
+      name: title ? title.textContent.trim() : id,
+      meta: meta ? meta.textContent.replace(/\s+/g, " ").trim() : "",
+      metaParts: meta ? meta.textContent.split("|").map(function (item) { return item.trim(); }) : [],
+      price: priceOverrides[id] || (price ? price.textContent.trim() : "Price coming soon"),
+      image: image ? image.getAttribute("src") : "",
+      url: "product.html?product=" + encodeURIComponent(id)
+    };
+  }
+
+  function expandVariantParts(basePart, productData) {
+    if (!productData || !Array.isArray(productData.variants) || !productData.variants.length) {
+      return [enrichPart(basePart)];
+    }
+
+    return productData.variants.map(function (variant, index) {
+      const variantId = getVariantId(variant, index);
+      const variantLabel = getVariantLabel(variant, index);
+      const variantMeta = buildVariantMeta(basePart.meta, variantLabel, basePart.category);
+      const variantImages = Array.isArray(variant.images) ? variant.images : [];
+
+      return enrichPart({
+        id: basePart.id + "::" + variantId,
+        productId: basePart.id,
+        variantId: variantId,
+        isDefaultVariant: productData.defaultVariant ? variantId === productData.defaultVariant : index === 0,
+        category: basePart.category,
+        categoryLabel: basePart.categoryLabel,
+        name: basePart.name + " " + variantLabel,
+        meta: variantMeta,
+        metaParts: variantMeta.split("|").map(function (item) { return item.trim(); }),
+        price: variant.priceText || basePart.price,
+        image: variantImages[0] || basePart.image,
+        url: basePart.url + "&variant=" + encodeURIComponent(variantId)
+      });
+    });
+  }
+
+  function parseCards(source, category, productVariantData) {
     const documentFromSource = new DOMParser().parseFromString(source, "text/html");
     const priceOverrides = extractPriceOverrides(source);
+    const parts = [];
 
-    return Array.from(documentFromSource.querySelectorAll('a[href*="product.html?product="]'))
+    Array.from(documentFromSource.querySelectorAll('a[href*="product.html?product="]'))
       .filter(function (card) {
         return card.querySelector("h3");
       })
-      .map(function (card) {
-        const productUrl = new URL(card.getAttribute("href"), window.location.href);
-        const id = productUrl.searchParams.get("product");
-        const image = card.querySelector("img");
-        const title = card.querySelector("h3");
-        const meta = card.querySelector("p");
-        const price = card.querySelector(".signature-build-price");
-
-        return enrichPart({
-          id: id,
-          category: category.key,
-          categoryLabel: category.label,
-          name: title ? title.textContent.trim() : id,
-          meta: meta ? meta.textContent.replace(/\s+/g, " ").trim() : "",
-          metaParts: meta ? meta.textContent.split("|").map(function (item) { return item.trim(); }) : [],
-          price: priceOverrides[id] || (price ? price.textContent.trim() : "Price coming soon"),
-          image: image ? image.getAttribute("src") : "",
-          url: "product.html?product=" + encodeURIComponent(id)
-        });
+      .forEach(function (card) {
+        const basePart = createBasePart(card, category, priceOverrides);
+        const productData = productVariantData[basePart.id];
+        parts.push.apply(parts, expandVariantParts(basePart, productData));
       });
+
+    return parts;
   }
 
   function enrichPart(part) {
@@ -1168,9 +1394,7 @@
     const build = {};
 
     categories.forEach(function (category) {
-      build[category.key] = (catalog[category.key] || []).find(function (part) {
-        return part.id === source[category.key];
-      }) || null;
+      build[category.key] = getCatalogPart(category.key, source[category.key]);
     });
 
     build.extraParts = {};
@@ -1178,9 +1402,7 @@
       build.extraParts[categoryKey] = getAdditionalParts(categoryKey, source);
     });
 
-    build.gpu2 = (catalog.gpu || []).find(function (part) {
-      return part.id === source.gpu2;
-    }) || null;
+    build.gpu2 = getCatalogPart("gpu", source.gpu2);
 
     return build;
   }
@@ -1572,11 +1794,21 @@
   }
 
   async function loadCatalog() {
+    let productVariantData = {};
+
+    try {
+      const productResponse = await fetch("product.html", { cache: "no-store" });
+      const productSource = await productResponse.text();
+      productVariantData = parseProductVariantData(productSource);
+    } catch (error) {
+      productVariantData = {};
+    }
+
     await Promise.all(categories.map(async function (category) {
       try {
         const response = await fetch(category.file, { cache: "no-store" });
         const source = await response.text();
-        catalog[category.key] = parseCards(source, category);
+        catalog[category.key] = parseCards(source, category, productVariantData);
       } catch (error) {
         catalog[category.key] = [];
       }
