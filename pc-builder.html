@@ -2539,10 +2539,8 @@
     }
 
     if (build.cpu && !build.gpu && !build.gpu2) {
-      if (build.cpu.hasIntegratedGraphics === false) {
-        addCompatibilityIssue(issues, "warning", "No integrated graphics", build.cpu.name + " does not have integrated graphics.", ["cpu", "gpu"]);
-      } else if (build.cpu.hasIntegratedGraphics === null) {
-        addMissingDataIssue(issues, build.cpu, "integrated graphics support", ["cpu", "gpu"]);
+      if (build.cpu.hasIntegratedGraphics !== true) {
+        addCompatibilityIssue(issues, "warning", "Video card required", build.cpu.name + " does not have integrated graphics, so you need to add a video card.", ["cpu", "gpu"]);
       }
     }
 
