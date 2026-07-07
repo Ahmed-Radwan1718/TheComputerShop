@@ -693,15 +693,9 @@
 
     .pc-builder-filter-panel {
       min-height: 0;
-      margin: 16px 0 16px 16px;
-      padding: 14px;
-      border-radius: 26px;
-      border: 1px solid rgba(255, 255, 255, 0.11);
-      background: rgba(24, 25, 24, 0.56);
-      box-shadow: 0 22px 55px rgba(0, 0, 0, 0.18);
-      display: grid;
-      gap: 8px;
-      align-content: start;
+      padding: 18px;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.025);
       overflow: auto;
       overscroll-behavior: contain;
       color-scheme: dark;
@@ -709,33 +703,41 @@
       scrollbar-width: auto;
     }
 
-    .pc-builder-filter-search {
+    .pc-builder-products-column {
+      min-height: 0;
       display: grid;
-      gap: 10px;
-      padding: 10px 4px 8px;
+      grid-template-rows: auto minmax(0, 1fr);
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.08);
     }
 
-    .pc-builder-filter-search span,
+    .pc-builder-filter-search {
+      padding: 16px 16px 0;
+      display: flex;
+      justify-content: flex-start;
+    }
+
+    .pc-builder-filter-search span {
+      display: none;
+    }
+
     .pc-builder-filter-heading {
-      margin: 0;
-      padding: 0 10px;
       color: rgba(192, 154, 92, 0.84);
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
-      letter-spacing: 0.14em;
       text-transform: uppercase;
     }
 
     .pc-builder-filter-search input {
-      width: 100%;
-      height: 50px;
+      width: min(520px, 100%);
+      height: 52px;
       padding: 0 18px;
       border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.055);
+      background: rgba(255, 255, 255, 0.08);
       color: #ffffff;
       font-family: Arial, sans-serif;
-      font-size: 14px;
+      font-size: 15px;
       outline: none;
     }
 
@@ -997,7 +999,7 @@
       overflow: auto;
       padding: 16px;
       gap: 14px;
-      background: rgba(0, 0, 0, 0.08);
+      background: transparent;
       color-scheme: dark;
       scrollbar-color: rgba(255, 255, 255, 0.55) #2a2b2a;
       scrollbar-width: auto;
@@ -1210,11 +1212,6 @@
 
     <div class="pc-builder-modal-body">
       <aside class="pc-builder-filter-panel" aria-label="Part filters">
-        <div class="pc-builder-filter-search">
-          <span>Search</span>
-          <input id="pc-builder-search" type="search" placeholder="Search parts..." aria-label="Search parts">
-        </div>
-
         <label class="pc-builder-toggle">
           <input id="pc-builder-compatible-only" type="checkbox" checked>
           Compatibility filter
@@ -1225,7 +1222,14 @@
         <button class="pc-builder-filter-clear" type="button" id="pc-builder-clear-filters">Clear Filters</button>
       </aside>
 
-      <div class="pc-builder-parts-list" id="pc-builder-parts-list"></div>
+      <div class="pc-builder-products-column">
+        <div class="pc-builder-filter-search">
+          <span>Search</span>
+          <input id="pc-builder-search" type="search" placeholder="Search parts..." aria-label="Search parts">
+        </div>
+
+        <div class="pc-builder-parts-list" id="pc-builder-parts-list"></div>
+      </div>
     </div>
   </div>
 </div>
