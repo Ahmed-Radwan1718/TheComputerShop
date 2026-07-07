@@ -1462,19 +1462,28 @@
   }
 
   function normalizeSocket(value) {
-    return String(value || "").toUpperCase().replace(/\s+/g, "");
+    const text = String(value || "").toUpperCase().replace(/FCLGA/g, "LGA").replace(/AMD\s+SOCKET/g, "").replace(/\s+/g, " ").trim();
+    const lga = text.match(/\bLGA\s*(\d{4})\b/);
+    const am = text.match(/\bAM\s*([0-9])\b/);
+
+    if (lga) return "LGA" + lga[1];
+    if (am) return "AM" + am[1];
+
+    return text.replace(/\s+/g, "");
   }
 
   function normalizeFormFactor(value) {
     const text = String(value || "").toUpperCase().replace(/\s+/g, "");
+    if (!text) return "";
     if (text.includes("E-ATX") || text.includes("EATX")) return "E-ATX";
-    if (text.includes("MICRO") || text.includes("MATX")) return "Micro-ATX";
+    if (text.includes("MICRO-ATX") || text.includes("MICROATX") || text.includes("MATX")) return "Micro-ATX";
+    if (text.includes("MINI-ITX") || text.includes("MINIITX") || text.includes("ITX")) return "Mini-ITX";
     if (text.includes("ATX")) return "ATX";
     return value || "";
   }
 
   function extractNumbersBeforeW(value) {
-    return Array.from(String(value || "").matchAll(/(\d{3,4})\s*W/gi)).map(function (match) {
+    return Array.from(String(value || "").replace(/,/g, "").matchAll(/(\d{3,4})\s*W/gi)).map(function (match) {
       return Number(match[1]);
     }).filter(Boolean);
   }
@@ -1722,7 +1731,12 @@
 
   function expandVariantParts(basePart, productData) {
     if (!productData || !Array.isArray(productData.variants) || !productData.variants.length) {
-      return [enrichPart(basePart)];
+      const specs = getMergedProductSpecs(productData, null);
+
+      return [enrichPart(Object.assign({}, basePart, {
+        specs: specs,
+        specMap: createSpecMap(specs)
+      }))];
     }
 
     return productData.variants.map(function (variant, index) {
@@ -1730,6 +1744,7 @@
       const variantLabel = getVariantLabel(variant, index);
       const variantMeta = buildVariantMeta(basePart.meta, variantLabel, basePart.category);
       const variantImages = Array.isArray(variant.images) ? variant.images : [];
+      const specs = getMergedProductSpecs(productData, variant);
 
       return enrichPart({
         id: basePart.id + "::" + variantId,
@@ -1744,7 +1759,9 @@
         filterTags: [basePart.filterTags, variantLabel].filter(Boolean).join(" "),
         price: variant.priceText || basePart.price,
         image: variantImages[0] || basePart.image,
-        url: basePart.url + "&variant=" + encodeURIComponent(variantId)
+        url: basePart.url + "&variant=" + encodeURIComponent(variantId),
+        specs: specs,
+        specMap: createSpecMap(specs)
       });
     });
   }
@@ -1771,65 +1788,410 @@
     return [part.name, part.meta, part.price, part.filterTags].filter(Boolean).join(" ");
   }
 
+  function getMergedProductSpecs(productData, variant) {
+    const specs = [];
+
+    if (productData && Array.isArray(productData.specs)) {
+      specs.push.apply(specs, productData.specs);
+    }
+
+    if (variant && Array.isArray(variant.specs)) {
+      specs.push.apply(specs, variant.specs);
+    }
+
+    return specs;
+  }
+
+  function createSpecMap(specs) {
+    return (Array.isArray(specs) ? specs : []).reduce(function (map, spec) {
+      if (Array.isArray(spec) && spec.length >= 2) {
+        map[normalizeText(spec[0])] = String(spec[1] || "");
+      }
+
+      return map;
+    }, {});
+  }
+
+  function getPartSpec(part, names) {
+    const map = part && part.specMap ? part.specMap : {};
+    const wantedNames = Array.isArray(names) ? names : [names];
+
+    for (const name of wantedNames) {
+      const key = normalizeText(name);
+
+      if (Object.prototype.hasOwnProperty.call(map, key)) {
+        return map[key];
+      }
+    }
+
+    for (const name of wantedNames) {
+      const key = normalizeText(name);
+      const partialKey = Object.keys(map).find(function (mapKey) {
+        return mapKey.includes(key) || key.includes(mapKey);
+      });
+
+      if (partialKey) {
+        return map[partialKey];
+      }
+    }
+
+    return "";
+  }
+
+  function getPartSpecText(part) {
+    const specText = (part.specs || []).map(function (spec) {
+      return Array.isArray(spec) ? spec.join(" ") : "";
+    }).join(" ");
+
+    return [part.name, part.meta, part.filterTags, specText].filter(Boolean).join(" ");
+  }
+
+  function normalizeMemoryType(value) {
+    const text = String(value || "").toUpperCase();
+
+    if (text.includes("DDR5")) return "DDR5";
+    if (text.includes("DDR4")) return "DDR4";
+
+    return "";
+  }
+
+  function parseFirstNumber(value) {
+    const match = String(value || "").replace(/,/g, "").match(/(\d+(?:\.\d+)?)/);
+    return match ? Number(match[1]) : 0;
+  }
+
+  function parseDimensionNumbers(value) {
+    return Array.from(String(value || "").replace(/,/g, "").matchAll(/(\d+(?:\.\d+)?)/g)).map(function (match) {
+      return Number(match[1]);
+    }).filter(Boolean);
+  }
+
+  function parseMaxGb(value) {
+    const matches = Array.from(String(value || "").replace(/,/g, "").matchAll(/(\d+(?:\.\d+)?)\s*(TB|GB)/gi)).map(function (match) {
+      return Number(match[1]) * (match[2].toUpperCase() === "TB" ? 1024 : 1);
+    });
+
+    return matches.length ? Math.max.apply(null, matches) : 0;
+  }
+
+  function parseMemoryStickCount(value) {
+    const match = String(value || "").match(/(\d+)\s*(?:x|\u00d7)\s*\d+\s*GB/i);
+    return match ? Number(match[1]) : 0;
+  }
+
+  function parseMemorySlotCount(value) {
+    const match = String(value || "").match(/(\d+)\s*(?:x|\u00d7)\s*DDR/i);
+    return match ? Number(match[1]) : 0;
+  }
+
+  function parseStorageConnectorCount(value, connectorName) {
+    const pattern = new RegExp("(\\d+)\\s*(?:x|\\\\u00d7)\\s*" + connectorName, "i");
+    const match = String(value || "").replace(/\u00d7/g, "x").match(pattern);
+    return match ? Number(match[1]) : 0;
+  }
+
+  function extractSocketsFromText(value) {
+    const text = String(value || "").toUpperCase().replace(/FCLGA/g, "LGA");
+    const sockets = new Set();
+
+    Array.from(text.matchAll(/LGA\s*(\d{3,4}|115X)/g)).forEach(function (match) {
+      sockets.add("LGA" + match[1]);
+    });
+
+    ["1851", "1700", "1200", "115X"].forEach(function (socket) {
+      const pattern = new RegExp("(^|[^0-9])" + socket + "([^0-9]|$)");
+
+      if (text.includes("INTEL") && pattern.test(text)) {
+        sockets.add("LGA" + socket);
+      }
+    });
+
+    Array.from(text.matchAll(/\bAM\s*([45])\b/g)).forEach(function (match) {
+      sockets.add("AM" + match[1]);
+    });
+
+    return Array.from(sockets);
+  }
+
+  function extractRadiatorSize(value) {
+    const match = String(value || "").match(/\b(120|140|240|280|360|420)mm\b/i);
+    return match ? match[1] + "mm" : "";
+  }
+
+  function extractRadiatorSupport(value) {
+    const text = String(value || "");
+    const supported = new Set();
+
+    Array.from(text.matchAll(/(?:front|top|side|rear|bottom)[^,;]*(?:up to\s*)?(\d{3})mm/gi)).forEach(function (match) {
+      const maxSize = Number(match[1]);
+
+      if (maxSize >= 120 && maxSize % 120 === 0) supported.add("120mm");
+      if (maxSize >= 140 && maxSize % 140 === 0) supported.add("140mm");
+      if (maxSize >= 240 && maxSize % 120 === 0) supported.add("240mm");
+      if (maxSize >= 280 && maxSize % 140 === 0) supported.add("280mm");
+      if (maxSize >= 360 && maxSize % 120 === 0) supported.add("360mm");
+      if (maxSize >= 420 && maxSize % 140 === 0) supported.add("420mm");
+    });
+
+    Array.from(text.matchAll(/\b(120|140|240|280|360|420)mm\b/gi)).forEach(function (match) {
+      supported.add(match[1] + "mm");
+    });
+
+    return Array.from(supported);
+  }
+
+  function parseGpuLength(part) {
+    const size = getPartSpec(part, ["Card Size", "Card Dimensions", "Dimensions"]);
+    const lengthMatch = String(size || "").match(/\bL\s*=\s*(\d+(?:\.\d+)?)/i);
+
+    if (lengthMatch) {
+      return Number(lengthMatch[1]);
+    }
+
+    const dimensions = parseDimensionNumbers(size);
+    return dimensions[0] || 0;
+  }
+
+  function parseGpuSlotWidth(part) {
+    const size = getPartSpec(part, ["Card Size", "Card Dimensions", "Dimensions"]);
+    const heightMatch = String(size || "").match(/\bH\s*=\s*(\d+(?:\.\d+)?)/i);
+    const dimensions = parseDimensionNumbers(size);
+    const thickness = heightMatch ? Number(heightMatch[1]) : (dimensions.length >= 3 ? dimensions[2] : 0);
+
+    return thickness ? Math.max(1, Math.ceil(thickness / 20)) : 0;
+  }
+
+  function parseConnectorQuantity(segment) {
+    const text = String(segment || "").replace(/\u00d7/g, "x");
+    const afterX = text.match(/(?:x|X)\s*(\d+)/);
+    const beforeX = text.match(/(\d+)\s*(?:x|X)\s*(?:PCI|PIN|12V|6\+2|8|16)/i);
+
+    if (afterX) return Number(afterX[1]);
+    if (beforeX) return Number(beforeX[1]);
+
+    return 1;
+  }
+
+  function parseConnectorCounts(value, requirePcieLabel) {
+    const counts = { pcie16: 0, pcie8: 0 };
+
+    String(value || "").split(/[,;]/).forEach(function (segment) {
+      const text = segment.toUpperCase().replace(/\u00d7/g, "X");
+      const quantity = parseConnectorQuantity(segment);
+      const isPcie = !requirePcieLabel || text.includes("PCI");
+
+      if (!isPcie) {
+        return;
+      }
+
+      if (/12V-?2X6|12VHPWR|16[-\s]?PIN|GEN\s*5/.test(text)) {
+        counts.pcie16 += quantity;
+        return;
+      }
+
+      if (/6\+2|8[-\s]?PIN/.test(text)) {
+        counts.pcie8 += quantity;
+      }
+    });
+
+    return counts;
+  }
+
+  function hasConnectorData(connectors) {
+    return Boolean(connectors && (connectors.pcie16 || connectors.pcie8));
+  }
+
+  function getCaseFrontPanelRequirements(part) {
+    const frontPanel = getPartSpec(part, ["Front I/O", "Front IO", "I/O Panel"]);
+
+    return {
+      hasData: Boolean(frontPanel),
+      usbC: /USB\s*(?:3\.[0-9]\s*)?(?:GEN\s*[0-9X]+\s*)?(?:TYPE-C|C\b)|USB-C|TYPE-C/i.test(frontPanel),
+      usbA: /USB\s*(?:2\.0|3\.0|3\.1|3\.2)|TYPE-A/i.test(frontPanel),
+      audio: /AUDIO/i.test(frontPanel)
+    };
+  }
+
+  function getMotherboardHeaderSupport(part) {
+    const text = getPartSpecText(part);
+
+    return {
+      hasUsbData: /USB|TYPE-C|USB-C|USB4|THUNDERBOLT/i.test(text),
+      internalUsbC: /(?:INTERNAL|FRONT|HEADER)[^,;]*(?:USB-C|TYPE-C)|(?:USB-C|TYPE-C)[^,;]*(?:INTERNAL|FRONT|HEADER)/i.test(text),
+      internalUsbA: /(?:INTERNAL|FRONT|HEADER)[^,;]*USB\s*(?:2\.0|3\.0|3\.1|3\.2|TYPE-A)|USB\s*(?:2\.0|3\.0|3\.1|3\.2|TYPE-A)[^,;]*(?:INTERNAL|FRONT|HEADER)/i.test(text),
+      audio: /AUDIO/i.test(text)
+    };
+  }
+
+  function getCpuGenerationLabel(part) {
+    const text = [part.name, getPartSpec(part, ["Series", "Product Collection", "Code Name"])].filter(Boolean).join(" ").toUpperCase();
+    const ryzen = text.match(/RYZEN\s+(\d{4})|(\d{4})\s+SERIES/);
+
+    if (ryzen) return "Ryzen " + (ryzen[1] || ryzen[2]);
+    if (text.includes("CORE ULTRA")) return "Intel Core Ultra";
+
+    return "";
+  }
+
+  function motherboardSupportsCpu(cpu, motherboard) {
+    const support = String(motherboard.cpuSupport || "").toUpperCase();
+
+    if (!support) {
+      return null;
+    }
+
+    if (cpu.socket === "LGA1851" && cpu.name.toUpperCase().includes("CORE ULTRA")) {
+      return support.includes("CORE ULTRA") || support.includes("LGA1851");
+    }
+
+    if (cpu.socket === "AM5") {
+      const generation = getCpuGenerationLabel(cpu).toUpperCase();
+      const seriesNumber = (generation.match(/(\d{4})/) || [])[1];
+
+      if (seriesNumber) {
+        return support.includes(seriesNumber);
+      }
+
+      return support.includes("RYZEN") || support.includes("AM5");
+    }
+
+    return true;
+  }
+
+  function getIssueLevel(severity) {
+    if (severity === "error") return "bad";
+    if (severity === "warning") return "warn";
+    return "";
+  }
+
+  function addCompatibilityIssue(issues, severity, title, message, categories) {
+    const issue = {
+      severity: severity,
+      level: getIssueLevel(severity),
+      title: title,
+      message: message,
+      categories: categories,
+      parts: categories,
+      text: title + ": " + message
+    };
+    const key = [issue.severity, issue.title, issue.message, issue.categories.join("|")].join("::");
+
+    if (!issues.some(function (existingIssue) {
+      return [existingIssue.severity, existingIssue.title, existingIssue.message, existingIssue.categories.join("|")].join("::") === key;
+    })) {
+      issues.push(issue);
+    }
+  }
+
+  function addMissingDataIssue(issues, part, field, categories) {
+    // TODO: Fill real product specs in product.html when this warning appears for a selected product.
+    addCompatibilityIssue(issues, "warning", "Missing compatibility data", part.name + " is missing " + field + " data, so this compatibility check needs confirmation.", categories);
+  }
+
   function enrichPart(part) {
     const meta = part.metaParts;
-    const fullText = part.name + " " + part.meta;
+    const fullText = getPartSpecText(part);
+
+    part.specs = Array.isArray(part.specs) ? part.specs : [];
+    part.specMap = part.specMap || createSpecMap(part.specs);
 
     if (part.category === "cpu") {
+      const cpuWatts = [
+        parseFirstNumber(getPartSpec(part, "Maximum Turbo Power")),
+        parseFirstNumber(getPartSpec(part, "Default TDP")),
+        parseFirstNumber(getPartSpec(part, "Processor Base Power"))
+      ].filter(Boolean);
+      const graphics = getPartSpec(part, "Integrated Graphics");
+
       part.brand = meta[0] || "";
-      part.socket = normalizeSocket(meta[1]);
+      part.socket = normalizeSocket(getPartSpec(part, ["CPU Socket", "Socket"]) || meta[1]);
       part.cores = meta[2] || "";
-      part.watts = estimateCpuWatts(part.name);
+      part.generation = getCpuGenerationLabel(part);
+      part.supportedChipsets = getPartSpec(part, "Supporting Chipsets");
+      part.hasIntegratedGraphics = graphics ? !/^no$/i.test(graphics.trim()) : null;
+      part.watts = cpuWatts.length ? Math.max.apply(null, cpuWatts) : estimateCpuWatts(part.name);
     }
 
     if (part.category === "motherboard") {
       part.brand = meta[0] || "";
-      part.socket = normalizeSocket(meta[1]);
-      part.formFactor = normalizeFormFactor(meta[2]);
-      part.memoryType = "DDR5";
+      part.socket = normalizeSocket(getPartSpec(part, "CPU Socket") || meta[1]);
+      part.formFactor = normalizeFormFactor(getPartSpec(part, "Form Factor") || meta[2]);
+      part.memoryType = normalizeMemoryType(getPartSpec(part, ["Memory Support", "Memory Capacity", "Memory Slots"]) || fullText);
+      part.ramSlots = parseMemorySlotCount(getPartSpec(part, ["Memory Capacity", "Memory Slots"]));
+      part.maxRamGb = parseMaxGb(getPartSpec(part, "Memory Capacity"));
+      part.cpuSupport = getPartSpec(part, "CPU Support");
+      part.chipset = getPartSpec(part, "Chipset");
+      part.m2Slots = parseStorageConnectorCount(getPartSpec(part, "Storage"), "M\\.?2");
+      part.sataPorts = parseStorageConnectorCount(getPartSpec(part, "Storage"), "SATA");
+      part.headers = getMotherboardHeaderSupport(part);
       part.watts = 70;
     }
 
     if (part.category === "memory") {
       part.brand = meta[0] || "";
-      part.capacity = meta[1] || "";
-      part.speed = meta[2] || "";
-      part.memoryType = fullText.toUpperCase().includes("DDR5") ? "DDR5" : "";
-      part.watts = 12;
+      part.capacity = getPartSpec(part, "Memory Size") || meta[1] || "";
+      part.speed = getPartSpec(part, ["Tested Speed", "Speed Rating"]) || meta[2] || "";
+      part.memoryType = normalizeMemoryType(getPartSpec(part, "Memory Type") || fullText);
+      part.stickCount = parseMemoryStickCount(getPartSpec(part, "Kit Configuration"));
+      part.capacityGb = parseMaxGb(getPartSpec(part, "Memory Size") || part.capacity);
+      part.watts = Math.max(8, (part.stickCount || 1) * 6);
     }
 
     if (part.category === "storage") {
       part.brand = meta[0] || "";
-      part.interface = fullText.toUpperCase().includes("NVME") ? "NVMe" : "SATA";
+      part.interface = /NVME|M\.2/i.test(fullText) ? "NVMe" : "SATA";
       part.watts = part.interface === "NVMe" ? 8 : 6;
     }
 
     if (part.category === "gpu" || part.category === "gpu2") {
+      const gpuWatts = parseFirstNumber(getPartSpec(part, ["Power Consumption", "Total Board Power", "Board Power", "TGP"]));
+
       part.brand = meta[0] || "";
       part.gpuModel = meta[1] || "";
       part.vram = meta[2] || "";
-      part.watts = estimateGpuWatts(fullText);
+      part.lengthMm = parseGpuLength(part);
+      part.slotWidth = parseGpuSlotWidth(part);
+      part.powerRequirement = parseConnectorCounts(getPartSpec(part, "Power Connector"), false);
+      part.recommendedPsu = parseFirstNumber(getPartSpec(part, "Recommended PSU"));
+      part.watts = gpuWatts || estimateGpuWatts(fullText);
     }
 
     if (part.category === "case") {
       part.brand = meta[0] || "";
       part.caseType = meta[1] || "";
-      part.supportsFormFactors = getCaseFormFactorSupport(fullText);
-      part.radiators = ["240mm", "360mm"];
+      part.supportsFormFactors = getCaseFormFactorSupport(getPartSpec(part, "Motherboard Support") || fullText);
+      part.radiators = extractRadiatorSupport(getPartSpec(part, "Radiator Support"));
+      part.maxGpuLength = parseFirstNumber(getPartSpec(part, "Maximum GPU Length"));
+      part.maxCpuCoolerHeight = parseFirstNumber(getPartSpec(part, "Maximum CPU Cooler Height"));
+      part.maxPsuLength = parseFirstNumber(getPartSpec(part, "Maximum PSU Length"));
+      part.expansionSlots = parseFirstNumber(getPartSpec(part, "Expansion Slots"));
+      part.psuFormFactors = normalizeFormFactor(getPartSpec(part, "Power Supply Type"));
+      part.frontPanel = getCaseFrontPanelRequirements(part);
       part.watts = 8;
     }
 
     if (part.category === "cooler") {
+      const socketText = getPartSpec(part, ["CPU Socket Support", "Socket Support", "Intel Socket Support", "AMD Socket Support"]) || fullText;
+
       part.brand = meta[0] || "";
-      part.radiator = (fullText.match(/(240|280|360|420)mm/i) || [])[0] || "";
-      part.sockets = ["AM5", "LGA1851"];
+      part.radiator = extractRadiatorSize(getPartSpec(part, ["Radiator Size", "Radiator Dimensions"]) || fullText);
+      part.sockets = extractSocketsFromText(socketText);
+      part.coolerHeight = parseFirstNumber(getPartSpec(part, ["Height", "Cooler Height", "Dimensions"]));
+      part.isAio = /AIO|LIQUID|RADIATOR/i.test(fullText);
       part.watts = 12;
     }
 
     if (part.category === "psu") {
-      const watts = extractNumbersBeforeW(fullText);
-      part.wattageMin = watts.length ? Math.min.apply(null, watts) : 0;
-      part.wattageMax = watts.length ? Math.max.apply(null, watts) : 0;
+      const selectedWatts = extractNumbersBeforeW(getPartSpec(part, ["Output Capacity", "Selected Wattage"]) || fullText);
+      const allWatts = extractNumbersBeforeW(fullText);
+      const wattOptions = selectedWatts.length ? selectedWatts : allWatts;
+      const dimensions = parseDimensionNumbers(getPartSpec(part, "Dimensions"));
+
+      part.wattageMin = wattOptions.length ? Math.min.apply(null, wattOptions) : 0;
+      part.wattageMax = wattOptions.length ? Math.max.apply(null, wattOptions) : 0;
+      part.connectors = parseConnectorCounts(getPartSpec(part, ["PCIe Connectors", "Cable Connectors"]), true);
+      part.formFactor = normalizeFormFactor(getPartSpec(part, ["Intel Form Factor", "Type", "ATX Standard"]) || "ATX");
+      part.lengthMm = dimensions[0] || 0;
       part.watts = 0;
     }
 
@@ -1868,17 +2230,32 @@
   }
 
   function getCaseFormFactorSupport(value) {
-    const text = value.toUpperCase();
+    const text = String(value || "").toUpperCase();
+    const support = new Set();
 
-    if (text.includes("E-ATX")) {
-      return ["E-ATX", "ATX", "Micro-ATX"];
+    if (text.includes("E-ATX") || text.includes("EATX")) {
+      support.add("E-ATX");
+      support.add("ATX");
+      support.add("Micro-ATX");
+      support.add("Mini-ITX");
     }
 
     if (text.includes("ATX")) {
-      return ["ATX", "Micro-ATX"];
+      support.add("ATX");
+      support.add("Micro-ATX");
+      support.add("Mini-ITX");
     }
 
-    return ["ATX", "Micro-ATX"];
+    if (text.includes("MICRO-ATX") || text.includes("MICROATX") || text.includes("MATX")) {
+      support.add("Micro-ATX");
+      support.add("Mini-ITX");
+    }
+
+    if (text.includes("MINI-ITX") || text.includes("MINIITX") || text.includes("ITX")) {
+      support.add("Mini-ITX");
+    }
+
+    return Array.from(support);
   }
 
   function getSelectedBuild(values) {
@@ -1935,69 +2312,234 @@
     return Math.ceil((estimated * 1.35) / 50) * 50;
   }
 
-  function getCompatibilityIssues(build) {
+  function checkCompatibility(build) {
     const issues = [];
     const recommendedPsu = recommendedPsuWattage(build);
+    const estimatedWattage = estimateWattage(build);
+    const memoryParts = getBuildParts(build, "memory");
+    const storageParts = getBuildParts(build, "storage");
+    const gpuParts = [build.gpu, build.gpu2].filter(Boolean);
 
-    if (build.cpu && build.motherboard && build.cpu.socket !== build.motherboard.socket) {
-      issues.push({
-        level: "bad",
-        parts: ["cpu", "motherboard"],
-        text: "CPU socket " + build.cpu.socket + " does not match motherboard socket " + build.motherboard.socket + "."
-      });
+    if (build.cpu && build.motherboard) {
+      if (!build.cpu.socket) {
+        addMissingDataIssue(issues, build.cpu, "CPU socket", ["cpu", "motherboard"]);
+      }
+
+      if (!build.motherboard.socket) {
+        addMissingDataIssue(issues, build.motherboard, "motherboard socket", ["cpu", "motherboard"]);
+      }
+
+      if (build.cpu.socket && build.motherboard.socket && build.cpu.socket !== build.motherboard.socket) {
+        addCompatibilityIssue(issues, "error", "CPU socket mismatch", "CPU socket " + build.cpu.socket + " does not match motherboard socket " + build.motherboard.socket + ".", ["cpu", "motherboard"]);
+      }
+
+      const cpuSupport = motherboardSupportsCpu(build.cpu, build.motherboard);
+
+      if (cpuSupport === null) {
+        addMissingDataIssue(issues, build.motherboard, "CPU generation support", ["cpu", "motherboard"]);
+      } else if (cpuSupport === false) {
+        addCompatibilityIssue(issues, "error", "CPU generation unsupported", build.motherboard.name + " does not list support for " + (build.cpu.generation || build.cpu.name) + ".", ["cpu", "motherboard"]);
+      }
+
+      if (build.cpu.supportedChipsets && build.motherboard.chipset && !build.cpu.supportedChipsets.toUpperCase().includes(build.motherboard.chipset.toUpperCase().replace(/^AMD\s+|^INTEL\s+|\s+EXPRESS CHIPSET$/g, ""))) {
+        addCompatibilityIssue(issues, "error", "Chipset unsupported", build.cpu.name + " does not list " + build.motherboard.chipset + " as a supported chipset.", ["cpu", "motherboard"]);
+      }
+
+      const biosRequirement = getPartSpec(build.motherboard, ["BIOS Requirement", "CPU BIOS Requirement", "BIOS Support"]);
+
+      if (biosRequirement && /UPDATE|REQUIRED|MINIMUM/i.test(biosRequirement)) {
+        addCompatibilityIssue(issues, "warning", "BIOS check required", build.motherboard.name + " lists a BIOS requirement: " + biosRequirement + ".", ["cpu", "motherboard"]);
+      }
     }
 
-    getBuildParts(build, "memory").forEach(function (memoryPart) {
-      if (memoryPart && build.motherboard && memoryPart.memoryType && memoryPart.memoryType !== build.motherboard.memoryType) {
-        issues.push({
-          level: "bad",
-          parts: ["memory", "motherboard"],
-          text: "Memory type " + memoryPart.memoryType + " does not match motherboard memory type " + build.motherboard.memoryType + "."
+    if (build.motherboard && memoryParts.length) {
+      let totalRamSticks = 0;
+      let totalRamCapacity = 0;
+
+      memoryParts.forEach(function (memoryPart) {
+        totalRamSticks += memoryPart.stickCount || 0;
+        totalRamCapacity += memoryPart.capacityGb || 0;
+
+        if (!memoryPart.memoryType) {
+          addMissingDataIssue(issues, memoryPart, "memory type", ["memory", "motherboard"]);
+        }
+
+        if (!build.motherboard.memoryType) {
+          addMissingDataIssue(issues, build.motherboard, "motherboard memory type", ["memory", "motherboard"]);
+        }
+
+        if (memoryPart.memoryType && build.motherboard.memoryType && memoryPart.memoryType !== build.motherboard.memoryType) {
+          addCompatibilityIssue(issues, "error", "Memory type mismatch", "Memory type " + memoryPart.memoryType + " does not match motherboard memory type " + build.motherboard.memoryType + ".", ["memory", "motherboard"]);
+        }
+      });
+
+      if (!totalRamSticks) {
+        memoryParts.forEach(function (memoryPart) {
+          addMissingDataIssue(issues, memoryPart, "RAM stick count", ["memory", "motherboard"]);
         });
+      } else if (!build.motherboard.ramSlots) {
+        addMissingDataIssue(issues, build.motherboard, "RAM slot count", ["memory", "motherboard"]);
+      } else if (totalRamSticks > build.motherboard.ramSlots) {
+        addCompatibilityIssue(issues, "error", "Too many RAM sticks", totalRamSticks + " RAM sticks exceed the motherboard limit of " + build.motherboard.ramSlots + " slots.", ["memory", "motherboard"]);
+      }
+
+      if (!totalRamCapacity) {
+        memoryParts.forEach(function (memoryPart) {
+          addMissingDataIssue(issues, memoryPart, "RAM capacity", ["memory", "motherboard"]);
+        });
+      } else if (!build.motherboard.maxRamGb) {
+        addMissingDataIssue(issues, build.motherboard, "maximum RAM capacity", ["memory", "motherboard"]);
+      } else if (totalRamCapacity > build.motherboard.maxRamGb) {
+        addCompatibilityIssue(issues, "error", "RAM capacity too high", totalRamCapacity + "GB RAM exceeds the motherboard limit of " + build.motherboard.maxRamGb + "GB.", ["memory", "motherboard"]);
+      }
+    }
+
+    if (build.motherboard && build.case) {
+      if (!build.motherboard.formFactor) {
+        addMissingDataIssue(issues, build.motherboard, "motherboard form factor", ["motherboard", "case"]);
+      }
+
+      if (!build.case.supportsFormFactors.length) {
+        addMissingDataIssue(issues, build.case, "supported motherboard form factors", ["motherboard", "case"]);
+      }
+
+      if (build.motherboard.formFactor && build.case.supportsFormFactors.length && !build.case.supportsFormFactors.includes(build.motherboard.formFactor)) {
+        addCompatibilityIssue(issues, "error", "Motherboard does not fit", build.case.name + " does not list support for " + build.motherboard.formFactor + " motherboards.", ["motherboard", "case"]);
+      }
+
+      if (build.case.frontPanel && build.case.frontPanel.usbC) {
+        if (!build.motherboard.headers.hasUsbData) {
+          addMissingDataIssue(issues, build.motherboard, "front USB-C header", ["case", "motherboard"]);
+        } else if (!build.motherboard.headers.internalUsbC) {
+          addCompatibilityIssue(issues, "warning", "Front USB-C header missing", build.case.name + " has front USB-C, but " + build.motherboard.name + " does not list an internal USB-C header.", ["case", "motherboard"]);
+        }
+      }
+
+      if (build.case.frontPanel && build.case.frontPanel.usbA && build.motherboard.headers.hasUsbData && !build.motherboard.headers.internalUsbA) {
+        addCompatibilityIssue(issues, "warning", "Front USB-A header unconfirmed", build.case.name + " has front USB-A ports, but " + build.motherboard.name + " does not list an internal USB-A header.", ["case", "motherboard"]);
+      }
+
+      if (build.case.frontPanel && build.case.frontPanel.audio && !build.motherboard.headers.audio) {
+        addCompatibilityIssue(issues, "warning", "Front audio header unconfirmed", build.case.name + " has front audio, but " + build.motherboard.name + " does not list front audio header support.", ["case", "motherboard"]);
+      }
+    }
+
+    gpuParts.forEach(function (gpuPart) {
+      if (build.case) {
+        if (!gpuPart.lengthMm) {
+          addMissingDataIssue(issues, gpuPart, "GPU length", ["gpu", "case"]);
+        } else if (!build.case.maxGpuLength) {
+          addMissingDataIssue(issues, build.case, "maximum GPU length", ["gpu", "case"]);
+        } else if (gpuPart.lengthMm > build.case.maxGpuLength) {
+          addCompatibilityIssue(issues, "error", "GPU too long", gpuPart.name + " is " + gpuPart.lengthMm + "mm long, but " + build.case.name + " supports up to " + build.case.maxGpuLength + "mm.", ["gpu", "case"]);
+        }
+
+        if (gpuPart.slotWidth && build.case.expansionSlots && gpuPart.slotWidth > build.case.expansionSlots) {
+          addCompatibilityIssue(issues, "error", "GPU slot width too large", gpuPart.name + " needs about " + gpuPart.slotWidth + " slots, but " + build.case.name + " lists " + build.case.expansionSlots + " expansion slots.", ["gpu", "case"]);
+        } else if (!gpuPart.slotWidth || !build.case.expansionSlots) {
+          addCompatibilityIssue(issues, "warning", "GPU slot width unconfirmed", "GPU slot width or case expansion-slot data is missing for this build.", ["gpu", "case"]);
+        }
       }
     });
 
-    if (build.motherboard && build.case && !build.case.supportsFormFactors.includes(build.motherboard.formFactor)) {
-      issues.push({
-        level: "bad",
-        parts: ["motherboard", "case"],
-        text: build.case.name + " does not list support for " + build.motherboard.formFactor + " motherboards."
-      });
+    if (build.cpu && build.cooler) {
+      if (!build.cooler.sockets.length) {
+        addMissingDataIssue(issues, build.cooler, "CPU cooler socket support", ["cpu", "cooler"]);
+      } else if (!build.cooler.sockets.includes(build.cpu.socket)) {
+        addCompatibilityIssue(issues, "error", "CPU cooler socket mismatch", build.cooler.name + " is not marked as compatible with " + build.cpu.socket + ".", ["cpu", "cooler"]);
+      }
     }
 
-    if (build.cpu && build.cooler && !build.cooler.sockets.includes(build.cpu.socket)) {
-      issues.push({
-        level: "bad",
-        parts: ["cpu", "cooler"],
-        text: build.cooler.name + " is not marked as compatible with " + build.cpu.socket + "."
-      });
+    if (build.case && build.cooler) {
+      if (build.cooler.isAio) {
+        if (!build.cooler.radiator) {
+          addMissingDataIssue(issues, build.cooler, "radiator size", ["case", "cooler"]);
+        } else if (!build.case.radiators.length) {
+          addMissingDataIssue(issues, build.case, "radiator support", ["case", "cooler"]);
+        } else if (!build.case.radiators.includes(build.cooler.radiator)) {
+          addCompatibilityIssue(issues, "error", "Radiator unsupported", build.case.name + " is not marked as supporting a " + build.cooler.radiator + " radiator.", ["case", "cooler"]);
+        }
+      } else {
+        if (!build.cooler.coolerHeight) {
+          addMissingDataIssue(issues, build.cooler, "CPU cooler height", ["case", "cooler"]);
+        } else if (!build.case.maxCpuCoolerHeight) {
+          addMissingDataIssue(issues, build.case, "maximum CPU cooler height", ["case", "cooler"]);
+        } else if (build.cooler.coolerHeight > build.case.maxCpuCoolerHeight) {
+          addCompatibilityIssue(issues, "error", "CPU cooler too tall", build.cooler.name + " is " + build.cooler.coolerHeight + "mm tall, but " + build.case.name + " supports up to " + build.case.maxCpuCoolerHeight + "mm.", ["case", "cooler"]);
+        }
+      }
     }
 
-    if (build.case && build.cooler && build.cooler.radiator && !build.case.radiators.includes(build.cooler.radiator)) {
-      issues.push({
-        level: "bad",
-        parts: ["case", "cooler"],
-        text: build.case.name + " is not marked as supporting a " + build.cooler.radiator + " radiator."
-      });
+    if (build.motherboard && storageParts.length) {
+      const m2Count = storageParts.filter(function (part) { return part.interface === "NVMe"; }).length;
+      const sataCount = storageParts.filter(function (part) { return part.interface === "SATA"; }).length;
+
+      if (m2Count && !build.motherboard.m2Slots) {
+        addMissingDataIssue(issues, build.motherboard, "M.2 slot count", ["storage", "motherboard"]);
+      } else if (m2Count > build.motherboard.m2Slots) {
+        addCompatibilityIssue(issues, "error", "Too many M.2 drives", m2Count + " M.2 drives exceed the motherboard limit of " + build.motherboard.m2Slots + " M.2 slots.", ["storage", "motherboard"]);
+      }
+
+      if (sataCount && !build.motherboard.sataPorts) {
+        addMissingDataIssue(issues, build.motherboard, "SATA port count", ["storage", "motherboard"]);
+      } else if (sataCount > build.motherboard.sataPorts) {
+        addCompatibilityIssue(issues, "error", "Too many SATA drives", sataCount + " SATA drives exceed the motherboard limit of " + build.motherboard.sataPorts + " SATA ports.", ["storage", "motherboard"]);
+      }
     }
 
-    if (build.psu && recommendedPsu && build.psu.wattageMax && build.psu.wattageMax < recommendedPsu) {
-      issues.push({
-        level: "bad",
-        parts: ["psu", "cpu", "gpu", "gpu2"],
-        text: build.psu.name + " is below the recommended " + recommendedPsu + "W PSU capacity for this build."
+    if (build.psu) {
+      if (!build.psu.wattageMax) {
+        addMissingDataIssue(issues, build.psu, "PSU wattage", ["psu"]);
+      } else if (estimatedWattage && build.psu.wattageMax < Math.ceil(estimatedWattage * 1.1)) {
+        addCompatibilityIssue(issues, "error", "PSU wattage too low", build.psu.name + " is below the minimum safe capacity for the estimated " + estimatedWattage + "W build load.", ["psu", "cpu", "gpu", "gpu2"]);
+      } else if (recommendedPsu && build.psu.wattageMax < recommendedPsu) {
+        addCompatibilityIssue(issues, "warning", "PSU headroom low", build.psu.name + " is below the recommended " + recommendedPsu + "W PSU capacity for this build.", ["psu", "cpu", "gpu", "gpu2"]);
+      }
+
+      if (build.psu.wattageMin && build.psu.wattageMax && recommendedPsu && build.psu.wattageMin < recommendedPsu && build.psu.wattageMax >= recommendedPsu) {
+        addCompatibilityIssue(issues, "warning", "Choose higher PSU variant", "Choose a " + recommendedPsu + "W or higher variant of " + build.psu.name + ".", ["psu"]);
+      }
+
+      gpuParts.forEach(function (gpuPart) {
+        if (!hasConnectorData(gpuPart.powerRequirement)) {
+          addMissingDataIssue(issues, gpuPart, "GPU power connector requirement", ["gpu", "psu"]);
+        } else if (!hasConnectorData(build.psu.connectors)) {
+          addMissingDataIssue(issues, build.psu, "PCIe power connector count", ["gpu", "psu"]);
+        } else if (gpuPart.powerRequirement.pcie16 > build.psu.connectors.pcie16 || gpuPart.powerRequirement.pcie8 > build.psu.connectors.pcie8) {
+          addCompatibilityIssue(issues, "error", "GPU power connector mismatch", build.psu.name + " does not list enough PCIe power connectors for " + gpuPart.name + ".", ["gpu", "psu"]);
+        }
       });
+
+      if (build.case) {
+        if (!build.psu.formFactor) {
+          addMissingDataIssue(issues, build.psu, "PSU form factor", ["psu", "case"]);
+        } else if (build.case.psuFormFactors && build.case.psuFormFactors !== build.psu.formFactor && build.case.psuFormFactors !== "ATX") {
+          addCompatibilityIssue(issues, "error", "PSU form factor mismatch", build.case.name + " does not list support for " + build.psu.formFactor + " power supplies.", ["psu", "case"]);
+        }
+
+        if (!build.psu.lengthMm) {
+          addMissingDataIssue(issues, build.psu, "PSU length", ["psu", "case"]);
+        } else if (!build.case.maxPsuLength) {
+          addMissingDataIssue(issues, build.case, "maximum PSU length", ["psu", "case"]);
+        } else if (build.psu.lengthMm > build.case.maxPsuLength) {
+          addCompatibilityIssue(issues, "error", "PSU too long", build.psu.name + " is " + build.psu.lengthMm + "mm long, but " + build.case.name + " supports up to " + build.case.maxPsuLength + "mm.", ["psu", "case"]);
+        }
+      }
     }
 
-    if (build.psu && recommendedPsu && build.psu.wattageMin && build.psu.wattageMax && build.psu.wattageMin < recommendedPsu && build.psu.wattageMax >= recommendedPsu) {
-      issues.push({
-        level: "warn",
-        parts: ["psu"],
-        text: "Choose a " + recommendedPsu + "W or higher variant of " + build.psu.name + "."
-      });
+    if (build.cpu && !build.gpu && !build.gpu2) {
+      if (build.cpu.hasIntegratedGraphics === false) {
+        addCompatibilityIssue(issues, "warning", "No display output", build.cpu.name + " does not include integrated graphics, so this build needs a video card.", ["cpu", "gpu"]);
+      } else if (build.cpu.hasIntegratedGraphics === null) {
+        addMissingDataIssue(issues, build.cpu, "integrated graphics support", ["cpu", "gpu"]);
+      }
     }
 
     return issues;
+  }
+
+  function getCompatibilityIssues(build) {
+    return checkCompatibility(build);
   }
 
   function partIsCompatible(categoryKey, part) {
