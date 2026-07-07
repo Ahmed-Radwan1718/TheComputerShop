@@ -1347,6 +1347,10 @@
         <div class="pc-builder-filter-search">
           <span>Search</span>
           <input id="pc-builder-search" type="search" placeholder="Search parts..." aria-label="Search parts">
+          <label class="pc-builder-toggle">
+            <input id="pc-builder-compatible-only" type="checkbox" checked>
+            Compatibility filter
+          </label>
         </div>
 
         <div class="pc-builder-parts-list" id="pc-builder-parts-list"></div>
@@ -1391,6 +1395,7 @@
   const modalTitle = document.getElementById("pc-builder-modal-title");
   const modalList = document.getElementById("pc-builder-parts-list");
   const searchInput = document.getElementById("pc-builder-search");
+  const compatibleOnlyInput = document.getElementById("pc-builder-compatible-only");
   const filterGroupsElement = document.getElementById("pc-builder-filter-groups");
   const clearFiltersButton = document.getElementById("pc-builder-clear-filters");
   const saveBuildButton = document.getElementById("pc-builder-save-build");
@@ -2677,6 +2682,16 @@
     return engine.check(build) || [];
   }
 
+  function chooserPartIsCompatible(categoryKey, part) {
+    const engine = getCompatibilityEngine();
+
+    if (!engine || typeof engine.partIsCompatible !== "function") {
+      return true;
+    }
+
+    return engine.partIsCompatible(getSelectedBuild(), categoryKey, part);
+  }
+
   function renderCompatibilitySummary(issues, selectedCount, missingRequired) {
     if (!statusElement || !issuesElement) {
       return;
@@ -2905,6 +2920,7 @@
         ? (activeExtraIndex >= 0 ? "Change Additional " : "Add Another ") + getAdditionalLabel(categoryKey)
         : "Choose " + category.label;
     searchInput.value = "";
+    compatibleOnlyInput.checked = true;
     chooserFilters[catalogCategoryKey] = {};
     renderFilterGroups(catalogCategoryKey);
     modal.classList.add("open");
@@ -2926,9 +2942,16 @@
 
   function renderChooser() {
     const query = searchInput.value;
+    const compatibleOnly = compatibleOnlyInput.checked;
     const catalogCategoryKey = getActiveCatalogCategoryKey();
     const selectedFilterGroups = getSelectedChooserFilterGroups(catalogCategoryKey);
     let parts = catalog[catalogCategoryKey] || [];
+
+    if (compatibleOnly) {
+      parts = parts.filter(function (part) {
+        return chooserPartIsCompatible(activeCategory, part);
+      });
+    }
 
     if (selectedFilterGroups.length) {
       parts = parts.filter(function (part) {
@@ -3058,6 +3081,7 @@
 
   document.getElementById("pc-builder-close").addEventListener("click", closeChooser);
   searchInput.addEventListener("input", renderChooser);
+  compatibleOnlyInput.addEventListener("change", renderChooser);
   clearFiltersButton.addEventListener("click", function () {
     const catalogCategoryKey = getActiveCatalogCategoryKey();
     chooserFilters[catalogCategoryKey] = {};
