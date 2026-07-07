@@ -1296,11 +1296,22 @@
           </table>
         </div>
       </div>
+
+      <section class="pc-builder-issues-panel" aria-labelledby="pc-builder-issues-title">
+        <div class="pc-builder-summary-header">
+          <h2 id="pc-builder-issues-title">Compatibility</h2>
+        </div>
+
+        <div class="pc-builder-summary-body">
+          <div class="pc-builder-issues" id="pc-builder-issues"></div>
+        </div>
+      </section>
     </div>
 
     <aside class="pc-builder-summary">
       <div class="pc-builder-summary-header">
         <h2>Build Summary</h2>
+        <span class="pc-builder-status" id="pc-builder-status">Loading</span>
       </div>
 
       <div class="pc-builder-summary-body">
@@ -1344,6 +1355,7 @@
   </div>
 </div>
 
+<script src="compatibility.js"></script>
 <script>
 (function () {
   const categories = [
@@ -1383,6 +1395,8 @@
   const clearFiltersButton = document.getElementById("pc-builder-clear-filters");
   const saveBuildButton = document.getElementById("pc-builder-save-build");
   const saveBuildMessage = document.getElementById("pc-builder-save-message");
+  const statusElement = document.getElementById("pc-builder-status");
+  const issuesElement = document.getElementById("pc-builder-issues");
 
   function escapeHtml(value) {
     return String(value || "").replace(/[&<>"']/g, function (character) {
@@ -2646,16 +2660,75 @@
     return data;
   }
 
+  function getCompatibilityEngine() {
+    return window.TCS_COMPATIBILITY || null;
+  }
+
+  function getCompatibilityIssuesFromEngine(build) {
+    const engine = getCompatibilityEngine();
+
+    if (!engine || typeof engine.check !== "function") {
+      return [{
+        level: "warn",
+        text: "Compatibility data is not loaded yet."
+      }];
+    }
+
+    return engine.check(build) || [];
+  }
+
+  function renderCompatibilitySummary(issues, selectedCount, missingRequired) {
+    if (!statusElement || !issuesElement) {
+      return;
+    }
+
+    const allIssues = issues.slice();
+
+    if (missingRequired) {
+      allIssues.unshift({
+        level: "warn",
+        text: "Choose all required component categories to complete the build."
+      });
+    }
+
+    const hardIssue = allIssues.some(function (issue) { return issue.level === "bad"; });
+    const warningIssue = allIssues.some(function (issue) { return issue.level === "warn"; });
+
+    statusElement.className = "pc-builder-status";
+
+    if (!selectedCount) {
+      statusElement.textContent = "Empty";
+      statusElement.classList.add("warn");
+    } else if (hardIssue) {
+      statusElement.textContent = "Incompatible";
+      statusElement.classList.add("bad");
+    } else if (missingRequired || warningIssue) {
+      statusElement.textContent = missingRequired ? "Incomplete" : "Check";
+      statusElement.classList.add("warn");
+    } else {
+      statusElement.textContent = "Compatible";
+    }
+
+    issuesElement.innerHTML = allIssues.length
+      ? allIssues.map(function (issue) {
+        return '<div class="pc-builder-issue ' + escapeHtml(issue.level || "") + '">' + escapeHtml(issue.text) + '</div>';
+      }).join("")
+      : '<div class="pc-builder-issue">No compatibility issues found.</div>';
+  }
+
   function render() {
     if (!catalogLoaded) {
       return;
     }
 
     const build = getSelectedBuild();
+    const compatibilityEngine = getCompatibilityEngine();
+    const compatibilityIssues = getCompatibilityIssuesFromEngine(build);
     const extraSelectedCount = multiPartCategoryKeys.reduce(function (sum, categoryKey) {
       return sum + (build.extraParts[categoryKey] || []).length;
     }, 0);
     const selectedCount = categories.filter(function (category) { return Boolean(build[category.key]); }).length + extraSelectedCount + (build.gpu2 ? 1 : 0);
+    const missingRequired = categories.some(function (category) { return category.required && !build[category.key]; });
 
     rowsElement.innerHTML = categories.map(function (category) {
       const part = build[category.key];
@@ -2728,7 +2801,11 @@
       });
     });
 
-    const wattage = estimateWattage(build);
+    renderCompatibilitySummary(compatibilityIssues, selectedCount, missingRequired);
+
+    const wattage = compatibilityEngine && typeof compatibilityEngine.estimateWattage === "function"
+      ? compatibilityEngine.estimateWattage(build)
+      : estimateWattage(build);
     document.getElementById("pc-builder-wattage").textContent = selectedCount ? wattage + "W" : "0W";
 
     const baseTotal = categories.reduce(function (sum, category) {
