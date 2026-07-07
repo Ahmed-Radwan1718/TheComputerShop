@@ -526,8 +526,14 @@
       gap: 24px;
     }
 
+    .pc-builder-issues-panel {
+      width: min(1280px, 100%);
+      margin: 24px auto 0;
+    }
+
     .pc-builder-panel,
     .pc-builder-summary,
+    .pc-builder-issues-panel,
     .pc-builder-modal-panel {
       border: 1px solid rgba(255, 255, 255, 0.11);
       border-radius: 24px;
@@ -538,7 +544,8 @@
     }
 
     .pc-builder-panel,
-    .pc-builder-summary {
+    .pc-builder-summary,
+    .pc-builder-issues-panel {
       overflow: hidden;
     }
 
@@ -552,6 +559,7 @@
 
     .pc-builder-toolbar h2,
     .pc-builder-summary h2,
+    .pc-builder-issues-panel h2,
     .pc-builder-modal-header h2 {
       color: #ffffff;
       font-size: 24px;
@@ -1299,14 +1307,22 @@
           <div class="pc-builder-stat"><span>Total</span><strong id="pc-builder-total">Pending prices</strong></div>
         </div>
 
-        <div class="pc-builder-issues" id="pc-builder-issues"></div>
-
         <div class="pc-builder-save-actions">
           <button class="pc-builder-button secondary" type="button" id="pc-builder-save-build">Save Build</button>
           <p class="pc-builder-save-message" id="pc-builder-save-message" aria-live="polite"></p>
         </div>
       </div>
     </aside>
+  </section>
+
+  <section class="pc-builder-issues-panel" aria-labelledby="pc-builder-issues-title">
+    <div class="pc-builder-summary-header">
+      <h2 id="pc-builder-issues-title">Potential Issues</h2>
+    </div>
+
+    <div class="pc-builder-summary-body">
+      <div class="pc-builder-issues" id="pc-builder-issues"></div>
+    </div>
   </section>
 </main>
 
