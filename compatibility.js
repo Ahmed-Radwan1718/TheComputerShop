@@ -31,8 +31,14 @@ window.TCS_COMPATIBILITY = (function () {
     "gskill-trident-z5-rgb-ddr5": { category: "memory", memoryType: "DDR5", modules: 2, capacityGb: 96 },
     "klevv-cras-v-rgb-ddr5": { category: "memory", memoryType: "DDR5", modules: 2, capacityGb: 32 },
 
+    "wd-black-sn8100-nvme-ssd": { category: "storage", interface: "M.2 NVMe", formFactor: "M.2 2280", watts: 8 },
+    "wd-black-sn850x-nvme-ssd": { category: "storage", interface: "M.2 NVMe", formFactor: "M.2 2280", watts: 8 },
+    "wd-black-sn7100-nvme-ssd": { category: "storage", interface: "M.2 NVMe", formFactor: "M.2 2280", watts: 8 },
+    "wd-blue-sn5100-nvme-ssd": { category: "storage", interface: "M.2 NVMe", formFactor: "M.2 2280", watts: 5 },
     "samsung-9100-pro-nvme-ssd": { category: "storage", interface: "M.2 NVMe", formFactor: "M.2 2280", watts: 8 },
     "aorus-gen5-14000-ssd": { category: "storage", interface: "M.2 NVMe", formFactor: "M.2 2280", watts: 8 },
+    "crucial-t705-nvme-ssd": { category: "storage", interface: "M.2 NVMe", formFactor: "M.2 2280", watts: 12 },
+    "corsair-mp700-pro-se": { category: "storage", interface: "M.2 NVMe", formFactor: "M.2 2280", watts: 12 },
     "wd-black-gaming-hard-drive": { category: "storage", interface: "SATA", formFactor: "3.5-inch", watts: 8 },
 
     "gigabyte-c500-panoramic-stealth": { category: "case", motherboardSupport: ["ATX", "Micro-ATX", "Mini-ITX"], maxGpuLengthMm: 410, maxCpuCoolerHeightMm: 170, maxPsuLengthMm: 200, radiatorSupportMm: [120, 140, 240, 360] },
@@ -46,15 +52,26 @@ window.TCS_COMPATIBILITY = (function () {
 
     "aorus-elite-p850w-platinum-pg5": { category: "psu", wattageW: 850, formFactor: "ATX", lengthMm: 150, pcie16Pin: 1, pcie8Pin: 6 },
     "aorus-elite-p1000w-platinum-pg5": { category: "psu", wattageW: 1000, formFactor: "ATX", lengthMm: 150, pcie16Pin: 1, pcie8Pin: 6 },
-    "ud1600pm-pg5-ai-top": { category: "psu", wattageW: 1600, formFactor: "ATX", lengthMm: 150, pcie16Pin: 2, pcie8Pin: 8 }
+    "ud1600pm-pg5-ai-top": { category: "psu", wattageW: 1600, formFactor: "ATX", lengthMm: 150, pcie16Pin: 2, pcie8Pin: 8 },
+    "rog-thor-iii": { category: "psu", wattageW: 1000, formFactor: "ATX", lengthMm: 190, pcie16Pin: 1, pcie8Pin: 4 },
+    "rog-thor-iii::1000w": { category: "psu", wattageW: 1000, formFactor: "ATX", lengthMm: 190, pcie16Pin: 1, pcie8Pin: 4 },
+    "rog-thor-iii::1200w": { category: "psu", wattageW: 1200, formFactor: "ATX", lengthMm: 190, pcie16Pin: 1, pcie8Pin: 4 },
+    "rog-thor-iii::1600w": { category: "psu", wattageW: 1600, formFactor: "ATX", lengthMm: 200, pcie16Pin: 2, pcie8Pin: 4 },
+    "corsair-rm1200x-shift-1200w": { category: "psu", wattageW: 1200, formFactor: "ATX", lengthMm: 180, pcie16Pin: 1, pcie8Pin: 8 },
+    "rog-strix-1200w-platinum": { category: "psu", wattageW: 1200, formFactor: "ATX", lengthMm: 160, pcie16Pin: 1, pcie8Pin: 4 },
+    "rog-strix-1000g-aura-gaming": { category: "psu", wattageW: 1000, formFactor: "ATX", lengthMm: 180, pcie16Pin: 1, pcie8Pin: 4 }
   };
+
+  function partId(part) {
+    return String((part && (part.id || part.productId)) || "");
+  }
 
   function baseId(part) {
     return String((part && (part.productId || part.id)) || "").split("::")[0];
   }
 
   function getSpec(part) {
-    return products[baseId(part)] || null;
+    return products[partId(part)] || products[baseId(part)] || null;
   }
 
   function issue(level, text) {
