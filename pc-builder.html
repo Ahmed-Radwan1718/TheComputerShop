@@ -753,13 +753,37 @@
     }
 
     .pc-builder-filter-search .pc-builder-toggle {
+      min-width: 190px;
       min-height: 52px;
-      padding: 0 18px;
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 0 20px;
+      border: 1px solid rgba(255, 107, 107, 0.46);
       border-radius: 999px;
-      background: rgba(24, 25, 24, 0.55);
-      color: rgba(255, 255, 255, 0.72);
+      background: rgba(255, 107, 107, 0.13);
+      color: #ffaaaa;
       white-space: nowrap;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        color 0.2s ease;
+    }
+
+    .pc-builder-filter-search .pc-builder-toggle input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+      pointer-events: none;
+    }
+
+    .pc-builder-filter-search .pc-builder-toggle:has(input:checked) {
+      border-color: rgba(71, 215, 146, 0.46);
+      background: rgba(71, 215, 146, 0.16);
+      color: #8ff0c2;
     }
 
     .pc-builder-toggle {
