@@ -1321,6 +1321,7 @@
         </div>
 
         <div class="pc-builder-save-actions">
+          <button class="pc-builder-button" type="button" id="pc-builder-add-components-cart">Add Components to Cart</button>
           <button class="pc-builder-button secondary" type="button" id="pc-builder-save-build">Save Build</button>
           <p class="pc-builder-save-message" id="pc-builder-save-message" aria-live="polite"></p>
         </div>
@@ -1398,6 +1399,7 @@
   const compatibleOnlyInput = document.getElementById("pc-builder-compatible-only");
   const filterGroupsElement = document.getElementById("pc-builder-filter-groups");
   const clearFiltersButton = document.getElementById("pc-builder-clear-filters");
+  const addComponentsCartButton = document.getElementById("pc-builder-add-components-cart");
   const saveBuildButton = document.getElementById("pc-builder-save-build");
   const saveBuildMessage = document.getElementById("pc-builder-save-message");
   const statusElement = document.getElementById("pc-builder-status");
@@ -2665,6 +2667,75 @@
     return data;
   }
 
+  function getCartPayloadForPart(part) {
+    return {
+      id: part.id,
+      name: part.name,
+      category: part.categoryLabel || part.category || "",
+      specsLine: part.meta || "",
+      url: part.url || "",
+      image: part.image || "",
+      price: part.price || "Final price to be confirmed",
+      priceText: part.price || "Final price to be confirmed",
+      priceNumber: typeof part.priceNumber === "number" ? part.priceNumber : null
+    };
+  }
+
+  async function addCurrentBuildComponentsToCart() {
+    const build = getSelectedBuild();
+    const parts = getBuildSaveParts(build);
+
+    if (!parts.length) {
+      throw new Error("Choose at least one part before adding components to cart.");
+    }
+
+    const accountResponse = await fetch("/api/me", {
+      method: "GET",
+      credentials: "same-origin",
+      headers: {
+        "Accept": "application/json"
+      }
+    });
+
+    const accountData = await accountResponse.json().catch(function () {
+      return {};
+    });
+
+    if (!accountResponse.ok || !accountData.signedIn || !accountData.user) {
+      localStorage.setItem("tcs-login-redirect", window.location.pathname.split("/").pop() + window.location.search);
+      window.location.href = "login.html";
+      throw new Error("login-required");
+    }
+
+    for (const part of parts) {
+      const response = await fetch("/api/cart", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          item: getCartPayloadForPart(part),
+          quantity: 1
+        })
+      });
+
+      const data = await response.json().catch(function () {
+        return {};
+      });
+
+      if (!response.ok) {
+        throw new Error(data.error || "Could not add " + part.name + " to cart.");
+      }
+    }
+
+    if (typeof window.tcsRefreshCartCount === "function") {
+      window.tcsRefreshCartCount();
+    }
+
+    return parts.length;
+  }
+
   function getCompatibilityEngine() {
     return window.TCS_COMPATIBILITY || null;
   }
@@ -3116,6 +3187,30 @@
     saveState();
     render();
   });
+
+  if (addComponentsCartButton) {
+    addComponentsCartButton.addEventListener("click", async function () {
+      const originalText = this.textContent;
+      this.disabled = true;
+      this.textContent = "Adding...";
+      showSaveBuildMessage("", "");
+
+      try {
+        const addedCount = await addCurrentBuildComponentsToCart();
+        this.textContent = "Added";
+        showSaveBuildMessage(addedCount + " component" + (addedCount === 1 ? "" : "s") + " added to cart.", "success");
+        window.setTimeout(() => { this.textContent = originalText; this.disabled = false; }, 1200);
+      } catch (error) {
+        if (error.message === "login-required") {
+          return;
+        }
+
+        this.textContent = originalText;
+        this.disabled = false;
+        showSaveBuildMessage(error.message || "Could not add components to cart.", "error");
+      }
+    });
+  }
 
   if (saveBuildButton) {
     saveBuildButton.addEventListener("click", async function () {
