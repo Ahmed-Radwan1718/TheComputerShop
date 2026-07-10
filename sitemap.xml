@@ -76,11 +76,6 @@
   </url>
 
   <url>
-    <loc>https://the-computer-shop.com/about</loc>
-    <priority>0.6</priority>
-  </url>
-
-  <url>
     <loc>https://the-computer-shop.com/faq</loc>
     <priority>0.6</priority>
   </url>
