@@ -3266,7 +3266,7 @@ body.nav-menu-open {
 .product-action-grid {
   margin-top: 30px;
   display: grid;
-  grid-template-columns: minmax(132px, 0.72fr) minmax(0, 1fr);
+  grid-template-columns: 1fr;
   gap: 14px;
 }
 
