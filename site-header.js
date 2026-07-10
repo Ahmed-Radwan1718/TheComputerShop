@@ -163,32 +163,33 @@
 
       .tcs-cookie-shell {
         position: fixed;
-        left: 24px;
-        right: 24px;
-        bottom: 24px;
+        left: 0;
+        right: 0;
+        bottom: 0;
         z-index: 5000;
         font-family: Arial, sans-serif;
         pointer-events: none;
       }
 
-      .tcs-cookie-banner,
+      .tcs-cookie-banner {
+        width: 100%;
+        min-height: 68px;
+        padding: 14px 30px;
+        border-top: 1px solid rgba(31, 63, 156, 0.18);
+        background: #ffffff;
+        box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.14);
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 22px;
+        align-items: center;
+        pointer-events: auto;
+      }
+
       .tcs-cookie-modal-card {
         border: 1px solid rgba(255, 255, 255, 0.13);
         background: rgba(24, 25, 24, 0.96);
         box-shadow: 0 22px 55px rgba(0, 0, 0, 0.38);
         backdrop-filter: blur(18px);
-      }
-
-      .tcs-cookie-banner {
-        width: min(760px, 100%);
-        margin-left: auto;
-        padding: 22px;
-        border-radius: 18px;
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) auto;
-        gap: 18px;
-        align-items: center;
-        pointer-events: auto;
       }
 
       .tcs-cookie-banner[hidden],
@@ -199,6 +200,12 @@
       .tcs-cookie-copy {
         display: grid;
         gap: 8px;
+      }
+
+      .tcs-cookie-message {
+        color: #203f9d;
+        font-size: 16px;
+        line-height: 1.4;
       }
 
       .tcs-cookie-kicker {
@@ -235,27 +242,28 @@
       }
 
       .tcs-cookie-button {
-        min-height: 42px;
-        padding: 0 15px;
-        border: 1px solid rgba(255, 255, 255, 0.16);
-        border-radius: 999px;
-        background: rgba(255, 255, 255, 0.1);
-        color: white;
+        min-height: 38px;
+        padding: 0 18px;
+        border: 2px solid #2140b2;
+        border-radius: 0;
+        background: #ffffff;
+        color: #2140b2;
         font-family: inherit;
-        font-size: 11px;
+        font-size: 13px;
         font-weight: 700;
-        letter-spacing: 0.08em;
+        letter-spacing: 0.04em;
         text-transform: uppercase;
         cursor: pointer;
       }
 
-      .tcs-cookie-button-primary {
-        border-color: rgba(192, 154, 92, 0.5);
-        background: rgba(192, 154, 92, 0.2);
+      .tcs-cookie-button:hover {
+        background: #f3f6ff;
       }
 
+      .tcs-cookie-button-primary,
       .tcs-cookie-button-text {
-        background: transparent;
+        background: #ffffff;
+        color: #2140b2;
       }
 
       .tcs-cookie-modal {
@@ -374,15 +382,10 @@
       }
 
       @media (max-width: 760px) {
-        .tcs-cookie-shell {
-          left: 14px;
-          right: 14px;
-          bottom: 14px;
-        }
-
         .tcs-cookie-banner {
           grid-template-columns: 1fr;
-          padding: 18px;
+          padding: 16px;
+          gap: 12px;
         }
 
         .tcs-cookie-actions,
@@ -391,7 +394,7 @@
         }
 
         .tcs-cookie-button {
-          flex: 1 1 100%;
+          flex: 1 1 auto;
         }
 
         .tcs-cookie-modal-card {
@@ -592,15 +595,11 @@
       cookieShell.setAttribute("translate", "no");
       cookieShell.innerHTML = `
         <section class="tcs-cookie-banner" id="tcs-cookie-banner" aria-label="Cookie preferences" hidden>
-          <div class="tcs-cookie-copy">
-            <p class="tcs-cookie-kicker">Cookie preferences</p>
-            <h2>Choose your cookies</h2>
-            <p>We use essential cookies and browser storage for login, cart, checkout, security, and saved preferences. Optional cookies help power language translation.</p>
-          </div>
+          <p class="tcs-cookie-message">We use cookies to ensure you get the best experience on our website.</p>
           <div class="tcs-cookie-actions">
-            <button class="tcs-cookie-button tcs-cookie-button-primary" id="tcs-cookie-accept" type="button">Accept optional cookies</button>
-            <button class="tcs-cookie-button" id="tcs-cookie-review" type="button">Review cookies</button>
-            <button class="tcs-cookie-button tcs-cookie-button-text" id="tcs-cookie-decline" type="button">Decline optional cookies</button>
+            <button class="tcs-cookie-button" id="tcs-cookie-review" type="button">More info</button>
+            <button class="tcs-cookie-button tcs-cookie-button-text" id="tcs-cookie-decline" type="button">Decline</button>
+            <button class="tcs-cookie-button tcs-cookie-button-primary" id="tcs-cookie-accept" type="button">Accept</button>
           </div>
         </section>
 
@@ -636,8 +635,8 @@
 
             <div class="tcs-cookie-modal-actions">
               <button class="tcs-cookie-button tcs-cookie-button-primary" id="tcs-cookie-save" type="button">Save choices</button>
-              <button class="tcs-cookie-button" id="tcs-cookie-modal-accept" type="button">Accept optional cookies</button>
-              <button class="tcs-cookie-button tcs-cookie-button-text" id="tcs-cookie-modal-decline" type="button">Decline optional cookies</button>
+              <button class="tcs-cookie-button" id="tcs-cookie-modal-accept" type="button">Accept</button>
+              <button class="tcs-cookie-button tcs-cookie-button-text" id="tcs-cookie-modal-decline" type="button">Decline</button>
             </div>
           </div>
         </div>
