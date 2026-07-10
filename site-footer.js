@@ -40,5 +40,20 @@
     </div>
   </div>
 </footer>
+
+<div class="cookie-consent-banner" role="region" aria-label="Cookie consent notice">
+  <div class="cookie-consent-copy">
+    <h2>We value your privacy</h2>
+    <p>
+      We use essential cookies and may use optional cookies to improve browsing, remember preferences, understand traffic, and personalize content. Choose whether to accept, reject, or view optional cookies.
+    </p>
+  </div>
+
+  <div class="cookie-consent-actions">
+    <button class="cookie-consent-button cookie-consent-view" type="button">View Optional Cookies</button>
+    <button class="cookie-consent-button cookie-consent-reject" type="button">Reject All</button>
+    <button class="cookie-consent-button cookie-consent-accept" type="button">Accept All</button>
+  </div>
+</div>
 `;
 })();
