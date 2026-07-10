@@ -1747,6 +1747,13 @@
       return item.trim();
     }).filter(Boolean);
 
+    if (categoryKey === "memory" && metaParts.length) {
+      const capacity = (String(variantLabel || "").match(/\b\d+\s*GB\b/i) || [])[0];
+      const speed = (String(variantLabel || "").match(/\b\d+\s*MT\/s\b/i) || [])[0];
+
+      return [metaParts[0], capacity, speed].filter(Boolean).join(" | ");
+    }
+
     if (categoryKey === "psu" && metaParts.length) {
       return [metaParts[0], variantLabel].join(" | ");
     }
