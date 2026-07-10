@@ -2961,16 +2961,51 @@
   }
 
   function getSelectedChooserFilterGroups(categoryKey) {
-    return Object.values(chooserFilters[categoryKey] || {}).filter(function (group) {
-      return Array.isArray(group) && group.length;
+    const selectedGroups = chooserFilters[categoryKey] || {};
+
+    return Object.keys(selectedGroups).map(function (groupName) {
+      return {
+        name: groupName,
+        values: selectedGroups[groupName]
+      };
+    }).filter(function (group) {
+      return Array.isArray(group.values) && group.values.length;
     });
   }
 
-  function partMatchesChooserFilters(part, selectedGroups) {
-    const partFilterText = getPartFilterText(part);
+  function getPartFilterTextForGroup(part, groupName) {
+    const normalizedGroupName = normalizeText(groupName);
 
+    if (part && part.category === "memory") {
+      if (normalizedGroupName === "capacity") {
+        return getPartSpec(part, "Memory Size") || getPartFilterText(part);
+      }
+
+      if (normalizedGroupName === "kit configuration") {
+        return getPartSpec(part, "Kit Configuration") || getPartFilterText(part);
+      }
+
+      if (normalizedGroupName === "speed") {
+        return [getPartSpec(part, "Tested Speed"), getPartSpec(part, "Speed Rating")].filter(Boolean).join(" ") || getPartFilterText(part);
+      }
+
+      if (normalizedGroupName === "lighting") {
+        return [getPartSpec(part, "LED Lighting"), getPartSpec(part, "Lighting")].filter(Boolean).join(" ") || getPartFilterText(part);
+      }
+
+      if (normalizedGroupName === "color") {
+        return getPartSpec(part, "Memory Color") || getPartFilterText(part);
+      }
+    }
+
+    return getPartFilterText(part);
+  }
+
+  function partMatchesChooserFilters(part, selectedGroups) {
     return selectedGroups.every(function (group) {
-      return group.some(function (selectedValue) {
+      const partFilterText = getPartFilterTextForGroup(part, group.name);
+
+      return group.values.some(function (selectedValue) {
         return textIncludesFilterValue(partFilterText, selectedValue);
       });
     });
