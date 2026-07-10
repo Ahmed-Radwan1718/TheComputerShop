@@ -32,13 +32,7 @@
           <li><a href="privacy.html">Privacy Policy</a></li>
         </ul>
       </div>
-
-      <div class="site-footer-column">
-        <h3>About</h3>
-        <ul class="site-footer-links">
-          <li><a href="about.html">About Us</a></li>
-        </ul>
-      </div>
+    </div>
     </div>
 
     <div class="site-footer-bottom">
