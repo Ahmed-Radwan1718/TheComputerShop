@@ -86,11 +86,6 @@
   </url>
 
   <url>
-    <loc>https://the-computer-shop.com/privacy</loc>
-    <priority>0.4</priority>
-  </url>
-
-  <url>
     <loc>https://the-computer-shop.com/terms</loc>
     <priority>0.4</priority>
   </url>
