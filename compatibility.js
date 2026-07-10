@@ -156,9 +156,13 @@ window.TCS_COMPATIBILITY = (function () {
   function estimateWattage(build) {
     return selectedParts(build).reduce(function (sum, part) {
       const spec = getSpec(part);
-      if (!spec) return sum + 25;
-      return sum + (spec.maxTurboW || spec.boardPowerW || spec.tdpW || spec.watts || 0);
-    }, 0);
+      const partWatts = part && part.watts ? part.watts : 0;
+      const specWatts = spec ? (spec.maxTurboW || spec.boardPowerW || spec.tdpW || spec.watts || 0) : 0;
+
+      if (!partWatts && !specWatts) return sum + 25;
+
+      return sum + Math.max(partWatts, specWatts);
+    }, 35);
   }
 
   function check(build) {
