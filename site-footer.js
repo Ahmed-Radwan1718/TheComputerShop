@@ -27,9 +27,8 @@
         <h3>Support</h3>
         <ul class="site-footer-links">
           <li><a href="faq.html">FAQ</a></li>
-          <li><a href="policies.html">Policies</a></li>
+          <li><a href="policies.html">Policies & Privacy</a></li>
           <li><a href="terms.html">Terms & Conditions</a></li>
-          <li><a href="privacy.html">Privacy Policy</a></li>
         </ul>
       </div>
     </div>
