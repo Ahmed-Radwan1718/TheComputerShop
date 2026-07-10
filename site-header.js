@@ -454,7 +454,7 @@
     const languageToggle = document.getElementById("tcs-language-toggle");
     const languagePanel = document.getElementById("tcs-language-panel");
     const cookiePreferenceStorageKey = "tcs-cookie-preferences";
-    const cookiePreferenceVersion = 1;
+    const cookiePreferenceVersion = 2;
     let cookiePreferences = readCookiePreferences();
     let pendingLanguageCode = "";
 
@@ -594,7 +594,7 @@
       cookieShell.className = "tcs-cookie-shell skiptranslate notranslate";
       cookieShell.setAttribute("translate", "no");
       cookieShell.innerHTML = `
-        <section class="tcs-cookie-banner" id="tcs-cookie-banner" aria-label="Cookie preferences" hidden>
+        <section class="tcs-cookie-banner" id="tcs-cookie-banner" aria-label="Cookie preferences">
           <p class="tcs-cookie-message">We use cookies to ensure you get the best experience on our website.</p>
           <div class="tcs-cookie-actions">
             <button class="tcs-cookie-button" id="tcs-cookie-review" type="button">More info</button>
@@ -693,9 +693,7 @@
 
       window.tcsOpenCookiePreferences = openCookieModal;
 
-      if (!cookiePreferencesAreSaved()) {
-        cookieBanner.hidden = false;
-      }
+      cookieBanner.hidden = cookiePreferencesAreSaved();
     }
 
     function protectProductNamesFromTranslation() {
