@@ -10648,8 +10648,11 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
     })
   };
 
-  const productKey = new URLSearchParams(window.location.search).get("product") || "rtx-5090-aorus-master";
+  const productParams = new URLSearchParams(window.location.search);
+  const productKey = productParams.get("product") || "rtx-5090-aorus-master";
+  const productVariantKey = productParams.get("variant");
   const currentProduct = products[productKey];
+
 
   if (!currentProduct) {
     document.title = "Product not found - The Computer Shop";
@@ -11019,9 +11022,10 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
     }
   }
 
-  let selectedVariantKey = currentProduct.defaultVariant || null;
+  let selectedVariantKey = productVariantKey || currentProduct.defaultVariant || null;
   let selectedHeatsinkKey = currentProduct.defaultHeatsinkOption || null;
   let selectedCoolingKey = currentProduct.defaultCoolingOption || null;
+
 
   function getSelectedVariant(product) {
     if (!product.variants) {
