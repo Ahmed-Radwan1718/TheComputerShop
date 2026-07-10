@@ -1827,7 +1827,8 @@
         name: basePart.name + " " + variantLabel,
         meta: variantMeta,
         metaParts: variantMeta.split("|").map(function (item) { return item.trim(); }),
-        filterTags: [basePart.filterTags, variantLabel].filter(Boolean).join(" "),
+        variantLabel: variantLabel,
+        filterTags: variantLabel,
         price: variant.priceText || basePart.price,
         image: variantImages[0] || basePart.image,
         url: basePart.url + "&variant=" + encodeURIComponent(variantId),
@@ -2976,40 +2977,198 @@
     });
   }
 
-  function getPartFilterTextForGroup(part, groupName) {
-    const normalizedGroupName = normalizeText(groupName);
+  function normalizeFilterComparable(value) {
+    return normalizeText(value).replace(/×/g, "x").replace(/\s*\/\s*/g, "/").trim();
+  }
 
-    if (part && part.category === "memory") {
-      if (normalizedGroupName === "capacity") {
-        return getPartSpec(part, "Memory Size") || getPartFilterText(part);
-      }
+  function filterValueEquals(actualValue, selectedValue) {
+    const actual = normalizeFilterComparable(actualValue);
+    const selected = normalizeFilterComparable(selectedValue);
 
-      if (normalizedGroupName === "kit configuration") {
-        return getPartSpec(part, "Kit Configuration") || getPartFilterText(part);
-      }
+    return Boolean(actual && selected) && (actual === selected || compactFilterText(actual) === compactFilterText(selected));
+  }
 
-      if (normalizedGroupName === "speed") {
-        return [getPartSpec(part, "Tested Speed"), getPartSpec(part, "Speed Rating")].filter(Boolean).join(" ") || getPartFilterText(part);
-      }
+  function filterValueStartsWith(actualValue, selectedValue) {
+    const actual = normalizeFilterComparable(actualValue);
+    const selected = normalizeFilterComparable(selectedValue);
+    const compactActual = compactFilterText(actual);
+    const compactSelected = compactFilterText(selected);
 
-      if (normalizedGroupName === "lighting") {
-        return [getPartSpec(part, "LED Lighting"), getPartSpec(part, "Lighting")].filter(Boolean).join(" ") || getPartFilterText(part);
-      }
+    return filterValueEquals(actual, selected) || actual.startsWith(selected + " ") || actual.startsWith(selected + "-") || (compactSelected && compactActual.startsWith(compactSelected));
+  }
 
-      if (normalizedGroupName === "color") {
-        return getPartSpec(part, "Memory Color") || getPartFilterText(part);
-      }
+  function filterTextContainsExactValue(text, selectedValue) {
+    const normalizedText = normalizeFilterComparable(text);
+    const normalizedValue = normalizeFilterComparable(selectedValue);
+
+    if (!normalizedText || !normalizedValue) {
+      return false;
     }
 
-    return getPartFilterText(part);
+    const escapedValue = normalizedValue.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s+");
+    const expression = new RegExp("(^|[^a-z0-9])" + escapedValue + "([^a-z0-9]|$)", "i");
+
+    return expression.test(normalizedText);
+  }
+
+  function getFilterNumber(value) {
+    const match = String(value || "").replace(/,/g, "").match(/\d+(?:\.\d+)?/);
+    return match ? Number(match[0]) : 0;
+  }
+
+  function filterNumberMatchesText(text, selectedValue) {
+    const selectedNumber = getFilterNumber(selectedValue);
+    const selectedIsMinimum = String(selectedValue || "").includes("+");
+    const numbers = Array.from(String(text || "").replace(/,/g, "").matchAll(/\d+(?:\.\d+)?/g)).map(function (match) {
+      return Number(match[0]);
+    });
+
+    if (!selectedNumber || !numbers.length) {
+      return false;
+    }
+
+    return selectedIsMinimum ? numbers.some(function (number) { return number >= selectedNumber; }) : numbers.some(function (number) { return number === selectedNumber; });
+  }
+
+  function getCombinedText(values) {
+    return values.filter(Boolean).join(" ");
+  }
+
+  function matchAnyExact(values, selectedValue) {
+    return values.filter(Boolean).some(function (value) {
+      return filterValueEquals(value, selectedValue);
+    });
+  }
+
+  function matchAnyPrefix(values, selectedValue) {
+    return values.filter(Boolean).some(function (value) {
+      return filterValueStartsWith(value, selectedValue);
+    });
+  }
+
+  function matchAnyText(values, selectedValue) {
+    return filterTextContainsExactValue(getCombinedText(values), selectedValue);
+  }
+
+  function filterLightingMatches(text, selectedValue) {
+    const normalizedText = normalizeFilterComparable(text);
+    const normalizedValue = normalizeFilterComparable(selectedValue);
+
+    if (normalizedValue.includes("non")) {
+      return /(^|[^a-z0-9])non[-\s]?rgb([^a-z0-9]|$)/i.test(normalizedText) || normalizedText.includes("no rgb");
+    }
+
+    if (normalizedValue === "argb") {
+      return filterTextContainsExactValue(normalizedText, "ARGB");
+    }
+
+    if (normalizedValue === "rgb") {
+      return !/(^|[^a-z0-9])non[-\s]?rgb([^a-z0-9]|$)/i.test(normalizedText) && (filterTextContainsExactValue(normalizedText, "RGB") || filterTextContainsExactValue(normalizedText, "ARGB"));
+    }
+
+    return filterTextContainsExactValue(normalizedText, selectedValue);
+  }
+
+  function partMatchesStructuredFilter(part, groupName, selectedValue) {
+    const group = normalizeText(groupName);
+    const category = part && part.category;
+    const variantText = part && part.variantLabel ? part.variantLabel : "";
+    const safeVariantOrPartText = variantText || getPartFilterText(part);
+
+    if (group === "brand") {
+      return matchAnyPrefix([part.brand, part.metaParts && part.metaParts[0], getPartSpec(part, "Brand")], selectedValue);
+    }
+
+    if (group === "color") {
+      return matchAnyText([variantText, getPartSpec(part, ["Color", "Memory Color", "Selected Color"]), variantText ? "" : getPartFilterText(part)], selectedValue);
+    }
+
+    if (group === "lighting") {
+      return filterLightingMatches(getCombinedText([getPartSpec(part, ["LED Lighting", "Lighting"]), part.name, part.meta, part.filterTags]), selectedValue);
+    }
+
+    if (category === "cpu") {
+      if (group === "processor family") return filterTextContainsExactValue(part.name, selectedValue);
+      if (group === "socket") return filterValueEquals(part.socket, normalizeSocket(selectedValue));
+      if (group === "core count") return filterTextContainsExactValue(part.cores, selectedValue) || filterNumberMatchesText(part.cores, selectedValue);
+    }
+
+    if (category === "cooler") {
+      if (group === "cooler type") return normalizeText(selectedValue).includes("aio") || normalizeText(selectedValue).includes("liquid") ? part.isAio : !part.isAio;
+      if (group === "radiator size") return part.radiator === getFilterNumber(selectedValue);
+      if (group === "socket support") return (part.sockets || []).some(function (socket) { return filterValueEquals(socket, normalizeSocket(selectedValue)); });
+    }
+
+    if (category === "motherboard") {
+      if (group === "cpu platform") return normalizeText(selectedValue) === "amd" ? part.socket === "AM5" : part.socket && part.socket.startsWith("LGA");
+      if (group === "chipset") return filterValueStartsWith(part.chipset || getPartFilterText(part), selectedValue);
+      if (group === "form factor") return filterValueEquals(part.formFactor, normalizeFormFactor(selectedValue));
+      if (group === "socket") return filterValueEquals(part.socket, normalizeSocket(selectedValue));
+    }
+
+    if (category === "memory") {
+      if (group === "capacity") return matchAnyExact([getPartSpec(part, "Memory Size"), part.capacity], selectedValue);
+      if (group === "speed") return filterNumberMatchesText(getCombinedText([getPartSpec(part, "Tested Speed"), getPartSpec(part, "Speed Rating"), part.speed]), selectedValue);
+      if (group === "kit configuration") return matchAnyExact([getPartSpec(part, "Kit Configuration")], selectedValue);
+    }
+
+    if (category === "storage") {
+      const storageText = getCombinedText([part.name, part.meta, variantText, getPartSpec(part, ["Product Name", "Selected Capacity", "Interface", "Form Factor"])]);
+      const isHdd = /\b(hdd|hard drive)\b/i.test(storageText);
+
+      if (group === "storage type") {
+        if (filterValueEquals(selectedValue, "NVMe SSD")) return !isHdd && (filterTextContainsExactValue(storageText, "NVMe") || filterTextContainsExactValue(storageText, "M.2"));
+        if (filterValueEquals(selectedValue, "SATA SSD")) return !isHdd && filterTextContainsExactValue(storageText, "SATA") && filterTextContainsExactValue(storageText, "SSD");
+        if (filterValueEquals(selectedValue, "HDD")) return isHdd;
+      }
+
+      if (group === "capacity") return matchAnyExact([getPartSpec(part, ["Selected Capacity", "Capacity", "Storage Capacity"]), variantText], selectedValue);
+      if (group === "interface") return matchAnyText([storageText], selectedValue);
+    }
+
+    if (category === "gpu") {
+      if (group === "gpu model") return filterValueEquals(part.gpuModel, selectedValue);
+      if (group === "vram") return filterValueEquals(part.vram, selectedValue);
+    }
+
+    if (category === "case") {
+      if (group === "case size") return filterValueEquals(part.caseType, selectedValue);
+      if (group === "style") return matchAnyText([safeVariantOrPartText], selectedValue);
+    }
+
+    if (category === "psu") {
+      if (group === "wattage") {
+        const selectedWatts = getFilterNumber(selectedValue);
+
+        if (part.wattageMin && part.wattageMax && part.wattageMin === part.wattageMax) {
+          return part.wattageMax === selectedWatts;
+        }
+
+        return filterNumberMatchesText(getCombinedText([getPartSpec(part, ["Selected Wattage", "Output Capacity"]), variantText, part.meta]), selectedValue);
+      }
+
+      if (group === "efficiency") return matchAnyText([getPartSpec(part, "Efficiency"), variantText, part.meta], selectedValue);
+      if (group === "modularity") return matchAnyText([getPartSpec(part, ["Modularity", "Cable Type"]), part.meta, part.filterTags], selectedValue);
+    }
+
+    if (category === "monitor") {
+      if (group === "refresh rate") return filterNumberMatchesText(getCombinedText([part.name, part.meta, part.filterTags]), selectedValue);
+      if (group === "resolution" || group === "panel type") return matchAnyText([part.name, part.meta, part.filterTags], selectedValue);
+    }
+
+    if (category === "peripherals") {
+      if (group === "peripheral type" || group === "connection") return matchAnyText([part.name, part.meta, part.filterTags], selectedValue);
+    }
+
+    return null;
   }
 
   function partMatchesChooserFilters(part, selectedGroups) {
     return selectedGroups.every(function (group) {
-      const partFilterText = getPartFilterTextForGroup(part, group.name);
-
       return group.values.some(function (selectedValue) {
-        return textIncludesFilterValue(partFilterText, selectedValue);
+        const structuredMatch = partMatchesStructuredFilter(part, group.name, selectedValue);
+
+        return structuredMatch === null ? filterTextContainsExactValue(getPartFilterText(part), selectedValue) : structuredMatch;
       });
     });
   }
