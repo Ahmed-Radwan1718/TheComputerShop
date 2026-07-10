@@ -1620,11 +1620,17 @@
     }
 
     try {
-      return Function('"use strict"; return (' + literal + ');')();
+      return Function(
+        '"use strict"; ' +
+        'const createUgreenChargingProduct = function(product) { return product || {}; }; ' +
+        'const createUgreenNasProduct = function(product) { return product || {}; }; ' +
+        'return (' + literal + ');'
+      )();
     } catch (error) {
       return {};
     }
   }
+
 
   function applyProductPriceOverrides(products, productPriceOverrides) {
     Object.entries(productPriceOverrides || {}).forEach(function (entry) {
@@ -1691,9 +1697,47 @@
       .replace(/^-+|-+$/g, "");
   }
 
-  function getVariantLabel(variant, index) {
-    return variant.capacity || [variant.capacityOption, variant.heatsinkOption, variant.coolingOption].filter(Boolean).join(" / ") || "Variant " + (index + 1);
+  function formatVariantOptionLabel(value) {
+    return String(value || "")
+      .replace(/-/g, " ")
+      .replace(/\b\w/g, function (character) { return character.toUpperCase(); })
+      .trim();
   }
+
+  function getVariantLabel(variant, index) {
+    const labelParts = [
+      variant.capacity || variant.capacityOption,
+      variant.heatsinkOption,
+      variant.coolingOption
+    ].map(formatVariantOptionLabel).filter(Boolean);
+
+    return labelParts.length ? labelParts.join(" / ") : "Variant " + (index + 1);
+  }
+
+  function variantMatchesDefault(productData, variant, variantId, index) {
+    if (!productData.defaultVariant) {
+      return index === 0;
+    }
+
+    if (variantId === productData.defaultVariant) {
+      return true;
+    }
+
+    if (variant.capacityOption !== productData.defaultVariant) {
+      return false;
+    }
+
+    if (productData.defaultHeatsinkOption && variant.heatsinkOption !== productData.defaultHeatsinkOption) {
+      return false;
+    }
+
+    if (productData.defaultCoolingOption && variant.coolingOption !== productData.defaultCoolingOption) {
+      return false;
+    }
+
+    return true;
+  }
+
 
   function buildVariantMeta(baseMeta, variantLabel, categoryKey) {
     const metaParts = String(baseMeta || "").split("|").map(function (item) {
@@ -1774,7 +1818,7 @@
         id: basePart.id + "::" + variantId,
         productId: basePart.id,
         variantId: variantId,
-        isDefaultVariant: productData.defaultVariant ? variantId === productData.defaultVariant : index === 0,
+        isDefaultVariant: variantMatchesDefault(productData, variant, variantId, index),
         category: basePart.category,
         categoryLabel: basePart.categoryLabel,
         name: basePart.name + " " + variantLabel,
