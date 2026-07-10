@@ -57,8 +57,9 @@
 
   <div class="cookie-consent-options" id="cookie-consent-options" hidden>
     <div>
-      <h3>Optional Cookies</h3>
-      <p>Optional cookies help us understand site traffic, remember non-essential preferences, and improve the shopping experience. Essential cookies remain active because the website needs them to work.</p>
+      <h3>Cookies We Use</h3>
+      <p>Essential cookies: __Host-tcs_session, __Host-tcs_account_session, __Host-tcs_login_challenge, __Host-tcs_login_2fa, __Host-tcs_trusted_device, and __Host-tcs_security_unlock. These support login, account security, two-factor verification, trusted devices, and protected account actions.</p>
+      <p>Optional and preference cookies: googtrans remembers language translation preferences, and tcs_cookie_consent remembers your cookie choice. We do not currently use advertising, analytics, marketing, heatmap, or tracking cookies.</p>
     </div>
   </div>
 </div>
