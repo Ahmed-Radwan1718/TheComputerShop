@@ -65,19 +65,34 @@
 `;
 
   const cookieConsentBanner = document.getElementById("cookie-consent-banner");
-  const cookieConsentViewButton = document.getElementById("cookie-consent-view");
-  const cookieConsentRejectButton = document.getElementById("cookie-consent-reject");
-  const cookieConsentAcceptButton = document.getElementById("cookie-consent-accept");
   const cookieConsentOptions = document.getElementById("cookie-consent-options");
+  const cookieConsentViewButton = document.getElementById("cookie-consent-view");
   const cookieConsentCookieName = "tcs_cookie_consent";
+  const cookieConsentStorageKey = "tcs_cookie_consent";
 
   function getCookieConsentChoice() {
-    const match = document.cookie.match(new RegExp("(^| )" + cookieConsentCookieName + "=([^;]+)"));
-    return match ? decodeURIComponent(match[2]) : "";
+    try {
+      const storedChoice = sessionStorage.getItem(cookieConsentStorageKey);
+
+      if (storedChoice) {
+        return storedChoice;
+      }
+    } catch (error) {}
+
+    const cookieMatch = document.cookie.split("; ").find(function (cookie) {
+      return cookie.indexOf(cookieConsentCookieName + "=") === 0;
+    });
+
+    return cookieMatch ? decodeURIComponent(cookieMatch.split("=").slice(1).join("=")) : "";
   }
 
   function setCookieConsentChoice(choice) {
+    try {
+      sessionStorage.setItem(cookieConsentStorageKey, choice);
+    } catch (error) {}
+
     document.cookie = cookieConsentCookieName + "=" + encodeURIComponent(choice) + "; path=/; SameSite=Lax";
+
     window.tcsCookieConsent = {
       choice: choice,
       optionalCookiesAllowed: choice === "accepted"
@@ -97,7 +112,7 @@
     }, 260);
   }
 
-  if (cookieConsentBanner && cookieConsentViewButton && cookieConsentRejectButton && cookieConsentAcceptButton && cookieConsentOptions) {
+  if (cookieConsentBanner && cookieConsentOptions && cookieConsentViewButton) {
     const existingCookieConsentChoice = getCookieConsentChoice();
 
     if (existingCookieConsentChoice) {
@@ -105,19 +120,29 @@
       cookieConsentBanner.hidden = true;
     }
 
-    cookieConsentViewButton.addEventListener("click", function () {
-      const shouldShowOptions = cookieConsentOptions.hidden;
+    document.addEventListener("click", function (event) {
+      const consentButton = event.target.closest("#cookie-consent-view, #cookie-consent-reject, #cookie-consent-accept");
 
-      cookieConsentOptions.hidden = !shouldShowOptions;
-      cookieConsentViewButton.setAttribute("aria-expanded", String(shouldShowOptions));
-    });
+      if (!consentButton) {
+        return;
+      }
 
-    cookieConsentRejectButton.addEventListener("click", function () {
-      dismissCookieConsent("rejected");
-    });
+      if (consentButton.id === "cookie-consent-view") {
+        const shouldShowOptions = cookieConsentOptions.hidden;
 
-    cookieConsentAcceptButton.addEventListener("click", function () {
-      dismissCookieConsent("accepted");
+        cookieConsentOptions.hidden = !shouldShowOptions;
+        cookieConsentViewButton.setAttribute("aria-expanded", String(shouldShowOptions));
+        return;
+      }
+
+      if (consentButton.id === "cookie-consent-reject") {
+        dismissCookieConsent("rejected");
+        return;
+      }
+
+      if (consentButton.id === "cookie-consent-accept") {
+        dismissCookieConsent("accepted");
+      }
     });
   }
 })();
