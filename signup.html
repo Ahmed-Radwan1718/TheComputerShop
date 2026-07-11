@@ -46,7 +46,7 @@
 
           <div class="auth-field">
             <label for="signup-phone">Phone Number</label>
-            <input type="tel" id="signup-phone" autocomplete="tel" required>
+            <input type="tel" id="signup-phone" autocomplete="tel" inputmode="tel" pattern="^\+?[0-9][0-9\s().-]{7,28}$" title="Enter a valid phone number." required>
           </div>
 
           <div class="auth-field">
@@ -452,9 +452,22 @@
   signupForm.addEventListener("submit", async function (event) {
     event.preventDefault();
 
+    const phone = document.getElementById("signup-phone").value.trim();
     const email = document.getElementById("signup-email").value.trim();
     const password = document.getElementById("signup-password").value;
     const confirmPassword = document.getElementById("signup-confirm-password").value;
+    const phoneDigits = phone.replace(/\D/g, "");
+
+    if (
+      !phone ||
+      !/^\+?[0-9][0-9\s().-]{7,28}$/.test(phone) ||
+      phoneDigits.length < 10 ||
+      phoneDigits.length > 15 ||
+      /^(\d)\1+$/.test(phoneDigits)
+    ) {
+      showMessage("Please enter a valid phone number.", "error");
+      return;
+    }
 
     if (password !== confirmPassword) {
       showMessage("Passwords do not match.", "error");
