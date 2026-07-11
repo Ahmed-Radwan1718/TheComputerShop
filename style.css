@@ -3407,13 +3407,36 @@ body.nav-menu-open {
 }
 
 .product-title-eyebrow,
-.product-purchase-eyebrow {
+.product-purchase-eyebrow,
+.product-who-toggle {
   margin-bottom: 12px;
   color: rgba(255, 255, 255, 0.58);
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+}
+
+.product-who-toggle {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: center;
+  text-align: left;
+  cursor: default;
+}
+
+.product-who-toggle .faq-icon {
+  display: none;
+}
+
+.product-who-answer {
+  overflow: visible;
 }
 
 .product-title-block h1 {
@@ -6721,7 +6744,38 @@ body.nav-menu-open {
     padding-top: 0;
   }
 
+  .product-who-toggle {
+    min-height: 48px;
+    margin-bottom: 0;
+    padding: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.105);
+    cursor: pointer;
+  }
+
+  .product-who-toggle .faq-icon {
+    display: block;
+  }
+
+  .product-purchase-panel.who-open .product-who-toggle .faq-icon {
+    color: white;
+    transform: rotate(45deg);
+  }
+
+  .product-who-answer {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.32s ease, opacity 0.22s ease;
+  }
+
+  .product-purchase-panel.who-open .product-who-answer {
+    max-height: 320px;
+    opacity: 1;
+  }
+
   .product-purchase-subtitle {
+    margin-bottom: 24px;
+    padding-top: 16px;
     font-size: 15px;
     line-height: 1.7;
   }
