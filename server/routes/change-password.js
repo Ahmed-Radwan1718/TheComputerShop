@@ -90,10 +90,12 @@ async function revokeOtherAccountSessions(uid, currentSessionId, revokedBy) {
 
 function isStrongPassword(password) {
   return typeof password === "string"
-    && password.length >= 8
-    && !/\s/.test(password)
-    && /[A-Za-z]/.test(password)
-    && /\d/.test(password);
+    && password.length >= 10
+    && password.length <= 48
+    && /[A-Z]/.test(password)
+    && /[a-z]/.test(password)
+    && /[0-9]/.test(password)
+    && /[^A-Za-z0-9\s]/.test(password);
 }
 
 async function hasSecurityUnlock(req, uid) {
@@ -191,7 +193,7 @@ module.exports = async function handler(req, res) {
     }
 
     if (!isStrongPassword(newPassword)) {
-      return res.status(400).json({ error: "Password must be at least 8 characters and include letters and numbers." });
+      return res.status(400).json({ error: "Password must be 10 to 48 characters and include uppercase, lowercase, special, and numeric characters." });
     }
 
     await checkPasswordChangeLock(decodedUser.uid);
