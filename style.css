@@ -2373,6 +2373,10 @@ body.nav-menu-open {
   position: sticky;
   top: 120px;
   align-self: start;
+  max-height: calc(100vh - 140px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   padding: 14px;
   border-radius: 26px;
   border: 1px solid rgba(255, 255, 255, 0.11);
@@ -2380,6 +2384,8 @@ body.nav-menu-open {
   box-shadow: 0 22px 55px rgba(0, 0, 0, 0.18);
   display: grid;
   gap: 8px;
+  scrollbar-color: rgba(255, 255, 255, 0.48) rgba(24, 25, 24, 0.56);
+  scrollbar-width: thin;
 }
 
 .filters-heading {
