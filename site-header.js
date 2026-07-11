@@ -439,11 +439,11 @@
 
   <div class="nav-menu-panel nav-menu-language">
     <div class="nav-menu-links">
-      <button class="nav-menu-button" type="button" data-tcs-mobile-language="en">English</button>
-      <button class="nav-menu-button" type="button" data-tcs-mobile-language="ar">Arabic</button>
-      <button class="nav-menu-button" type="button" data-tcs-mobile-language="fr">French</button>
-      <button class="nav-menu-button" type="button" data-tcs-mobile-language="de">German</button>
-      <button class="nav-menu-button" type="button" data-tcs-mobile-language="es">Spanish</button>
+      <button class="nav-menu-button" type="button" data-tcs-mobile-language="en"><span class="tcs-language-flag" aria-hidden="true"><img src="united-states.png" alt=""></span><span>English</span></button>
+      <button class="nav-menu-button" type="button" data-tcs-mobile-language="ar"><span class="tcs-language-flag" aria-hidden="true"><img src="egypt.png" alt=""></span><span>Arabic</span></button>
+      <button class="nav-menu-button" type="button" data-tcs-mobile-language="fr"><span class="tcs-language-flag" aria-hidden="true"><img src="france.png" alt=""></span><span>French</span></button>
+      <button class="nav-menu-button" type="button" data-tcs-mobile-language="de"><span class="tcs-language-flag" aria-hidden="true"><img src="germany.png" alt=""></span><span>German</span></button>
+      <button class="nav-menu-button" type="button" data-tcs-mobile-language="es"><span class="tcs-language-flag" aria-hidden="true"><img src="spain.png" alt=""></span><span>Spanish</span></button>
     </div>
   </div>
 </div>
