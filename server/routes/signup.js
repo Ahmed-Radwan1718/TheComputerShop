@@ -35,8 +35,29 @@ function cleanPhone(value) {
   return cleanString(value, 30);
 }
 
+function hasValidPhoneFormat(value) {
+  const phone = cleanPhone(value);
+  const phoneDigits = phone.replace(/\D/g, "");
+
+  return Boolean(
+    phone &&
+    /^\+?[0-9][0-9\s().-]{7,28}$/.test(phone) &&
+    phoneDigits.length >= 10 &&
+    phoneDigits.length <= 15 &&
+    !/^(\d)\1+$/.test(phoneDigits)
+  );
+}
+
 function getPhoneLookupKey(value) {
-  return cleanPhone(value).replace(/\D/g, "");
+  const phone = cleanPhone(value);
+
+  return hasValidPhoneFormat(phone) ? phone.replace(/\D/g, "") : "";
+}
+
+function createInvalidPhoneError() {
+  const error = new Error("Please enter a valid phone number.");
+  error.statusCode = 400;
+  return error;
 }
 
 function createPhoneInUseError() {
@@ -49,9 +70,7 @@ async function ensurePhoneCanCreateAccount(phone) {
   const phoneLookupKey = getPhoneLookupKey(phone);
 
   if (!phoneLookupKey) {
-    const error = new Error("Please enter your phone number.");
-    error.statusCode = 400;
-    throw error;
+    throw createInvalidPhoneError();
   }
 
   const db = admin.firestore();
