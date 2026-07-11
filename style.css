@@ -741,6 +741,10 @@ body {
     grid-template-rows: 220px 1fr;
   }
 
+  .tcs-home-component-card:nth-child(n + 2) {
+    display: none;
+  }
+
   .tcs-home-component-carousel-footer {
     align-items: flex-start;
     flex-direction: column;
