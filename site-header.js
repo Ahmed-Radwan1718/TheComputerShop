@@ -168,20 +168,24 @@
         }
       }
 
-      @media (max-width: 620px) {
+      @media (max-width: 900px) {
         .tcs-language-switcher {
-          top: 86px;
-          right: 16px;
+          top: 0;
+          right: 0;
+          pointer-events: none;
         }
 
         .tcs-language-toggle {
-          width: 44px;
-          height: 44px;
+          display: none;
         }
 
-        .tcs-language-toggle img {
-          width: 24px;
-          height: 24px;
+        .tcs-language-panel {
+          position: fixed;
+          top: 86px;
+          left: 16px;
+          right: 16px;
+          min-width: 0;
+          pointer-events: auto;
         }
       }
     `;
@@ -350,6 +354,28 @@
     });
 
     document.addEventListener("click", function (event) {
+      const mobileLanguageButton = event.target.closest ? event.target.closest("#tcs-mobile-language-button") : null;
+
+      if (mobileLanguageButton) {
+        event.preventDefault();
+
+        document.body.classList.remove("nav-menu-open");
+
+        const navMenuButton = document.querySelector(".hamburger-toggle");
+        const navMenuOverlay = document.querySelector(".nav-menu-overlay");
+
+        if (navMenuButton) {
+          navMenuButton.setAttribute("aria-expanded", "false");
+        }
+
+        if (navMenuOverlay) {
+          navMenuOverlay.setAttribute("aria-hidden", "true");
+        }
+
+        openLanguagePanel();
+        return;
+      }
+
       if (!languageSwitcher.contains(event.target)) {
         closeLanguagePanel();
       }
@@ -426,6 +452,7 @@
       <a href="components.html" class="nav-menu-link">Components</a>
       <a href="signature-builds.html" class="nav-menu-link">Signature Builds</a>
       <a href="consultation.html" class="nav-menu-link">Need a Custom PC?</a>
+      <button class="nav-menu-button" id="tcs-mobile-language-button" type="button">Language</button>
     </div>
   </div>
 </div>
