@@ -181,6 +181,8 @@
         <p>Core Ultra 9 | RTX 5090 | 96GB RAM</p>
       </a>
     </div>
+
+    <div class="tcs-home-build-dots" id="tcs-home-build-dots" aria-label="Signature builds carousel"></div>
   </section>
 
   <section class="tcs-home-process" id="custom-pc-process">
@@ -575,6 +577,7 @@
 <script>
   const homeBuildGrid = document.querySelector(".tcs-home-build-grid");
   const homeBuildCards = document.querySelectorAll(".tcs-home-build-card");
+  const homeBuildDots = document.getElementById("tcs-home-build-dots");
   const homeBuildCarouselMedia = window.matchMedia("(max-width: 900px)");
   let homeBuildIndex = 0;
   let homeBuildTimer;
@@ -591,6 +594,12 @@
       card.classList.toggle("is-active", isActive);
       card.setAttribute("aria-hidden", homeBuildCarouselMedia.matches && !isActive ? "true" : "false");
     });
+
+    if (homeBuildDots) {
+      homeBuildDots.querySelectorAll(".tcs-home-build-dot").forEach((dot, dotIndex) => {
+        dot.classList.toggle("is-active", dotIndex === homeBuildIndex);
+      });
+    }
   }
 
   function stopHomeBuildCycle() {
@@ -603,6 +612,14 @@
     homeBuildTimer = setInterval(() => {
       showHomeBuildCard(homeBuildIndex + 1);
     }, 7000);
+  }
+
+  function goToHomeBuildCard(index) {
+    showHomeBuildCard(index);
+
+    if (homeBuildCarouselMedia.matches) {
+      startHomeBuildCycle();
+    }
   }
 
   function syncHomeBuildCarousel() {
@@ -626,6 +643,21 @@
   }
 
   if (homeBuildGrid && homeBuildCards.length) {
+    if (homeBuildDots) {
+      homeBuildDots.innerHTML = Array.from(homeBuildCards).map((card, index) => {
+        const title = card.querySelector("h3");
+        const label = title ? title.textContent.trim() : `Build ${index + 1}`;
+
+        return `<button class="tcs-home-build-dot" type="button" aria-label="Show ${label}" data-index="${index}"></button>`;
+      }).join("");
+
+      homeBuildDots.querySelectorAll(".tcs-home-build-dot").forEach((dot) => {
+        dot.addEventListener("click", () => {
+          goToHomeBuildCard(Number(dot.dataset.index || 0));
+        });
+      });
+    }
+
     syncHomeBuildCarousel();
 
     if (homeBuildCarouselMedia.addEventListener) {
