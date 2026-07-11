@@ -170,22 +170,7 @@
 
       @media (max-width: 900px) {
         .tcs-language-switcher {
-          top: 0;
-          right: 0;
-          pointer-events: none;
-        }
-
-        .tcs-language-toggle {
           display: none;
-        }
-
-        .tcs-language-panel {
-          position: fixed;
-          top: 86px;
-          left: 16px;
-          right: 16px;
-          min-width: 0;
-          pointer-events: auto;
         }
       }
     `;
@@ -355,24 +340,20 @@
 
     document.addEventListener("click", function (event) {
       const mobileLanguageButton = event.target.closest ? event.target.closest("#tcs-mobile-language-button") : null;
+      const mobileLanguageOption = event.target.closest ? event.target.closest("[data-tcs-mobile-language]") : null;
 
       if (mobileLanguageButton) {
         event.preventDefault();
+        closeLanguagePanel();
+        showLanguageNavPanel();
+        return;
+      }
 
-        document.body.classList.remove("nav-menu-open");
-
-        const navMenuButton = document.querySelector(".hamburger-toggle");
-        const navMenuOverlay = document.querySelector(".nav-menu-overlay");
-
-        if (navMenuButton) {
-          navMenuButton.setAttribute("aria-expanded", "false");
-        }
-
-        if (navMenuOverlay) {
-          navMenuOverlay.setAttribute("aria-hidden", "true");
-        }
-
-        openLanguagePanel();
+      if (mobileLanguageOption) {
+        event.preventDefault();
+        closeLanguagePanel();
+        closeNavMenu();
+        applyLanguage(mobileLanguageOption.dataset.tcsMobileLanguage, 0);
         return;
       }
 
@@ -455,12 +436,36 @@
       <button class="nav-menu-button" id="tcs-mobile-language-button" type="button">Language</button>
     </div>
   </div>
+
+  <div class="nav-menu-panel nav-menu-language">
+    <div class="nav-menu-links">
+      <button class="nav-menu-button" type="button" data-tcs-mobile-language="en">English</button>
+      <button class="nav-menu-button" type="button" data-tcs-mobile-language="ar">Arabic</button>
+      <button class="nav-menu-button" type="button" data-tcs-mobile-language="fr">French</button>
+      <button class="nav-menu-button" type="button" data-tcs-mobile-language="de">German</button>
+      <button class="nav-menu-button" type="button" data-tcs-mobile-language="es">Spanish</button>
+    </div>
+  </div>
 </div>
 `;
 
   const menuButton = document.querySelector(".hamburger-toggle");
   const menuOverlay = document.querySelector(".nav-menu-overlay");
   const menuLinks = document.querySelectorAll(".nav-menu-link");
+
+  function setActiveNavPanel(panelSelector) {
+    document.querySelectorAll(".nav-menu-panel").forEach(function (panel) {
+      panel.classList.toggle("active", panel.matches(panelSelector));
+    });
+  }
+
+  function showMainNavPanel() {
+    setActiveNavPanel(".nav-menu-main");
+  }
+
+  function showLanguageNavPanel() {
+    setActiveNavPanel(".nav-menu-language");
+  }
 
   function closeNavMenu() {
     document.body.classList.remove("nav-menu-open");
@@ -472,6 +477,8 @@
     if (menuOverlay) {
       menuOverlay.setAttribute("aria-hidden", "true");
     }
+
+    showMainNavPanel();
   }
 
   if (menuButton && menuOverlay) {
@@ -479,6 +486,7 @@
       const menuIsOpen = document.body.classList.toggle("nav-menu-open");
       menuButton.setAttribute("aria-expanded", String(menuIsOpen));
       menuOverlay.setAttribute("aria-hidden", String(!menuIsOpen));
+      showMainNavPanel();
     });
 
     menuOverlay.addEventListener("click", function (event) {
