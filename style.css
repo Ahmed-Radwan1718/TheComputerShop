@@ -3417,6 +3417,10 @@ body.nav-menu-open {
   text-transform: uppercase;
 }
 
+.product-title-eyebrow.product-title-eyebrow-accent {
+  color: rgba(192, 154, 92, 0.84);
+}
+
 .product-who-toggle {
   width: 100%;
   padding: 0;
