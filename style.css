@@ -6300,6 +6300,7 @@ body.nav-menu-open {
     border-radius: 16px;
     display: flex;
     align-items: center;
+    gap: 12px;
     justify-content: flex-start;
     background: rgba(255, 255, 255, 0.065);
     color: white;
