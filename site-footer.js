@@ -17,7 +17,7 @@
       <div class="site-footer-column">
         <h3>Contact</h3>
         <ul class="site-footer-links">
-          <li><a href="mailto:The_Computer_Shop@icloud.com">The_Computer_Shop@icloud.com</a></li>
+          <li><a href="mailto:thecomputershopegypt@gmail.com">thecomputershopegypt@gmail.com</a></li>
           <li><a href="https://wa.me/201130816735" target="_blank" rel="noopener noreferrer">WhatsApp</a></li>
           <li><a href="https://www.facebook.com/share/1AkQdshwCi/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer">Facebook</a></li>
         </ul>
