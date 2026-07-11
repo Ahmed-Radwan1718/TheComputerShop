@@ -2785,10 +2785,10 @@ images: [
       priceText: "Insert price here",
       priceNumber: null,
       url: "product.html?product=intel-core-ultra-9-285k",
-      images: Array.from({ length: 4 }, (_, index) => {
-        const imageNumber = index + 1;
-        return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350192/intel-core-ultra-9-285k-${imageNumber}.jpg`;
-      }),
+      images: [
+        "https://res.cloudinary.com/dhtamisqn/image/upload/v1781350192/intel-core-ultra-9-285k-1.jpg",
+        "https://res.cloudinary.com/dhtamisqn/image/upload/v1781350192/intel-core-ultra-9-285k-4.jpg"
+      ],
       whoIsThisFor: "A flagship unlocked Intel Core Ultra processor for high-end gaming, demanding creator workloads, workstation systems, heavy multitasking, AI-assisted applications, and premium LGA1851 builds that need 24-core hybrid performance, strong boost clocks, DDR5 support, PCIe 5.0 readiness, and maximum desktop-class Core Ultra performance.",
       specs: [
         ["Product Name", "Intel Core Ultra 9 Processor 285K"],
