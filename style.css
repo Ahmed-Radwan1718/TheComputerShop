@@ -6499,9 +6499,20 @@ body.nav-menu-open {
   }
 
   .signature-layout {
-    grid-template-columns: 1fr;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    grid-template-columns: minmax(0, 1fr);
     gap: 28px;
     padding: 0 22px 72px;
+    box-sizing: border-box;
+    overflow-x: clip;
+  }
+
+  .signature-products {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
   }
 
   .filters-panel {
@@ -6563,12 +6574,20 @@ body.nav-menu-open {
   }
 
   .signature-builds-grid {
-    grid-template-columns: 1fr;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    grid-template-columns: minmax(0, 1fr);
     gap: 28px;
   }
 
   .signature-build-card {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
     padding-bottom: 18px;
+    box-sizing: border-box;
+    overflow: hidden;
   }
 
   .signature-build-image-frame,
