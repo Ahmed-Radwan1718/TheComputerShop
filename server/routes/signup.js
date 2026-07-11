@@ -31,6 +31,71 @@ function cleanPassword(value) {
   return String(value || "");
 }
 
+function cleanPhone(value) {
+  return cleanString(value, 30);
+}
+
+function getPhoneLookupKey(value) {
+  return cleanPhone(value).replace(/\D/g, "");
+}
+
+function createPhoneInUseError() {
+  const error = new Error("This phone number is already used by another account.");
+  error.statusCode = 409;
+  return error;
+}
+
+async function ensurePhoneCanCreateAccount(phone) {
+  const phoneLookupKey = getPhoneLookupKey(phone);
+
+  if (!phoneLookupKey) {
+    const error = new Error("Please enter your phone number.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const db = admin.firestore();
+  const phoneReservationRef = db.collection("accountPhoneNumbers").doc(phoneLookupKey);
+  const phoneReservationDoc = await phoneReservationRef.get();
+
+  if (phoneReservationDoc.exists) {
+    throw createPhoneInUseError();
+  }
+
+  const [exactPhoneSnapshot, normalizedPhoneSnapshot] = await Promise.all([
+    db.collection("users").where("phone", "==", phone).limit(1).get(),
+    db.collection("users").where("phoneLookupKey", "==", phoneLookupKey).limit(1).get()
+  ]);
+
+  if (!exactPhoneSnapshot.empty || !normalizedPhoneSnapshot.empty) {
+    throw createPhoneInUseError();
+  }
+
+  return phoneLookupKey;
+}
+
+async function reserveAccountPhone(phone, uid) {
+  const phoneLookupKey = await ensurePhoneCanCreateAccount(phone);
+  const phoneRef = admin.firestore().collection("accountPhoneNumbers").doc(phoneLookupKey);
+
+  try {
+    await phoneRef.create({
+      uid,
+      phone,
+      phoneLookupKey,
+      createdAt: admin.firestore.FieldValue.serverTimestamp()
+    });
+  } catch (error) {
+    if (String(error.code) === "6" || error.code === "already-exists" || /already exists/i.test(error.message || "")) {
+      throw createPhoneInUseError();
+    }
+
+    throw error;
+  }
+
+  return { phoneLookupKey, phoneRef };
+}
+
 const DISPOSABLE_EMAIL_DOMAIN_OVERRIDES = new Set([
   "temp-mail.org",
   "temp-mail.io",
@@ -417,13 +482,13 @@ module.exports = async function handler(req, res) {
     }
 
     const fullName = cleanString((req.body || {}).fullName, 80);
-    const phone = cleanString((req.body || {}).phone, 30);
+    const phone = cleanPhone((req.body || {}).phone);
     const email = cleanEmail((req.body || {}).email);
     const password = cleanPassword((req.body || {}).password);
     const confirmPassword = cleanPassword((req.body || {}).confirmPassword);
     const verificationCode = cleanString((req.body || {}).verificationCode, 12).replace(/\D/g, "").slice(0, 6);
 
-    if (!fullName || !email || !password || !confirmPassword) {
+    if (!fullName || !phone || !email || !password || !confirmPassword) {
       return res.status(400).json({ error: "Please complete all required fields." });
     }
 
@@ -446,6 +511,7 @@ module.exports = async function handler(req, res) {
       return res.status(400).json({ error: "Please use a permanent email address. Temporary email services are not allowed." });
     }
 
+    await ensurePhoneCanCreateAccount(phone);
     await ensureEmailCanCreateAccount(email);
 
     if (!verificationCode) {
@@ -468,15 +534,29 @@ module.exports = async function handler(req, res) {
       emailVerified: true
     });
 
-    await admin.firestore().collection("users").doc(userRecord.uid).set({
-      fullName,
-      phone,
-      email,
-      authProvider: "password",
-      emailVerified: true,
-      createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      updatedAt: admin.firestore.FieldValue.serverTimestamp()
-    });
+    let phoneReservation = null;
+
+    try {
+      phoneReservation = await reserveAccountPhone(phone, userRecord.uid);
+
+      await admin.firestore().collection("users").doc(userRecord.uid).set({
+        fullName,
+        phone,
+        phoneLookupKey: phoneReservation.phoneLookupKey,
+        email,
+        authProvider: "password",
+        emailVerified: true,
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        updatedAt: admin.firestore.FieldValue.serverTimestamp()
+      });
+    } catch (error) {
+      if (phoneReservation && phoneReservation.phoneRef) {
+        await phoneReservation.phoneRef.delete().catch(function () {});
+      }
+
+      await admin.auth().deleteUser(userRecord.uid).catch(function () {});
+      throw error;
+    }
 
     await signupCodeRef.delete();
     await createCompatibleSiteSession(req, res, userRecord.uid);
