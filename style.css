@@ -741,7 +741,7 @@ body {
   }
 }
 
-@media (max-width: 720px) {
+@media (max-width: 900px) {
   .tcs-home-categories .tcs-home-section-head-row {
     left: auto;
     width: 100%;
@@ -753,8 +753,11 @@ body {
   .tcs-home-component-carousel {
     width: min(100%, 560px);
     margin: 0 auto;
-    grid-template-columns: 34px minmax(0, 1fr) 34px;
-    gap: 8px;
+    display: block;
+  }
+
+  .tcs-home-component-arrow {
+    display: none;
   }
 
   .tcs-home-component-track {
@@ -774,11 +777,14 @@ body {
 
   .tcs-home-component-carousel-footer {
     width: min(100%, 560px);
-    margin: 22px auto 0;
+    margin: 20px auto 0;
+    display: flex;
     align-items: center;
-    flex-direction: column;
-    gap: 18px;
-    text-align: center;
+    justify-content: center;
+  }
+
+  .tcs-home-component-carousel-footer .tcs-home-text-link {
+    display: none;
   }
 
   .tcs-home-component-dots {
