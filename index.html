@@ -573,53 +573,65 @@
 </script>
 
 <script>
-  const signaturePreviewGrid = document.querySelector(".home-signature-preview-grid");
-  const signaturePreviewCards = document.querySelectorAll(".home-signature-preview-card");
-  const signaturePreviewMedia = window.matchMedia("(max-width: 900px)");
-  let signaturePreviewIndex = 0;
-  let signaturePreviewTimer;
+  const homeBuildGrid = document.querySelector(".tcs-home-build-grid");
+  const homeBuildCards = document.querySelectorAll(".tcs-home-build-card");
+  const homeBuildCarouselMedia = window.matchMedia("(max-width: 900px)");
+  let homeBuildIndex = 0;
+  let homeBuildTimer;
 
-  function showSignaturePreviewCard(index) {
-    signaturePreviewCards.forEach((card, cardIndex) => {
-      card.classList.toggle("is-active", cardIndex === index);
-    });
-  }
-
-  function stopSignaturePreviewCycle() {
-    clearInterval(signaturePreviewTimer);
-  }
-
-  function startSignaturePreviewCycle() {
-    stopSignaturePreviewCycle();
-
-    signaturePreviewTimer = setInterval(() => {
-      signaturePreviewIndex = (signaturePreviewIndex + 1) % signaturePreviewCards.length;
-      showSignaturePreviewCard(signaturePreviewIndex);
-    }, 7000);
-  }
-
-  function syncSignaturePreviewCarousel() {
-    if (!signaturePreviewGrid || !signaturePreviewCards.length) {
+  function showHomeBuildCard(index) {
+    if (!homeBuildCards.length) {
       return;
     }
 
-    signaturePreviewGrid.classList.add("is-mobile-carousel-ready");
-    showSignaturePreviewCard(signaturePreviewIndex);
+    homeBuildIndex = (index + homeBuildCards.length) % homeBuildCards.length;
 
-    if (signaturePreviewMedia.matches && signaturePreviewCards.length > 1) {
-      startSignaturePreviewCycle();
+    homeBuildCards.forEach((card, cardIndex) => {
+      const isActive = cardIndex === homeBuildIndex;
+      card.classList.toggle("is-active", isActive);
+      card.setAttribute("aria-hidden", homeBuildCarouselMedia.matches && !isActive ? "true" : "false");
+    });
+  }
+
+  function stopHomeBuildCycle() {
+    clearInterval(homeBuildTimer);
+  }
+
+  function startHomeBuildCycle() {
+    stopHomeBuildCycle();
+
+    homeBuildTimer = setInterval(() => {
+      showHomeBuildCard(homeBuildIndex + 1);
+    }, 7000);
+  }
+
+  function syncHomeBuildCarousel() {
+    if (!homeBuildGrid || !homeBuildCards.length) {
+      return;
+    }
+
+    if (homeBuildCarouselMedia.matches && homeBuildCards.length > 1) {
+      homeBuildGrid.classList.add("is-mobile-carousel-ready");
+      showHomeBuildCard(homeBuildIndex);
+      startHomeBuildCycle();
     } else {
-      stopSignaturePreviewCycle();
+      stopHomeBuildCycle();
+      homeBuildGrid.classList.remove("is-mobile-carousel-ready");
+
+      homeBuildCards.forEach((card) => {
+        card.classList.remove("is-active");
+        card.removeAttribute("aria-hidden");
+      });
     }
   }
 
-  if (signaturePreviewGrid && signaturePreviewCards.length) {
-    syncSignaturePreviewCarousel();
+  if (homeBuildGrid && homeBuildCards.length) {
+    syncHomeBuildCarousel();
 
-    if (signaturePreviewMedia.addEventListener) {
-      signaturePreviewMedia.addEventListener("change", syncSignaturePreviewCarousel);
+    if (homeBuildCarouselMedia.addEventListener) {
+      homeBuildCarouselMedia.addEventListener("change", syncHomeBuildCarousel);
     } else {
-      signaturePreviewMedia.addListener(syncSignaturePreviewCarousel);
+      homeBuildCarouselMedia.addListener(syncHomeBuildCarousel);
     }
   }
 </script>
