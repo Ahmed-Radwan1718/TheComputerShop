@@ -2602,10 +2602,10 @@ images: [
       priceText: "Insert price here",
       priceNumber: null,
       url: "product.html?product=intel-core-ultra-7-265k",
-      images: Array.from({ length: 4 }, (_, index) => {
-        const imageNumber = index + 1;
-        return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350179/intel-core-ultra-7-265k-${imageNumber}.jpg`;
-      }),
+      images: [
+        "https://res.cloudinary.com/dhtamisqn/image/upload/v1781350179/intel-core-ultra-7-265k-1.jpg",
+        "https://res.cloudinary.com/dhtamisqn/image/upload/v1781350179/intel-core-ultra-7-265k-4.jpg"
+      ],
       defaultVariant: "265kf-tray",
       variantSelectorLabel: "Choose Processor",
       variants: [
@@ -2614,6 +2614,7 @@ images: [
           capacity: "265KF Tray",
           priceText: "Insert price here",
           priceNumber: null,
+          whoIsThisFor: "The Intel Core Ultra 7 265KF Tray is for LGA1851 builds using a dedicated graphics card, without integrated graphics or retail boxed packaging.",
           specs: [
             ["Selected Processor", "Intel Core Ultra 7 265KF Tray"],
             ["Processor Number", "265KF"],
@@ -2626,6 +2627,7 @@ images: [
           capacity: "265K",
           priceText: "Insert price here",
           priceNumber: null,
+          whoIsThisFor: "The Intel Core Ultra 7 265K is for LGA1851 gaming, productivity, and creator PCs that need the boxed 20-core Core Ultra 7 with integrated Intel Graphics.",
           specs: [
             ["Selected Processor", "Intel Core Ultra 7 265K"],
             ["Processor Number", "265K"],
@@ -2638,6 +2640,7 @@ images: [
           capacity: "265KF",
           priceText: "Insert price here",
           priceNumber: null,
+          whoIsThisFor: "The Intel Core Ultra 7 265KF is for LGA1851 builds using a dedicated graphics card and the boxed 20-core Core Ultra 7 without integrated graphics.",
           specs: [
             ["Selected Processor", "Intel Core Ultra 7 265KF"],
             ["Processor Number", "265KF"],
@@ -2650,6 +2653,7 @@ images: [
           capacity: "265K Tray",
           priceText: "Insert price here",
           priceNumber: null,
+          whoIsThisFor: "The Intel Core Ultra 7 265K Tray is for LGA1851 builds that need the 20-core 265K processor with integrated Intel Graphics, without retail boxed packaging.",
           specs: [
             ["Selected Processor", "Intel Core Ultra 7 265K Tray"],
             ["Processor Number", "265K"],
@@ -2658,7 +2662,7 @@ images: [
           ]
         }
       ],
-      whoIsThisFor: "A high-performance Intel Core Ultra processor for gaming, productivity, creator work, and LGA1851 builds with selectable 265KF Tray, 265K, 265KF, and 265K Tray variants.",
+      whoIsThisFor: "The Intel Core Ultra 7 265KF Tray is for LGA1851 builds using a dedicated graphics card, without integrated graphics or retail boxed packaging.",
       specs: [
         ["Product Name", "Intel Core Ultra 7"],
         ["Available Variants", "265KF Tray, 265K, 265KF, 265K Tray"],
