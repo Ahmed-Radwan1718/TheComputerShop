@@ -1,7 +1,5 @@
-const dns = require("dns").promises;
 const admin = require("../_lib/firebaseAdmin");
 const { Resend } = require("resend");
-const disposableEmailDomains = require("disposable-email-domains-js");
 
 const {
   createSiteSessionForUid,
@@ -113,140 +111,6 @@ async function reserveAccountPhone(phone, uid) {
   }
 
   return { phoneLookupKey, phoneRef };
-}
-
-const DISPOSABLE_EMAIL_DOMAIN_OVERRIDES = new Set([
-  "temp-mail.org",
-  "temp-mail.io",
-  "tempmail.org",
-  "tempmail.io",
-  "tempmail.net",
-  "tempmail.plus",
-  "10minutemail.com",
-  "10minemail.com",
-  "10minutemail.net",
-  "mailinator.com",
-  "guerrillamail.com",
-  "guerrillamail.net",
-  "grr.la",
-  "sharklasers.com",
-  "yopmail.com",
-  "mail.tm",
-  "mail.gw",
-  "1secmail.com",
-  "1secmail.net",
-  "1secmail.org",
-  "dispostable.com",
-  "maildrop.cc",
-  "getnada.com",
-  "inboxkitten.com",
-  "emailondeck.com",
-  "trashmail.com",
-  "mohmal.com",
-  "moakt.com",
-  "generator.email",
-  "dropmail.me",
-  "minuteinbox.com",
-  "mailnesia.com",
-  "spamgourmet.com",
-  "anonbox.net",
-  "burnermail.io",
-  "mailpoof.com",
-  "throwawaymail.com"
-]);
-
-const DISPOSABLE_EMAIL_PROVIDER_MARKERS = [
-  "temp-mail",
-  "tempmail",
-  "10minutemail",
-  "10minmail",
-  "mailinator",
-  "guerrillamail",
-  "sharklasers",
-  "yopmail",
-  "1secmail",
-  "maildrop",
-  "getnada",
-  "inboxkitten",
-  "emailondeck",
-  "trashmail",
-  "mohmal",
-  "moakt",
-  "generator.email",
-  "dropmail",
-  "minuteinbox",
-  "mailnesia",
-  "spamgourmet",
-  "anonbox",
-  "burnermail",
-  "mailpoof",
-  "throwawaymail"
-];
-
-function getEmailDomain(email) {
-  return cleanString(String(email || "").split("@").pop(), 160).toLowerCase();
-}
-
-function hasDisposableDomainOverride(domain) {
-  if (!domain) return false;
-
-  const parts = domain.split(".");
-
-  for (let index = 0; index < parts.length - 1; index += 1) {
-    const candidate = parts.slice(index).join(".");
-
-    if (DISPOSABLE_EMAIL_DOMAIN_OVERRIDES.has(candidate)) {
-      return true;
-    }
-  }
-
-  return DISPOSABLE_EMAIL_PROVIDER_MARKERS.some(function (marker) {
-    return domain.includes(marker);
-  });
-}
-
-function isKnownDisposableEmail(email) {
-  const domain = getEmailDomain(email);
-
-  if (!domain) return false;
-  if (hasDisposableDomainOverride(domain)) return true;
-
-  try {
-    if (typeof disposableEmailDomains.isDisposableEmail === "function" && disposableEmailDomains.isDisposableEmail(email)) {
-      return true;
-    }
-
-    if (typeof disposableEmailDomains.isDisposableEmailDomain === "function" && disposableEmailDomains.isDisposableEmailDomain(domain)) {
-      return true;
-    }
-  } catch (error) {}
-
-  return false;
-}
-
-async function hasDisposableDnsProvider(email) {
-  const domain = getEmailDomain(email);
-
-  if (!domain) return false;
-
-  const results = await Promise.allSettled([
-    dns.resolveMx(domain),
-    dns.resolveTxt(domain)
-  ]);
-
-  const dnsText = results.map(function (result) {
-    if (result.status !== "fulfilled") return "";
-
-    return JSON.stringify(result.value || []).toLowerCase();
-  }).join(" ");
-
-  return DISPOSABLE_EMAIL_PROVIDER_MARKERS.some(function (marker) {
-    return dnsText.includes(marker);
-  });
-}
-
-async function isBlockedEmail(email) {
-  return isKnownDisposableEmail(email) || await hasDisposableDnsProvider(email);
 }
 
 function timestampToMillis(value) {
@@ -465,14 +329,6 @@ module.exports = async function handler(req, res) {
       const userDoc = await userRef.get();
       const existingUser = userDoc.exists ? userDoc.data() || {} : {};
 
-      if (await isBlockedEmail(email)) {
-        if (!userDoc.exists) {
-          await admin.auth().deleteUser(decodedToken.uid).catch(function () {});
-        }
-
-        return res.status(400).json({ error: "Please use a permanent email address. Temporary email services are not allowed." });
-      }
-
       const emailVerified = Boolean(userRecord.emailVerified || decodedToken.email_verified);
 
       await userRef.set({
@@ -524,10 +380,6 @@ module.exports = async function handler(req, res) {
       !/[^A-Za-z0-9\s]/.test(password)
     ) {
       return res.status(400).json({ error: "Password must be 10 to 48 characters and include uppercase, lowercase, special, and numeric characters." });
-    }
-
-    if (await isBlockedEmail(email)) {
-      return res.status(400).json({ error: "Please use a permanent email address. Temporary email services are not allowed." });
     }
 
     await ensurePhoneCanCreateAccount(phone);
