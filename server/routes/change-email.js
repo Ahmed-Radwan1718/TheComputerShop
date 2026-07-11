@@ -1,5 +1,6 @@
 const admin = require("../_lib/firebaseAdmin");
 const { Resend } = require("resend");
+const disposableEmailDomains = require("disposable-email-domains-js");
 
 const {
   getUserFromRequest,
@@ -87,6 +88,10 @@ async function handleStart(req, res, uid) {
 
   if (currentEmail === newEmail) {
     return res.status(400).json({ error: "Please enter a different new email." });
+  }
+
+  if (disposableEmailDomains.isDisposableEmail(newEmail)) {
+    return res.status(400).json({ error: "Please use a permanent email address. Temporary email services are not allowed." });
   }
 
   const db = admin.firestore();
@@ -210,6 +215,10 @@ async function handleConfirm(req, res, uid) {
 
   if (!newEmail) {
     return res.status(400).json({ error: "Missing new email. Please restart email change." });
+  }
+
+  if (disposableEmailDomains.isDisposableEmail(newEmail)) {
+    return res.status(400).json({ error: "Please use a permanent email address. Temporary email services are not allowed." });
   }
 
   await admin.auth().updateUser(uid, {
