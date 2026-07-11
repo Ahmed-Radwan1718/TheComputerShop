@@ -2044,7 +2044,7 @@
     const size = getPartSpec(part, ["Card Size", "Card Dimensions", "Card Length", "Dimensions"]);
     const heightMatch = String(size || "").match(/\bH\s*=\s*(\d+(?:\.\d+)?)/i);
     const dimensions = parseDimensionNumbers(size);
-    const thickness = heightMatch ? Number(lengthMatch[1]) : (dimensions.length >= 3 ? dimensions[2] : 0);
+    const thickness = heightMatch ? Number(heightMatch[1]) : (dimensions.length >= 3 ? dimensions[2] : 0);
 
     return thickness ? Math.max(1, Math.ceil(thickness / 20)) : 0;
   }
