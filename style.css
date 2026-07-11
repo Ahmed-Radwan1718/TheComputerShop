@@ -747,7 +747,7 @@ body {
     width: 100%;
     padding-left: 0;
     transform: none;
-    text-align: center;
+    text-align: left;
   }
 
   .tcs-home-component-carousel {
@@ -771,6 +771,10 @@ body {
     grid-template-rows: clamp(185px, 53vw, 220px) 1fr;
   }
 
+  .tcs-home-component-card-body {
+    text-align: left;
+  }
+
   .tcs-home-component-card:nth-child(n + 2) {
     display: none;
   }
@@ -780,7 +784,7 @@ body {
     margin: 20px auto 0;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-end;
   }
 
   .tcs-home-component-carousel-footer .tcs-home-text-link {
@@ -788,7 +792,7 @@ body {
   }
 
   .tcs-home-component-dots {
-    justify-content: center;
+    justify-content: flex-end;
   }
 }
 
@@ -1071,6 +1075,11 @@ body {
     min-height: 420px;
   }
 
+  .tcs-home-builds .tcs-home-section-head-row,
+  .tcs-home-build-card {
+    text-align: left;
+  }
+
   .tcs-home-build-grid {
     grid-template-columns: 1fr;
   }
@@ -1090,6 +1099,7 @@ body {
 
   .tcs-home-build-dots {
     display: flex;
+    justify-content: flex-end;
   }
 
   @keyframes tcsHomeBuildCardIn {
