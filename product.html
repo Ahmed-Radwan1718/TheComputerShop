@@ -11271,6 +11271,7 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
 
     if (productCategory) {
       productCategory.textContent = product.category;
+      productCategory.classList.toggle("product-title-eyebrow-accent", product.category === "Signature Build");
     }
 
     if (productSubtitle) {
