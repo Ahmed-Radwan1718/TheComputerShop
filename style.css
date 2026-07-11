@@ -732,13 +732,30 @@ body {
 }
 
 @media (max-width: 720px) {
+  .tcs-home-categories .tcs-home-section-head-row {
+    left: auto;
+    width: 100%;
+    padding-left: 0;
+    transform: none;
+    text-align: center;
+  }
+
+  .tcs-home-component-carousel {
+    width: min(100%, 560px);
+    margin: 0 auto;
+    grid-template-columns: 34px minmax(0, 1fr) 34px;
+    gap: 8px;
+  }
+
   .tcs-home-component-track {
+    width: 100%;
+    min-width: 0;
     grid-template-columns: 1fr;
   }
 
   .tcs-home-component-card {
     min-height: 320px;
-    grid-template-rows: 220px 1fr;
+    grid-template-rows: clamp(185px, 53vw, 220px) 1fr;
   }
 
   .tcs-home-component-card:nth-child(n + 2) {
@@ -746,12 +763,16 @@ body {
   }
 
   .tcs-home-component-carousel-footer {
-    align-items: flex-start;
+    width: min(100%, 560px);
+    margin: 22px auto 0;
+    align-items: center;
     flex-direction: column;
+    gap: 18px;
+    text-align: center;
   }
 
   .tcs-home-component-dots {
-    justify-content: flex-start;
+    justify-content: center;
   }
 }
 
