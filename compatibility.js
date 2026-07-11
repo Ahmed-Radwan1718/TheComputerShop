@@ -253,21 +253,11 @@ window.TCS_COMPATIBILITY = (function () {
     return issues;
   }
 
-  function getBadIssueKeys(build) {
-    return check(build).filter(function (item) {
-      return item.level === "bad";
-    }).map(function (item) {
-      return item.text;
-    });
-  }
-
   function partIsCompatible(build, categoryKey, part) {
-    const currentBadIssues = new Set(getBadIssueKeys(build));
     const testBuild = Object.assign({}, build);
     testBuild[categoryKey] = part;
-
     return !check(testBuild).some(function (item) {
-      return item.level === "bad" && !currentBadIssues.has(item.text);
+      return item.level === "bad";
     });
   }
 
