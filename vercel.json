@@ -1,3 +1,15 @@
 {
-  "cleanUrls": true
+  "cleanUrls": true,
+  "redirects": [
+    {
+      "source": "/accessories",
+      "destination": "/peripherals",
+      "permanent": true
+    },
+    {
+      "source": "/accessories.html",
+      "destination": "/peripherals",
+      "permanent": true
+    }
+  ]
 }
