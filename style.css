@@ -1059,8 +1059,27 @@ body {
     grid-template-columns: 1fr;
   }
 
+  .tcs-home-build-grid.is-mobile-carousel-ready .tcs-home-build-card {
+    display: none;
+  }
+
+  .tcs-home-build-grid.is-mobile-carousel-ready .tcs-home-build-card.is-active {
+    display: block;
+    animation: tcsHomeBuildCardIn 0.36s ease;
+  }
+
   .tcs-home-build-card img {
     height: 290px;
+  }
+
+  @keyframes tcsHomeBuildCardIn {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
   }
 
   .tcs-home-final-panel {
