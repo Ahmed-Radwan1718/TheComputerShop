@@ -1,5 +1,6 @@
 const admin = require("../_lib/firebaseAdmin");
 const { Resend } = require("resend");
+const disposableEmailDomains = require("disposable-email-domains-js");
 
 const {
   createSiteSessionForUid,
@@ -244,6 +245,15 @@ module.exports = async function handler(req, res) {
       const userRef = admin.firestore().collection("users").doc(decodedToken.uid);
       const userDoc = await userRef.get();
       const existingUser = userDoc.exists ? userDoc.data() || {} : {};
+
+      if (disposableEmailDomains.isDisposableEmail(email)) {
+        if (!userDoc.exists) {
+          await admin.auth().deleteUser(decodedToken.uid).catch(function () {});
+        }
+
+        return res.status(400).json({ error: "Please use a permanent email address. Temporary email services are not allowed." });
+      }
+
       const emailVerified = Boolean(userRecord.emailVerified || decodedToken.email_verified);
 
       await userRef.set({
@@ -288,6 +298,10 @@ module.exports = async function handler(req, res) {
 
     if (password.length < 8 || !/[A-Za-z]/.test(password) || !/\d/.test(password) || /\s/.test(password)) {
       return res.status(400).json({ error: "Password must be at least 8 characters and include letters and numbers." });
+    }
+
+    if (disposableEmailDomains.isDisposableEmail(email)) {
+      return res.status(400).json({ error: "Please use a permanent email address. Temporary email services are not allowed." });
     }
 
     await ensureEmailCanCreateAccount(email);
