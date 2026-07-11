@@ -58,7 +58,7 @@
             <label for="signup-password">Password</label>
 
             <div class="auth-password-input-wrap">
-              <input type="password" id="signup-password" autocomplete="new-password" minlength="8" required>
+              <input type="password" id="signup-password" autocomplete="new-password" minlength="10" maxlength="48" pattern="(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^A-Za-z0-9\s]).{10,48}" title="Use 10 to 48 characters with uppercase, lowercase, special, and numeric characters." required>
 
               <button class="auth-password-visibility-toggle" type="button" data-target="signup-password" aria-label="Show password">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -72,7 +72,7 @@
             <label for="signup-confirm-password">Confirm Password</label>
 
             <div class="auth-password-input-wrap">
-              <input type="password" id="signup-confirm-password" autocomplete="new-password" minlength="8" required>
+              <input type="password" id="signup-confirm-password" autocomplete="new-password" minlength="10" maxlength="48" pattern="(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^A-Za-z0-9\s]).{10,48}" title="Use 10 to 48 characters with uppercase, lowercase, special, and numeric characters." required>
 
               <button class="auth-password-visibility-toggle" type="button" data-target="signup-confirm-password" aria-label="Show confirm password">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -83,7 +83,7 @@
           </div>
 
           <p class="auth-small-note">
-            Use at least 8 characters. You can change your password later from your account security settings.
+            Use 10 to 48 characters with uppercase, lowercase, special, and numeric characters. You can change your password later from your account security settings.
           </p>
 
           <button class="auth-button" type="submit" id="signup-submit">
@@ -458,6 +458,18 @@
 
     if (password !== confirmPassword) {
       showMessage("Passwords do not match.", "error");
+      return;
+    }
+
+    if (
+      password.length < 10 ||
+      password.length > 48 ||
+      !/[A-Z]/.test(password) ||
+      !/[a-z]/.test(password) ||
+      !/[0-9]/.test(password) ||
+      !/[^A-Za-z0-9\s]/.test(password)
+    ) {
+      showMessage("Password must be 10 to 48 characters and include uppercase, lowercase, special, and numeric characters.", "error");
       return;
     }
 
