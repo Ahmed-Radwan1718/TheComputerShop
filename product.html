@@ -2481,6 +2481,7 @@ images: [
           capacity: "245KF",
           priceText: "Insert price here",
           priceNumber: null,
+          whoIsThisFor: "The Intel Core Ultra 5 245KF is for LGA1851 builders using a dedicated graphics card who want Core Ultra 5 performance without integrated graphics.",
           specs: [
             ["Selected Processor", "Intel Core Ultra 5 245KF"],
             ["Processor Number", "245KF"],
@@ -2493,6 +2494,7 @@ images: [
           capacity: "250K Plus",
           priceText: "Insert price here",
           priceNumber: null,
+          whoIsThisFor: "The Intel Core Ultra 5 250K Plus is for LGA1851 builds that need this specific Core Ultra 5 option with integrated graphics for display output, setup, or troubleshooting.",
           specs: [
             ["Selected Processor", "Intel Core Ultra 5 250K Plus"],
             ["Processor Number", "250K Plus"],
@@ -2505,6 +2507,7 @@ images: [
           capacity: "245K",
           priceText: "Insert price here",
           priceNumber: null,
+          whoIsThisFor: "The Intel Core Ultra 5 245K is for LGA1851 gaming and productivity PCs that need the boxed 245K processor with integrated graphics.",
           specs: [
             ["Selected Processor", "Intel Core Ultra 5 245K"],
             ["Processor Number", "245K"],
@@ -2517,6 +2520,7 @@ images: [
           capacity: "245K Tray",
           priceText: "Insert price here",
           priceNumber: null,
+          whoIsThisFor: "The Intel Core Ultra 5 245K Tray is for custom LGA1851 builds that need the 245K processor with integrated graphics, without retail boxed packaging.",
           specs: [
             ["Selected Processor", "Intel Core Ultra 5 245K Tray"],
             ["Processor Number", "245K"],
@@ -2529,6 +2533,7 @@ images: [
           capacity: "245KF Tray",
           priceText: "Insert price here",
           priceNumber: null,
+          whoIsThisFor: "The Intel Core Ultra 5 245KF Tray is for LGA1851 builds using a dedicated graphics card, without integrated graphics or retail boxed packaging.",
           specs: [
             ["Selected Processor", "Intel Core Ultra 5 245KF Tray"],
             ["Processor Number", "245KF"],
@@ -2537,7 +2542,7 @@ images: [
           ]
         }
       ],
-      whoIsThisFor: "A strong Intel Core Ultra processor for modern gaming, productivity, creator work, and LGA1851 builds with selectable 245KF, 250K Plus, 245K, 245K Tray, and 245KF Tray variants.",
+      whoIsThisFor: "The Intel Core Ultra 5 245KF is for LGA1851 builders using a dedicated graphics card who want Core Ultra 5 performance without integrated graphics.",
       specs: [
         ["Product Name", "Intel Core Ultra 5"],
         ["Available Variants", "245KF, 250K Plus, 245K, 245K Tray, 245KF Tray"],
@@ -11260,7 +11265,7 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
     }
 
     if (productSubtitle) {
-      productSubtitle.textContent = product.whoIsThisFor;
+      productSubtitle.textContent = selectedVariant && selectedVariant.whoIsThisFor ? selectedVariant.whoIsThisFor : product.whoIsThisFor;
     }
 
     if (productPrice) {
@@ -11456,6 +11461,7 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
     const selectedVariant = getSelectedVariant(currentProduct);
     const productImages = getProductImages(currentProduct);
     const productTitle = document.querySelector(".product-title-block h1");
+    const productSubtitle = document.querySelector(".product-purchase-subtitle");
     const productPrice = document.querySelector(".product-price-row strong");
     const productMainImage = document.getElementById("product-main-image");
     const thumbnailRow = document.querySelector(".product-thumbnail-row");
@@ -11502,6 +11508,10 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
 
       if (productPrice) {
         productPrice.textContent = selectedVariant.priceText;
+      }
+
+      if (productSubtitle) {
+        productSubtitle.textContent = selectedVariant.whoIsThisFor || currentProduct.whoIsThisFor;
       }
 
       if (thumbnailRow) {
