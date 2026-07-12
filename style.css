@@ -6572,6 +6572,10 @@ body.nav-menu-open {
 
   .filters-panel {
     position: static;
+    max-height: 306px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
     padding: 14px;
     border-radius: 24px;
     border: 1px solid rgba(255, 255, 255, 0.11);
