@@ -11299,7 +11299,8 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
     const productImages = getProductImages(product);
 
     if (productTitle) {
-      productTitle.textContent = selectedVariant ? `${product.name} ${selectedVariant.capacity}` : product.name;
+      const showVariantInTitle = selectedVariant && product.variantSelectorLabel !== "Choose Color";
+      productTitle.textContent = showVariantInTitle ? `${product.name} ${selectedVariant.capacity}` : product.name;
     }
 
     if (productCategory) {
@@ -11546,7 +11547,8 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
 
     setTimeout(() => {
       if (productTitle) {
-        productTitle.textContent = `${currentProduct.name} ${selectedVariant.capacity}`;
+        const showVariantInTitle = currentProduct.variantSelectorLabel !== "Choose Color";
+        productTitle.textContent = showVariantInTitle ? `${currentProduct.name} ${selectedVariant.capacity}` : currentProduct.name;
       }
 
       if (productPrice) {
