@@ -28,7 +28,7 @@
         <ul class="site-footer-links">
           <li><a href="faq.html">FAQ</a></li>
           <li><a href="policies.html">Policies & Privacy</a></li>
-          <li><a href="terms.html">Terms & Conditions</a></li>
+          <li><a href="terms.html">Terms of Service</a></li>
         </ul>
       </div>
     </div>
