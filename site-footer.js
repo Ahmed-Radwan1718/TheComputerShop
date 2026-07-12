@@ -107,7 +107,7 @@
     const screenWidth = window.innerWidth;
     const screenHeight = window.innerHeight;
     const cookies = [];
-    const duration = 4000;
+    const duration = 2000;
     const cookieCount = 140;
     let startedAt = 0;
     let lastTime = 0;
