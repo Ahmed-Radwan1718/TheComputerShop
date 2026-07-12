@@ -6178,6 +6178,27 @@ body.nav-menu-open {
     text-align: center;
   }
 
+  .checkout-payment-info {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 18px;
+    padding: 18px;
+  }
+
+  .checkout-payment-barcode-frame {
+    width: min(100%, 220px);
+    max-width: 100%;
+  }
+
+  .checkout-payment-details {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .checkout-payment-details p {
+    overflow-wrap: anywhere;
+  }
+
   .cart-header h1 {
     font-size: 38px;
   }
