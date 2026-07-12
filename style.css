@@ -3081,6 +3081,51 @@ body.nav-menu-open {
   min-height: 100vh;
   background: #2a2b2a;
   padding-top: 120px;
+  position: relative;
+  overflow-x: clip;
+}
+
+.product-wukong-layer {
+  position: absolute;
+  inset: 0;
+  display: none;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+
+.product-page.product-page-wukong-edition .product-wukong-layer {
+  display: block;
+}
+
+.product-wukong-text {
+  position: absolute;
+  top: var(--top);
+  right: var(--right, auto);
+  left: var(--left, auto);
+  color: rgba(10, 11, 10, 0.92);
+  font-family: "Noto Serif SC", "Songti SC", "STSong", "SimSun", serif;
+  font-size: var(--size);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: var(--spacing, 0.12em);
+  white-space: nowrap;
+  opacity: var(--opacity, 0.045);
+  transform: rotate(var(--rotation, 0deg));
+}
+
+.product-wukong-text.is-vertical {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+
+.product-wukong-text.is-gold {
+  color: rgba(192, 154, 92, 0.84);
+}
+
+.product-wukong-text.is-muted {
+  color: rgba(206, 206, 198, 0.86);
 }
 
 .product-detail-layout {
@@ -3092,6 +3137,35 @@ body.nav-menu-open {
   grid-template-columns: minmax(0, 1fr) minmax(340px, 420px);
   gap: 28px;
   align-items: start;
+  position: relative;
+  z-index: 1;
+}
+
+.product-specifications-section {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 1599px) {
+  .product-wukong-text.is-wide-only {
+    display: none;
+  }
+}
+
+@media (max-width: 1100px) {
+  .product-wukong-text {
+    font-size: min(var(--size), 34px);
+  }
+
+  .product-wukong-text:nth-child(n+7) {
+    display: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .product-page.product-page-wukong-edition .product-wukong-layer {
+    display: none;
+  }
 }
 
 .product-media-area {
