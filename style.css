@@ -9556,12 +9556,16 @@ body.account-security-modal-open {
   }
 
   .account-security-code-inputs {
-    gap: 10px;
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 8px;
   }
 
   .account-security-code-input {
-    width: 46px;
-    height: 58px;
+    width: 100%;
+    min-width: 0;
+    height: 56px;
+    border-radius: 15px;
     font-size: 22px;
   }
 }
