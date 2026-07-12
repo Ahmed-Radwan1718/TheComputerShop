@@ -102,12 +102,63 @@
     }));
   }
 
+  function playCookieRain() {
+    const cookieRain = document.createElement("div");
+    cookieRain.setAttribute("aria-hidden", "true");
+    cookieRain.style.position = "fixed";
+    cookieRain.style.inset = "0";
+    cookieRain.style.pointerEvents = "none";
+    cookieRain.style.overflow = "hidden";
+    cookieRain.style.zIndex = "9999";
+
+    document.body.appendChild(cookieRain);
+
+    for (let index = 0; index < 42; index += 1) {
+      const cookie = document.createElement("img");
+      const size = 28 + Math.random() * 34;
+      const startX = Math.random() * 100;
+      const delay = Math.random() * 350;
+      const fallDistance = window.innerHeight + 120;
+
+      cookie.src = "cookie.png";
+      cookie.alt = "";
+      cookie.style.position = "absolute";
+      cookie.style.left = startX + "vw";
+      cookie.style.top = "-80px";
+      cookie.style.width = size + "px";
+      cookie.style.height = size + "px";
+      cookie.style.objectFit = "contain";
+
+      cookieRain.appendChild(cookie);
+
+      cookie.animate([
+        { transform: "translate3d(0, -80px, 0) rotate(0deg)", opacity: 0 },
+        { opacity: 1, offset: 0.12 },
+        { transform: "translate3d(" + ((Math.random() * 120) - 60) + "px, " + fallDistance + "px, 0) rotate(" + (180 + Math.random() * 540) + "deg)", opacity: 0.95 }
+      ], {
+        duration: 2000,
+        delay: delay,
+        easing: "cubic-bezier(0.2, 0.7, 0.2, 1)",
+        fill: "forwards"
+      });
+    }
+
+    window.setTimeout(function () {
+      cookieRain.remove();
+    }, 2400);
+  }
+
   function dismissCookieConsent(choice) {
     if (!cookieConsentBanner) {
       return;
     }
 
     setCookieConsentChoice(choice);
+
+    if (choice === "accepted") {
+      playCookieRain();
+    }
+
     cookieConsentBanner.classList.add("cookie-consent-banner-hiding");
 
     window.setTimeout(function () {
