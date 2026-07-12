@@ -11283,10 +11283,16 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
     const includedList = document.querySelector(".product-included-list");
     const purchasePanel = document.querySelector(".product-purchase-panel");
     const productPage = document.querySelector(".product-page");
-    const wukongEditionProductId = "anker-prime-20k-220w-power-bank-black-myth-wukong-edition";
+    const wukongEditionProductIds = [
+      "anker-prime-20k-220w-power-bank-black-myth-wukong-edition",
+      "anker-prime-docking-station-14-in-1-triple-display-displaylink-dl7400-black-myth-wukong-edition"
+    ];
 
     if (productPage) {
-      productPage.classList.toggle("product-page-wukong-edition", product.id === wukongEditionProductId || productKey === wukongEditionProductId);
+      productPage.classList.toggle(
+        "product-page-wukong-edition",
+        wukongEditionProductIds.includes(product.id) || wukongEditionProductIds.includes(productKey)
+      );
     }
 
     const selectedVariant = getSelectedVariant(product);
