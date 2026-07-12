@@ -106,6 +106,12 @@
     const cookieRain = document.createElement("div");
     const screenWidth = window.innerWidth;
     const screenHeight = window.innerHeight;
+    const cookies = [];
+    const duration = 4000;
+    const cookieCount = 140;
+    let startedAt = 0;
+    let lastTime = 0;
+    let animationFrameId = 0;
 
     cookieRain.setAttribute("aria-hidden", "true");
     cookieRain.style.position = "fixed";
@@ -116,64 +122,204 @@
 
     document.body.appendChild(cookieRain);
 
-    for (let index = 0; index < 110; index += 1) {
-      const cookie = document.createElement("img");
-      const size = 24 + Math.random() * 46;
-      const edge = Math.floor(Math.random() * 4);
-      const delay = Math.random() * 400;
-      let startX = Math.random() * screenWidth;
-      let startY = -100;
-      let moveX = (Math.random() * 260) - 130;
-      let moveY = screenHeight + 220;
-
+    function getStartPoint(edge, size) {
       if (edge === 1) {
-        startX = screenWidth + 100;
-        startY = Math.random() * screenHeight;
-        moveX = -(screenWidth + 220);
-        moveY = (Math.random() * 320) - 160;
+        return {
+          x: screenWidth + size,
+          y: Math.random() * screenHeight
+        };
       }
 
       if (edge === 2) {
-        startX = Math.random() * screenWidth;
-        startY = screenHeight + 100;
-        moveX = (Math.random() * 260) - 130;
-        moveY = -(screenHeight + 220);
+        return {
+          x: Math.random() * screenWidth,
+          y: screenHeight + size
+        };
       }
 
       if (edge === 3) {
-        startX = -100;
-        startY = Math.random() * screenHeight;
-        moveX = screenWidth + 220;
-        moveY = (Math.random() * 320) - 160;
+        return {
+          x: -size,
+          y: Math.random() * screenHeight
+        };
       }
+
+      return {
+        x: Math.random() * screenWidth,
+        y: -size
+      };
+    }
+
+    for (let index = 0; index < cookieCount; index += 1) {
+      const cookie = document.createElement("img");
+      const size = 24 + Math.random() * 46;
+      const edge = index % 4;
+      const start = getStartPoint(edge, size);
+      const targetX = screenWidth * (0.2 + Math.random() * 0.6);
+      const targetY = screenHeight * (0.2 + Math.random() * 0.6);
+      const directionX = targetX - start.x;
+      const directionY = targetY - start.y;
+      const distance = Math.hypot(directionX, directionY) || 1;
+      const speed = 220 + Math.random() * 360;
 
       cookie.src = "cookie.png";
       cookie.alt = "";
       cookie.style.position = "absolute";
-      cookie.style.left = startX + "px";
-      cookie.style.top = startY + "px";
+      cookie.style.left = "0";
+      cookie.style.top = "0";
       cookie.style.width = size + "px";
       cookie.style.height = size + "px";
       cookie.style.objectFit = "contain";
+      cookie.style.opacity = "0";
+      cookie.style.willChange = "transform, opacity";
 
       cookieRain.appendChild(cookie);
 
-      cookie.animate([
-        { transform: "translate3d(0, 0, 0) rotate(0deg)", opacity: 0 },
-        { opacity: 1, offset: 0.12 },
-        { opacity: 1, offset: 0.78 },
-        { transform: "translate3d(" + moveX + "px, " + moveY + "px, 0) rotate(" + (360 + Math.random() * 720) + "deg)", opacity: 0 }
-      ], {
-        duration: 3600,
-        delay: delay,
-        easing: "cubic-bezier(0.16, 0.72, 0.22, 1)",
-        fill: "forwards"
+      cookies.push({
+        element: cookie,
+        x: start.x,
+        y: start.y,
+        vx: (directionX / distance) * speed,
+        vy: (directionY / distance) * speed,
+        radius: size * 0.42,
+        size: size,
+        rotation: Math.random() * 360,
+        spin: (Math.random() * 360) - 180,
+        delay: Math.random() * 500,
+        active: false
       });
     }
 
-    window.setTimeout(function () {
+    function updateCookie(cookie, delta) {
+      cookie.x += cookie.vx * delta;
+      cookie.y += cookie.vy * delta;
+      cookie.rotation += cookie.spin * delta;
+
+      if (cookie.x < -cookie.radius && cookie.vx < 0) {
+        cookie.x = -cookie.radius;
+        cookie.vx = Math.abs(cookie.vx) * 0.86;
+      }
+
+      if (cookie.x > screenWidth + cookie.radius && cookie.vx > 0) {
+        cookie.x = screenWidth + cookie.radius;
+        cookie.vx = -Math.abs(cookie.vx) * 0.86;
+      }
+
+      if (cookie.y < -cookie.radius && cookie.vy < 0) {
+        cookie.y = -cookie.radius;
+        cookie.vy = Math.abs(cookie.vy) * 0.86;
+      }
+
+      if (cookie.y > screenHeight + cookie.radius && cookie.vy > 0) {
+        cookie.y = screenHeight + cookie.radius;
+        cookie.vy = -Math.abs(cookie.vy) * 0.86;
+      }
+    }
+
+    function bounceCookies() {
+      for (let firstIndex = 0; firstIndex < cookies.length; firstIndex += 1) {
+        const firstCookie = cookies[firstIndex];
+
+        if (!firstCookie.active) {
+          continue;
+        }
+
+        for (let secondIndex = firstIndex + 1; secondIndex < cookies.length; secondIndex += 1) {
+          const secondCookie = cookies[secondIndex];
+
+          if (!secondCookie.active) {
+            continue;
+          }
+
+          const distanceX = secondCookie.x - firstCookie.x;
+          const distanceY = secondCookie.y - firstCookie.y;
+          const distance = Math.hypot(distanceX, distanceY);
+          const minimumDistance = firstCookie.radius + secondCookie.radius;
+
+          if (!distance || distance >= minimumDistance) {
+            continue;
+          }
+
+          const normalX = distanceX / distance;
+          const normalY = distanceY / distance;
+          const overlap = (minimumDistance - distance) / 2;
+          const relativeVelocityX = secondCookie.vx - firstCookie.vx;
+          const relativeVelocityY = secondCookie.vy - firstCookie.vy;
+          const speed = (relativeVelocityX * normalX) + (relativeVelocityY * normalY);
+
+          firstCookie.x -= normalX * overlap;
+          firstCookie.y -= normalY * overlap;
+          secondCookie.x += normalX * overlap;
+          secondCookie.y += normalY * overlap;
+
+          if (speed < 0) {
+            firstCookie.vx += speed * normalX;
+            firstCookie.vy += speed * normalY;
+            secondCookie.vx -= speed * normalX;
+            secondCookie.vy -= speed * normalY;
+            firstCookie.spin += speed * 0.35;
+            secondCookie.spin -= speed * 0.35;
+          }
+        }
+      }
+    }
+
+    function drawCookies(elapsed) {
+      cookies.forEach(function (cookie) {
+        if (!cookie.active) {
+          return;
+        }
+
+        const age = elapsed - cookie.delay;
+        const fadeIn = Math.min(age / 250, 1);
+        const fadeOut = elapsed > duration - 650 ? Math.max((duration - elapsed) / 650, 0) : 1;
+        const opacity = Math.min(fadeIn, fadeOut);
+
+        cookie.element.style.opacity = String(opacity);
+        cookie.element.style.transform = "translate3d(" + (cookie.x - cookie.radius) + "px, " + (cookie.y - cookie.radius) + "px, 0) rotate(" + cookie.rotation + "deg)";
+      });
+    }
+
+    function animateCookies(now) {
+      if (!startedAt) {
+        startedAt = now;
+        lastTime = now;
+      }
+
+      const elapsed = now - startedAt;
+      const delta = Math.min((now - lastTime) / 1000, 0.032);
+
+      lastTime = now;
+
+      cookies.forEach(function (cookie) {
+        if (elapsed < cookie.delay) {
+          return;
+        }
+
+        cookie.active = true;
+        updateCookie(cookie, delta);
+      });
+
+      bounceCookies();
+      drawCookies(elapsed);
+
+      if (elapsed < duration) {
+        animationFrameId = window.requestAnimationFrame(animateCookies);
+        return;
+      }
+
       cookieRain.remove();
-    }, 4000);
+    }
+
+    animationFrameId = window.requestAnimationFrame(animateCookies);
+
+    window.setTimeout(function () {
+      if (animationFrameId) {
+        window.cancelAnimationFrame(animationFrameId);
+      }
+
+      cookieRain.remove();
+    }, duration + 500);
   }
 
   function dismissCookieConsent(choice) {
