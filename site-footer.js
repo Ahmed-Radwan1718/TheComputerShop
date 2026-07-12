@@ -57,7 +57,6 @@
   <div class="cookie-consent-options" id="cookie-consent-options" hidden>
     <div>
       <h3>Cookies We Use</h3>
-      <p>Required cookies help the website work properly. They support secure sign-in, account protection, trusted devices, protected account actions, cart/account features, and remembering your cookie choice.</p>
       <p>Optional preference cookies can remember choices such as your selected language. We do not currently use advertising, analytics, marketing, heatmap, or tracking cookies.</p>
     </div>
   </div>
