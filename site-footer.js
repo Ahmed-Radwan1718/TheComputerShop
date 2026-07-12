@@ -122,45 +122,19 @@
 
     document.body.appendChild(cookieRain);
 
-    function getStartPoint(edge, size) {
-      if (edge === 1) {
-        return {
-          x: screenWidth + size,
-          y: Math.random() * screenHeight
-        };
-      }
-
-      if (edge === 2) {
-        return {
-          x: Math.random() * screenWidth,
-          y: screenHeight + size
-        };
-      }
-
-      if (edge === 3) {
-        return {
-          x: -size,
-          y: Math.random() * screenHeight
-        };
-      }
-
+    function getStartPoint(size) {
       return {
         x: Math.random() * screenWidth,
-        y: -size
+        y: -size - (Math.random() * screenHeight * 0.35)
       };
     }
 
     for (let index = 0; index < cookieCount; index += 1) {
       const cookie = document.createElement("img");
       const size = 24 + Math.random() * 46;
-      const edge = index % 4;
-      const start = getStartPoint(edge, size);
-      const targetX = screenWidth * (0.2 + Math.random() * 0.6);
-      const targetY = screenHeight * (0.2 + Math.random() * 0.6);
-      const directionX = targetX - start.x;
-      const directionY = targetY - start.y;
-      const distance = Math.hypot(directionX, directionY) || 1;
-      const speed = 220 + Math.random() * 360;
+      const start = getStartPoint(size);
+      const drift = (Math.random() * 120) - 60;
+      const speed = (screenHeight / 1.25) + Math.random() * 240;
 
       cookie.src = "cookie.png";
       cookie.alt = "";
@@ -179,8 +153,8 @@
         element: cookie,
         x: start.x,
         y: start.y,
-        vx: (directionX / distance) * speed,
-        vy: (directionY / distance) * speed,
+        vx: drift,
+        vy: speed,
         radius: size * 0.42,
         size: size,
         rotation: Math.random() * 360,
@@ -197,22 +171,12 @@
 
       if (cookie.x < -cookie.radius && cookie.vx < 0) {
         cookie.x = -cookie.radius;
-        cookie.vx = Math.abs(cookie.vx) * 0.86;
+        cookie.vx = Math.abs(cookie.vx) * 0.82;
       }
 
       if (cookie.x > screenWidth + cookie.radius && cookie.vx > 0) {
         cookie.x = screenWidth + cookie.radius;
-        cookie.vx = -Math.abs(cookie.vx) * 0.86;
-      }
-
-      if (cookie.y < -cookie.radius && cookie.vy < 0) {
-        cookie.y = -cookie.radius;
-        cookie.vy = Math.abs(cookie.vy) * 0.86;
-      }
-
-      if (cookie.y > screenHeight + cookie.radius && cookie.vy > 0) {
-        cookie.y = screenHeight + cookie.radius;
-        cookie.vy = -Math.abs(cookie.vy) * 0.86;
+        cookie.vx = -Math.abs(cookie.vx) * 0.82;
       }
     }
 
@@ -300,7 +264,6 @@
         updateCookie(cookie, delta);
       });
 
-      bounceCookies();
       drawCookies(elapsed);
 
       if (elapsed < duration) {
