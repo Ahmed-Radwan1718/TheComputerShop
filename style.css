@@ -3237,6 +3237,10 @@ body.nav-menu-open {
   box-shadow: 0 22px 55px rgba(0, 0, 0, 0.18);
 }
 
+.product-carousel-main:not(.is-sliding) #product-main-image {
+  cursor: zoom-in;
+}
+
 .product-carousel-counter {
   position: absolute;
   top: 18px;
@@ -3258,6 +3262,68 @@ body.nav-menu-open {
   height: 100%;
   display: block;
   object-fit: cover;
+}
+
+.product-image-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 34px;
+  background: rgba(0, 0, 0, 0.74);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.24s ease, visibility 0.24s ease;
+}
+
+.product-image-lightbox.open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+body.product-image-lightbox-open {
+  overflow: hidden;
+}
+
+.product-image-lightbox img {
+  width: auto;
+  height: auto;
+  max-width: calc(100vw - 48px);
+  max-height: calc(100vh - 96px);
+  display: block;
+  object-fit: contain;
+  border-radius: 18px;
+  box-shadow: 0 34px 90px rgba(0, 0, 0, 0.42);
+}
+
+.product-image-lightbox-close {
+  position: absolute;
+  top: 22px;
+  right: 24px;
+  width: 46px;
+  height: 46px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 999px;
+  background: rgba(20, 20, 20, 0.72);
+  color: white;
+  font-size: 30px;
+  line-height: 1;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.product-image-lightbox-close:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.42);
 }
 
 .product-thumbnail-row {
