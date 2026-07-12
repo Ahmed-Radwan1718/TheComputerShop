@@ -212,6 +212,22 @@
       languageToggle.setAttribute("aria-expanded", "true");
     }
 
+    function getCookieConsentChoice() {
+      if (window.tcsCookieConsent && window.tcsCookieConsent.choice) {
+        return window.tcsCookieConsent.choice;
+      }
+
+      const cookieMatch = document.cookie.split("; ").find(function (cookie) {
+        return cookie.indexOf("tcs_cookie_consent=") === 0;
+      });
+
+      return cookieMatch ? decodeURIComponent(cookieMatch.split("=").slice(1).join("=")) : "";
+    }
+
+    function optionalPreferenceCookiesRejected() {
+      return getCookieConsentChoice() === "rejected";
+    }
+
     function clearGoogleTranslateCookie() {
       document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
 
@@ -221,13 +237,26 @@
     }
 
     function setGoogleTranslateCookie(languageCode) {
+      if (optionalPreferenceCookiesRejected()) {
+        clearGoogleTranslateCookie();
+        return false;
+      }
+
       const cookieValue = "/en/" + languageCode;
       document.cookie = "googtrans=" + cookieValue + "; path=/";
 
       if (window.location.hostname.includes(".")) {
         document.cookie = "googtrans=" + cookieValue + "; path=/; domain=." + window.location.hostname.split(".").slice(-2).join(".");
       }
+
+      return true;
     }
+
+    window.addEventListener("tcs-cookie-consent-change", function (event) {
+      if (event.detail && event.detail.optionalCookiesAllowed === false) {
+        clearGoogleTranslateCookie();
+      }
+    });
 
     function protectProductNamesFromTranslation() {
       const productNameSelectors = [
@@ -300,7 +329,10 @@
         return;
       }
 
-      setGoogleTranslateCookie(languageCode);
+      if (!setGoogleTranslateCookie(languageCode)) {
+        return;
+      }
+
       loadGoogleTranslateScript();
 
       const translateCombo = document.querySelector(".goog-te-combo");
@@ -368,7 +400,9 @@
       }
     });
 
-    loadGoogleTranslateScript();
+    if (!optionalPreferenceCookiesRejected()) {
+      loadGoogleTranslateScript();
+    }
   }
 
   setupLanguageSwitcher();
