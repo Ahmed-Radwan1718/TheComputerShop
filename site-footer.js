@@ -91,12 +91,16 @@
       sessionStorage.setItem(cookieConsentStorageKey, choice);
     } catch (error) {}
 
-    document.cookie = cookieConsentCookieName + "=" + encodeURIComponent(choice) + "; path=/; SameSite=Lax";
+    document.cookie = cookieConsentCookieName + "=" + encodeURIComponent(choice) + "; path=/; max-age=31536000; SameSite=Lax";
 
     window.tcsCookieConsent = {
       choice: choice,
       optionalCookiesAllowed: choice === "accepted"
     };
+
+    window.dispatchEvent(new CustomEvent("tcs-cookie-consent-change", {
+      detail: window.tcsCookieConsent
+    }));
   }
 
   function dismissCookieConsent(choice) {
