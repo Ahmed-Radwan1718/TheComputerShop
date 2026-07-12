@@ -104,6 +104,9 @@
 
   function playCookieRain() {
     const cookieRain = document.createElement("div");
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+
     cookieRain.setAttribute("aria-hidden", "true");
     cookieRain.style.position = "fixed";
     cookieRain.style.inset = "0";
@@ -113,18 +116,42 @@
 
     document.body.appendChild(cookieRain);
 
-    for (let index = 0; index < 42; index += 1) {
+    for (let index = 0; index < 110; index += 1) {
       const cookie = document.createElement("img");
-      const size = 28 + Math.random() * 34;
-      const startX = Math.random() * 100;
-      const delay = Math.random() * 350;
-      const fallDistance = window.innerHeight + 120;
+      const size = 24 + Math.random() * 46;
+      const edge = Math.floor(Math.random() * 4);
+      const delay = Math.random() * 400;
+      let startX = Math.random() * screenWidth;
+      let startY = -100;
+      let moveX = (Math.random() * 260) - 130;
+      let moveY = screenHeight + 220;
+
+      if (edge === 1) {
+        startX = screenWidth + 100;
+        startY = Math.random() * screenHeight;
+        moveX = -(screenWidth + 220);
+        moveY = (Math.random() * 320) - 160;
+      }
+
+      if (edge === 2) {
+        startX = Math.random() * screenWidth;
+        startY = screenHeight + 100;
+        moveX = (Math.random() * 260) - 130;
+        moveY = -(screenHeight + 220);
+      }
+
+      if (edge === 3) {
+        startX = -100;
+        startY = Math.random() * screenHeight;
+        moveX = screenWidth + 220;
+        moveY = (Math.random() * 320) - 160;
+      }
 
       cookie.src = "cookie.png";
       cookie.alt = "";
       cookie.style.position = "absolute";
-      cookie.style.left = startX + "vw";
-      cookie.style.top = "-80px";
+      cookie.style.left = startX + "px";
+      cookie.style.top = startY + "px";
       cookie.style.width = size + "px";
       cookie.style.height = size + "px";
       cookie.style.objectFit = "contain";
@@ -132,20 +159,21 @@
       cookieRain.appendChild(cookie);
 
       cookie.animate([
-        { transform: "translate3d(0, -80px, 0) rotate(0deg)", opacity: 0 },
+        { transform: "translate3d(0, 0, 0) rotate(0deg)", opacity: 0 },
         { opacity: 1, offset: 0.12 },
-        { transform: "translate3d(" + ((Math.random() * 120) - 60) + "px, " + fallDistance + "px, 0) rotate(" + (180 + Math.random() * 540) + "deg)", opacity: 0.95 }
+        { opacity: 1, offset: 0.78 },
+        { transform: "translate3d(" + moveX + "px, " + moveY + "px, 0) rotate(" + (360 + Math.random() * 720) + "deg)", opacity: 0 }
       ], {
-        duration: 2000,
+        duration: 3600,
         delay: delay,
-        easing: "cubic-bezier(0.2, 0.7, 0.2, 1)",
+        easing: "cubic-bezier(0.16, 0.72, 0.22, 1)",
         fill: "forwards"
       });
     }
 
     window.setTimeout(function () {
       cookieRain.remove();
-    }, 2400);
+    }, 4000);
   }
 
   function dismissCookieConsent(choice) {
