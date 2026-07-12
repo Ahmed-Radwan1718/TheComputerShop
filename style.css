@@ -3104,7 +3104,7 @@ body.nav-menu-open {
   top: var(--top);
   right: var(--right, auto);
   left: var(--left, auto);
-  color: rgba(10, 11, 10, 0.92);
+  color: rgba(192, 154, 92, 0.84);
   font-family: "Noto Serif SC", "Songti SC", "STSong", "SimSun", serif;
   font-size: var(--size);
   font-weight: 600;
@@ -3120,12 +3120,9 @@ body.nav-menu-open {
   text-orientation: mixed;
 }
 
-.product-wukong-text.is-gold {
-  color: rgba(192, 154, 92, 0.84);
-}
-
+.product-wukong-text.is-gold,
 .product-wukong-text.is-muted {
-  color: rgba(206, 206, 198, 0.86);
+  color: rgba(192, 154, 92, 0.84);
 }
 
 .product-detail-layout {
