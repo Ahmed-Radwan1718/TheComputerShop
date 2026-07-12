@@ -6137,20 +6137,45 @@ body.nav-menu-open {
   }
 
   .cart-layout {
-    padding: 0 22px 56px;
-    grid-template-columns: 1fr;
-    gap: 30px;
+    padding: 0 20px 56px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 26px;
   }
 
   .cart-summary {
     top: 0;
-    margin-top: 10px;
-    padding: 24px 0;
+    width: 100%;
+    margin-top: 6px;
+    padding: 22px 20px;
+    box-sizing: border-box;
+    overflow: hidden;
   }
 
   .cart-summary-title {
     font-size: 32px;
     white-space: normal;
+    text-wrap: balance;
+  }
+
+  .cart-summary-total-row {
+    gap: 12px;
+    margin-top: 20px;
+    padding-top: 20px;
+  }
+
+  .cart-summary-total-row strong {
+    min-width: 0;
+    text-align: right;
+  }
+
+  .cart-checkout-button {
+    height: auto;
+    min-height: 52px;
+    margin-top: 22px;
+    padding: 13px 18px;
+    white-space: normal;
+    line-height: 1.25;
+    text-align: center;
   }
 
   .cart-header h1 {
