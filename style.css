@@ -12521,15 +12521,15 @@ body.translated-rtl .account-order-card-meta {
   position: relative;
   z-index: 1;
   width: min(620px, 100%);
-  max-height: calc(100vh - 48px);
+  max-height: calc(100dvh - 48px);
   overflow-y: auto;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
-  padding: 42px 42px 36px;
-  border-radius: 22px;
-  background: #1f2022;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.48);
+  padding: 36px;
+  border-radius: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  background: #181918;
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.32);
   contain: layout paint;
 }
 
@@ -12557,18 +12557,21 @@ body.translated-rtl .account-order-card-meta {
 }
 
 .account-password-modal-header h2 {
-  margin: 0 0 18px;
-  color: #ffffff;
+  margin: 0 0 12px;
+  color: white;
   font-size: 32px;
-  line-height: 1.15;
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: 0;
+  text-transform: uppercase;
 }
 
 .account-password-modal-header p {
   margin: 0;
-  max-width: 470px;
-  color: rgba(255, 255, 255, 0.68);
-  font-size: 17px;
-  line-height: 1.5;
+  max-width: 520px;
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 15px;
+  line-height: 1.75;
 }
 
 .account-password-modal-card .account-form {
@@ -12678,31 +12681,73 @@ body.translated-rtl .account-order-card-meta {
 .account-password-modal-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 18px;
-  margin-top: 20px;
+  gap: 14px;
+  margin-top: 18px;
 }
 
 .account-password-modal-cancel {
-  height: 56px;
-  border: 0;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.14);
-  color: #ffffff;
-  font-size: 16px;
+  min-height: 52px;
+  padding: 0 24px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.11);
+  color: white;
+  font-family: inherit;
+  font-size: 13px;
   font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
   cursor: pointer;
 }
 
 .account-password-modal-cancel:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.16);
 }
 
 .account-password-confirm-button {
-  height: 56px;
-  border-radius: 16px;
+  min-height: 52px;
+  border-radius: 999px;
 }
 
 .account-password-confirm-button:disabled {
-  opacity: 0.45;
+  opacity: 0.48;
   cursor: not-allowed;
+}
+
+@media (max-width: 700px) {
+  .account-password-modal {
+    padding: 14px;
+  }
+
+  .account-password-modal-card {
+    width: 100%;
+    max-height: calc(100dvh - 28px);
+    padding: 28px 18px;
+    border-radius: 22px;
+  }
+
+  .account-password-modal-close {
+    top: 12px;
+    right: 12px;
+  }
+
+  .account-password-modal-header {
+    margin-bottom: 20px;
+    padding-right: 40px;
+  }
+
+  .account-password-modal-header h2 {
+    font-size: 30px;
+    line-height: 1.08;
+  }
+
+  .account-password-modal-header p {
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  .account-password-modal-actions {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
 }
