@@ -3,4 +3,4 @@ Allow: /
 
 Disallow: /api/
 
-Sitemap: https://the-computer-shop.vercel.app/sitemap.xml
+Sitemap: https://the-computer-shop.com/sitemap.xml
