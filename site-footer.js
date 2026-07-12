@@ -44,7 +44,7 @@
   <div class="cookie-consent-copy">
     <h2>We value your privacy</h2>
     <p>
-      We use essential cookies and may use optional cookies to improve browsing, remember preferences, understand traffic, and personalize content. Choose whether to accept, reject, or view optional cookies.
+      We use required cookies to keep the site working, protect your account, and remember your choices. Optional cookies may remember preferences such as language settings. Choose whether to accept, reject, or view optional cookies.
     </p>
   </div>
 
@@ -57,8 +57,8 @@
   <div class="cookie-consent-options" id="cookie-consent-options" hidden>
     <div>
       <h3>Cookies We Use</h3>
-      <p>Essential cookies: __Host-tcs_session, __Host-tcs_account_session, __Host-tcs_login_challenge, __Host-tcs_login_2fa, __Host-tcs_trusted_device, and __Host-tcs_security_unlock. These support login, account security, two-factor verification, trusted devices, and protected account actions.</p>
-      <p>Optional and preference cookies: googtrans remembers language translation preferences, and tcs_cookie_consent remembers your cookie choice. We do not currently use advertising, analytics, marketing, heatmap, or tracking cookies.</p>
+      <p>Required cookies help the website work properly. They support secure sign-in, account protection, trusted devices, protected account actions, cart/account features, and remembering your cookie choice.</p>
+      <p>Optional preference cookies can remember choices such as your selected language. We do not currently use advertising, analytics, marketing, heatmap, or tracking cookies.</p>
     </div>
   </div>
 </div>
