@@ -11252,6 +11252,7 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
   function renderProductPage(product) {
     document.title = `${product.name} - The Computer Shop`;
 
+    const productPage = document.querySelector(".product-page");
     const productTitle = document.querySelector(".product-title-block h1");
     const productCategory = document.querySelector(".product-title-eyebrow");
     const productSubtitle = document.querySelector(".product-purchase-subtitle");
@@ -11264,6 +11265,15 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
 
     const selectedVariant = getSelectedVariant(product);
     const productImages = getProductImages(product);
+    const isBlackMythWukongProduct = [product.id, product.name].some(function (value) {
+      const normalizedValue = String(value || "").toLowerCase();
+
+      return (normalizedValue.includes("black-myth") || normalizedValue.includes("black myth")) && normalizedValue.includes("wukong");
+    });
+
+    if (productPage) {
+      productPage.classList.toggle("black-myth-wukong-page", isBlackMythWukongProduct);
+    }
 
     if (productTitle) {
       productTitle.textContent = selectedVariant ? `${product.name} ${selectedVariant.capacity}` : product.name;
