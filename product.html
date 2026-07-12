@@ -16,6 +16,21 @@
 <script src="site-header.js"></script>
 
 <main class="product-page">
+  <div class="product-wukong-layer" aria-hidden="true">
+    <span class="product-wukong-text is-gold is-vertical" style="--top: 142px; --left: max(18px, calc(50% - 880px)); --size: 56px; --rotation: 2deg; --spacing: 0.18em; --opacity: 0.045;" lang="zh-Hans">黑神话：悟空</span>
+    <span class="product-wukong-text is-muted" style="--top: 220px; --left: max(30px, calc(50% - 735px)); --size: 24px; --rotation: -6deg; --spacing: 0.16em; --opacity: 0.05;" lang="zh-Hans">齐天大圣</span>
+    <span class="product-wukong-text is-vertical" style="--top: 170px; --right: max(30px, calc(50% - 890px)); --size: 44px; --rotation: -2deg; --spacing: 0.2em; --opacity: 0.042;" lang="zh-Hans">花果山</span>
+    <span class="product-wukong-text is-gold is-wide-only" style="--top: 330px; --right: -54px; --size: 72px; --rotation: -4deg; --spacing: 0.12em; --opacity: 0.032;" lang="zh-Hans">如意金箍棒</span>
+    <span class="product-wukong-text is-muted is-vertical" style="--top: 500px; --left: max(20px, calc(50% - 805px)); --size: 30px; --rotation: 4deg; --spacing: 0.2em; --opacity: 0.04;" lang="zh-Hans">七十二变</span>
+    <span class="product-wukong-text is-gold is-vertical" style="--top: 560px; --right: max(22px, calc(50% - 820px)); --size: 28px; --rotation: -3deg; --spacing: 0.22em; --opacity: 0.055;" lang="zh-Hans">筋斗云</span>
+    <span class="product-wukong-text" style="--top: 700px; --left: max(18px, calc(50% - 830px)); --size: 38px; --rotation: 3deg; --spacing: 0.14em; --opacity: 0.036;" lang="zh-Hans">火眼金睛</span>
+    <span class="product-wukong-text is-muted is-vertical" style="--top: 820px; --right: max(26px, calc(50% - 910px)); --size: 42px; --rotation: 2deg; --spacing: 0.18em; --opacity: 0.04;" lang="zh-Hans">大闹天宫</span>
+    <span class="product-wukong-text is-gold" style="--top: 1020px; --left: max(48px, calc(50% - 720px)); --size: 24px; --rotation: -2deg; --spacing: 0.2em; --opacity: 0.06;" lang="zh-Hans">斗战胜佛</span>
+    <span class="product-wukong-text is-muted is-wide-only" style="--top: 1080px; --right: max(18px, calc(50% - 860px)); --size: 52px; --rotation: 5deg; --spacing: 0.18em; --opacity: 0.03;" lang="zh-Hans">西游记</span>
+    <span class="product-wukong-text is-vertical" style="--top: 285px; --left: max(88px, calc(50% - 980px)); --size: 22px; --rotation: -5deg; --spacing: 0.22em; --opacity: 0.05;" lang="zh-Hans">天命人</span>
+    <span class="product-wukong-text is-gold is-vertical is-wide-only" style="--top: 910px; --right: -24px; --size: 64px; --rotation: -5deg; --spacing: 0.16em; --opacity: 0.028;" lang="zh-Hans">斩妖除魔</span>
+  </div>
+
   <section class="product-detail-layout">
 <div class="product-media-area">
   <div class="product-title-block">
@@ -11261,6 +11276,12 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
     const specificationsTable = document.querySelector(".product-specifications-table");
     const includedList = document.querySelector(".product-included-list");
     const purchasePanel = document.querySelector(".product-purchase-panel");
+    const productPage = document.querySelector(".product-page");
+    const wukongEditionProductId = "anker-prime-20k-220w-power-bank-black-myth-wukong-edition";
+
+    if (productPage) {
+      productPage.classList.toggle("product-page-wukong-edition", product.id === wukongEditionProductId || productKey === wukongEditionProductId);
+    }
 
     const selectedVariant = getSelectedVariant(product);
     const productImages = getProductImages(product);
