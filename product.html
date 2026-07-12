@@ -11726,6 +11726,59 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
     });
   }
 
+  const productImageLightbox = document.getElementById("product-image-lightbox");
+  const productImageLightboxImage = document.getElementById("product-image-lightbox-img");
+  const productImageLightboxClose = document.querySelector(".product-image-lightbox-close");
+  const productMainImageForLightbox = document.getElementById("product-main-image");
+
+  function openProductImageLightbox(imageSrc, imageAlt) {
+    if (!productImageLightbox || !productImageLightboxImage || !imageSrc) {
+      return;
+    }
+
+    productImageLightboxImage.src = imageSrc;
+    productImageLightboxImage.alt = imageAlt || "Full size product image";
+    productImageLightbox.classList.add("open");
+    productImageLightbox.setAttribute("aria-hidden", "false");
+    document.body.classList.add("product-image-lightbox-open");
+  }
+
+  function closeProductImageLightbox() {
+    if (!productImageLightbox || !productImageLightboxImage) {
+      return;
+    }
+
+    productImageLightbox.classList.remove("open");
+    productImageLightbox.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("product-image-lightbox-open");
+    productImageLightboxImage.src = "";
+    productImageLightboxImage.alt = "";
+  }
+
+  if (productMainImageForLightbox) {
+    productMainImageForLightbox.addEventListener("click", () => {
+      openProductImageLightbox(productMainImageForLightbox.currentSrc || productMainImageForLightbox.src, productMainImageForLightbox.alt);
+    });
+  }
+
+  if (productImageLightbox) {
+    productImageLightbox.addEventListener("click", (event) => {
+      if (event.target === productImageLightbox) {
+        closeProductImageLightbox();
+      }
+    });
+  }
+
+  if (productImageLightboxClose) {
+    productImageLightboxClose.addEventListener("click", closeProductImageLightbox);
+  }
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && productImageLightbox && productImageLightbox.classList.contains("open")) {
+      closeProductImageLightbox();
+    }
+  });
+
   document.querySelectorAll(".product-included-question").forEach((button) => {
     button.addEventListener("click", () => {
       const item = button.closest(".product-included-item");
