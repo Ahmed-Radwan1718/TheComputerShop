@@ -3111,7 +3111,7 @@ body.nav-menu-open {
   line-height: 1.05;
   letter-spacing: var(--spacing, 0.12em);
   white-space: nowrap;
-  opacity: var(--opacity, 0.045);
+  opacity: 1;
   transform: rotate(var(--rotation, 0deg));
 }
 
