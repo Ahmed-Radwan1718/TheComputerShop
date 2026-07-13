@@ -3447,6 +3447,70 @@ body.nav-menu-open {
   transform: rotate(2deg);
 }
 
+.product-wukong-inscription-old-sixteen {
+  top: 1540px;
+  left: max(88px, calc(50% - 720px));
+  font-size: 34px;
+  letter-spacing: 0.18em;
+  transform: rotate(-3deg);
+}
+
+.product-wukong-inscription-old-seventeen {
+  top: 1575px;
+  right: max(94px, calc(50% - 760px));
+  font-size: 36px;
+  letter-spacing: 0.2em;
+  transform: rotate(2deg);
+}
+
+.product-wukong-inscription-old-eighteen {
+  top: 1760px;
+  left: max(34px, calc(50% - 820px));
+  font-size: 30px;
+  letter-spacing: 0.22em;
+  transform: rotate(4deg);
+}
+
+.product-wukong-inscription-old-nineteen {
+  top: 1795px;
+  right: max(58px, calc(50% - 850px));
+  font-size: 44px;
+  letter-spacing: 0.18em;
+  transform: rotate(-2deg);
+}
+
+.product-wukong-inscription-old-twenty {
+  top: 1950px;
+  left: max(120px, calc(50% - 690px));
+  font-size: 42px;
+  letter-spacing: 0.16em;
+  transform: rotate(-5deg);
+}
+
+.product-wukong-inscription-old-twentyone {
+  top: 1990px;
+  right: max(122px, calc(50% - 720px));
+  font-size: 32px;
+  letter-spacing: 0.2em;
+  transform: rotate(3deg);
+}
+
+.product-wukong-inscription-old-twentytwo {
+  top: 2150px;
+  left: max(48px, calc(50% - 850px));
+  font-size: 38px;
+  letter-spacing: 0.18em;
+  transform: rotate(2deg);
+}
+
+.product-wukong-inscription-old-twentythree {
+  top: 2185px;
+  right: max(42px, calc(50% - 830px));
+  font-size: 40px;
+  letter-spacing: 0.18em;
+  transform: rotate(-4deg);
+}
+
 .product-wukong-english {
   color: rgba(138, 129, 113, 0.5);
   font-size: 11px;
