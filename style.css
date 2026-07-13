@@ -3366,19 +3366,11 @@ body.nav-menu-open {
 }
 
 .product-fwc26-band-three {
-  top: 1452px;
-  left: max(0px, calc(50% - 970px));
-  width: 620px;
-  background: linear-gradient(90deg, var(--fwc26-cyan), var(--fwc26-green), var(--fwc26-yellow));
-  transform: rotate(2deg);
+  display: none;
 }
 
 .product-fwc26-band-four {
-  top: 1935px;
-  right: max(-30px, calc(50% - 965px));
-  width: 560px;
-  background: linear-gradient(90deg, var(--fwc26-purple), var(--fwc26-peach), var(--fwc26-red));
-  transform: rotate(-3deg);
+  display: none;
 }
 
 .product-page.product-page-fwc26-edition .product-title-block {
@@ -3644,15 +3636,7 @@ body.nav-menu-open {
 
 .product-page.product-page-fwc26-edition .product-specifications-section::before {
   content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background:
-    linear-gradient(90deg, rgba(196, 50, 54, 0.78), rgba(224, 80, 52, 0.78), rgba(210, 214, 68, 0.78), rgba(72, 172, 81, 0.78), rgba(124, 194, 193, 0.78), rgba(162, 142, 187, 0.78)) 50% 0 / min(840px, 82vw) 10px no-repeat,
-    radial-gradient(circle at 0% 28%, rgba(124, 194, 193, 0.18), transparent 30%),
-    radial-gradient(circle at 100% 62%, rgba(224, 80, 52, 0.16), transparent 31%);
-  background-size: min(840px, 82vw) 10px, 100% 100%, 100% 100%;
+  display: none;
 }
 
 .product-page.product-page-fwc26-edition .product-specifications-section::after {
