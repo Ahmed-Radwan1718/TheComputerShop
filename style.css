@@ -3804,6 +3804,41 @@ body.nav-menu-open {
   color: rgba(214, 182, 106, 0.58);
 }
 
+.product-page.product-page-wukong-prime-edition .product-specifications-section::before,
+.product-page.product-page-wukong-prime-edition .product-specifications-section::after {
+  position: absolute;
+  top: 72px;
+  z-index: 0;
+  color: rgba(214, 182, 106, 0.26);
+  font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", "SimSun", serif;
+  font-size: 46px;
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: 0.18em;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  pointer-events: none;
+  user-select: none;
+  text-shadow: 0 14px 42px rgba(0, 0, 0, 0.46);
+}
+
+.product-page.product-page-wukong-prime-edition .product-specifications-section::before {
+  content: "齐天大圣";
+  left: max(28px, calc(50% - 900px));
+}
+
+.product-page.product-page-wukong-prime-edition .product-specifications-section::after {
+  content: "如意金箍棒";
+  right: max(28px, calc(50% - 900px));
+}
+
+@media (max-width: 1100px) {
+  .product-page.product-page-wukong-prime-edition .product-specifications-section::before,
+  .product-page.product-page-wukong-prime-edition .product-specifications-section::after {
+    display: none;
+  }
+}
+
 .product-page.product-page-fwc26-edition .product-included-box {
   position: relative;
   overflow: hidden;
