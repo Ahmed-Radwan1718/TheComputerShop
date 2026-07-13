@@ -3159,11 +3159,9 @@ body.nav-menu-open {
   z-index: 0;
   pointer-events: none;
   background:
-    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
     radial-gradient(circle at 12% 86%, rgba(124, 194, 193, 0.1), transparent 30%),
     radial-gradient(circle at 88% 72%, rgba(210, 214, 68, 0.08), transparent 26%);
-  background-size: 82px 82px, 82px 82px, 100% 100%, 100% 100%;
+  background-size: 100% 100%, 100% 100%;
 }
 
 .product-fwc26-bg-number,
@@ -3653,10 +3651,8 @@ body.nav-menu-open {
   background:
     linear-gradient(90deg, rgba(196, 50, 54, 0.78), rgba(224, 80, 52, 0.78), rgba(210, 214, 68, 0.78), rgba(72, 172, 81, 0.78), rgba(124, 194, 193, 0.78), rgba(162, 142, 187, 0.78)) 50% 0 / min(840px, 82vw) 10px no-repeat,
     radial-gradient(circle at 0% 28%, rgba(124, 194, 193, 0.18), transparent 30%),
-    radial-gradient(circle at 100% 62%, rgba(224, 80, 52, 0.16), transparent 31%),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.026) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
-  background-size: min(840px, 82vw) 10px, 100% 100%, 100% 100%, 82px 82px, 82px 82px;
+    radial-gradient(circle at 100% 62%, rgba(224, 80, 52, 0.16), transparent 31%);
+  background-size: min(840px, 82vw) 10px, 100% 100%, 100% 100%;
 }
 
 .product-page.product-page-fwc26-edition .product-specifications-section::after {
@@ -3762,10 +3758,8 @@ body.nav-menu-open {
 
   .product-page.product-page-fwc26-edition .product-specifications-section::before {
     background:
-      linear-gradient(90deg, rgba(196, 50, 54, 0.78), rgba(224, 80, 52, 0.78), rgba(210, 214, 68, 0.78), rgba(72, 172, 81, 0.78), rgba(124, 194, 193, 0.78), rgba(162, 142, 187, 0.78)) 50% 0 / 78vw 8px no-repeat,
-      linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px),
-      linear-gradient(180deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
-    background-size: 78vw 8px, 70px 70px, 70px 70px;
+      linear-gradient(90deg, rgba(196, 50, 54, 0.78), rgba(224, 80, 52, 0.78), rgba(210, 214, 68, 0.78), rgba(72, 172, 81, 0.78), rgba(124, 194, 193, 0.78), rgba(162, 142, 187, 0.78)) 50% 0 / 78vw 8px no-repeat;
+    background-size: 78vw 8px;
   }
 
   .product-page.product-page-fwc26-edition .product-specifications-section::after,
