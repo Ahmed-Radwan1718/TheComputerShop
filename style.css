@@ -3197,8 +3197,7 @@ body.nav-menu-open {
 }
 
 .product-wukong-line {
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(214, 182, 106, 0.24), transparent);
+  display: none;
 }
 
 .product-wukong-line-left {
