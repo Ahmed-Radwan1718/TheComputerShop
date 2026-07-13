@@ -3160,9 +3160,10 @@ body.nav-menu-open {
   pointer-events: none;
   background:
     linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 82px 82px;
-  mask-image: linear-gradient(180deg, black 0%, rgba(0, 0, 0, 0.45) 46%, transparent 100%);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    radial-gradient(circle at 12% 86%, rgba(124, 194, 193, 0.1), transparent 30%),
+    radial-gradient(circle at 88% 72%, rgba(210, 214, 68, 0.08), transparent 26%);
+  background-size: 82px 82px, 82px 82px, 100% 100%, 100% 100%;
 }
 
 .product-fwc26-bg-number,
@@ -3313,6 +3314,73 @@ body.nav-menu-open {
   width: 470px;
   background: linear-gradient(90deg, var(--fwc26-blue), var(--fwc26-cyan), var(--fwc26-purple), var(--fwc26-peach));
   transform: rotate(4deg);
+}
+
+.product-fwc26-bg-specs {
+  top: 1485px;
+  left: max(18px, calc(50% - 835px));
+  color: rgba(224, 80, 52, 0.13);
+  font-size: 76px;
+  transform: rotate(-4deg);
+}
+
+.product-fwc26-bg-bottom-number {
+  top: 1760px;
+  right: -82px;
+  color: rgba(255, 255, 255, 0.045);
+  font-size: 250px;
+}
+
+.product-fwc26-shape-spec-left {
+  --w: 190px;
+  --h: 86px;
+  --r: -8deg;
+  top: 1510px;
+  left: max(-54px, calc(50% - 920px));
+  background: var(--fwc26-cyan);
+}
+
+.product-fwc26-shape-spec-right {
+  --w: 168px;
+  --h: 118px;
+  --r: 9deg;
+  top: 1585px;
+  right: max(-46px, calc(50% - 930px));
+  background: var(--fwc26-orange);
+}
+
+.product-fwc26-shape-bottom-lime {
+  --w: 140px;
+  --h: 142px;
+  --r: 11deg;
+  top: 1840px;
+  left: max(42px, calc(50% - 760px));
+  background: var(--fwc26-lime);
+}
+
+.product-fwc26-shape-bottom-blue {
+  --w: 210px;
+  --h: 84px;
+  --r: -7deg;
+  top: 2060px;
+  right: max(22px, calc(50% - 790px));
+  background: var(--fwc26-blue);
+}
+
+.product-fwc26-band-three {
+  top: 1452px;
+  left: max(0px, calc(50% - 970px));
+  width: 620px;
+  background: linear-gradient(90deg, var(--fwc26-cyan), var(--fwc26-green), var(--fwc26-yellow));
+  transform: rotate(2deg);
+}
+
+.product-fwc26-band-four {
+  top: 1935px;
+  right: max(-30px, calc(50% - 965px));
+  width: 560px;
+  background: linear-gradient(90deg, var(--fwc26-purple), var(--fwc26-peach), var(--fwc26-red));
+  transform: rotate(-3deg);
 }
 
 .product-page.product-page-fwc26-edition .product-title-block {
@@ -3567,13 +3635,151 @@ body.nav-menu-open {
 }
 
 .product-page.product-page-fwc26-edition .product-specifications-section {
+  position: relative;
+  isolation: isolate;
+  max-width: none;
+  margin: 0;
+  padding: 0 max(44px, calc((100vw - 1220px) / 2 + 44px)) 112px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.product-page.product-page-fwc26-edition .product-specifications-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(196, 50, 54, 0.78), rgba(224, 80, 52, 0.78), rgba(210, 214, 68, 0.78), rgba(72, 172, 81, 0.78), rgba(124, 194, 193, 0.78), rgba(162, 142, 187, 0.78)) 50% 0 / min(840px, 82vw) 10px no-repeat,
+    radial-gradient(circle at 0% 28%, rgba(124, 194, 193, 0.18), transparent 30%),
+    radial-gradient(circle at 100% 62%, rgba(224, 80, 52, 0.16), transparent 31%),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.026) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
+  background-size: min(840px, 82vw) 10px, 100% 100%, 100% 100%, 82px 82px, 82px 82px;
+}
+
+.product-page.product-page-fwc26-edition .product-specifications-section::after {
+  content: "26";
+  position: absolute;
+  right: max(10px, calc(50% - 760px));
+  bottom: 34px;
+  z-index: 0;
+  color: rgba(255, 255, 255, 0.055);
+  font-family: var(--fwc26-display-font);
+  font-size: 168px;
+  font-weight: 900;
+  line-height: 0.82;
+  letter-spacing: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+.product-page.product-page-fwc26-edition .product-specifications-inner {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  max-width: 1220px;
+  margin: 0 auto;
+  border-color: rgba(255, 255, 255, 0.18);
+  background:
+    linear-gradient(135deg, rgba(17, 17, 17, 0.92), rgba(25, 27, 28, 0.86)),
+    rgba(17, 17, 17, 0.84);
+  box-shadow:
+    18px 18px 0 rgba(57, 84, 155, 0.48),
+    -18px -18px 0 rgba(72, 172, 81, 0.34),
+    0 28px 70px rgba(0, 0, 0, 0.26);
+}
+
+.product-page.product-page-fwc26-edition .product-specifications-inner::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 8px;
+  background: linear-gradient(90deg, var(--fwc26-red), var(--fwc26-orange), var(--fwc26-yellow), var(--fwc26-green), var(--fwc26-cyan), var(--fwc26-purple));
+}
+
+.product-page.product-page-fwc26-edition .product-specifications-inner::after {
+  content: "WORLD CUP 2026";
+  position: absolute;
+  right: 26px;
+  bottom: 18px;
+  color: rgba(255, 255, 255, 0.045);
+  font-family: var(--fwc26-display-font);
+  font-size: 74px;
+  font-weight: 900;
+  line-height: 0.82;
+  letter-spacing: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+.product-page.product-page-fwc26-edition .product-specifications-left {
+  position: relative;
+  z-index: 1;
 }
 
 .product-page.product-page-fwc26-edition .product-specifications-header h2 {
+  color: var(--fwc26-white);
   font-family: var(--fwc26-display-font);
   letter-spacing: 0;
   text-transform: uppercase;
+}
+
+.product-page.product-page-fwc26-edition .product-spec-row {
+  border-color: rgba(255, 255, 255, 0.11);
+}
+
+.product-page.product-page-fwc26-edition .product-spec-row span {
+  color: rgba(255, 255, 255, 0.58);
+}
+
+.product-page.product-page-fwc26-edition .product-spec-row strong {
+  color: rgba(255, 255, 255, 0.94);
+}
+
+@media (max-width: 1100px) {
+  .product-page.product-page-fwc26-edition .product-specifications-section {
+    padding: 0 34px 92px;
+  }
+
+  .product-page.product-page-fwc26-edition .product-specifications-inner {
+    box-shadow:
+      10px 10px 0 rgba(57, 84, 155, 0.42),
+      -10px -10px 0 rgba(72, 172, 81, 0.28),
+      0 24px 58px rgba(0, 0, 0, 0.24);
+  }
+
+  .product-page.product-page-fwc26-edition .product-specifications-section::after {
+    font-size: 112px;
+  }
+}
+
+@media (max-width: 700px) {
+  .product-page.product-page-fwc26-edition .product-specifications-section {
+    padding: 0 18px 72px;
+  }
+
+  .product-page.product-page-fwc26-edition .product-specifications-section::before {
+    background:
+      linear-gradient(90deg, rgba(196, 50, 54, 0.78), rgba(224, 80, 52, 0.78), rgba(210, 214, 68, 0.78), rgba(72, 172, 81, 0.78), rgba(124, 194, 193, 0.78), rgba(162, 142, 187, 0.78)) 50% 0 / 78vw 8px no-repeat,
+      linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+    background-size: 78vw 8px, 70px 70px, 70px 70px;
+  }
+
+  .product-page.product-page-fwc26-edition .product-specifications-section::after,
+  .product-page.product-page-fwc26-edition .product-specifications-inner::after {
+    display: none;
+  }
+
+  .product-page.product-page-fwc26-edition .product-specifications-inner {
+    padding: 24px;
+    box-shadow:
+      7px 7px 0 rgba(57, 84, 155, 0.34),
+      -7px -7px 0 rgba(72, 172, 81, 0.22),
+      0 20px 46px rgba(0, 0, 0, 0.24);
+  }
 }
 
 .product-detail-layout {
@@ -3644,8 +3850,25 @@ body.nav-menu-open {
 
   .product-fwc26-shape-red,
   .product-fwc26-shape-purple,
-  .product-fwc26-band-two {
+  .product-fwc26-shape-spec-right,
+  .product-fwc26-bg-bottom-number,
+  .product-fwc26-band-two,
+  .product-fwc26-band-four {
     display: none;
+  }
+
+  .product-fwc26-bg-specs {
+    top: 1330px;
+    font-size: 52px;
+  }
+
+  .product-fwc26-shape-spec-left {
+    top: 1390px;
+  }
+
+  .product-fwc26-band-three {
+    top: 1368px;
+    width: 430px;
   }
 
   .product-page.product-page-fwc26-edition .product-title-block h1 {
@@ -3679,11 +3902,16 @@ body.nav-menu-open {
 
   .product-fwc26-bg-word,
   .product-fwc26-band,
+  .product-fwc26-shape-red,
   .product-fwc26-shape-orange,
   .product-fwc26-shape-yellow,
   .product-fwc26-shape-blue,
   .product-fwc26-shape-cyan,
-  .product-fwc26-shape-purple {
+  .product-fwc26-shape-purple,
+  .product-fwc26-shape-spec-left,
+  .product-fwc26-shape-spec-right,
+  .product-fwc26-shape-bottom-lime,
+  .product-fwc26-shape-bottom-blue {
     display: none;
   }
 
