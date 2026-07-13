@@ -3488,19 +3488,7 @@ body.nav-menu-open {
 }
 
 .product-page.product-page-wukong-prime-edition .product-carousel-main::after {
-  content: "A110G";
-  position: absolute;
-  right: 22px;
-  bottom: 20px;
-  z-index: 5;
-  padding: 6px 9px;
-  border: 1px solid rgba(159, 125, 63, 0.38);
-  border-radius: 999px;
-  background: rgba(17, 16, 13, 0.72);
-  color: rgba(228, 220, 201, 0.82);
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.12em;
+  display: none;
 }
 
 .product-page.product-page-wukong-prime-edition .product-carousel-counter {
