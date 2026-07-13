@@ -42,11 +42,44 @@
     <span class="product-wukong-text is-muted" style="--top: 1745px; --right: max(28px, calc(50% - 845px)); --size: 40px; --rotation: -3deg; --spacing: 0.18em; --opacity: 0.035;" lang="zh-Hans">火眼金睛</span>
   </div>
 
+  <div class="product-fwc26-layer" aria-hidden="true">
+    <span class="product-fwc26-bg-number">26</span>
+    <span class="product-fwc26-bg-word product-fwc26-bg-world">WORLD CUP</span>
+    <span class="product-fwc26-bg-word product-fwc26-bg-hosts">CANADA / MEXICO / USA</span>
+    <span class="product-fwc26-bg-word product-fwc26-bg-sandisk">SANDISK</span>
+    <span class="product-fwc26-bg-word product-fwc26-bg-ready">MATCH READY</span>
+    <span class="product-fwc26-shape product-fwc26-shape-red"></span>
+    <span class="product-fwc26-shape product-fwc26-shape-orange"></span>
+    <span class="product-fwc26-shape product-fwc26-shape-yellow"></span>
+    <span class="product-fwc26-shape product-fwc26-shape-green"></span>
+    <span class="product-fwc26-shape product-fwc26-shape-blue"></span>
+    <span class="product-fwc26-shape product-fwc26-shape-cyan"></span>
+    <span class="product-fwc26-shape product-fwc26-shape-purple"></span>
+    <span class="product-fwc26-band product-fwc26-band-one"></span>
+    <span class="product-fwc26-band product-fwc26-band-two"></span>
+  </div>
+
   <section class="product-detail-layout">
 <div class="product-media-area">
   <div class="product-title-block">
+    <p class="product-fwc26-edition-label">OFFICIALLY LICENSED FIFA WORLD CUP 2026™ EDITION</p>
     <p class="product-title-eyebrow">Graphics Card</p>
     <h1>RTX 5090 AORUS Master</h1>
+    <p class="product-fwc26-support-line">1TB portable SSD with up to 800MB/s read speeds and up to 2m drop protection.</p>
+    <div class="product-fwc26-stats" aria-label="SanDisk FIFA World Cup 2026 Edition key specifications">
+      <div>
+        <strong>1TB</strong>
+        <span>Capacity</span>
+      </div>
+      <div>
+        <strong>800MB/S</strong>
+        <span>Read Speed</span>
+      </div>
+      <div>
+        <strong>2M</strong>
+        <span>Drop Protection</span>
+      </div>
+    </div>
   </div>
 
 <div class="product-carousel-main">
@@ -116,6 +149,11 @@
 
 <aside class="product-purchase-area">
   <div class="product-purchase-panel">
+    <div class="product-fwc26-purchase-marker" aria-hidden="true">
+      <span>26</span>
+      <strong>MATCH READY STORAGE</strong>
+    </div>
+
     <button class="product-who-toggle" type="button" aria-expanded="false" aria-controls="product-who-answer">
       <span>Who is this for?</span>
       <span class="faq-icon" aria-hidden="true">+</span>
@@ -11743,11 +11781,18 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
       "anker-prime-20k-220w-power-bank-black-myth-wukong-edition",
       "anker-prime-docking-station-14-in-1-triple-display-displaylink-dl7400-black-myth-wukong-edition"
     ];
+    const fwc26EditionProductIds = [
+      "sandisk-fifa-world-cup-2026-portable-ssd"
+    ];
 
     if (productPage) {
       productPage.classList.toggle(
         "product-page-wukong-edition",
         wukongEditionProductIds.includes(product.id) || wukongEditionProductIds.includes(productKey)
+      );
+      productPage.classList.toggle(
+        "product-page-fwc26-edition",
+        fwc26EditionProductIds.includes(product.id) || fwc26EditionProductIds.includes(productKey)
       );
     }
 
