@@ -3763,6 +3763,68 @@ body.nav-menu-open {
   color: rgba(214, 182, 106, 0.58);
 }
 
+.product-page.product-page-fwc26-edition .product-included-box {
+  position: relative;
+  overflow: hidden;
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(17, 17, 17, 0.72);
+  box-shadow: 0 26px 70px rgba(0, 0, 0, 0.26);
+}
+
+.product-page.product-page-fwc26-edition .product-included-box::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 6px;
+  background: linear-gradient(90deg, var(--fwc26-red), var(--fwc26-orange), var(--fwc26-yellow), var(--fwc26-green), var(--fwc26-cyan), var(--fwc26-purple));
+  pointer-events: none;
+}
+
+.product-page.product-page-fwc26-edition .product-included-box::after {
+  content: "26";
+  position: absolute;
+  right: 20px;
+  bottom: 14px;
+  color: rgba(255, 255, 255, 0.045);
+  font-family: var(--fwc26-display-font);
+  font-size: 78px;
+  font-weight: 900;
+  line-height: 0.82;
+  pointer-events: none;
+  user-select: none;
+}
+
+.product-page.product-page-fwc26-edition .product-included-header,
+.product-page.product-page-fwc26-edition .product-included-list {
+  position: relative;
+  z-index: 1;
+}
+
+.product-page.product-page-fwc26-edition .product-included-box .product-specifications-eyebrow {
+  color: rgba(255, 255, 255, 0.62);
+  font-family: var(--fwc26-display-font);
+  letter-spacing: 0;
+}
+
+.product-page.product-page-fwc26-edition .product-included-item {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.product-page.product-page-fwc26-edition .product-included-question {
+  color: var(--fwc26-white);
+}
+
+.product-page.product-page-fwc26-edition .product-included-question .faq-icon {
+  color: var(--fwc26-yellow);
+  font-family: var(--fwc26-display-font);
+  font-size: 24px;
+  font-weight: 900;
+}
+
+.product-page.product-page-fwc26-edition .product-included-answer p {
+  color: rgba(255, 255, 255, 0.64);
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .product-page.product-page-wukong-prime-edition .product-wukong-cloud,
   .product-page.product-page-wukong-prime-edition .product-wukong-arc {
