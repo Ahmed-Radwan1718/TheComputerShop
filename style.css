@@ -3230,9 +3230,7 @@ body.nav-menu-open {
 }
 
 .product-wukong-mesh {
-  background:
-    linear-gradient(135deg, rgba(214, 182, 106, 0.08) 12.5%, transparent 12.5%, transparent 50%, rgba(214, 182, 106, 0.08) 50%, rgba(214, 182, 106, 0.08) 62.5%, transparent 62.5%, transparent 100%) 0 0 / 18px 18px;
-  opacity: 0.28;
+  display: none;
 }
 
 .product-wukong-mesh-left {
