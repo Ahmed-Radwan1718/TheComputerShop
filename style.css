@@ -4011,6 +4011,17 @@ body.nav-menu-open {
   transform: rotate(-6deg);
 }
 
+.product-fwc26-bg-unites {
+  top: 1215px;
+  left: max(28px, calc(50% - 790px));
+  display: block;
+  width: 540px;
+  color: rgba(255, 255, 255, 0.12);
+  font-size: 54px;
+  line-height: 0.88;
+  transform: rotate(-3deg);
+}
+
 .product-fwc26-bg-ready {
   top: 1180px;
   right: max(18px, calc(50% - 830px));
