@@ -3166,11 +3166,7 @@ body.nav-menu-open {
 }
 
 .product-wukong-panel {
-  border: 1px solid rgba(159, 125, 63, 0.15);
-  background:
-    linear-gradient(135deg, rgba(214, 182, 106, 0.055), transparent 36%),
-    rgba(17, 16, 13, 0.18);
-  box-shadow: inset 0 0 42px rgba(0, 0, 0, 0.28);
+  display: none;
 }
 
 .product-wukong-panel-title {
