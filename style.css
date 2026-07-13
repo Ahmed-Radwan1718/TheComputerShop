@@ -4439,7 +4439,7 @@ body.nav-menu-open {
   max-width: none;
   margin: 0;
   padding: 0 max(44px, calc((100vw - 1220px) / 2 + 44px)) 112px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 0;
   overflow: hidden;
 }
 
