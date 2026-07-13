@@ -4013,7 +4013,7 @@ body.nav-menu-open {
 
 .product-fwc26-bg-unites {
   top: 1215px;
-  left: max(28px, calc(50% - 790px));
+  left: max(18px, calc(50% - 900px));
   display: block;
   width: 540px;
   color: rgba(255, 255, 255, 0.12);
