@@ -21,20 +21,6 @@
 <script src="site-header.js"></script>
 
 <main class="product-page">
-  <div class="product-wukong-prime-layer" aria-hidden="true">
-    <span class="product-wukong-panel product-wukong-panel-title"></span>
-    <span class="product-wukong-panel product-wukong-panel-purchase"></span>
-    <span class="product-wukong-panel product-wukong-panel-lower"></span>
-    <span class="product-wukong-line product-wukong-line-left"></span>
-    <span class="product-wukong-line product-wukong-line-right"></span>
-    <span class="product-wukong-arc product-wukong-arc-display"></span>
-    <span class="product-wukong-mesh product-wukong-mesh-left"></span>
-    <span class="product-wukong-mesh product-wukong-mesh-right"></span>
-    <span class="product-wukong-cloud product-wukong-cloud-one"></span>
-    <span class="product-wukong-cloud product-wukong-cloud-two"></span>
-    <span class="product-wukong-english product-wukong-english-top">BLACK MYTH: WUKONG</span>
-    <span class="product-wukong-english product-wukong-english-model">A110G / 220W</span>
-  </div>
 
   <div class="product-fwc26-layer" aria-hidden="true">
     <span class="product-fwc26-bg-number">26</span>
@@ -65,11 +51,9 @@
   <section class="product-detail-layout">
 <div class="product-media-area">
   <div class="product-title-block">
-    <p class="product-wukong-edition-label">BLACK MYTH: WUKONG LIMITED EDITION</p>
     <p class="product-fwc26-edition-label">OFFICIALLY LICENSED FIFA WORLD CUP 2026™ EDITION</p>
     <p class="product-title-eyebrow">Graphics Card</p>
     <h1>RTX 5090 AORUS Master</h1>
-    <p class="product-wukong-support-line">The Power of Prime. The Spirit of Wukong.</p>
   </div>
 
 <div class="product-carousel-main">
@@ -139,11 +123,6 @@
 
 <aside class="product-purchase-area">
   <div class="product-purchase-panel">
-    <div class="product-wukong-purchase-marker" aria-hidden="true">
-      <span>A110G</span>
-      <strong>LIMITED EDITION POWER</strong>
-    </div>
-
     <div class="product-fwc26-purchase-marker" aria-hidden="true">
       <span>26</span>
       <strong>MATCH READY STORAGE</strong>
@@ -11777,18 +11756,11 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
     const includedList = document.querySelector(".product-included-list");
     const purchasePanel = document.querySelector(".product-purchase-panel");
     const productPage = document.querySelector(".product-page");
-    const wukongPrimeEditionProductIds = [
-      "anker-prime-20k-220w-power-bank-black-myth-wukong-edition"
-    ];
     const fwc26EditionProductIds = [
       "sandisk-fifa-world-cup-2026-portable-ssd"
     ];
 
     if (productPage) {
-      productPage.classList.toggle(
-        "product-page-wukong-prime-edition",
-        wukongPrimeEditionProductIds.includes(product.id) || wukongPrimeEditionProductIds.includes(productKey)
-      );
       productPage.classList.toggle(
         "product-page-fwc26-edition",
         fwc26EditionProductIds.includes(product.id) || fwc26EditionProductIds.includes(productKey)
