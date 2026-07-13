@@ -118,6 +118,15 @@
           <label><input type="checkbox"> 57 inch</label>
         </div>
       </div>
+
+      <div class="filter-item">
+        <button class="filter-toggle" type="button"><span>Color</span><span class="chevron">⌄</span></button>
+        <div class="filter-content">
+          <label><input type="checkbox"> Black</label>
+          <label><input type="checkbox"> Silver</label>
+          <label><input type="checkbox"> White</label>
+        </div>
+      </div>
     </aside>
 
     <section class="signature-products">
@@ -534,6 +543,35 @@
     chipsRow.appendChild(clearButton);
   }
 
+  const monitorProductColors = {
+    "gigabyte-gs27fa-gaming-monitor": ["black"],
+    "gigabyte-gs27u-gaming-monitor": ["black"],
+    "samsung-odyssey-oled-g6-g60sd-27-inch-360hz-oled-qhd": ["silver"],
+    "samsung-odyssey-oled-g8-g80sd-32-inch-240hz-oled-uhd": ["silver"],
+    "samsung-odyssey-oled-g8-g85sb-34-inch-175hz-curved-ultra-wqhd": ["silver"],
+    "samsung-odyssey-3d-g90xf-27-inch-165hz-uhd": ["silver"],
+    "samsung-viewfinity-s9-27-inch-5k-resolution": ["silver"],
+    "samsung-odyssey-neo-g9-g95nc-57-inch-240hz-curved-dual-uhd": ["black", "white"],
+    "rog-strix-oled-xg27aqdng": ["black"],
+    "rog-strix-oled-xg27aqdmg-gen2-xg27aqdmgr": ["black"],
+    "rog-strix-oled-xg27aqwmg": ["black"],
+    "rog-strix-oled-xg27aqdpg": ["black"],
+    "rog-strix-oled-xg27acdms": ["black"],
+    "rog-strix-oled-xg32ucwg": ["black"],
+    "rog-strix-oled-xg32ucwmg": ["black"],
+    "rog-strix-oled-xg27ucdmg": ["black"],
+    "rog-strix-oled-xg27acdng": ["black"]
+  };
+
+  const monitorColorFilterValues = ["black", "silver", "white"];
+
+  function getCardProductId(card) {
+    const href = card.getAttribute("href") || "";
+    const productMatch = href.match(/[?&]product=([^&]+)/);
+
+    return productMatch ? decodeURIComponent(productMatch[1]) : "";
+  }
+
   function getCardFilterText(card) {
     const title = card.querySelector("h3");
     const specsLine = card.querySelector("p");
@@ -546,10 +584,25 @@
     ].join(" "));
   }
 
-  function cardMatchesFilterValue(cardFilterText, selectedValue) {
+  function isColorFilterValue(selectedValue) {
+    return monitorColorFilterValues.includes(normalizeFilterValue(selectedValue));
+  }
+
+  function cardMatchesColorFilter(card, selectedValue) {
+    const productId = getCardProductId(card);
+    const productColors = monitorProductColors[productId] || [];
+
+    return productColors.includes(normalizeFilterValue(selectedValue));
+  }
+
+  function cardMatchesFilterValue(card, cardFilterText, selectedValue) {
     const normalizedSelectedValue = normalizeFilterValue(selectedValue);
     const compactCardFilterText = compactFilterValue(cardFilterText);
     const compactSelectedValue = compactFilterValue(selectedValue);
+
+    if (isColorFilterValue(selectedValue)) {
+      return cardMatchesColorFilter(card, selectedValue);
+    }
 
     return (
       ` ${cardFilterText} `.includes(` ${normalizedSelectedValue} `) ||
@@ -562,7 +615,7 @@
 
     return selectedGroups.every((group) => {
       return group.some((selectedValue) => {
-        return cardMatchesFilterValue(cardFilterText, selectedValue);
+        return cardMatchesFilterValue(card, cardFilterText, selectedValue);
       });
     });
   }
