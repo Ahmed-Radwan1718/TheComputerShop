@@ -3148,20 +3148,12 @@ body.nav-menu-open {
   --fwc26-white: #ffffff;
   --fwc26-charcoal: #111111;
   --fwc26-display-font: Impact, Haettenschweiler, "Arial Narrow Bold", "Arial Narrow", Arial, sans-serif;
-  background:
-    linear-gradient(115deg, rgba(17, 17, 17, 0.98) 0%, rgba(34, 35, 34, 0.96) 58%, rgba(16, 18, 22, 0.98) 100%);
+  background: var(--fwc26-charcoal);
 }
 
 .product-page.product-page-fwc26-edition::before {
   content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(circle at 12% 86%, rgba(124, 194, 193, 0.1), transparent 30%),
-    radial-gradient(circle at 88% 72%, rgba(210, 214, 68, 0.08), transparent 26%);
-  background-size: 100% 100%, 100% 100%;
+  display: none;
 }
 
 .product-fwc26-bg-number,
@@ -3662,21 +3654,13 @@ body.nav-menu-open {
   max-width: 1220px;
   margin: 0 auto;
   border-color: rgba(255, 255, 255, 0.18);
-  background:
-    linear-gradient(135deg, rgba(17, 17, 17, 0.92), rgba(25, 27, 28, 0.86)),
-    rgba(17, 17, 17, 0.84);
-  box-shadow:
-    18px 18px 0 rgba(57, 84, 155, 0.48),
-    -18px -18px 0 rgba(72, 172, 81, 0.34),
-    0 28px 70px rgba(0, 0, 0, 0.26);
+  background: rgba(17, 17, 17, 0.84);
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.26);
 }
 
 .product-page.product-page-fwc26-edition .product-specifications-inner::before {
   content: "";
-  position: absolute;
-  inset: 0 0 auto;
-  height: 8px;
-  background: linear-gradient(90deg, var(--fwc26-red), var(--fwc26-orange), var(--fwc26-yellow), var(--fwc26-green), var(--fwc26-cyan), var(--fwc26-purple));
+  display: none;
 }
 
 .product-page.product-page-fwc26-edition .product-specifications-inner::after {
@@ -3724,10 +3708,7 @@ body.nav-menu-open {
   }
 
   .product-page.product-page-fwc26-edition .product-specifications-inner {
-    box-shadow:
-      10px 10px 0 rgba(57, 84, 155, 0.42),
-      -10px -10px 0 rgba(72, 172, 81, 0.28),
-      0 24px 58px rgba(0, 0, 0, 0.24);
+    box-shadow: 0 24px 58px rgba(0, 0, 0, 0.24);
   }
 
   .product-page.product-page-fwc26-edition .product-specifications-section::after {
@@ -3741,9 +3722,7 @@ body.nav-menu-open {
   }
 
   .product-page.product-page-fwc26-edition .product-specifications-section::before {
-    background:
-      linear-gradient(90deg, rgba(196, 50, 54, 0.78), rgba(224, 80, 52, 0.78), rgba(210, 214, 68, 0.78), rgba(72, 172, 81, 0.78), rgba(124, 194, 193, 0.78), rgba(162, 142, 187, 0.78)) 50% 0 / 78vw 8px no-repeat;
-    background-size: 78vw 8px;
+    display: none;
   }
 
   .product-page.product-page-fwc26-edition .product-specifications-section::after,
@@ -3753,10 +3732,7 @@ body.nav-menu-open {
 
   .product-page.product-page-fwc26-edition .product-specifications-inner {
     padding: 24px;
-    box-shadow:
-      7px 7px 0 rgba(57, 84, 155, 0.34),
-      -7px -7px 0 rgba(72, 172, 81, 0.22),
-      0 20px 46px rgba(0, 0, 0, 0.24);
+    box-shadow: 0 20px 46px rgba(0, 0, 0, 0.24);
   }
 }
 
