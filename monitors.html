@@ -97,6 +97,27 @@
           <label><input type="checkbox"> VA</label>
         </div>
       </div>
+
+      <div class="filter-item">
+        <button class="filter-toggle" type="button"><span>Brand</span><span class="chevron">⌄</span></button>
+        <div class="filter-content">
+          <label><input type="checkbox"> ASUS</label>
+          <label><input type="checkbox"> Gigabyte</label>
+          <label><input type="checkbox"> Samsung</label>
+        </div>
+      </div>
+
+      <div class="filter-item">
+        <button class="filter-toggle" type="button"><span>Screen Size</span><span class="chevron">⌄</span></button>
+        <div class="filter-content">
+          <label><input type="checkbox"> 26.5 inch</label>
+          <label><input type="checkbox"> 27 inch</label>
+          <label><input type="checkbox"> 31.5 inch</label>
+          <label><input type="checkbox"> 32 inch</label>
+          <label><input type="checkbox"> 34 inch</label>
+          <label><input type="checkbox"> 57 inch</label>
+        </div>
+      </div>
     </aside>
 
     <section class="signature-products">
@@ -115,7 +136,7 @@
 </div>
 
 <div class="signature-builds-grid">
-<a href="product.html?product=gigabyte-gs27fa-gaming-monitor" class="signature-build-card product-card-link">
+<a href="product.html?product=gigabyte-gs27fa-gaming-monitor" class="signature-build-card product-card-link" data-filter-tags="Gigabyte GS27FA Gaming Monitor 1080p 180Hz IPS 27 inch">
   <div class="signature-build-image-frame">
     <img
       src="https://res.cloudinary.com/dhtamisqn/image/upload/v1781350157/gigabyte-gs27fa-gaming-monitor-2.jpg"
@@ -129,7 +150,7 @@
   <div class="signature-build-price">Price coming soon</div>
 </a>
 
-<a href="product.html?product=gigabyte-gs27u-gaming-monitor" class="signature-build-card product-card-link">
+<a href="product.html?product=gigabyte-gs27u-gaming-monitor" class="signature-build-card product-card-link" data-filter-tags="Gigabyte GS27U Gaming Monitor 2160p 4K UHD 160Hz IPS 27 inch">
   <div class="signature-build-image-frame">
     <img
       src="https://res.cloudinary.com/dhtamisqn/image/upload/v1781350157/gigabyte-gs27fa-gaming-monitor-2.jpg"
@@ -513,24 +534,35 @@
     chipsRow.appendChild(clearButton);
   }
 
-  function getCardFilterTags(card) {
+  function getCardFilterText(card) {
+    const title = card.querySelector("h3");
     const specsLine = card.querySelector("p");
+    const extraTags = card.getAttribute("data-filter-tags") || "";
 
-    if (!specsLine) {
-      return [];
-    }
+    return normalizeFilterValue([
+      title ? title.textContent : "",
+      specsLine ? specsLine.textContent : "",
+      extraTags
+    ].join(" "));
+  }
 
-    return specsLine.textContent
-      .split("|")
-      .map((tag) => normalizeFilterValue(tag));
+  function cardMatchesFilterValue(cardFilterText, selectedValue) {
+    const normalizedSelectedValue = normalizeFilterValue(selectedValue);
+    const compactCardFilterText = compactFilterValue(cardFilterText);
+    const compactSelectedValue = compactFilterValue(selectedValue);
+
+    return (
+      ` ${cardFilterText} `.includes(` ${normalizedSelectedValue} `) ||
+      compactCardFilterText.includes(compactSelectedValue)
+    );
   }
 
   function cardMatchesFilters(card, selectedGroups) {
-    const cardTags = getCardFilterTags(card);
+    const cardFilterText = getCardFilterText(card);
 
     return selectedGroups.every((group) => {
       return group.some((selectedValue) => {
-        return cardTags.includes(normalizeFilterValue(selectedValue));
+        return cardMatchesFilterValue(cardFilterText, selectedValue);
       });
     });
   }
