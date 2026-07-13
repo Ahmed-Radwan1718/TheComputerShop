@@ -3620,17 +3620,6 @@ body.nav-menu-open {
   position: relative;
 }
 
-.product-page.product-page-wukong-prime-edition .product-media-area::before {
-  content: "";
-  position: absolute;
-  top: 104px;
-  left: -16px;
-  z-index: 0;
-  width: 44%;
-  height: 2px;
-  background: linear-gradient(90deg, rgba(214, 182, 106, 0.72), transparent);
-}
-
 .product-page.product-page-wukong-prime-edition .product-carousel-main {
   border-color: rgba(214, 182, 106, 0.38);
   background:
