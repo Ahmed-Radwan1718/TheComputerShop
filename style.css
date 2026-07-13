@@ -1905,6 +1905,25 @@ body {
   box-shadow: 0 0 0 4px rgba(192, 154, 92, 0.1);
 }
 
+input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  margin-left: 12px;
+  border-radius: 50%;
+  cursor: pointer;
+  background:
+    linear-gradient(45deg, transparent 43%, rgba(255, 255, 255, 0.9) 44%, rgba(255, 255, 255, 0.9) 56%, transparent 57%),
+    linear-gradient(-45deg, transparent 43%, rgba(255, 255, 255, 0.9) 44%, rgba(255, 255, 255, 0.9) 56%, transparent 57%);
+}
+
+input[type="search"]::-webkit-search-cancel-button:hover {
+  background:
+    linear-gradient(45deg, transparent 43%, #ffffff 44%, #ffffff 56%, transparent 57%),
+    linear-gradient(-45deg, transparent 43%, #ffffff 44%, #ffffff 56%, transparent 57%);
+}
+
 .selected-filter-chips {
   display: none;
   align-items: center;
