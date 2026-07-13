@@ -3807,14 +3807,15 @@ body.nav-menu-open {
 .product-page.product-page-wukong-prime-edition .product-specifications-section::before,
 .product-page.product-page-wukong-prime-edition .product-specifications-section::after {
   position: absolute;
-  top: 72px;
+  top: 78px;
   z-index: 0;
-  color: rgba(214, 182, 106, 0.26);
+  color: rgba(214, 182, 106, 0.24);
   font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", "SimSun", serif;
-  font-size: 46px;
+  font-size: 34px;
   font-weight: 600;
-  line-height: 1.08;
+  line-height: 1.38;
   letter-spacing: 0.18em;
+  white-space: pre;
   writing-mode: vertical-rl;
   text-orientation: mixed;
   pointer-events: none;
@@ -3823,16 +3824,16 @@ body.nav-menu-open {
 }
 
 .product-page.product-page-wukong-prime-edition .product-specifications-section::before {
-  content: "齐天大圣";
-  left: max(28px, calc(50% - 900px));
+  content: "黑神话：悟空\A 齐天大圣\A 火眼金睛";
+  left: max(28px, calc(50% - 930px));
 }
 
 .product-page.product-page-wukong-prime-edition .product-specifications-section::after {
-  content: "如意金箍棒";
-  right: max(28px, calc(50% - 900px));
+  content: "如意金箍棒\A 七十二变\A 西游记";
+  right: max(28px, calc(50% - 930px));
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1500px) {
   .product-page.product-page-wukong-prime-edition .product-specifications-section::before,
   .product-page.product-page-wukong-prime-edition .product-specifications-section::after {
     display: none;
