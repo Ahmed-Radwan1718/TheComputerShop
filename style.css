@@ -3138,11 +3138,7 @@ body.nav-menu-open {
 }
 
 .product-wukong-prime-layer::before {
-  inset: 0;
-  background:
-    linear-gradient(90deg, rgba(214, 182, 106, 0.045) 1px, transparent 1px) 0 0 / 58px 58px,
-    linear-gradient(0deg, rgba(214, 182, 106, 0.026) 1px, transparent 1px) 0 0 / 58px 58px;
-  opacity: 0.38;
+  display: none;
 }
 
 .product-wukong-prime-layer::after {
