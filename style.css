@@ -4015,7 +4015,6 @@ body.nav-menu-open {
   justify-items: center;
   gap: 7px;
   text-align: center;
-  text-transform: uppercase;
   animation: fwc26MessageReveal 1.7s ease both;
 }
 
