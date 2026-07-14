@@ -1,21 +1,13 @@
 const admin = require("../_lib/firebaseAdmin");
-const { Resend } = require("resend");
 
 const {
   createSiteSessionForUid,
   createSiteSessionFromIdToken,
-  getCodeHash,
-  createRandomCode,
-  createRandomToken
+  signInWithCustomToken
 } = require("../_lib/securityHelpers");
-
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 const WINDOW_MS = 30 * 60 * 1000;
 const MAX_ATTEMPTS = 5;
-const SIGNUP_CODE_TTL_MS = 10 * 60 * 1000;
-const SIGNUP_CODE_RESEND_MS = 60 * 1000;
-const SIGNUP_CODE_MAX_ATTEMPTS = 5;
 
 function cleanString(value, maxLength) {
   return String(value || "").trim().slice(0, maxLength);
@@ -159,11 +151,6 @@ async function checkSignupRateLimit(email) {
   }, { merge: true });
 }
 
-function getSignupCodeRef(email) {
-  const safeId = email.replace(/[^\w.-]/g, "_");
-  return admin.firestore().collection("pendingSignupEmailCodes").doc(safeId);
-}
-
 async function ensureEmailCanCreateAccount(email) {
   try {
     await admin.auth().getUserByEmail(email);
@@ -180,94 +167,54 @@ async function ensureEmailCanCreateAccount(email) {
   }
 }
 
-async function sendSignupVerificationCode(email, fullName) {
-  const ref = getSignupCodeRef(email);
-  const existingDoc = await ref.get();
-  const existingData = existingDoc.exists ? existingDoc.data() || {} : {};
-  const lastSentAtMs = timestampToMillis(existingData.lastSentAt);
+function getFirebaseWebApiKey() {
+  const apiKey = String(process.env.FIREBASE_WEB_API_KEY || "").trim();
 
-  if (lastSentAtMs && Date.now() - lastSentAtMs < SIGNUP_CODE_RESEND_MS) {
-    const error = new Error("Please wait a minute before requesting another verification code.");
-    error.statusCode = 429;
+  if (!apiKey) {
+    const error = new Error("Firebase signup email verification is not configured.");
+    error.statusCode = 500;
     throw error;
   }
 
-  const code = createRandomCode();
-  const salt = createRandomToken();
-  const expiresAtMs = Date.now() + SIGNUP_CODE_TTL_MS;
-
-  await ref.set({
-    email,
-    codeHash: getCodeHash(email, code, salt),
-    salt,
-    attempts: 0,
-    createdAt: admin.firestore.FieldValue.serverTimestamp(),
-    lastSentAt: admin.firestore.FieldValue.serverTimestamp(),
-    expiresAt: new Date(expiresAtMs)
-  }, { merge: false });
-
-  await resend.emails.send({
-    from: process.env.SECURITY_EMAIL_FROM,
-    to: email,
-    subject: "Verify your Computer Shop email",
-    html: `
-      <div style="font-family: Arial, sans-serif; line-height: 1.6;">
-        <h2>Verify your email address</h2>
-        <p>Hi ${fullName || "there"}, enter this code to finish creating your The Computer Shop account.</p>
-        <p style="font-size: 28px; font-weight: 700; letter-spacing: 6px;">${code}</p>
-        <p>This code expires in 10 minutes. Your account will not be created unless this code is verified.</p>
-      </div>
-    `
-  });
+  return apiKey;
 }
 
-async function verifySignupVerificationCode(email, code) {
-  if (!/^\d{6}$/.test(code)) {
-    const error = new Error("Enter the 6-digit verification code.");
-    error.statusCode = 400;
+async function sendFirebaseSignupVerificationEmail(uid) {
+  const apiKey = getFirebaseWebApiKey();
+  const customToken = await admin.auth().createCustomToken(uid);
+  const signInData = await signInWithCustomToken(customToken);
+  const idToken = signInData && signInData.idToken ? signInData.idToken : "";
+
+  if (!idToken) {
+    const error = new Error("Could not create email verification session.");
+    error.statusCode = 500;
     throw error;
   }
 
-  const ref = getSignupCodeRef(email);
-  const doc = await ref.get();
+  const response = await fetch(
+    "https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=" + encodeURIComponent(apiKey),
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        requestType: "VERIFY_EMAIL",
+        idToken
+      })
+    }
+  );
 
-  if (!doc.exists) {
-    const error = new Error("Please request a new verification code.");
-    error.statusCode = 400;
+  const data = await response.json().catch(function () {
+    return {};
+  });
+
+  if (!response.ok) {
+    const error = new Error("Could not send signup verification email.");
+    error.statusCode = response.status || 500;
+    error.firebaseErrorCode = data && data.error && data.error.message ? data.error.message : "";
     throw error;
   }
-
-  const data = doc.data() || {};
-  const expiresAtMs = timestampToMillis(data.expiresAt);
-
-  if (!expiresAtMs || Date.now() > expiresAtMs) {
-    await ref.delete();
-
-    const error = new Error("That verification code expired. Please request a new one.");
-    error.statusCode = 400;
-    throw error;
-  }
-
-  if (Number(data.attempts || 0) >= SIGNUP_CODE_MAX_ATTEMPTS) {
-    await ref.delete();
-
-    const error = new Error("Too many wrong codes. Please request a new verification code.");
-    error.statusCode = 429;
-    throw error;
-  }
-
-  if (getCodeHash(email, code, data.salt || "") !== data.codeHash) {
-    await ref.set({
-      attempts: Number(data.attempts || 0) + 1,
-      updatedAt: admin.firestore.FieldValue.serverTimestamp()
-    }, { merge: true });
-
-    const error = new Error("That verification code is not correct.");
-    error.statusCode = 400;
-    throw error;
-  }
-
-  return ref;
 }
 
 module.exports = async function handler(req, res) {
@@ -361,7 +308,6 @@ module.exports = async function handler(req, res) {
     const email = cleanEmail((req.body || {}).email);
     const password = cleanPassword((req.body || {}).password);
     const confirmPassword = cleanPassword((req.body || {}).confirmPassword);
-    const verificationCode = cleanString((req.body || {}).verificationCode, 12).replace(/\D/g, "").slice(0, 6);
 
     if (!fullName || !phone || !email || !password || !confirmPassword) {
       return res.status(400).json({ error: "Please complete all required fields." });
@@ -382,63 +328,56 @@ module.exports = async function handler(req, res) {
       return res.status(400).json({ error: "Password must be 10 to 48 characters and include uppercase, lowercase, special, and numeric characters." });
     }
 
+    await checkSignupRateLimit(email);
     await ensurePhoneCanCreateAccount(phone);
     await ensureEmailCanCreateAccount(email);
-
-    if (!verificationCode) {
-      await checkSignupRateLimit(email);
-      await sendSignupVerificationCode(email, fullName);
-
-      return res.status(200).json({
-        success: true,
-        requiresEmailVerification: true,
-        message: "Check your inbox for the 6-digit code. Your account will be created after verification."
-      });
-    }
-
-    const signupCodeRef = await verifySignupVerificationCode(email, verificationCode);
 
     const userRecord = await admin.auth().createUser({
       email,
       password,
       displayName: fullName,
-      emailVerified: true
+      emailVerified: false
     });
 
     let phoneReservation = null;
+    const userRef = admin.firestore().collection("users").doc(userRecord.uid);
 
     try {
       phoneReservation = await reserveAccountPhone(phone, userRecord.uid);
 
-      await admin.firestore().collection("users").doc(userRecord.uid).set({
+      await userRef.set({
         fullName,
         phone,
         phoneLookupKey: phoneReservation.phoneLookupKey,
         email,
         authProvider: "password",
-        emailVerified: true,
+        emailVerified: false,
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
         updatedAt: admin.firestore.FieldValue.serverTimestamp()
       });
+
+      await sendFirebaseSignupVerificationEmail(userRecord.uid);
     } catch (error) {
       if (phoneReservation && phoneReservation.phoneRef) {
         await phoneReservation.phoneRef.delete().catch(function () {});
       }
 
+      await userRef.delete().catch(function () {});
       await admin.auth().deleteUser(userRecord.uid).catch(function () {});
       throw error;
     }
 
-    await signupCodeRef.delete();
     await createCompatibleSiteSession(req, res, userRecord.uid);
 
     return res.status(200).json({
       success: true,
+      requiresEmailVerification: true,
+      message: "Account created. Check your inbox for the verification link.",
       user: {
         uid: userRecord.uid,
         email,
         displayName: fullName,
-        emailVerified: true
+        emailVerified: false
       }
     });
   } catch (error) {
