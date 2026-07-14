@@ -13,7 +13,7 @@ const {
 } = require("../server/_lib/rateLimitHelpers");
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-const CONSULTATION_EMAIL_TO = process.env.CONSULTATION_EMAIL_TO || "The_Computer_Shop@icloud.com";
+const CONSULTATION_EMAIL_TO = process.env.CONSULTATION_EMAIL_TO || "thecomputershopegypt@gmail.com";
 
 function cleanString(value, maxLength) {
   return String(value || "").trim().slice(0, maxLength);
