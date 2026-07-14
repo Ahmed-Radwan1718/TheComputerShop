@@ -18,6 +18,20 @@ function cleanItemId(value) {
   return itemId.replace(/[^a-zA-Z0-9_-]/g, "-").slice(0, 160);
 }
 
+async function productIsUnavailable(itemId) {
+  const stockDoc = await admin.firestore()
+    .collection("productStock")
+    .doc(itemId)
+    .get();
+
+  if (!stockDoc.exists) {
+    return false;
+  }
+
+  const data = stockDoc.data() || {};
+  return data.status === "unavailable";
+}
+
 function getNumberValue(value) {
   if (typeof value === "number" && Number.isFinite(value)) {
     return value;
@@ -111,6 +125,10 @@ async function handlePost(req, res, uid) {
 
   if (!itemId) {
     return res.status(400).json({ error: "Missing product id." });
+  }
+
+  if (await productIsUnavailable(itemId)) {
+    return res.status(409).json({ error: "This product is currently unavailable." });
   }
 
   const cartRef = admin.firestore()
