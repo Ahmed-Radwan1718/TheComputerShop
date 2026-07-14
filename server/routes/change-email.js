@@ -1,11 +1,9 @@
 const admin = require("../_lib/firebaseAdmin");
-const { Resend } = require("resend");
 
 const {
   getUserFromRequest,
   signInWithPassword,
   getCodeHash,
-  createRandomCode,
   createSiteSessionForUid
 } = require("../_lib/securityHelpers");
 
@@ -14,10 +12,59 @@ const {
   clearSecurityUnlockSession
 } = require("../_lib/securityUnlockHelpers");
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 const EMAIL_COOLDOWN_MS = 90 * 24 * 60 * 60 * 1000;
 const LOCKOUT_MS = 30 * 60 * 1000;
+
+function getFirebaseWebApiKey() {
+  const apiKey = String(process.env.FIREBASE_WEB_API_KEY || "").trim();
+
+  if (!apiKey) {
+    const error = new Error("Firebase email change verification is not configured.");
+    error.statusCode = 500;
+    throw error;
+  }
+
+  return apiKey;
+}
+
+async function sendFirebaseEmailChangeVerification(idToken, newEmail) {
+  const apiKey = getFirebaseWebApiKey();
+
+  if (!idToken) {
+    const error = new Error("Could not create email change verification session.");
+    error.statusCode = 500;
+    throw error;
+  }
+
+  const response = await fetch(
+    "https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=" + encodeURIComponent(apiKey),
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        requestType: "VERIFY_AND_CHANGE_EMAIL",
+        idToken,
+        newEmail
+      })
+    }
+  );
+
+  const data = await response.json().catch(function () {
+    return {};
+  });
+  const firebaseErrorCode = data && data.error && data.error.message ? data.error.message : "";
+
+  if (!response.ok) {
+    const error = new Error(firebaseErrorCode === "EMAIL_EXISTS"
+      ? "This email is already used by another account."
+      : "Could not send email change verification link.");
+    error.statusCode = firebaseErrorCode === "EMAIL_EXISTS" ? 409 : response.status || 500;
+    error.firebaseErrorCode = firebaseErrorCode;
+    throw error;
+  }
+}
 
 function cleanString(value, maxLength) {
   return String(value || "").trim().slice(0, maxLength);
@@ -119,49 +166,28 @@ async function handleStart(req, res, uid) {
     }
   }
 
+  let signInData;
+
   try {
-    await signInWithPassword(realCurrentEmail, currentPassword);
+    signInData = await signInWithPassword(realCurrentEmail, currentPassword);
   } catch (error) {
     return res.status(401).json({ error: "Current password is incorrect." });
   }
 
-  const code = createRandomCode();
-  const salt = db.collection("_").doc().id;
-  const codeHash = getCodeHash(uid, code, salt);
-
-  await db.collection("emailChangeCodes").doc(uid).set({
-    newEmail,
-    codeHash,
-    salt,
-    attempts: 0,
-    lockedUntil: null,
-    createdAt: admin.firestore.FieldValue.serverTimestamp(),
-    lastSentAt: admin.firestore.FieldValue.serverTimestamp(),
-    expiresAt: admin.firestore.Timestamp.fromDate(new Date(Date.now() + 10 * 60 * 1000))
-  });
+  await sendFirebaseEmailChangeVerification(signInData && signInData.idToken, newEmail);
+  await db.collection("emailChangeCodes").doc(uid).delete().catch(function () {});
 
   await userRef.set({
     emailChangePendingTo: newEmail,
+    emailChangeRequestedAt: admin.firestore.FieldValue.serverTimestamp(),
     updatedAt: admin.firestore.FieldValue.serverTimestamp()
   }, { merge: true });
 
-  await resend.emails.send({
-    from: process.env.SECURITY_EMAIL_FROM,
-    to: newEmail,
-    subject: "Confirm your new Computer Shop email",
-    html: `
-      <div style="font-family: Arial, sans-serif; line-height: 1.6;">
-        <h2>Confirm your new email</h2>
-        <p>Use this code to confirm your email change:</p>
-        <p style="font-size: 28px; font-weight: bold; letter-spacing: 6px;">${code}</p>
-        <p>This code expires in 10 minutes.</p>
-      </div>
-    `
-  });
+  await clearSecurityUnlock(req, res, uid);
 
   return res.status(200).json({
     success: true,
-    message: "Verification code sent to your new email."
+    message: "Verification link sent to your new email."
   });
 }
 
