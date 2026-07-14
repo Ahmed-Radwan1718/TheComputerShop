@@ -12422,6 +12422,67 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
   const productQuantity = document.getElementById("product-quantity");
   const addToCartButton = document.getElementById("add-to-cart-button");
   const cartTransitionOverlay = document.querySelector(".cart-transition-overlay");
+  const isFwc26CartLoadingProduct =
+    String(productData.id || "").startsWith("sandisk-fifa-world-cup-2026-portable-ssd");
+
+  let fwc26CartLoadingRemoveTimer = null;
+
+  function getFwc26CartLoadingOverlay() {
+    let overlay = document.querySelector(".fwc26-cart-loading");
+
+    if (overlay) {
+      return overlay;
+    }
+
+    overlay = document.createElement("div");
+    overlay.className = "fwc26-cart-loading";
+    overlay.setAttribute("aria-hidden", "true");
+    overlay.innerHTML = `
+      <div class="fwc26-cart-loading__backdrop"></div>
+      <div class="fwc26-cart-loading__panel fwc26-cart-loading__panel--red"></div>
+      <div class="fwc26-cart-loading__panel fwc26-cart-loading__panel--blue"></div>
+      <div class="fwc26-cart-loading__panel fwc26-cart-loading__panel--yellow"></div>
+      <div class="fwc26-cart-loading__stage">
+        <span class="fwc26-cart-loading__ring"></span>
+        <span class="fwc26-cart-loading__pulse"></span>
+        <img class="fwc26-cart-loading__football" src="football.png" alt="">
+        <span class="fwc26-cart-loading__label">Adding to cart</span>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+
+    return overlay;
+  }
+
+  function showFwc26CartLoadingOverlay() {
+    const overlay = getFwc26CartLoadingOverlay();
+
+    if (fwc26CartLoadingRemoveTimer) {
+      window.clearTimeout(fwc26CartLoadingRemoveTimer);
+      fwc26CartLoadingRemoveTimer = null;
+    }
+
+    overlay.classList.add("is-active");
+  }
+
+  function hideFwc26CartLoadingOverlay() {
+    const overlay = document.querySelector(".fwc26-cart-loading");
+
+    if (!overlay) {
+      return;
+    }
+
+    overlay.classList.remove("is-active");
+
+    if (fwc26CartLoadingRemoveTimer) {
+      window.clearTimeout(fwc26CartLoadingRemoveTimer);
+    }
+
+    fwc26CartLoadingRemoveTimer = window.setTimeout(() => {
+      overlay.remove();
+      fwc26CartLoadingRemoveTimer = null;
+    }, 260);
+  }
 
   let quantity = 1;
 
@@ -12500,10 +12561,11 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
         return;
       }
 
-      const shouldShowCartLoadingOverlay =
-        !String(productData.id || "").startsWith("sandisk-fifa-world-cup-2026-portable-ssd");
+      const shouldShowCartLoadingOverlay = !isFwc26CartLoadingProduct;
 
-      if (cartTransitionOverlay && shouldShowCartLoadingOverlay) {
+      if (isFwc26CartLoadingProduct) {
+        showFwc26CartLoadingOverlay();
+      } else if (cartTransitionOverlay && shouldShowCartLoadingOverlay) {
         cartTransitionOverlay.classList.add("active");
       }
 
@@ -12512,12 +12574,16 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
       try {
         await window.addProductToSyncedCart(productData, quantity);
 
+        hideFwc26CartLoadingOverlay();
+
         if (cartTransitionOverlay) {
           cartTransitionOverlay.classList.remove("active");
         }
 
         addToCartButton.textContent = "Added to Cart";
       } catch (error) {
+        hideFwc26CartLoadingOverlay();
+
         if (cartTransitionOverlay) {
           cartTransitionOverlay.classList.remove("active");
         }
