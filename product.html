@@ -12537,6 +12537,232 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
 </script>
 
 <script>
+  (function () {
+    const fwc26CartCelebrationProductId = "sandisk-fifa-world-cup-2026-portable-ssd";
+    let activeFwc26CartCelebration = null;
+    let queuedFwc26CartCelebration = null;
+
+    function isFwc26CartCelebrationProduct(product) {
+      if (!product) {
+        return false;
+      }
+
+      const productId = String(product.id || "");
+      const productUrl = String(product.url || "");
+
+      return (
+        productId === fwc26CartCelebrationProductId ||
+        productId.startsWith(fwc26CartCelebrationProductId + "-") ||
+        productUrl.includes("product=" + fwc26CartCelebrationProductId)
+      );
+    }
+
+    function getFwc26CartTarget() {
+      const target = document.querySelector("[data-cart-animation-target]");
+
+      if (!target) {
+        return {
+          element: null,
+          visible: false,
+          x: 0,
+          y: 0
+        };
+      }
+
+      const rect = target.getBoundingClientRect();
+      const targetStyle = window.getComputedStyle(target);
+      const isVisible =
+        rect.width > 0 &&
+        rect.height > 0 &&
+        rect.bottom > 0 &&
+        rect.right > 0 &&
+        rect.top < window.innerHeight &&
+        rect.left < window.innerWidth &&
+        targetStyle.display !== "none" &&
+        targetStyle.visibility !== "hidden" &&
+        targetStyle.opacity !== "0";
+
+      return {
+        element: target,
+        visible: isVisible,
+        x: rect.left + rect.width / 2 - window.innerWidth / 2,
+        y: rect.top + rect.height / 2 - window.innerHeight / 2
+      };
+    }
+
+    function createFwc26Element(tagName, className, textContent) {
+      const element = document.createElement(tagName);
+
+      if (className) {
+        element.className = className;
+      }
+
+      if (textContent) {
+        element.textContent = textContent;
+      }
+
+      return element;
+    }
+
+    function createFwc26CartCelebrationOverlay(payload, target) {
+      const overlay = createFwc26Element("div", "fwc26-cart-celebration");
+      overlay.setAttribute("aria-hidden", "true");
+      overlay.style.setProperty("--fwc26-cart-travel-x", target.x + "px");
+      overlay.style.setProperty("--fwc26-cart-travel-y", target.y + "px");
+
+      if (target.visible) {
+        overlay.classList.add("fwc26-cart-celebration--targeted");
+      }
+
+      const backdrop = createFwc26Element("div", "fwc26-cart-celebration__backdrop");
+      overlay.appendChild(backdrop);
+
+      [
+        "left",
+        "right",
+        "top",
+        "bottom",
+        "accent"
+      ].forEach(function (panelName) {
+        overlay.appendChild(createFwc26Element("span", "fwc26-cart-celebration__panel fwc26-cart-celebration__panel--" + panelName));
+      });
+
+      const focus = createFwc26Element("div", "fwc26-cart-celebration__focus");
+      const card = createFwc26Element("div", "fwc26-cart-celebration__card");
+      const shapeOne = createFwc26Element("span", "fwc26-cart-celebration__shape fwc26-cart-celebration__shape--one");
+      const shapeTwo = createFwc26Element("span", "fwc26-cart-celebration__shape fwc26-cart-celebration__shape--two");
+      const shapeThree = createFwc26Element("span", "fwc26-cart-celebration__shape fwc26-cart-celebration__shape--three");
+      const markOne = createFwc26Element("span", "fwc26-cart-celebration__mark fwc26-cart-celebration__mark--one");
+      const markTwo = createFwc26Element("span", "fwc26-cart-celebration__mark fwc26-cart-celebration__mark--two");
+
+      const number = createFwc26Element("div", "fwc26-cart-celebration__number");
+      number.appendChild(createFwc26Element("span", "", "2"));
+      number.appendChild(createFwc26Element("span", "", "6"));
+
+      const message = createFwc26Element("div", "fwc26-cart-celebration__message");
+      message.appendChild(createFwc26Element("strong", "", "ADDED TO CART"));
+      message.appendChild(createFwc26Element("span", "", String(payload.product.name || "SANDISK Portable SSD FIFA World Cup 2026 Edition").toUpperCase()));
+
+      if (Number(payload.quantity || 1) > 1) {
+        message.appendChild(createFwc26Element("small", "", "QTY " + Number(payload.quantity || 1) + " ADDED"));
+      }
+
+      focus.appendChild(card);
+      focus.appendChild(shapeOne);
+      focus.appendChild(shapeTwo);
+      focus.appendChild(shapeThree);
+      focus.appendChild(markOne);
+      focus.appendChild(markTwo);
+      focus.appendChild(number);
+      focus.appendChild(message);
+      overlay.appendChild(focus);
+
+      const traveler = createFwc26Element("div", "fwc26-cart-celebration__traveler");
+
+      for (let blockIndex = 0; blockIndex < 6; blockIndex += 1) {
+        traveler.appendChild(createFwc26Element("span", ""));
+      }
+
+      overlay.appendChild(traveler);
+      return overlay;
+    }
+
+    function pulseFwc26CartTarget(target) {
+      if (!target || !target.visible || !target.element) {
+        return;
+      }
+
+      target.element.classList.remove("site-header-cart-fwc26-pulse");
+
+      requestAnimationFrame(function () {
+        target.element.classList.add("site-header-cart-fwc26-pulse");
+
+        window.setTimeout(function () {
+          target.element.classList.remove("site-header-cart-fwc26-pulse");
+        }, 680);
+      });
+    }
+
+    function finishFwc26CartCelebration(state) {
+      if (!state || state.finished) {
+        return;
+      }
+
+      state.finished = true;
+
+      state.timers.forEach(function (timerId) {
+        window.clearTimeout(timerId);
+      });
+
+      if (state.overlay && state.overlay.parentNode) {
+        state.overlay.parentNode.removeChild(state.overlay);
+      }
+
+      pulseFwc26CartTarget(state.target);
+
+      if (activeFwc26CartCelebration === state) {
+        activeFwc26CartCelebration = null;
+      }
+
+      if (queuedFwc26CartCelebration) {
+        const nextPayload = queuedFwc26CartCelebration;
+        queuedFwc26CartCelebration = null;
+
+        window.setTimeout(function () {
+          playFwc26CartCelebration(nextPayload);
+        }, 80);
+      }
+    }
+
+    function playFwc26CartCelebration(payload) {
+      if (!document.body) {
+        return;
+      }
+
+      if (activeFwc26CartCelebration) {
+        queuedFwc26CartCelebration = payload;
+        return;
+      }
+
+      const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+      const mobileQuery = window.matchMedia("(max-width: 700px)");
+      const target = reducedMotionQuery.matches ? getFwc26CartTarget() : getFwc26CartTarget();
+      const overlay = createFwc26CartCelebrationOverlay(payload, target);
+      const duration = reducedMotionQuery.matches ? 920 : mobileQuery.matches ? 1450 : 1780;
+
+      if (reducedMotionQuery.matches) {
+        overlay.classList.add("fwc26-cart-celebration--reduced");
+      }
+
+      const state = {
+        overlay,
+        target,
+        timers: [],
+        finished: false
+      };
+
+      activeFwc26CartCelebration = state;
+      document.body.appendChild(overlay);
+
+      state.timers.push(window.setTimeout(function () {
+        finishFwc26CartCelebration(state);
+      }, duration));
+    }
+
+    window.tcsPlayFwc26CartCelebration = function (payload) {
+      if (!payload || !payload.product || !isFwc26CartCelebrationProduct(payload.product)) {
+        return;
+      }
+
+      playFwc26CartCelebration({
+        product: payload.product,
+        quantity: payload.quantity
+      });
+    };
+  })();
+</script>
+
+<script>
   let currentCartUser = null;
 
   function updateCartCountFromItems(items) {
@@ -12639,6 +12865,13 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
 
     if (typeof window.tcsRefreshCartCount === "function") {
       window.tcsRefreshCartCount();
+    }
+
+    if (typeof window.tcsPlayFwc26CartCelebration === "function") {
+      window.tcsPlayFwc26CartCelebration({
+        product: product,
+        quantity: quantityToAdd
+      });
     }
 
     return data;
