@@ -8,6 +8,7 @@ const ADMIN_EMAILS = ["ahmedradwan21@gmail.com"];
 const VALID_STATUSES = ["open", "pending", "answered", "resolved", "closed"];
 const VALID_ORDER_STATUSES = ["submitted", "reviewing", "awaiting_payment", "preparing_order", "ready_for_delivery_pickup", "out_for_delivery", "fulfilled", "canceled"];
 const VALID_PAYMENT_STATUSES = ["not_paid", "pending", "paid", "refunded"];
+const VALID_PRODUCT_STOCK_STATUSES = ["in_stock", "unavailable"];
 
 function cleanString(value, maxLength) {
   return String(value || "").trim().slice(0, maxLength);
@@ -35,6 +36,10 @@ function cleanOrderId(value) {
   return cleanDocumentId(value);
 }
 
+function cleanProductId(value) {
+  return cleanDocumentId(value);
+}
+
 function cleanStatus(value) {
   const status = cleanString(value, 40);
   return VALID_STATUSES.includes(status) ? status : "open";
@@ -53,6 +58,11 @@ function cleanOrderStatus(value) {
 function cleanPaymentStatus(value) {
   const status = cleanString(value, 40);
   return VALID_PAYMENT_STATUSES.includes(status) ? status : "not_paid";
+}
+
+function cleanProductStockStatus(value) {
+  const status = cleanString(value, 40);
+  return VALID_PRODUCT_STOCK_STATUSES.includes(status) ? status : "in_stock";
 }
 
 function serializeTimestamp(value) {
@@ -158,6 +168,25 @@ function getOrderTime(order) {
   return Number.isNaN(date.getTime()) ? 0 : date.getTime();
 }
 
+function serializeProductStock(productDoc) {
+  const data = productDoc.data() || {};
+  const status = VALID_PRODUCT_STOCK_STATUSES.includes(data.status) ? data.status : "in_stock";
+
+  return {
+    id: productDoc.id,
+    productId: data.productId || productDoc.id,
+    status,
+    updatedBy: data.updatedBy || "",
+    createdAt: serializeTimestamp(data.createdAt),
+    updatedAt: serializeTimestamp(data.updatedAt)
+  };
+}
+
+function getProductStockTime(productStock) {
+  const date = new Date(productStock.updatedAt || productStock.createdAt || 0);
+  return Number.isNaN(date.getTime()) ? 0 : date.getTime();
+}
+
 async function requireAdmin(decodedUser) {
   const userRecord = await admin.auth().getUser(decodedUser.uid);
   const email = userRecord.email || decodedUser.email || "";
@@ -207,11 +236,54 @@ async function handleGetOrders(res) {
   });
 }
 
+async function getProductStockRecords() {
+  const snapshot = await admin.firestore()
+    .collection("productStock")
+    .limit(1000)
+    .get();
+
+  return snapshot.docs
+    .map(serializeProductStock)
+    .sort(function (a, b) {
+      return getProductStockTime(b) - getProductStockTime(a);
+    });
+}
+
+async function handleGetProductStock(res) {
+  const productStock = await getProductStockRecords();
+
+  return res.status(200).json({
+    success: true,
+    productStock
+  });
+}
+
+async function handleGetPublicStock(res) {
+  const productStock = await getProductStockRecords();
+  const stock = {};
+
+  productStock.forEach(function (item) {
+    stock[item.productId] = {
+      status: item.status,
+      updatedAt: item.updatedAt
+    };
+  });
+
+  return res.status(200).json({
+    success: true,
+    stock
+  });
+}
+
 async function handleGet(req, res) {
   const type = String((req.query || {}).type || "").trim();
 
   if (type === "orders") {
     return await handleGetOrders(res);
+  }
+
+  if (type === "product-stock") {
+    return await handleGetProductStock(res);
   }
 
   return await handleGetTickets(res);
@@ -312,6 +384,35 @@ async function handleOrderDelete(req, res) {
   });
 }
 
+async function handleProductStockUpdate(req, res, adminUser) {
+  const db = admin.firestore();
+  const productId = cleanProductId((req.body || {}).productId);
+  const status = cleanProductStockStatus((req.body || {}).status);
+
+  if (!productId) {
+    return res.status(400).json({ error: "Missing product id." });
+  }
+
+  const productRef = db.collection("productStock").doc(productId);
+  const productDoc = await productRef.get();
+  const existingData = productDoc.exists ? productDoc.data() || {} : {};
+
+  await productRef.set({
+    productId,
+    status,
+    updatedBy: adminUser.email,
+    createdAt: existingData.createdAt || admin.firestore.FieldValue.serverTimestamp(),
+    updatedAt: admin.firestore.FieldValue.serverTimestamp()
+  }, { merge: true });
+
+  const updatedProduct = await productRef.get();
+
+  return res.status(200).json({
+    success: true,
+    productStock: serializeProductStock(updatedProduct)
+  });
+}
+
 async function handleTicketDelete(req, res) {
   const db = admin.firestore();
   const ticketId = cleanTicketId((req.body || {}).ticketId);
@@ -388,6 +489,12 @@ async function handleReply(req, res, adminUser) {
 
 module.exports = async function handler(req, res) {
   try {
+    const requestType = String((req.query || {}).type || "").trim();
+
+    if (req.method === "GET" && requestType === "stock-public") {
+      return await handleGetPublicStock(res);
+    }
+
     const decodedUser = await getUserFromRequest(req, {
       checkRevoked: true,
       requireCompletedTwoFactor: true
@@ -408,6 +515,10 @@ module.exports = async function handler(req, res) {
 
       if (action === "order-delete") {
         return await handleOrderDelete(req, res);
+      }
+
+      if (action === "product-stock-update") {
+        return await handleProductStockUpdate(req, res, adminUser);
       }
 
       if (action === "delete") {
