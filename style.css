@@ -12758,6 +12758,10 @@ body.account-security-modal-open {
   min-width: 0;
 }
 
+#account-order-detail-actions {
+  margin-top: 18px;
+}
+
 .account-orders-loading {
   padding: 18px 0;
   color: rgba(255, 255, 255, 0.58);
