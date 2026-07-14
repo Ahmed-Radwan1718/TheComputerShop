@@ -1,13 +1,55 @@
 const admin = require("../_lib/firebaseAdmin");
-const { Resend } = require("resend");
-
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 const WINDOW_MS = 30 * 60 * 1000;
 const MAX_ATTEMPTS = 5;
 
 function cleanEmail(value) {
   return String(value || "").trim().toLowerCase().slice(0, 160);
+}
+
+function getFirebaseWebApiKey() {
+  const apiKey = String(process.env.FIREBASE_WEB_API_KEY || "").trim();
+
+  if (!apiKey) {
+    const error = new Error("Firebase password reset email is not configured.");
+    error.statusCode = 500;
+    throw error;
+  }
+
+  return apiKey;
+}
+
+async function sendFirebasePasswordResetEmail(email) {
+  const response = await fetch(
+    "https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=" + encodeURIComponent(getFirebaseWebApiKey()),
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        requestType: "PASSWORD_RESET",
+        email
+      })
+    }
+  );
+
+  const data = await response.json().catch(function () {
+    return {};
+  });
+
+  const firebaseErrorCode = data && data.error && data.error.message ? data.error.message : "";
+
+  if (!response.ok) {
+    if (firebaseErrorCode === "EMAIL_NOT_FOUND") {
+      return;
+    }
+
+    const error = new Error("Could not send password reset email.");
+    error.statusCode = response.status || 500;
+    error.firebaseErrorCode = firebaseErrorCode;
+    throw error;
+  }
 }
 
 function timestampToMillis(value) {
@@ -56,33 +98,7 @@ module.exports = async function handler(req, res) {
 
     await checkRateLimit(email);
 
-    try {
-      await admin.auth().getUserByEmail(email);
-
-      const resetLink = await admin.auth().generatePasswordResetLink(email);
-
-      await resend.emails.send({
-        from: process.env.SECURITY_EMAIL_FROM,
-        to: email,
-        subject: "Reset your Computer Shop password",
-        html: `
-          <div style="font-family: Arial, sans-serif; line-height: 1.6;">
-            <h2>Reset your password</h2>
-            <p>Click the button below to reset your Computer Shop password.</p>
-            <p>
-              <a href="${resetLink}" style="display: inline-block; padding: 12px 18px; background: #2563eb; color: #ffffff; text-decoration: none; border-radius: 8px;">
-                Reset Password
-              </a>
-            </p>
-            <p>If the button does not work, copy and paste this link into your browser:</p>
-            <p style="word-break: break-all;">${resetLink}</p>
-            <p>If you did not request this, you can ignore this email.</p>
-          </div>
-        `
-      });
-    } catch (error) {
-      // Do not reveal whether the account exists.
-    }
+    await sendFirebasePasswordResetEmail(email);
 
     return res.status(200).json({
       success: true,
