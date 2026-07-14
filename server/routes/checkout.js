@@ -187,6 +187,33 @@ function getCartSummary(cartItems) {
   };
 }
 
+async function findUnavailableCartItems(cartItems) {
+  const checks = await Promise.all(cartItems.map(async function (item) {
+    const itemId = cleanString(item.id || item.url || item.name, 160)
+      .replace(/[^a-zA-Z0-9_-]/g, "-")
+      .slice(0, 160);
+
+    if (!itemId) {
+      return null;
+    }
+
+    const stockDoc = await admin.firestore()
+      .collection("productStock")
+      .doc(itemId)
+      .get();
+
+    if (!stockDoc.exists) {
+      return null;
+    }
+
+    const data = stockDoc.data() || {};
+
+    return data.status === "unavailable" ? item : null;
+  }));
+
+  return checks.filter(Boolean);
+}
+
 function getCheckoutDetails(body, profile) {
   const fulfillmentMethod = cleanFulfillmentMethod(body.fulfillmentMethod);
   const usesDelivery = fulfillmentMethod === "delivery";
@@ -345,6 +372,17 @@ async function handlePost(req, res, uid) {
 
   if (!cartItems.length) {
     return res.status(400).json({ error: "Your cart is empty." });
+  }
+
+  const unavailableItems = await findUnavailableCartItems(cartItems);
+
+  if (unavailableItems.length) {
+    return res.status(409).json({
+      error: "One or more items in your cart are currently unavailable: " + unavailableItems.map(function (item) {
+        return item.name || "Product";
+      }).join(", "),
+      unavailableItems
+    });
   }
 
   if (!details.fullName || !details.email || !details.phone) {
