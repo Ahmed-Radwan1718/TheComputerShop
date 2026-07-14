@@ -4805,23 +4805,35 @@ body.nav-menu-open {
   width: 44px;
   height: 44px;
   margin: 0;
-  padding: 0 0 3px;
+  padding: 0;
   border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 999px;
   background: rgba(0, 0, 0, 0.42);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  color: white;
+  color: transparent;
   font-family: inherit;
-  font-size: 34px;
+  font-size: 0;
   font-weight: 300;
-  line-height: 1;
+  line-height: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transform: translateY(-50%);
   transition: opacity 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.product-carousel-arrow::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 11px;
+  height: 11px;
+  border-right: 3px solid white;
+  border-bottom: 3px solid white;
+  transform-origin: center;
 }
 
 .product-carousel-arrow:hover {
@@ -4833,8 +4845,16 @@ body.nav-menu-open {
   left: 18px;
 }
 
+.product-carousel-arrow-left::before {
+  transform: translate(-38%, -50%) rotate(135deg);
+}
+
 .product-carousel-arrow-right {
   right: 18px;
+}
+
+.product-carousel-arrow-right::before {
+  transform: translate(-62%, -50%) rotate(-45deg);
 }
 
 .product-carousel-main {
