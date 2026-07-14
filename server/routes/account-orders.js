@@ -50,41 +50,125 @@ function serializeOrder(orderDoc) {
   };
 }
 
+const USER_CANCELABLE_ORDER_STATUSES = ["submitted", "reviewing", "quoted", "awaiting_payment", "confirmed"];
+
+function cleanString(value, maxLength) {
+  return String(value || "").trim().slice(0, maxLength);
+}
+
+function cleanOrderId(value) {
+  const orderId = cleanString(value, 120);
+
+  if (!orderId || orderId.includes("/") || !/^[a-zA-Z0-9_-]+$/.test(orderId)) {
+    return "";
+  }
+
+  return orderId;
+}
+
 function getOrderTime(order) {
   const date = new Date(order.updatedAt || order.createdAt || 0);
   return Number.isNaN(date.getTime()) ? 0 : date.getTime();
 }
 
-module.exports = async function handler(req, res) {
-  try {
-    if (req.method !== "GET") {
-      return res.status(405).json({ error: "Method not allowed" });
+function createHttpError(statusCode, message) {
+  const error = new Error(message);
+  error.statusCode = statusCode;
+  return error;
+}
+
+function canUserCancelOrderStatus(status) {
+  return USER_CANCELABLE_ORDER_STATUSES.includes(status || "submitted");
+}
+
+async function handleGetOrders(decodedUser, res) {
+  const snapshot = await admin.firestore()
+    .collection("orders")
+    .where("userId", "==", decodedUser.uid)
+    .limit(100)
+    .get();
+
+  const orders = snapshot.docs
+    .map(serializeOrder)
+    .sort(function (a, b) {
+      return getOrderTime(b) - getOrderTime(a);
+    });
+
+  return res.status(200).json({
+    success: true,
+    orders
+  });
+}
+
+async function handleCancelOrder(req, res, decodedUser) {
+  const action = cleanString((req.body || {}).action, 40);
+  const orderId = cleanOrderId((req.body || {}).orderId);
+
+  if (action !== "cancel-order") {
+    return res.status(400).json({ error: "Invalid order action." });
+  }
+
+  if (!orderId) {
+    return res.status(400).json({ error: "Missing order id." });
+  }
+
+  const db = admin.firestore();
+  const orderRef = db.collection("orders").doc(orderId);
+
+  await db.runTransaction(async function (transaction) {
+    const orderDoc = await transaction.get(orderRef);
+
+    if (!orderDoc.exists) {
+      throw createHttpError(404, "Order not found.");
     }
 
+    const data = orderDoc.data() || {};
+
+    if (data.userId !== decodedUser.uid) {
+      throw createHttpError(404, "Order not found.");
+    }
+
+    const currentStatus = data.status === "completed" ? "fulfilled" : (data.status || "submitted");
+
+    if (!canUserCancelOrderStatus(currentStatus)) {
+      throw createHttpError(409, "This order can no longer be canceled.");
+    }
+
+    transaction.update(orderRef, {
+      status: "canceled",
+      canceledBy: decodedUser.uid,
+      canceledAt: admin.firestore.FieldValue.serverTimestamp(),
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    });
+  });
+
+  const updatedOrderDoc = await orderRef.get();
+
+  return res.status(200).json({
+    success: true,
+    order: serializeOrder(updatedOrderDoc)
+  });
+}
+
+module.exports = async function handler(req, res) {
+  try {
     const decodedUser = await getUserFromRequest(req, {
       checkRevoked: true,
       requireCompletedTwoFactor: true
     });
 
-    const snapshot = await admin.firestore()
-      .collection("orders")
-      .where("userId", "==", decodedUser.uid)
-      .limit(100)
-      .get();
+    if (req.method === "GET") {
+      return await handleGetOrders(decodedUser, res);
+    }
 
-    const orders = snapshot.docs
-      .map(serializeOrder)
-      .sort(function (a, b) {
-        return getOrderTime(b) - getOrderTime(a);
-      });
+    if (req.method === "POST") {
+      return await handleCancelOrder(req, res, decodedUser);
+    }
 
-    return res.status(200).json({
-      success: true,
-      orders
-    });
+    return res.status(405).json({ error: "Method not allowed" });
   } catch (error) {
     return res.status(error.statusCode || 500).json({
-      error: error.message || "Could not load order history."
+      error: error.message || (req.method === "GET" ? "Could not load order history." : "Could not update order.")
     });
   }
 };
