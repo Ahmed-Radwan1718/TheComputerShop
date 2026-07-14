@@ -1,8 +1,8 @@
 const admin = require("../_lib/firebaseAdmin");
-const { Resend } = require("resend");
 
 const {
-  getUserFromRequest
+  getUserFromRequest,
+  signInWithCustomToken
 } = require("../_lib/securityHelpers");
 
 const {
@@ -12,7 +12,55 @@ const {
   ONE_HOUR_MS
 } = require("../_lib/rateLimitHelpers");
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+function getFirebaseWebApiKey() {
+  const apiKey = String(process.env.FIREBASE_WEB_API_KEY || "").trim();
+
+  if (!apiKey) {
+    const error = new Error("Firebase email verification is not configured.");
+    error.statusCode = 500;
+    throw error;
+  }
+
+  return apiKey;
+}
+
+async function sendFirebaseEmailVerification(uid) {
+  const apiKey = getFirebaseWebApiKey();
+  const customToken = await admin.auth().createCustomToken(uid);
+  const signInData = await signInWithCustomToken(customToken);
+  const idToken = signInData && signInData.idToken ? signInData.idToken : "";
+
+  if (!idToken) {
+    const error = new Error("Could not create email verification session.");
+    error.statusCode = 500;
+    throw error;
+  }
+
+  const response = await fetch(
+    "https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=" + encodeURIComponent(apiKey),
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        requestType: "VERIFY_EMAIL",
+        idToken
+      })
+    }
+  );
+
+  const data = await response.json().catch(function () {
+    return {};
+  });
+
+  if (!response.ok) {
+    const error = new Error("Could not send verification email.");
+    error.statusCode = response.status || 500;
+    error.firebaseErrorCode = data && data.error && data.error.message ? data.error.message : "";
+    throw error;
+  }
+}
 
 module.exports = async function handler(req, res) {
   try {
@@ -62,33 +110,13 @@ module.exports = async function handler(req, res) {
       errorMessage: "Too many verification emails requested."
     });
 
-    const verificationLink = await admin.auth().generateEmailVerificationLink(email);
+    await sendFirebaseEmailVerification(decodedUser.uid);
 
     await sendRef.set({
       email,
       lastSentAt: admin.firestore.FieldValue.serverTimestamp(),
       updatedAt: admin.firestore.FieldValue.serverTimestamp()
     }, { merge: true });
-
-    await resend.emails.send({
-      from: process.env.SECURITY_EMAIL_FROM,
-      to: email,
-      subject: "Verify your Computer Shop email",
-      html: `
-        <div style="font-family: Arial, sans-serif; line-height: 1.6;">
-          <h2>Verify your email address</h2>
-          <p>Click the button below to verify your Computer Shop account email.</p>
-          <p>
-            <a href="${verificationLink}" style="display: inline-block; padding: 12px 18px; background: #2563eb; color: #ffffff; text-decoration: none; border-radius: 8px;">
-              Verify Email
-            </a>
-          </p>
-          <p>If the button does not work, copy and paste this link into your browser:</p>
-          <p style="word-break: break-all;">${verificationLink}</p>
-          <p>If you did not request this, you can ignore this email.</p>
-        </div>
-      `
-    });
 
     return res.status(200).json({
       success: true,
