@@ -419,7 +419,7 @@
   </nav>
 
   <div class="site-header-actions">
-    <a href="cart.html" class="site-header-cart" aria-label="Cart">
+    <a href="cart.html" class="site-header-cart" aria-label="Cart" data-cart-animation-target>
       <img src="cart-icon.png" alt="Cart">
       <span class="nav-cart-count">0</span>
     </a>
