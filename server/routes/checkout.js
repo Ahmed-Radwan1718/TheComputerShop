@@ -1,4 +1,6 @@
 const admin = require("../_lib/firebaseAdmin");
+const { Resend } = require("resend");
+const adminSupportTickets = require("./admin-support-tickets");
 
 const {
   getUserFromRequest
@@ -10,6 +12,9 @@ const {
   THIRTY_MINUTES_MS,
   ONE_HOUR_MS
 } = require("../_lib/rateLimitHelpers");
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+const ADMIN_EMAILS = Array.isArray(adminSupportTickets.ADMIN_EMAILS) ? adminSupportTickets.ADMIN_EMAILS : [];
 
 const VALID_ADDRESS_TYPES = ["apartment", "house", "office"];
 const VALID_FULFILLMENT_METHODS = ["delivery", "pickup"];
@@ -212,6 +217,98 @@ function getCheckoutDetails(body, profile) {
   };
 }
 
+function escapeHtml(value) {
+  return String(value || "").replace(/[&<>"']/g, function (character) {
+    switch (character) {
+      case "&":
+        return "&amp;";
+      case "<":
+        return "&lt;";
+      case ">":
+        return "&gt;";
+      case "\"":
+        return "&quot;";
+      case "'":
+        return "&#39;";
+      default:
+        return character;
+    }
+  });
+}
+
+function getOrderAddressText(orderData) {
+  if (orderData.fulfillmentMethod === "pickup") {
+    return "Pickup";
+  }
+
+  const parts = [
+    orderData.companyName,
+    orderData.officeName,
+    orderData.buildingName,
+    orderData.houseNumber ? "House " + orderData.houseNumber : "",
+    orderData.apartmentNumber ? "Apartment " + orderData.apartmentNumber : "",
+    orderData.floorNumber ? "Floor " + orderData.floorNumber : "",
+    orderData.streetName,
+    orderData.additionalInfo
+  ].filter(Boolean);
+
+  return parts.length ? parts.join(", ") : "No delivery address saved";
+}
+
+function getOrderItemsHtml(items) {
+  return (Array.isArray(items) ? items : []).map(function (item) {
+    const quantity = Math.max(1, Math.min(99, Number(item.quantity || 1)));
+    const lineTotalText = item.lineTotalText || formatMoney(item.lineTotalValue || (Number(item.priceValue || 0) * quantity));
+
+    return `
+      <li style="margin-bottom: 10px;">
+        <strong>${escapeHtml(item.name || "Product")}</strong><br>
+        Quantity: ${escapeHtml(quantity)}<br>
+        Total: ${escapeHtml(lineTotalText)}
+      </li>
+    `;
+  }).join("");
+}
+
+async function sendAdminOrderNotification(orderId, orderNumber, orderData) {
+  const fromEmail = process.env.ORDER_EMAIL_FROM || process.env.SECURITY_EMAIL_FROM;
+
+  if (!process.env.RESEND_API_KEY || !fromEmail || !ADMIN_EMAILS.length) {
+    return;
+  }
+
+  const orderLabel = orderNumber || orderId;
+  const itemsHtml = getOrderItemsHtml(orderData.items);
+  const addressText = getOrderAddressText(orderData);
+
+  await resend.emails.send({
+    from: fromEmail,
+    to: ADMIN_EMAILS,
+    subject: "New order " + orderLabel + " - The Computer Shop",
+    html: `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+        <h2>New order submitted</h2>
+        <p>A customer submitted a new order request.</p>
+        <p><strong>Order:</strong> ${escapeHtml(orderLabel)}</p>
+        <p><strong>Customer:</strong> ${escapeHtml(orderData.userName || "Customer")}</p>
+        <p><strong>Email:</strong> ${escapeHtml(orderData.userEmail || "")}</p>
+        <p><strong>Phone:</strong> ${escapeHtml(orderData.phone || "")}</p>
+        <p><strong>Payment:</strong> ${escapeHtml(orderData.paymentMethod || "")}</p>
+        <p><strong>Fulfillment:</strong> ${escapeHtml(orderData.fulfillmentMethod || "")}</p>
+        <p><strong>Total:</strong> ${escapeHtml(orderData.totalText || formatMoney(orderData.totalValue))}</p>
+        <p><strong>Address:</strong> ${escapeHtml(addressText)}</p>
+        ${orderData.locationMapUrl ? `<p><a href="${escapeHtml(orderData.locationMapUrl)}">Open map location</a></p>` : ""}
+        ${orderData.customerNote ? `<p><strong>Customer note:</strong> ${escapeHtml(orderData.customerNote)}</p>` : ""}
+        <h3>Items</h3>
+        <ul style="padding-left: 20px;">
+          ${itemsHtml || "<li>No item details saved.</li>"}
+        </ul>
+        <p>Open the admin dashboard to review and update this order.</p>
+      </div>
+    `
+  });
+}
+
 async function handleGet(req, res, uid) {
   const profile = await getProfile(uid);
   const cartItems = await getCartItems(uid);
@@ -320,6 +417,10 @@ async function handlePost(req, res, uid) {
   });
 
   await batch.commit();
+
+  await sendAdminOrderNotification(orderRef.id, orderNumber, orderData).catch(function (error) {
+    console.error("Could not send admin order notification email.", error);
+  });
 
   return res.status(200).json({
     success: true,
