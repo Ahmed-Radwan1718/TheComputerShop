@@ -796,6 +796,7 @@ const productStockScript = document.createElement("script");
 productStockScript.textContent = `
   (function () {
     const stockEndpoint = "/api/admin-support-tickets?type=stock-public";
+    let stockRefreshInFlight = false;
 
     function getProductIdFromHref(href) {
       try {
@@ -856,6 +857,23 @@ productStockScript.textContent = `
       });
     }
 
+    function setStockDisabled(element, disabled) {
+      if (!element) {
+        return;
+      }
+
+      if (disabled) {
+        element.dataset.tcsStockDisabled = "1";
+        element.disabled = true;
+        return;
+      }
+
+      if (element.dataset.tcsStockDisabled === "1") {
+        element.disabled = false;
+        delete element.dataset.tcsStockDisabled;
+      }
+    }
+
     function applyProductDetailStock(stockMap) {
       const productId = getProductIdFromHref(window.location.href);
 
@@ -883,29 +901,34 @@ productStockScript.textContent = `
       const quantityInput = document.getElementById("product-quantity");
       const decreaseButton = document.getElementById("decrease-quantity");
       const increaseButton = document.getElementById("increase-quantity");
+      const isUnavailable = status === "unavailable";
 
-      if (status === "unavailable") {
-        if (addToCartButton) {
+      if (addToCartButton) {
+        if (isUnavailable) {
+          addToCartButton.dataset.tcsStockDisabled = "1";
           addToCartButton.disabled = true;
           addToCartButton.textContent = "Unavailable";
+        } else if (addToCartButton.dataset.tcsStockDisabled === "1") {
+          addToCartButton.disabled = false;
+          addToCartButton.textContent = "Add to Cart";
+          delete addToCartButton.dataset.tcsStockDisabled;
         }
-
-        [quantityInput, decreaseButton, increaseButton].forEach(function (element) {
-          if (element) {
-            element.disabled = true;
-          }
-        });
       }
+
+      [quantityInput, decreaseButton, increaseButton].forEach(function (element) {
+        setStockDisabled(element, isUnavailable);
+      });
     }
 
     async function loadProductStock() {
       try {
-        const response = await fetch(stockEndpoint, {
+        const response = await fetch(stockEndpoint + "&_=" + Date.now(), {
           method: "GET",
           credentials: "same-origin",
           cache: "no-store",
           headers: {
-            "Accept": "application/json"
+            "Accept": "application/json",
+            "Cache-Control": "no-cache"
           }
         });
 
@@ -924,18 +947,45 @@ productStockScript.textContent = `
     }
 
     async function applyStockState() {
+      if (stockRefreshInFlight) {
+        return;
+      }
+
+      stockRefreshInFlight = true;
       ensureStockStyles();
 
-      const stockMap = await loadProductStock();
+      try {
+        const stockMap = await loadProductStock();
 
-      applyProductCardStock(stockMap);
-      applyProductDetailStock(stockMap);
+        applyProductCardStock(stockMap);
+        applyProductDetailStock(stockMap);
+      } finally {
+        stockRefreshInFlight = false;
+      }
+    }
+
+    function startProductStockLiveUpdates() {
+      applyStockState();
+
+      window.setInterval(function () {
+        if (document.visibilityState !== "hidden") {
+          applyStockState();
+        }
+      }, 2000);
+
+      window.addEventListener("focus", applyStockState);
+
+      document.addEventListener("visibilitychange", function () {
+        if (document.visibilityState !== "hidden") {
+          applyStockState();
+        }
+      });
     }
 
     if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", applyStockState);
+      document.addEventListener("DOMContentLoaded", startProductStockLiveUpdates);
     } else {
-      applyStockState();
+      startProductStockLiveUpdates();
     }
   })();
 `;
