@@ -1282,6 +1282,501 @@
     adminSupportEmpty.hidden = false;
     showMessage(adminSupportMessage, error.message || "Could not load tickets.", "error");
   });
+
+  (function () {
+    const productStockPages = [
+      { url: "graphics-cards.html", label: "Graphics Cards" },
+      { url: "motherboards.html", label: "Motherboards" },
+      { url: "cpus.html", label: "CPUs" },
+      { url: "memory.html", label: "Memory" },
+      { url: "storage.html", label: "Storage" },
+      { url: "power-supplies.html", label: "Power Supplies" },
+      { url: "cpu-coolers.html", label: "CPU Coolers" },
+      { url: "cases.html", label: "Cases" },
+      { url: "monitors.html", label: "Monitors" },
+      { url: "peripherals.html", label: "Peripherals" },
+      { url: "accessories.html", label: "Accessories" },
+      { url: "charging-and-power.html", label: "Charging and Power" },
+      { url: "signature-builds.html", label: "Signature Builds" }
+    ];
+
+    let productStockCatalog = [];
+    let productStockRecords = [];
+    let activeProductStockFilter = "all";
+    let productStockLoaded = false;
+
+    function ensureProductStockDashboard() {
+      if (!document.getElementById("admin-product-stock-tab")) {
+        const tabButton = document.createElement("button");
+        tabButton.className = "account-support-filter";
+        tabButton.type = "button";
+        tabButton.id = "admin-product-stock-tab";
+        tabButton.dataset.adminPanel = "product-stock";
+        tabButton.textContent = "Product Stock";
+        adminDashboardTabs.appendChild(tabButton);
+      }
+
+      if (!document.getElementById("admin-product-stock-panel")) {
+        adminSupportPanel.insertAdjacentHTML("afterend", `
+          <div class="admin-dashboard-panel" id="admin-product-stock-panel" hidden>
+            <div class="account-form-grid">
+              <div class="account-field">
+                <label for="admin-product-stock-search">Search Products</label>
+                <input type="search" id="admin-product-stock-search" placeholder="Search product name, category, or product id">
+              </div>
+            </div>
+
+            <div class="account-support-filters" id="admin-product-stock-filters">
+              <button class="account-support-filter active" type="button" data-admin-product-stock-filter="all">All</button>
+              <button class="account-support-filter" type="button" data-admin-product-stock-filter="in_stock">In Stock</button>
+              <button class="account-support-filter" type="button" data-admin-product-stock-filter="unavailable">Unavailable</button>
+            </div>
+
+            <div class="account-support-loading" id="admin-product-stock-loading">
+              Loading product stock...
+            </div>
+
+            <div class="account-support-list" id="admin-product-stock-list"></div>
+
+            <div class="account-empty-state" id="admin-product-stock-empty" hidden>
+              <h3>No products found</h3>
+              <p>Products from your category pages will appear here.</p>
+            </div>
+
+            <p class="account-message" id="admin-product-stock-message" aria-live="polite"></p>
+          </div>
+        `);
+      }
+
+      if (!document.getElementById("admin-product-stock-styles")) {
+        const style = document.createElement("style");
+        style.id = "admin-product-stock-styles";
+        style.textContent = `
+          .admin-product-stock-card .account-support-ticket-top {
+            align-items: flex-start;
+          }
+
+          .admin-product-stock-product {
+            display: grid;
+            grid-template-columns: 72px minmax(0, 1fr);
+            gap: 16px;
+            align-items: center;
+          }
+
+          .admin-product-stock-image {
+            width: 72px;
+            aspect-ratio: 1;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.06);
+            object-fit: cover;
+          }
+
+          .admin-product-stock-actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+          }
+
+          .admin-product-stock-actions button.active {
+            border-color: rgba(126, 224, 161, 0.46);
+            background: rgba(126, 224, 161, 0.14);
+            color: #9ff0b8;
+          }
+
+          .admin-product-stock-actions button[data-product-stock-status="unavailable"].active {
+            border-color: rgba(255, 156, 156, 0.5);
+            background: rgba(255, 156, 156, 0.14);
+            color: #ffb8b8;
+          }
+
+          .account-support-ticket-status.in_stock {
+            border-color: rgba(126, 224, 161, 0.32);
+            background: rgba(126, 224, 161, 0.12);
+            color: #9ff0b8;
+          }
+
+          .account-support-ticket-status.unavailable {
+            border-color: rgba(255, 156, 156, 0.42);
+            background: rgba(255, 156, 156, 0.12);
+            color: #ffb8b8;
+          }
+
+          @media (max-width: 640px) {
+            .admin-product-stock-product {
+              grid-template-columns: 1fr;
+            }
+
+            .admin-product-stock-image {
+              width: 100%;
+              max-width: 160px;
+            }
+          }
+        `;
+        document.head.appendChild(style);
+      }
+    }
+
+    function getProductIdFromHref(href) {
+      try {
+        return new URL(href, window.location.href).searchParams.get("product") || "";
+      } catch (error) {
+        return "";
+      }
+    }
+
+    function getProductStockStatusLabel(status) {
+      return status === "unavailable" ? "Unavailable" : "In Stock";
+    }
+
+    function getProductStockRecord(productId) {
+      return productStockRecords.find(function (record) {
+        return record.productId === productId || record.id === productId;
+      }) || null;
+    }
+
+    function getProductStockStatus(productId) {
+      const record = getProductStockRecord(productId);
+      return record && record.status === "unavailable" ? "unavailable" : "in_stock";
+    }
+
+    function getProductStockSearchQuery() {
+      const searchInput = document.getElementById("admin-product-stock-search");
+      return searchInput ? searchInput.value.trim().toLowerCase() : "";
+    }
+
+    function productMatchesStockSearch(product) {
+      const query = getProductStockSearchQuery();
+
+      if (!query) {
+        return true;
+      }
+
+      return [
+        product.id,
+        product.name,
+        product.specsLine,
+        product.sourcePage
+      ].join(" ").toLowerCase().includes(query);
+    }
+
+    function productMatchesStockFilter(product) {
+      const status = getProductStockStatus(product.id);
+      return activeProductStockFilter === "all" || status === activeProductStockFilter;
+    }
+
+    function readProductCard(card, sourcePage) {
+      const href = card.getAttribute("href") || "";
+      const productId = getProductIdFromHref(href);
+      const title = card.querySelector("h3");
+      const specs = card.querySelector("p");
+      const image = card.querySelector("img");
+
+      if (!productId || !title) {
+        return null;
+      }
+
+      return {
+        id: productId,
+        name: title.textContent.trim(),
+        specsLine: specs ? specs.textContent.trim() : "",
+        image: image ? new URL(image.getAttribute("src") || image.src, window.location.href).href : "",
+        url: href,
+        sourcePage
+      };
+    }
+
+    async function loadProductStockCatalog() {
+      const productGroups = await Promise.all(productStockPages.map(async function (page) {
+        try {
+          const response = await fetch(page.url, {
+            method: "GET",
+            cache: "no-store",
+            headers: {
+              "Accept": "text/html"
+            }
+          });
+
+          if (!response.ok) {
+            return [];
+          }
+
+          const html = await response.text();
+          const doc = new DOMParser().parseFromString(html, "text/html");
+
+          return Array.from(doc.querySelectorAll("a.product-card-link[href*='product='], a.signature-build-card[href*='product='], a.tcs-home-component-card[href*='product='], a.tcs-home-build-card[href*='product=']"))
+            .map(function (card) {
+              return readProductCard(card, page.label);
+            })
+            .filter(Boolean);
+        } catch (error) {
+          return [];
+        }
+      }));
+
+      const productsById = {};
+
+      productGroups.flat().forEach(function (product) {
+        if (!productsById[product.id]) {
+          productsById[product.id] = product;
+        }
+      });
+
+      productStockCatalog = Object.values(productsById).sort(function (a, b) {
+        return a.name.localeCompare(b.name);
+      });
+    }
+
+    async function loadProductStockRecords() {
+      const response = await fetch("/api/admin-support-tickets?type=product-stock", {
+        method: "GET",
+        credentials: "same-origin",
+        cache: "no-store",
+        headers: {
+          "Accept": "application/json"
+        }
+      });
+
+      const data = await response.json().catch(function () {
+        return {};
+      });
+
+      if (response.status === 401) {
+        localStorage.setItem("tcs-login-redirect", "admin-support.html");
+        sessionStorage.removeItem("tcs-login-2fa-pending");
+        window.location.href = "login.html";
+        throw new Error("Redirecting to login...");
+      }
+
+      if (!response.ok || !Array.isArray(data.productStock)) {
+        throw new Error(data.error || "Could not load product stock.");
+      }
+
+      productStockRecords = data.productStock;
+    }
+
+    async function updateProductStock(productId, status) {
+      const response = await fetch("/api/admin-support-tickets", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({
+          action: "product-stock-update",
+          productId,
+          status
+        })
+      });
+
+      const data = await response.json().catch(function () {
+        return {};
+      });
+
+      if (!response.ok || !data.productStock) {
+        throw new Error(data.error || "Could not update product stock.");
+      }
+
+      return data.productStock;
+    }
+
+    function replaceProductStockRecord(updatedRecord) {
+      productStockRecords = productStockRecords.filter(function (record) {
+        return record.productId !== updatedRecord.productId && record.id !== updatedRecord.id;
+      });
+
+      productStockRecords.push(updatedRecord);
+      renderProductStock();
+    }
+
+    function renderProductStock() {
+      const loading = document.getElementById("admin-product-stock-loading");
+      const list = document.getElementById("admin-product-stock-list");
+      const empty = document.getElementById("admin-product-stock-empty");
+
+      if (!loading || !list || !empty) {
+        return;
+      }
+
+      loading.hidden = true;
+
+      const visibleProducts = productStockCatalog.filter(function (product) {
+        return productMatchesStockSearch(product) && productMatchesStockFilter(product);
+      });
+
+      if (!visibleProducts.length) {
+        list.innerHTML = "";
+        empty.hidden = false;
+        return;
+      }
+
+      empty.hidden = true;
+
+      list.innerHTML = visibleProducts.map(function (product) {
+        const status = getProductStockStatus(product.id);
+        const record = getProductStockRecord(product.id);
+        const updatedAtText = record && record.updatedAt ? "Updated " + getAdminDate(record.updatedAt) : "Default status";
+
+        return `
+          <article class="account-support-ticket-card admin-product-stock-card" data-admin-product-stock-id="${escapeHtml(product.id)}">
+            <div class="account-support-ticket-top">
+              <div class="admin-product-stock-product">
+                ${product.image ? `<img class="admin-product-stock-image" src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}" loading="lazy" decoding="async">` : ""}
+
+                <div>
+                  <span class="account-support-ticket-category">${escapeHtml(product.sourcePage || "Product")}</span>
+                  <h3>${escapeHtml(product.name)}</h3>
+                </div>
+              </div>
+
+              <span class="account-support-ticket-status ${escapeHtml(status)}">
+                ${escapeHtml(getProductStockStatusLabel(status))}
+              </span>
+            </div>
+
+            <p>${escapeHtml(product.specsLine || product.id)}</p>
+
+            <div class="account-support-ticket-meta">
+              <span>${escapeHtml(product.id)}</span>
+              <span>${escapeHtml(updatedAtText)}</span>
+            </div>
+
+            <div class="admin-product-stock-actions">
+              <button class="account-support-ticket-button ${status === "in_stock" ? "active" : ""}" type="button" data-product-stock-status="in_stock">
+                In Stock
+              </button>
+
+              <button class="account-danger-button ${status === "unavailable" ? "active" : ""}" type="button" data-product-stock-status="unavailable">
+                Unavailable
+              </button>
+
+              <a class="account-support-ticket-button" href="${escapeHtml(product.url)}" target="_blank" rel="noopener">
+                Open Product
+              </a>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    async function loadAdminProductStock() {
+      const loading = document.getElementById("admin-product-stock-loading");
+      const empty = document.getElementById("admin-product-stock-empty");
+      const list = document.getElementById("admin-product-stock-list");
+      const message = document.getElementById("admin-product-stock-message");
+
+      if (loading) {
+        loading.hidden = false;
+      }
+
+      if (empty) {
+        empty.hidden = true;
+      }
+
+      if (list) {
+        list.innerHTML = "";
+      }
+
+      if (message) {
+        showMessage(message, "", "");
+      }
+
+      await Promise.all([
+        loadProductStockCatalog(),
+        loadProductStockRecords()
+      ]);
+
+      productStockLoaded = true;
+      renderProductStock();
+    }
+
+    ensureProductStockDashboard();
+
+    const adminProductStockPanel = document.getElementById("admin-product-stock-panel");
+    const adminProductStockFilters = document.getElementById("admin-product-stock-filters");
+    const adminProductStockSearch = document.getElementById("admin-product-stock-search");
+    const adminProductStockList = document.getElementById("admin-product-stock-list");
+    const adminProductStockMessage = document.getElementById("admin-product-stock-message");
+
+    adminDashboardTabs.addEventListener("click", function (event) {
+      const panelButton = event.target.closest("[data-admin-panel]");
+
+      if (!panelButton || !adminProductStockPanel) {
+        return;
+      }
+
+      const shouldShowProductStock = panelButton.dataset.adminPanel === "product-stock";
+      adminProductStockPanel.hidden = !shouldShowProductStock;
+
+      if (shouldShowProductStock && !productStockLoaded) {
+        loadAdminProductStock().catch(function (error) {
+          const loading = document.getElementById("admin-product-stock-loading");
+          const empty = document.getElementById("admin-product-stock-empty");
+
+          if (loading) {
+            loading.hidden = true;
+          }
+
+          if (empty) {
+            empty.hidden = false;
+          }
+
+          showMessage(adminProductStockMessage, error.message || "Could not load product stock.", "error");
+        });
+      }
+    });
+
+    adminProductStockFilters.addEventListener("click", function (event) {
+      const filterButton = event.target.closest("[data-admin-product-stock-filter]");
+
+      if (!filterButton) {
+        return;
+      }
+
+      activeProductStockFilter = filterButton.dataset.adminProductStockFilter;
+
+      adminProductStockFilters.querySelectorAll("[data-admin-product-stock-filter]").forEach(function (button) {
+        button.classList.toggle("active", button === filterButton);
+      });
+
+      renderProductStock();
+    });
+
+    adminProductStockSearch.addEventListener("input", renderProductStock);
+
+    adminProductStockList.addEventListener("click", async function (event) {
+      const statusButton = event.target.closest("[data-product-stock-status]");
+
+      if (!statusButton) {
+        return;
+      }
+
+      const productCard = statusButton.closest("[data-admin-product-stock-id]");
+      const productId = productCard ? productCard.dataset.adminProductStockId : "";
+      const status = statusButton.dataset.productStockStatus;
+
+      if (!productId || !status) {
+        return;
+      }
+
+      productCard.querySelectorAll("[data-product-stock-status]").forEach(function (button) {
+        button.disabled = true;
+      });
+
+      statusButton.textContent = "Saving...";
+      showMessage(adminProductStockMessage, "", "");
+
+      try {
+        const updatedRecord = await updateProductStock(productId, status);
+        replaceProductStockRecord(updatedRecord);
+        showMessage(adminProductStockMessage, "Product stock updated.", "success");
+      } catch (error) {
+        showMessage(adminProductStockMessage, error.message || "Could not update product stock.", "error");
+        renderProductStock();
+      }
+    });
+  })();
 </script>
 
 </body>
