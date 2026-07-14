@@ -432,3 +432,5 @@ module.exports = async function handler(req, res) {
     });
   }
 };
+
+module.exports.ADMIN_EMAILS = ADMIN_EMAILS;
