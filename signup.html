@@ -415,7 +415,7 @@
     });
   }
 
-  async function submitSignupRequest(verificationCode) {
+  async function submitSignupRequest() {
     const fullName = document.getElementById("signup-name").value.trim();
     const phone = document.getElementById("signup-phone").value.trim();
     const email = document.getElementById("signup-email").value.trim();
@@ -433,8 +433,7 @@
         phone: phone,
         email: email,
         password: password,
-        confirmPassword: confirmPassword,
-        verificationCode: verificationCode || ""
+        confirmPassword: confirmPassword
       })
     });
 
@@ -487,23 +486,17 @@
     }
 
     signupButton.disabled = true;
-    signupButton.textContent = "Sending Code...";
+    signupButton.textContent = "Creating Account...";
     showMessage("", "");
 
     try {
-      const data = await submitSignupRequest("");
+      const data = await submitSignupRequest();
 
-      if (data.requiresEmailVerification) {
-        openSignupVerificationPanel(email);
-        showSignupVerificationMessage(data.message || "Enter the code from your email to finish creating your account.", "success");
-        return;
-      }
-
-      showMessage("Account created successfully.", "success");
+      showMessage(data.message || "Account created successfully. Check your inbox to verify your email.", "success");
 
       setTimeout(function () {
         window.location.href = "accounts.html";
-      }, 800);
+      }, 1000);
     } catch (error) {
       showMessage(error.message || "Something went wrong. Please try again.", "error");
     } finally {
