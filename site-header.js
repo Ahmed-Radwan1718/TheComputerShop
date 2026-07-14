@@ -834,15 +834,24 @@ productStockScript.textContent = `
     function setCardStockBadge(card, status) {
       let badge = card.querySelector(".tcs-product-stock-badge");
 
+      if (status !== "unavailable") {
+        if (badge) {
+          badge.remove();
+        }
+
+        card.classList.remove("tcs-product-unavailable");
+        return;
+      }
+
       if (!badge) {
         badge = document.createElement("span");
         badge.className = "tcs-product-stock-badge";
         card.appendChild(badge);
       }
 
-      badge.className = "tcs-product-stock-badge " + status;
-      badge.textContent = status === "unavailable" ? "Unavailable" : "In Stock";
-      card.classList.toggle("tcs-product-unavailable", status === "unavailable");
+      badge.className = "tcs-product-stock-badge unavailable";
+      badge.textContent = "Unavailable";
+      card.classList.add("tcs-product-unavailable");
     }
 
     function applyProductCardStock(stockMap) {
@@ -886,15 +895,21 @@ productStockScript.textContent = `
       const actionGrid = document.querySelector(".product-action-grid");
       let statusElement = document.getElementById("tcs-product-stock-status");
 
-      if (!statusElement && purchasePanel) {
-        statusElement = document.createElement("p");
-        statusElement.id = "tcs-product-stock-status";
-        purchasePanel.insertBefore(statusElement, actionGrid || null);
-      }
+      if (status !== "unavailable") {
+        if (statusElement) {
+          statusElement.remove();
+        }
+      } else {
+        if (!statusElement && purchasePanel) {
+          statusElement = document.createElement("p");
+          statusElement.id = "tcs-product-stock-status";
+          purchasePanel.insertBefore(statusElement, actionGrid || null);
+        }
 
-      if (statusElement) {
-        statusElement.className = "tcs-product-stock-detail " + status;
-        statusElement.textContent = status === "unavailable" ? "Unavailable" : "In Stock";
+        if (statusElement) {
+          statusElement.className = "tcs-product-stock-detail unavailable";
+          statusElement.textContent = "Unavailable";
+        }
       }
 
       const addToCartButton = document.getElementById("add-to-cart-button");
