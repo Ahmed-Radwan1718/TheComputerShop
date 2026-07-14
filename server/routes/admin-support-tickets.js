@@ -259,6 +259,10 @@ async function handleGetProductStock(res) {
 }
 
 async function handleGetPublicStock(res) {
+  res.setHeader("Cache-Control", "no-store, max-age=0");
+  res.setHeader("CDN-Cache-Control", "no-store");
+  res.setHeader("Vercel-CDN-Cache-Control", "no-store");
+
   const productStock = await getProductStockRecords();
   const stock = {};
 
