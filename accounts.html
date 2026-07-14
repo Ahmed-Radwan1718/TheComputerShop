@@ -969,6 +969,12 @@
 
                 <div class="account-order-detail-info" id="account-order-detail-info"></div>
 
+                <div class="account-support-detail-actions" id="account-order-detail-actions" hidden>
+                  <button class="account-danger-button" type="button" id="account-order-cancel-button">
+                    Cancel Order
+                  </button>
+                </div>
+
                 <p class="account-message" id="account-order-detail-message" aria-live="polite"></p>
               </div>
             </div>
@@ -1344,6 +1350,8 @@ const passwordMessage = document.getElementById("password-message");
   const orderDetailTotal = document.getElementById("account-order-detail-total");
   const orderDetailItems = document.getElementById("account-order-detail-items");
   const orderDetailInfo = document.getElementById("account-order-detail-info");
+  const orderDetailActions = document.getElementById("account-order-detail-actions");
+  const orderCancelButton = document.getElementById("account-order-cancel-button");
   const orderDetailMessage = document.getElementById("account-order-detail-message");
 
   const twoFactorAppStatus = document.getElementById("two-factor-app-status");
@@ -3094,6 +3102,83 @@ function getOrderItemSummary(order) {
   return firstNames.join(", ");
 }
 
+function canCancelOrder(order) {
+  const status = String((order && order.status) || "submitted");
+  return ["submitted", "reviewing", "quoted", "awaiting_payment", "confirmed"].includes(status);
+}
+
+async function cancelUserOrder(orderId) {
+  const response = await fetch("/api/account-orders", {
+    method: "POST",
+    credentials: "same-origin",
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    body: JSON.stringify({
+      action: "cancel-order",
+      orderId: orderId
+    })
+  });
+
+  const data = await response.json().catch(function () {
+    return {};
+  });
+
+  if (!response.ok || !data.order) {
+    throw new Error(data.error || "Could not cancel this order.");
+  }
+
+  return data.order;
+}
+
+function replaceOrderHistoryOrder(updatedOrder) {
+  let replaced = false;
+
+  orderHistory = orderHistory.map(function (order) {
+    if (order.id === updatedOrder.id) {
+      replaced = true;
+      return updatedOrder;
+    }
+
+    return order;
+  });
+
+  if (!replaced) {
+    orderHistory = [updatedOrder].concat(orderHistory);
+  }
+}
+
+async function cancelActiveOrder() {
+  const order = getActiveOrder();
+
+  if (!orderCancelButton || !order || !canCancelOrder(order)) {
+    showMessage(orderDetailMessage, "This order can no longer be canceled.", "error");
+    return;
+  }
+
+  const confirmed = window.confirm("Cancel this order request?");
+
+  if (!confirmed) {
+    return;
+  }
+
+  orderCancelButton.disabled = true;
+  orderCancelButton.textContent = "Canceling...";
+  showMessage(orderDetailMessage, "", "");
+
+  try {
+    const updatedOrder = await cancelUserOrder(order.id);
+    replaceOrderHistoryOrder(updatedOrder);
+    renderOrderHistory();
+    renderOrderDetail(updatedOrder);
+    showMessage(orderDetailMessage, "Order canceled.", "success");
+  } catch (error) {
+    renderOrderDetail(getActiveOrder() || order);
+    showMessage(orderDetailMessage, error.message || "Could not cancel this order.", "error");
+  }
+}
+
 function getOrderProgressData(status) {
   const normalizedStatus = status === "completed" ? "fulfilled" : String(status || "submitted");
   const steps = [
@@ -3347,6 +3432,7 @@ function renderOrderDetail(order) {
   const paymentStatus = order.paymentStatus || "not_paid";
   const items = Array.isArray(order.items) ? order.items : [];
   const deliveryParts = getOrderDeliveryText(order);
+  const orderCanBeCanceled = canCancelOrder(order);
 
   orderDetailNumber.textContent = order.orderNumber || "Order Request";
   orderDetailTitle.textContent = "Order Details";
@@ -3354,6 +3440,12 @@ function renderOrderDetail(order) {
   orderDetailStatus.textContent = getOrderStatusLabel(status);
   orderDetailPayment.textContent = getPaymentStatusLabel(paymentStatus);
   orderDetailTotal.textContent = order.totalText || "Final price to be confirmed";
+
+  if (orderDetailActions && orderCancelButton) {
+    orderDetailActions.hidden = !orderCanBeCanceled;
+    orderCancelButton.disabled = !orderCanBeCanceled;
+    orderCancelButton.textContent = "Cancel Order";
+  }
 
   orderDetailItems.innerHTML = items.map(function (item) {
     return `
@@ -3418,6 +3510,16 @@ function openOrderDetail(orderId) {
 function closeOrderDetailModal() {
   orderDetailModal.hidden = true;
   activeOrderId = "";
+
+  if (orderDetailActions) {
+    orderDetailActions.hidden = true;
+  }
+
+  if (orderCancelButton) {
+    orderCancelButton.disabled = false;
+    orderCancelButton.textContent = "Cancel Order";
+  }
+
   showMessage(orderDetailMessage, "", "");
   document.body.classList.remove("account-security-modal-open");
 }
@@ -6904,6 +7006,10 @@ if (!requestedEmail) {
 
       openOrderDetail(orderCard.dataset.orderId);
     });
+  }
+
+  if (orderCancelButton) {
+    orderCancelButton.addEventListener("click", cancelActiveOrder);
   }
 
   if (orderDetailModalBackdrop) {
