@@ -58,6 +58,129 @@
   }
   </script>
 
+  <style>
+.home-page {
+  min-height: 100vh;
+  padding-top: 104px;
+  background:
+    linear-gradient(180deg, rgba(15, 16, 15, 0.24), rgba(42, 43, 42, 0) 320px),
+    #2a2b2a;
+  color: white;
+  overflow: hidden;
+}
+
+.tcs-home-hero {
+  min-height: calc(100vh - 104px);
+  padding: 58px 44px 76px;
+  display: flex;
+  align-items: center;
+}
+
+.tcs-home-hero-inner,
+.tcs-home-paths,
+.tcs-home-categories,
+.tcs-home-builds,
+.tcs-home-process-inner,
+.tcs-home-trust,
+.tcs-home-final {
+  width: min(1280px, calc(100% - 0px));
+  margin: 0 auto;
+}
+
+.tcs-home-hero-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(420px, 1.05fr);
+  gap: 44px;
+  align-items: center;
+}
+
+.tcs-home-hero-copy {
+  max-width: 640px;
+}
+
+.tcs-home-kicker {
+  margin-bottom: 16px;
+  color: rgba(192, 154, 92, 0.84);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.tcs-home-process-copy .tcs-home-kicker {
+  color: rgba(192, 154, 92, 0.84);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.tcs-home-hero-copy h1 {
+  margin-bottom: 22px;
+  color: white;
+  font-size: 76px;
+  font-weight: 700;
+  line-height: 1.08;
+  text-transform: uppercase;
+}
+
+.tcs-home-hero-copy > p:not(.tcs-home-kicker) {
+  max-width: 560px;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 18px;
+  line-height: 1.8;
+}
+
+.tcs-home-hero-actions {
+  margin-top: 34px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.tcs-home-primary-action,
+.tcs-home-primary-action:visited,
+.tcs-home-secondary-action,
+.tcs-home-secondary-action:visited {
+  min-height: 52px;
+  padding: 0 22px;
+  border-radius: 999px;
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 0.22s ease,
+    border-color 0.22s ease,
+    opacity 0.22s ease,
+    transform 0.22s ease;
+}
+
+.tcs-home-primary-action {
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.tcs-home-secondary-action {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(24, 25, 24, 0.55);
+}
+
+.tcs-home-primary-action:hover,
+.tcs-home-secondary-action:hover {
+  border-color: rgba(255, 255, 255, 0.34);
+  background: rgba(255, 255, 255, 0.18);
+  transform: translateY(-1px);
+}
+  </style>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
