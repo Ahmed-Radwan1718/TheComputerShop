@@ -2009,6 +2009,54 @@ body {
   color: #ffffff;
 }
 
+.component-sort-control.sort-is-loading .component-sort-toggle {
+  border-color: rgba(192, 154, 92, 0.68);
+  animation: componentSortPulse 0.72s ease-in-out infinite;
+}
+
+.component-sort-control.sort-is-loading .component-sort-toggle-line {
+  animation: componentSortLineSweep 0.72s ease-in-out infinite;
+}
+
+.component-sort-control.sort-is-loading .component-sort-toggle-line:nth-child(2) {
+  animation-delay: 0.08s;
+}
+
+.component-sort-control.sort-is-loading .component-sort-toggle-line:nth-child(3) {
+  animation-delay: 0.16s;
+}
+
+.signature-builds-grid.sort-is-updating .signature-build-card {
+  opacity: 0.38;
+  transform: translateY(8px) scale(0.985);
+  filter: blur(1px);
+  pointer-events: none;
+}
+
+@keyframes componentSortPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(192, 154, 92, 0);
+  }
+
+  50% {
+    box-shadow: 0 0 0 5px rgba(192, 154, 92, 0.12);
+  }
+}
+
+@keyframes componentSortLineSweep {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: translateX(0);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateX(4px);
+  }
+}
+
 @media (max-width: 560px) {
   .component-controls-row {
     width: 100%;
