@@ -1005,6 +1005,152 @@ productStockScript.textContent = `
   })();
 `;
 
-document.body.appendChild(productStockScript);
+  document.body.appendChild(productStockScript);
+
+  function setupComponentSortControls() {
+    const searchBox = document.querySelector(".component-search-box");
+    const grid = document.querySelector(".signature-builds-grid");
+
+    if (!searchBox || !grid || document.querySelector(".component-sort-control")) {
+      return;
+    }
+
+    const controlsRow = document.createElement("div");
+    controlsRow.className = "component-controls-row";
+    searchBox.parentNode.insertBefore(controlsRow, searchBox);
+    controlsRow.appendChild(searchBox);
+
+    const sortControl = document.createElement("div");
+    sortControl.className = "component-sort-control";
+    sortControl.innerHTML = `
+      <button class="component-sort-toggle" type="button" aria-label="Sort products" aria-expanded="false">
+        <span class="component-sort-toggle-line"></span>
+        <span class="component-sort-toggle-line"></span>
+        <span class="component-sort-toggle-line"></span>
+      </button>
+      <div class="component-sort-menu" hidden>
+        <button class="component-sort-option active" type="button" data-sort="default">Default order</button>
+        <button class="component-sort-option" type="button" data-sort="name-asc">Name A to Z</button>
+        <button class="component-sort-option" type="button" data-sort="name-desc">Name Z to A</button>
+        <button class="component-sort-option" type="button" data-sort="price-asc">Price low to high</button>
+        <button class="component-sort-option" type="button" data-sort="price-desc">Price high to low</button>
+      </div>
+    `;
+    controlsRow.appendChild(sortControl);
+
+    const toggle = sortControl.querySelector(".component-sort-toggle");
+    const menu = sortControl.querySelector(".component-sort-menu");
+    const options = Array.from(sortControl.querySelectorAll(".component-sort-option"));
+    const originalCards = Array.from(grid.querySelectorAll(".signature-build-card"));
+
+    originalCards.forEach(function (card, index) {
+      card.dataset.componentOriginalIndex = String(index);
+    });
+
+    function getCardName(card) {
+      const title = card.querySelector("h3");
+      return title ? title.textContent.trim().toLowerCase() : "";
+    }
+
+    function getCardPrice(card) {
+      const price = card.querySelector(".signature-build-price");
+      const priceText = price ? price.textContent.replace(/,/g, "") : "";
+      const match = priceText.match(/\d+(?:\.\d+)?/);
+
+      if (!match) {
+        return null;
+      }
+
+      const value = Number(match[0]);
+      return Number.isFinite(value) ? value : null;
+    }
+
+    function getOriginalIndex(card) {
+      return Number(card.dataset.componentOriginalIndex || 0);
+    }
+
+    function sortCards(sortType) {
+      const cards = Array.from(grid.querySelectorAll(".signature-build-card"));
+
+      cards.sort(function (firstCard, secondCard) {
+        if (sortType === "name-asc") {
+          return getCardName(firstCard).localeCompare(getCardName(secondCard)) || getOriginalIndex(firstCard) - getOriginalIndex(secondCard);
+        }
+
+        if (sortType === "name-desc") {
+          return getCardName(secondCard).localeCompare(getCardName(firstCard)) || getOriginalIndex(firstCard) - getOriginalIndex(secondCard);
+        }
+
+        if (sortType === "price-asc" || sortType === "price-desc") {
+          const firstPrice = getCardPrice(firstCard);
+          const secondPrice = getCardPrice(secondCard);
+
+          if (firstPrice === null && secondPrice === null) {
+            return getOriginalIndex(firstCard) - getOriginalIndex(secondCard);
+          }
+
+          if (firstPrice === null) {
+            return 1;
+          }
+
+          if (secondPrice === null) {
+            return -1;
+          }
+
+          return sortType === "price-asc"
+            ? firstPrice - secondPrice || getOriginalIndex(firstCard) - getOriginalIndex(secondCard)
+            : secondPrice - firstPrice || getOriginalIndex(firstCard) - getOriginalIndex(secondCard);
+        }
+
+        return getOriginalIndex(firstCard) - getOriginalIndex(secondCard);
+      });
+
+      cards.forEach(function (card) {
+        grid.appendChild(card);
+      });
+    }
+
+    function closeSortMenu() {
+      menu.hidden = true;
+      toggle.setAttribute("aria-expanded", "false");
+    }
+
+    toggle.addEventListener("click", function (event) {
+      event.stopPropagation();
+      const isOpen = !menu.hidden;
+      menu.hidden = isOpen;
+      toggle.setAttribute("aria-expanded", String(!isOpen));
+    });
+
+    options.forEach(function (option) {
+      option.addEventListener("click", function () {
+        options.forEach(function (button) {
+          button.classList.remove("active");
+        });
+
+        option.classList.add("active");
+        sortCards(option.dataset.sort || "default");
+        closeSortMenu();
+      });
+    });
+
+    document.addEventListener("click", function (event) {
+      if (!sortControl.contains(event.target)) {
+        closeSortMenu();
+      }
+    });
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") {
+        closeSortMenu();
+      }
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupComponentSortControls);
+  } else {
+    setupComponentSortControls();
+  }
 
 })();
