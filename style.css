@@ -1878,6 +1878,21 @@ body {
   margin: 22px auto 0;
 }
 
+.component-controls-row {
+  width: min(100%, 620px);
+  margin: 22px auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+.component-controls-row .component-search-box {
+  flex: 1 1 520px;
+  min-width: 0;
+  margin: 0;
+}
+
 .component-search-box input {
   width: 100%;
   min-height: 48px;
@@ -1903,6 +1918,111 @@ body {
   background: rgba(255, 255, 255, 0.095);
   border-color: rgba(192, 154, 92, 0.58);
   box-shadow: 0 0 0 4px rgba(192, 154, 92, 0.1);
+}
+
+.component-sort-control {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.component-sort-toggle {
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.065);
+  color: white;
+  cursor: pointer;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.component-sort-toggle:hover,
+.component-sort-toggle[aria-expanded="true"] {
+  background: rgba(255, 255, 255, 0.095);
+  border-color: rgba(192, 154, 92, 0.58);
+  transform: translateY(-1px);
+}
+
+.component-sort-toggle-line {
+  height: 2px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.82);
+  display: block;
+}
+
+.component-sort-toggle-line:nth-child(1) {
+  width: 22px;
+}
+
+.component-sort-toggle-line:nth-child(2) {
+  width: 16px;
+}
+
+.component-sort-toggle-line:nth-child(3) {
+  width: 10px;
+}
+
+.component-sort-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 30;
+  min-width: 190px;
+  padding: 8px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(24, 25, 24, 0.96);
+  box-shadow: 0 22px 46px rgba(0, 0, 0, 0.34);
+  backdrop-filter: blur(18px);
+}
+
+.component-sort-menu[hidden] {
+  display: none;
+}
+
+.component-sort-option {
+  width: 100%;
+  min-height: 38px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.76);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: left;
+}
+
+.component-sort-option:hover,
+.component-sort-option.active {
+  background: rgba(192, 154, 92, 0.16);
+  color: #ffffff;
+}
+
+@media (max-width: 560px) {
+  .component-controls-row {
+    width: 100%;
+    gap: 10px;
+  }
+
+  .component-sort-toggle {
+    width: 46px;
+    height: 46px;
+  }
+
+  .component-sort-menu {
+    min-width: 180px;
+  }
 }
 
 input[type="search"]::-webkit-search-cancel-button {
