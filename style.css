@@ -1514,32 +1514,6 @@ body {
   }
 }
 
-.signature-page {
-  min-height: 100vh;
-  background: #2a2b2a;
-  padding-top: 104px;
-}
-
-.signature-hero {
-  display: none;
-}
-
-.signature-hero-bg {
-  display: none;
-}
-
-.signature-hero-overlay {
-  display: none;
-}
-
-.signature-hero-content {
-  position: relative;
-  z-index: 2;
-  max-width: 760px;
-  padding: 70px;
-}
-
-.signature-hero-eyebrow,
 .signature-builds-eyebrow {
   margin-bottom: 12px;
   color: rgba(192, 154, 92, 0.84);
@@ -1551,24 +1525,6 @@ body {
 
 .component-page .signature-builds-eyebrow {
   display: none;
-}
-
-.signature-hero-content h1 {
-  max-width: 760px;
-  margin-bottom: 22px;
-  color: white;
-  font-size: 50px;
-  font-weight: 700;
-  line-height: 1.06;
-  text-transform: uppercase;
-}
-
-.signature-hero-content p:last-child {
-  max-width: 650px;
-  color: rgba(255, 255, 255, 0.68);
-  font-size: 18px;
-  font-weight: 400;
-  line-height: 1.75;
 }
 
 .signature-builds-section {
