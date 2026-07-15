@@ -1122,15 +1122,35 @@ productStockScript.textContent = `
       toggle.setAttribute("aria-expanded", String(!isOpen));
     });
 
+    let sortAnimationTimer;
+
     options.forEach(function (option) {
       option.addEventListener("click", function () {
+        const sortType = option.dataset.sort || "default";
+
         options.forEach(function (button) {
           button.classList.remove("active");
         });
 
         option.classList.add("active");
-        sortCards(option.dataset.sort || "default");
         closeSortMenu();
+
+        window.clearTimeout(sortAnimationTimer);
+        sortControl.classList.add("sort-is-loading");
+        grid.classList.add("sort-is-updating");
+        toggle.disabled = true;
+        toggle.setAttribute("aria-busy", "true");
+
+        sortAnimationTimer = window.setTimeout(function () {
+          sortCards(sortType);
+
+          window.setTimeout(function () {
+            sortControl.classList.remove("sort-is-loading");
+            grid.classList.remove("sort-is-updating");
+            toggle.disabled = false;
+            toggle.removeAttribute("aria-busy");
+          }, 180);
+        }, 180);
       });
     });
 
