@@ -4,6 +4,19 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Product - The Computer Shop</title>
+  <meta name="description" content="Explore PC components, gaming hardware, accessories, and custom PC builds from The Computer Shop Egypt." />
+  <link rel="canonical" href="https://the-computer-shop.com/product.html" />
+  <meta property="og:type" content="product" />
+  <meta property="og:site_name" content="The Computer Shop Egypt" />
+  <meta property="og:title" content="Product - The Computer Shop" />
+  <meta property="og:description" content="Explore PC components, gaming hardware, accessories, and custom PC builds from The Computer Shop Egypt." />
+  <meta property="og:url" content="https://the-computer-shop.com/product.html" />
+  <meta property="og:image" content="https://the-computer-shop.com/favicon.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Product - The Computer Shop" />
+  <meta name="twitter:description" content="Explore PC components, gaming hardware, accessories, and custom PC builds from The Computer Shop Egypt." />
+  <meta name="twitter:image" content="https://the-computer-shop.com/favicon.png" />
+  <script type="application/ld+json" id="product-seo-schema">{}</script>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -11807,6 +11820,104 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
 
   let productData = buildProductData(currentProduct);
 
+  function toAbsoluteStoreUrl(value) {
+    try {
+      return new URL(value || "", "https://the-computer-shop.com/").href;
+    } catch (error) {
+      return "https://the-computer-shop.com/";
+    }
+  }
+
+  function trimSeoText(value, maxLength) {
+    const cleanValue = String(value || "").replace(/\s+/g, " ").trim();
+
+    if (cleanValue.length <= maxLength) {
+      return cleanValue;
+    }
+
+    return `${cleanValue.slice(0, maxLength - 3).trim()}...`;
+  }
+
+  function getProductSpecValue(product, label) {
+    const normalizedLabel = String(label || "").toLowerCase();
+    const matchingSpec = getProductSpecs(product).find((spec) => {
+      return String(spec[0] || "").toLowerCase() === normalizedLabel;
+    });
+
+    return matchingSpec ? matchingSpec[1] : "";
+  }
+
+  function updateSeoMetaContent(selector, content) {
+    const element = document.querySelector(selector);
+
+    if (element && content) {
+      element.setAttribute("content", content);
+    }
+  }
+
+  function updateProductSeoMeta(product) {
+    const selectedVariant = getSelectedVariant(product);
+    const seoProductData = buildProductData(product);
+    const seoTitle = `${seoProductData.name} | The Computer Shop Egypt`;
+    const seoDescription = trimSeoText(
+      (selectedVariant && selectedVariant.whoIsThisFor) || product.whoIsThisFor || `${seoProductData.name} from The Computer Shop Egypt. ${seoProductData.specsLine || ""}`,
+      160
+    );
+    const seoUrl = toAbsoluteStoreUrl(product.url || `product.html?product=${product.id || productKey}`);
+    const seoImage = toAbsoluteStoreUrl(seoProductData.image || (getProductImages(product)[0] || "favicon.png"));
+    const brandName = getProductSpecValue(product, "Brand") || String(product.specsLine || "").split("|")[0].trim();
+
+    document.title = seoTitle;
+
+    const canonicalLink = document.querySelector('link[rel="canonical"]');
+
+    if (canonicalLink) {
+      canonicalLink.setAttribute("href", seoUrl);
+    }
+
+    updateSeoMetaContent('meta[name="description"]', seoDescription);
+    updateSeoMetaContent('meta[property="og:title"]', seoTitle);
+    updateSeoMetaContent('meta[property="og:description"]', seoDescription);
+    updateSeoMetaContent('meta[property="og:url"]', seoUrl);
+    updateSeoMetaContent('meta[property="og:image"]', seoImage);
+    updateSeoMetaContent('meta[name="twitter:title"]', seoTitle);
+    updateSeoMetaContent('meta[name="twitter:description"]', seoDescription);
+    updateSeoMetaContent('meta[name="twitter:image"]', seoImage);
+
+    const productSchema = {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": seoProductData.name,
+      "description": seoDescription,
+      "image": [seoImage],
+      "sku": seoProductData.id,
+      "category": seoProductData.category,
+      "url": seoUrl
+    };
+
+    if (brandName) {
+      productSchema.brand = {
+        "@type": "Brand",
+        "name": brandName
+      };
+    }
+
+    if (Number.isFinite(Number(seoProductData.priceNumber))) {
+      productSchema.offers = {
+        "@type": "Offer",
+        "url": seoUrl,
+        "priceCurrency": "EGP",
+        "price": String(seoProductData.priceNumber)
+      };
+    }
+
+    const schemaElement = document.getElementById("product-seo-schema");
+
+    if (schemaElement) {
+      schemaElement.textContent = JSON.stringify(productSchema);
+    }
+  }
+
   window.getCurrentSavedProductData = function () {
     return {
       ...productData
@@ -11898,7 +12009,7 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
   }
 
   function renderProductPage(product) {
-    document.title = `${product.name} - The Computer Shop`;
+    updateProductSeoMeta(product);
 
     const productTitle = document.querySelector(".product-title-block h1");
     const productCategory = document.querySelector(".product-title-eyebrow");
@@ -12127,6 +12238,7 @@ return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781350007/lian-li-o1
     }
 
     productData = buildProductData(currentProduct);
+    updateProductSeoMeta(currentProduct);
 
     const selectedVariant = getSelectedVariant(currentProduct);
     const productImages = getProductImages(currentProduct);
