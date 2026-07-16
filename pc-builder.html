@@ -727,126 +727,6 @@
       background: rgba(255, 255, 255, 0.055);
     }
 
-    .pc-builder-fps-estimator {
-      display: grid;
-      gap: 14px;
-    }
-
-    .pc-builder-fps-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .pc-builder-fps-header h3 {
-      margin: 0;
-      color: #ffffff;
-      font-size: 16px;
-      font-weight: 700;
-      line-height: 1.2;
-      text-transform: uppercase;
-    }
-
-    .pc-builder-fps-header span {
-      color: rgba(192, 154, 92, 0.86);
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-    }
-
-    .pc-builder-fps-controls {
-      display: grid;
-      gap: 10px;
-    }
-
-    .pc-builder-fps-field {
-      display: grid;
-      gap: 7px;
-      color: rgba(255, 255, 255, 0.58);
-      font-size: 12px;
-      font-weight: 700;
-      text-transform: uppercase;
-    }
-
-    .pc-builder-fps-field select {
-      width: 100%;
-      height: 42px;
-      padding: 0 14px;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 999px;
-      background: rgba(24, 25, 24, 0.55);
-      color: #ffffff;
-      font-family: Arial, sans-serif;
-      font-size: 13px;
-      font-weight: 700;
-      outline: none;
-    }
-
-    .pc-builder-fps-field option {
-      background: #181918;
-      color: #ffffff;
-    }
-
-    .pc-builder-fps-result {
-      display: grid;
-      gap: 9px;
-      padding: 14px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.055);
-    }
-
-    .pc-builder-fps-top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .pc-builder-fps-number {
-      color: #ffffff;
-      font-size: 28px;
-      font-weight: 700;
-      line-height: 1;
-    }
-
-    .pc-builder-fps-label,
-    .pc-builder-fps-note {
-      color: rgba(255, 255, 255, 0.62);
-      font-size: 12px;
-      line-height: 1.45;
-    }
-
-    .pc-builder-fps-rating {
-      min-height: 28px;
-      padding: 0 10px;
-      border-radius: 999px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(71, 215, 146, 0.16);
-      color: #8ff0c2;
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      white-space: nowrap;
-    }
-
-    .pc-builder-fps-rating.warn {
-      background: rgba(245, 190, 88, 0.16);
-      color: #ffd88e;
-    }
-
-    .pc-builder-fps-rating.bad {
-      background: rgba(255, 95, 95, 0.16);
-      color: #ffaaaa;
-    }
-
-    .pc-builder-fps-note {
-      margin: 0;
-    }
-
     .pc-builder-status {
       min-height: 34px;
       padding: 0 13px;
@@ -1473,61 +1353,6 @@
           </div>
         </div>
       </section>
-
-      <section class="pc-builder-summary pc-builder-fps-card" aria-labelledby="pc-builder-fps-title">
-        <div class="pc-builder-summary-header pc-builder-fps-header">
-          <h3 id="pc-builder-fps-title">Game FPS Estimator</h3>
-          <span>Approx.</span>
-        </div>
-
-        <div class="pc-builder-summary-body">
-          <div class="pc-builder-fps-estimator">
-            <div class="pc-builder-fps-controls">
-              <label class="pc-builder-fps-field" for="pc-builder-fps-game">
-                <span>Game</span>
-                <select id="pc-builder-fps-game">
-                  <option value="fortnite">Fortnite</option>
-                  <option value="valorant">Valorant</option>
-                  <option value="warzone">Call of Duty: Warzone</option>
-                  <option value="cyberpunk">Cyberpunk 2077</option>
-                  <option value="gta">GTA V / Online</option>
-                  <option value="minecraft">Minecraft Shaders</option>
-                </select>
-              </label>
-
-              <label class="pc-builder-fps-field" for="pc-builder-fps-resolution">
-                <span>Resolution</span>
-                <select id="pc-builder-fps-resolution">
-                  <option value="1080p">1080p</option>
-                  <option value="1440p" selected>1440p</option>
-                  <option value="4k">4K</option>
-                </select>
-              </label>
-
-              <label class="pc-builder-fps-field" for="pc-builder-fps-graphics">
-                <span>Graphics Preset</span>
-                <select id="pc-builder-fps-graphics">
-                  <option value="low">Low</option>
-                  <option value="high" selected>High</option>
-                  <option value="epic">Epic</option>
-                  <option value="ultra">Ultra</option>
-                </select>
-              </label>
-            </div>
-
-            <div class="pc-builder-fps-result" aria-live="polite">
-              <div class="pc-builder-fps-top">
-                <div>
-                  <strong class="pc-builder-fps-number" id="pc-builder-fps-number">Pick CPU + GPU</strong>
-                  <div class="pc-builder-fps-label" id="pc-builder-fps-label">Estimated average FPS</div>
-                </div>
-                <span class="pc-builder-fps-rating warn" id="pc-builder-fps-rating">Waiting</span>
-              </div>
-              <p class="pc-builder-fps-note" id="pc-builder-fps-note">Choose a CPU and video card to estimate gaming performance.</p>
-            </div>
-          </div>
-        </div>
-      </section>
     </aside>
   </section>
 </main>
@@ -1606,13 +1431,6 @@
   const saveBuildMessage = document.getElementById("pc-builder-save-message");
   const statusElement = document.getElementById("pc-builder-status");
   const issuesElement = document.getElementById("pc-builder-issues");
-  const fpsGameSelect = document.getElementById("pc-builder-fps-game");
-  const fpsResolutionSelect = document.getElementById("pc-builder-fps-resolution");
-  const fpsGraphicsSelect = document.getElementById("pc-builder-fps-graphics");
-  const fpsNumberElement = document.getElementById("pc-builder-fps-number");
-  const fpsLabelElement = document.getElementById("pc-builder-fps-label");
-  const fpsRatingElement = document.getElementById("pc-builder-fps-rating");
-  const fpsNoteElement = document.getElementById("pc-builder-fps-note");
 
   function escapeHtml(value) {
     return String(value || "").replace(/[&<>"']/g, function (character) {
@@ -3063,180 +2881,6 @@
       : '<div class="pc-builder-issue">No compatibility issues found.</div>';
   }
 
-  const fpsGameProfiles = {
-    fortnite: {
-      label: "Fortnite",
-      baseFps: 210,
-      gpuWeight: 0.64,
-      cpuWeight: 0.36,
-      note: "High settings estimate with competitive-friendly headroom."
-    },
-    valorant: {
-      label: "Valorant",
-      baseFps: 410,
-      gpuWeight: 0.42,
-      cpuWeight: 0.58,
-      note: "Esports estimate where CPU speed matters heavily."
-    },
-    warzone: {
-      label: "Call of Duty: Warzone",
-      baseFps: 145,
-      gpuWeight: 0.7,
-      cpuWeight: 0.3,
-      note: "High settings estimate for a demanding multiplayer shooter."
-    },
-    cyberpunk: {
-      label: "Cyberpunk 2077",
-      baseFps: 95,
-      gpuWeight: 0.82,
-      cpuWeight: 0.18,
-      note: "High settings estimate without path tracing."
-    },
-    gta: {
-      label: "GTA V / Online",
-      baseFps: 175,
-      gpuWeight: 0.56,
-      cpuWeight: 0.44,
-      note: "High settings estimate for open-world gameplay."
-    },
-    minecraft: {
-      label: "Minecraft Shaders",
-      baseFps: 125,
-      gpuWeight: 0.74,
-      cpuWeight: 0.26,
-      note: "Shader estimate with a modern high-quality shader pack."
-    }
-  };
-
-  const fpsResolutionProfiles = {
-    "1080p": {
-      label: "1080p",
-      multiplier: 1.22
-    },
-    "1440p": {
-      label: "1440p",
-      multiplier: 1
-    },
-    "4k": {
-      label: "4K",
-      multiplier: 0.58
-    }
-  };
-
-  const fpsGraphicsProfiles = {
-    low: {
-      label: "Low",
-      multiplier: 1.34
-    },
-    high: {
-      label: "High",
-      multiplier: 1
-    },
-    epic: {
-      label: "Epic",
-      multiplier: 0.82
-    },
-    ultra: {
-      label: "Ultra",
-      multiplier: 0.72
-    }
-  };
-
-  function getFpsPartText(part) {
-    if (!part) {
-      return "";
-    }
-
-    return [part.name, part.meta, part.gpuModel, part.filterTags].filter(Boolean).join(" ");
-  }
-
-  function getGpuPerformanceScore(part) {
-    const compact = compactFilterText(getFpsPartText(part));
-
-    if (!compact) return 0;
-    if (compact.includes("rtx5090") || compact.includes("5090")) return 100;
-    if (compact.includes("rtx5080") || compact.includes("5080")) return 84;
-    if (compact.includes("rtx5070ti") || compact.includes("5070ti")) return 70;
-    if (compact.includes("rx9070xt") || compact.includes("9070xt")) return 66;
-    if (compact.includes("rtx5070") || compact.includes("5070")) return 60;
-    if (compact.includes("rtx5060ti") || compact.includes("5060ti")) return 46;
-    if (compact.includes("rx9060xt") || compact.includes("9060xt")) return 42;
-    if (compact.includes("rtx5060") || compact.includes("5060")) return 36;
-    if (compact.includes("rtx5050") || compact.includes("5050")) return 28;
-    if (compact.includes("arcb580") || compact.includes("b580")) return 34;
-
-    return 45;
-  }
-
-  function getCpuPerformanceScore(part) {
-    const compact = compactFilterText(getFpsPartText(part));
-
-    if (!compact) return 0;
-    if (compact.includes("coreultra9") || compact.includes("ryzen9") || compact.includes("i9") || compact.includes("9950") || compact.includes("9900") || compact.includes("7950") || compact.includes("7900") || compact.includes("14900") || compact.includes("13900")) return 90;
-    if (compact.includes("coreultra7") || compact.includes("ryzen7") || compact.includes("i7") || compact.includes("9800") || compact.includes("9700") || compact.includes("7800") || compact.includes("7700") || compact.includes("14700") || compact.includes("13700")) return 80;
-    if (compact.includes("coreultra5") || compact.includes("ryzen5") || compact.includes("i5") || compact.includes("9600") || compact.includes("7600") || compact.includes("7500") || compact.includes("14600") || compact.includes("13600")) return 66;
-
-    return 58;
-  }
-
-  function getFpsRating(fps) {
-    if (fps >= 165) {
-      return { text: "Excellent", className: "" };
-    }
-
-    if (fps >= 100) {
-      return { text: "Smooth", className: "" };
-    }
-
-    if (fps >= 60) {
-      return { text: "Playable", className: "warn" };
-    }
-
-    return { text: "Upgrade", className: "bad" };
-  }
-
-  function getFpsBalanceNote(cpuScore, gpuScore) {
-    if (cpuScore + 12 < gpuScore) {
-      return "CPU may limit this GPU in lighter esports games.";
-    }
-
-    if (gpuScore + 12 < cpuScore) {
-      return "A stronger video card would improve the estimate most.";
-    }
-
-    return "CPU and video card look balanced for this estimate.";
-  }
-
-  function renderFpsEstimator(build) {
-    if (!fpsGameSelect || !fpsResolutionSelect || !fpsGraphicsSelect || !fpsNumberElement || !fpsLabelElement || !fpsRatingElement || !fpsNoteElement) {
-      return;
-    }
-
-    if (!build || !build.cpu || !build.gpu) {
-      fpsNumberElement.textContent = "Pick CPU + GPU";
-      fpsLabelElement.textContent = "Estimated average FPS";
-      fpsRatingElement.textContent = "Waiting";
-      fpsRatingElement.className = "pc-builder-fps-rating warn";
-      fpsNoteElement.textContent = "Choose a CPU and video card to estimate gaming performance.";
-      return;
-    }
-
-    const gameProfile = fpsGameProfiles[fpsGameSelect.value] || fpsGameProfiles.fortnite;
-    const resolutionProfile = fpsResolutionProfiles[fpsResolutionSelect.value] || fpsResolutionProfiles["1440p"];
-    const graphicsProfile = fpsGraphicsProfiles[fpsGraphicsSelect.value] || fpsGraphicsProfiles.high;
-    const gpuScore = getGpuPerformanceScore(build.gpu);
-    const cpuScore = getCpuPerformanceScore(build.cpu);
-    const combinedScore = (gpuScore * gameProfile.gpuWeight) + (cpuScore * gameProfile.cpuWeight);
-    const fps = Math.max(30, Math.round(gameProfile.baseFps * (combinedScore / 70) * resolutionProfile.multiplier * graphicsProfile.multiplier));
-    const rating = getFpsRating(fps);
-
-    fpsNumberElement.textContent = fps.toLocaleString("en-US") + " FPS";
-    fpsLabelElement.textContent = gameProfile.label + " at " + resolutionProfile.label + " / " + graphicsProfile.label;
-    fpsRatingElement.textContent = rating.text;
-    fpsRatingElement.className = "pc-builder-fps-rating" + (rating.className ? " " + rating.className : "");
-    fpsNoteElement.textContent = gameProfile.note + " " + getFpsBalanceNote(cpuScore, gpuScore);
-  }
-
   function render() {
     if (!catalogLoaded) {
       return;
@@ -3343,7 +2987,6 @@
     const total = baseTotal + extraTotal + (build.gpu2 ? priceToNumber(build.gpu2.price) : 0);
 
     document.getElementById("pc-builder-total").textContent = total ? total.toLocaleString("en-US") + " EGP" : "Pending prices";
-    renderFpsEstimator(build);
 
     updateUrl();
   }
@@ -3870,16 +3513,6 @@
       this.textContent = "Copy Failed";
       window.setTimeout(() => { this.textContent = "Copy Link"; }, 1200);
     }
-  });
-
-  [fpsGameSelect, fpsResolutionSelect, fpsGraphicsSelect].forEach(function (select) {
-    if (!select) {
-      return;
-    }
-
-    select.addEventListener("change", function () {
-      render();
-    });
   });
 
   loadCatalog();
