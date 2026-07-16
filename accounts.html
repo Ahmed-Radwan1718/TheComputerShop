@@ -2228,7 +2228,172 @@ body.account-security-modal-open {
   color: rgba(255, 156, 156, 0.95);
 }
 
-/* ACCOUNT_CSS_CHUNK_7 */
+.account-empty-state {
+  padding: 36px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.account-support-empty-state {
+  padding: 26px 0 0;
+  border: 0;
+  background: transparent;
+}
+
+.account-empty-state h3 {
+  margin-bottom: 10px;
+  color: white;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.account-empty-state p {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+#account-panel-saved .account-panel-subheader {
+  margin-bottom: 16px;
+}
+
+#account-panel-saved .account-empty-state + .account-panel-subheader {
+  margin-top: 34px;
+}
+
+.account-saved-loading {
+  padding: 18px 0;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.account-saved-loading[hidden] {
+  display: none;
+}
+
+.account-saved-list {
+  display: grid;
+  gap: 14px;
+}
+
+.account-saved-list:empty {
+  display: none;
+}
+
+.account-saved-item {
+  padding: 18px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.105);
+  background: rgba(255, 255, 255, 0.045);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: center;
+  content-visibility: auto;
+  contain-intrinsic-size: 156px;
+}
+
+.account-saved-item-main,
+.account-saved-item-main:visited {
+  min-width: 0;
+  color: white;
+  text-decoration: none;
+  display: grid;
+  grid-template-columns: 118px minmax(0, 1fr);
+  gap: 18px;
+  align-items: center;
+}
+
+.account-saved-item-image-frame {
+  width: 118px;
+  aspect-ratio: 1 / 1;
+  border-radius: 18px;
+  background: transparent;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.account-saved-item-image-frame img {
+  width: 100%;
+  height: auto;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+  border-radius: 18px;
+}
+
+.account-saved-item-info {
+  min-width: 0;
+  display: grid;
+  gap: 7px;
+}
+
+.account-saved-item-info span {
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.account-saved-item-info h3 {
+  color: white;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.account-saved-item-info p {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.account-saved-item-info strong {
+  color: white;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.account-saved-remove-button {
+  min-height: 42px;
+  padding: 0 18px;
+  border: 1px solid rgba(255, 156, 156, 0.28);
+  border-radius: 999px;
+  background: rgba(255, 156, 156, 0.12);
+  color: rgba(255, 176, 176, 0.96);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.account-saved-remove-button:hover {
+  background: rgba(255, 156, 156, 0.18);
+  border-color: rgba(255, 156, 156, 0.42);
+}
+
+.account-saved-remove-button:disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
+}
+
+/* ACCOUNT_CSS_CHUNK_8 */
   </style>
 </head>
 <body>
