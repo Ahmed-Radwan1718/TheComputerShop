@@ -428,7 +428,517 @@ body.account-security-modal-open .account-panel.active {
   letter-spacing: 0.05em;
 }
 
-/* ACCOUNT_CSS_CHUNK_2 */
+.account-profile-photo-actions {
+  display: grid;
+  gap: 8px;
+}
+
+.account-profile-photo-button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.account-profile-photo-actions h3 {
+  color: white;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.account-profile-photo-actions p {
+  max-width: 520px;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.account-profile-photo-button,
+.account-profile-photo-remove-button {
+  width: fit-content;
+  min-height: 40px;
+  padding: 0 16px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  background: transparent;
+  color: white;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.account-profile-photo-button:hover,
+.account-profile-photo-remove-button:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.34);
+}
+
+.account-profile-photo-remove-button {
+  border-color: rgba(255, 145, 152, 0.42);
+  background: rgba(92, 55, 60, 0.58);
+  color: #ffc4c9;
+}
+
+.account-profile-photo-remove-button:hover {
+  background: rgba(110, 63, 69, 0.72);
+  border-color: rgba(255, 165, 172, 0.58);
+}
+
+.account-profile-photo-remove-button[hidden] {
+  display: none;
+}
+
+.account-profile-photo-button:disabled,
+.account-profile-photo-remove-button:disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
+}
+
+body.account-photo-crop-modal-open {
+  overflow: hidden;
+}
+
+.account-photo-crop-modal[hidden] {
+  display: none;
+}
+
+.account-photo-crop-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 5000;
+  padding: 24px;
+  display: grid;
+  place-items: center;
+}
+
+.account-photo-crop-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.78);
+}
+
+.account-photo-crop-card {
+  position: relative;
+  z-index: 1;
+  width: min(760px, 100%);
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: 28px;
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #1c1e1c;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.42);
+  contain: layout paint;
+}
+
+.account-photo-crop-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  color: white;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.account-photo-crop-header {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+
+.account-photo-crop-header h2 {
+  color: white;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.15;
+}
+
+.account-photo-crop-header p:last-child {
+  max-width: 560px;
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.65;
+}
+
+.account-photo-crop-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 168px;
+  gap: 20px;
+  align-items: start;
+}
+
+.account-photo-crop-stage {
+  position: relative;
+  height: 320px;
+  overflow: hidden;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.055);
+  cursor: grab;
+  touch-action: none;
+  contain: layout paint size;
+  isolation: isolate;
+  transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
+  user-select: none;
+}
+
+.account-photo-crop-stage:active,
+.account-photo-crop-stage.is-interacting {
+  cursor: grabbing;
+}
+
+.account-photo-crop-stage img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  max-width: none;
+  max-height: none;
+  transform-origin: center center;
+  user-select: none;
+  pointer-events: none;
+  touch-action: none;
+  will-change: transform;
+  backface-visibility: hidden;
+  contain: layout paint size;
+  transition: none;
+}
+
+.account-photo-crop-frame {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(240px, calc(100% - 42px));
+  aspect-ratio: 1;
+  border: 2px solid rgba(255, 255, 255, 0.92);
+  border-radius: 999px;
+  box-shadow: 0 0 0 999px rgba(0, 0, 0, 0.42);
+  pointer-events: none;
+  transform: translate3d(-50%, -50%, 0);
+  transform-origin: center center;
+  will-change: transform;
+  backface-visibility: hidden;
+  user-select: none;
+  touch-action: none;
+  contain: layout paint size;
+}
+
+.account-photo-crop-control {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.account-photo-crop-control label,
+.account-photo-crop-preview-label {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.account-photo-crop-control input {
+  width: 100%;
+  accent-color: white;
+}
+
+.account-photo-crop-preview-panel {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  padding: 18px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.account-photo-crop-preview {
+  position: relative;
+  width: 118px;
+  height: 118px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.09);
+  contain: layout paint size;
+  isolation: isolate;
+  transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.account-photo-crop-preview img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: none;
+  max-height: none;
+  object-fit: initial;
+  transform-origin: center center;
+  user-select: none;
+  pointer-events: none;
+  touch-action: none;
+  will-change: transform;
+  backface-visibility: hidden;
+  contain: layout paint size;
+  transition: none;
+}
+
+.account-photo-crop-note {
+  margin-top: 4px;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.55;
+  text-align: center;
+}
+
+.account-photo-crop-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 22px;
+}
+
+.account-photo-crop-cancel,
+.account-photo-crop-use {
+  min-height: 52px;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    opacity 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.account-photo-crop-cancel {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.065);
+  color: white;
+}
+
+.account-photo-crop-use {
+  border: 1px solid white;
+  background: white;
+  color: #111;
+}
+
+.account-photo-crop-cancel:hover,
+.account-photo-crop-use:hover {
+  opacity: 0.86;
+}
+
+.account-photo-crop-use:disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
+}
+
+@media (max-width: 680px) {
+  .account-photo-crop-card {
+    padding: 24px 18px;
+  }
+
+  .account-photo-crop-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .account-photo-crop-stage {
+    height: 280px;
+  }
+
+  .account-photo-crop-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+.account-form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+  align-items: start;
+}
+
+.account-field {
+  display: grid;
+  gap: 9px;
+}
+
+.account-field-full {
+  grid-column: 1 / -1;
+}
+
+.account-field label {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.account-field input,
+.account-field select,
+.account-field textarea {
+  width: 100%;
+  min-height: 50px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.065);
+  color: white;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  outline: none;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.account-field textarea {
+  min-height: 118px;
+  padding: 15px 16px;
+  border-radius: 22px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.account-field select {
+  appearance: none;
+  cursor: pointer;
+}
+
+.account-phone-row {
+  display: grid;
+  grid-template-columns: minmax(150px, 170px) minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.account-phone-row input {
+  min-width: 0;
+}
+
+.account-phone-country-dropdown {
+  position: relative;
+  z-index: 30;
+  width: min(170px, 100%);
+}
+
+.account-phone-country-dropdown.open {
+  z-index: 90;
+}
+
+.account-phone-country-dropdown .custom-select-trigger {
+  min-height: 50px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.065);
+  font-size: 14px;
+  font-weight: 700;
+  justify-content: center;
+  gap: 10px;
+}
+
+.account-phone-country-dropdown .custom-select-value {
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.account-phone-country-flag {
+  width: 20px;
+  height: 14px;
+  border-radius: 3px;
+  object-fit: cover;
+  flex: 0 0 auto;
+  display: block;
+}
+
+.account-phone-country-dropdown .custom-select-menu {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 10px);
+  width: min(310px, calc(100vw - 48px));
+  max-height: 260px;
+  padding: 10px;
+  overflow-y: auto;
+  background: rgba(42, 43, 42, 0.99);
+  color-scheme: dark;
+  scrollbar-color: rgba(255, 255, 255, 0.55) #2a2b2a;
+  scrollbar-width: auto;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  transform: none;
+  transition: opacity 0.12s ease;
+  will-change: opacity;
+  contain: paint;
+}
+
+.account-phone-country-search-wrap {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding-bottom: 8px;
+  background: rgba(42, 43, 42, 0.99);
+}
+
+.account-phone-country-search {
+  width: 100%;
+  min-height: 38px;
+  padding: 0 13px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.075);
+  color: white;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  outline: none;
+}
+
+.account-phone-country-search::placeholder {
+  color: rgba(255, 255, 255, 0.48);
+}
+
+.account-phone-country-options {
+  display: grid;
+  gap: 2px;
+}
+
+.account-phone-country-dropdown.open .custom-select-menu {
+  transform: none;
+}
+
+/* ACCOUNT_CSS_CHUNK_3 */
   </style>
 </head>
 <body>
