@@ -1482,9 +1482,19 @@
             <label class="pc-builder-fps-field" for="pc-builder-fps-resolution">
               <span>Resolution</span>
               <select id="pc-builder-fps-resolution">
-                <option value="1080p">1080p Competitive</option>
-                <option value="1440p" selected>1440p High</option>
-                <option value="4k">4K High</option>
+                <option value="1080p">1080p</option>
+                <option value="1440p" selected>1440p</option>
+                <option value="4k">4K</option>
+              </select>
+            </label>
+
+            <label class="pc-builder-fps-field" for="pc-builder-fps-graphics">
+              <span>Graphics Preset</span>
+              <select id="pc-builder-fps-graphics">
+                <option value="low">Low</option>
+                <option value="high" selected>High</option>
+                <option value="epic">Epic</option>
+                <option value="ultra">Ultra</option>
               </select>
             </label>
           </div>
@@ -1587,6 +1597,7 @@
   const issuesElement = document.getElementById("pc-builder-issues");
   const fpsGameSelect = document.getElementById("pc-builder-fps-game");
   const fpsResolutionSelect = document.getElementById("pc-builder-fps-resolution");
+  const fpsGraphicsSelect = document.getElementById("pc-builder-fps-graphics");
   const fpsNumberElement = document.getElementById("pc-builder-fps-number");
   const fpsLabelElement = document.getElementById("pc-builder-fps-label");
   const fpsRatingElement = document.getElementById("pc-builder-fps-rating");
@@ -3088,16 +3099,35 @@
 
   const fpsResolutionProfiles = {
     "1080p": {
-      label: "1080p Competitive",
+      label: "1080p",
       multiplier: 1.22
     },
     "1440p": {
-      label: "1440p High",
+      label: "1440p",
       multiplier: 1
     },
     "4k": {
-      label: "4K High",
+      label: "4K",
       multiplier: 0.58
+    }
+  };
+
+  const fpsGraphicsProfiles = {
+    low: {
+      label: "Low",
+      multiplier: 1.34
+    },
+    high: {
+      label: "High",
+      multiplier: 1
+    },
+    epic: {
+      label: "Epic",
+      multiplier: 0.82
+    },
+    ultra: {
+      label: "Ultra",
+      multiplier: 0.72
     }
   };
 
@@ -3167,7 +3197,7 @@
   }
 
   function renderFpsEstimator(build) {
-    if (!fpsGameSelect || !fpsResolutionSelect || !fpsNumberElement || !fpsLabelElement || !fpsRatingElement || !fpsNoteElement) {
+    if (!fpsGameSelect || !fpsResolutionSelect || !fpsGraphicsSelect || !fpsNumberElement || !fpsLabelElement || !fpsRatingElement || !fpsNoteElement) {
       return;
     }
 
@@ -3182,14 +3212,15 @@
 
     const gameProfile = fpsGameProfiles[fpsGameSelect.value] || fpsGameProfiles.fortnite;
     const resolutionProfile = fpsResolutionProfiles[fpsResolutionSelect.value] || fpsResolutionProfiles["1440p"];
+    const graphicsProfile = fpsGraphicsProfiles[fpsGraphicsSelect.value] || fpsGraphicsProfiles.high;
     const gpuScore = getGpuPerformanceScore(build.gpu);
     const cpuScore = getCpuPerformanceScore(build.cpu);
     const combinedScore = (gpuScore * gameProfile.gpuWeight) + (cpuScore * gameProfile.cpuWeight);
-    const fps = Math.max(30, Math.round(gameProfile.baseFps * (combinedScore / 70) * resolutionProfile.multiplier));
+    const fps = Math.max(30, Math.round(gameProfile.baseFps * (combinedScore / 70) * resolutionProfile.multiplier * graphicsProfile.multiplier));
     const rating = getFpsRating(fps);
 
     fpsNumberElement.textContent = fps.toLocaleString("en-US") + " FPS";
-    fpsLabelElement.textContent = gameProfile.label + " at " + resolutionProfile.label;
+    fpsLabelElement.textContent = gameProfile.label + " at " + resolutionProfile.label + " / " + graphicsProfile.label;
     fpsRatingElement.textContent = rating.text;
     fpsRatingElement.className = "pc-builder-fps-rating" + (rating.className ? " " + rating.className : "");
     fpsNoteElement.textContent = gameProfile.note + " " + getFpsBalanceNote(cpuScore, gpuScore);
@@ -3830,7 +3861,7 @@
     }
   });
 
-  [fpsGameSelect, fpsResolutionSelect].forEach(function (select) {
+  [fpsGameSelect, fpsResolutionSelect, fpsGraphicsSelect].forEach(function (select) {
     if (!select) {
       return;
     }
