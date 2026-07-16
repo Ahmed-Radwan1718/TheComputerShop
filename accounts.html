@@ -3890,7 +3890,505 @@ body.translated-rtl .account-order-card-meta {
   }
 }
 
-/* ACCOUNT_CSS_CHUNK_12 */
+.account-change-password-section,
+.account-login-sessions-section,
+.account-sign-out-everywhere-section,
+.account-delete-account-section,
+.account-two-factor-section {
+  display: grid;
+  gap: 18px;
+  align-items: start;
+  contain: layout style;
+}
+
+.account-two-factor-methods {
+  display: grid;
+  gap: 14px;
+}
+
+.account-login-sessions-list {
+  display: grid;
+  gap: 14px;
+}
+
+.account-login-sessions-list:empty {
+  display: none;
+}
+
+.account-login-session-card {
+  padding: 20px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.105);
+  background: rgba(255, 255, 255, 0.045);
+  content-visibility: auto;
+  contain-intrinsic-size: 112px;
+}
+
+.account-login-session-card.current {
+  border-color: rgba(126, 224, 161, 0.28);
+  background: rgba(126, 224, 161, 0.08);
+}
+
+.account-login-session-main {
+  display: grid;
+  gap: 8px;
+}
+
+.account-login-session-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.account-login-session-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.account-login-session-browser-icon {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  display: block;
+  object-fit: contain;
+}
+
+.account-login-session-title h4 {
+  min-width: 0;
+  color: white;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.account-login-session-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.account-login-session-current {
+  padding: 7px 11px;
+  border-radius: 999px;
+  border: 1px solid rgba(126, 224, 161, 0.28);
+  background: rgba(126, 224, 161, 0.16);
+  color: #7EE0A1;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.account-login-session-sign-out {
+  min-height: 34px;
+  padding: 0 13px;
+  border: 1px solid rgba(255, 156, 156, 0.28);
+  border-radius: 999px;
+  background: rgba(255, 156, 156, 0.12);
+  color: rgba(255, 176, 176, 0.96);
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.account-login-session-sign-out:hover {
+  background: rgba(255, 156, 156, 0.18);
+  border-color: rgba(255, 156, 156, 0.42);
+}
+
+.account-login-session-sign-out:active {
+  transform: translateY(1px);
+}
+
+.account-login-session-sign-out:disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
+}
+
+.account-login-session-main p,
+.account-login-sessions-empty {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.account-login-session-meta {
+  display: flex;
+  gap: 10px 16px;
+  flex-wrap: wrap;
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.account-trusted-devices-section {
+  display: grid;
+  gap: 18px;
+  align-items: start;
+  contain: layout style;
+}
+
+.account-trusted-devices-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 16px;
+}
+
+.account-trusted-devices-grid:empty {
+  display: none;
+}
+
+.account-trusted-devices-empty {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.account-trusted-device-tile {
+  min-height: 258px;
+  padding: 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.105);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.035));
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 16px;
+  content-visibility: auto;
+  contain-intrinsic-size: 258px;
+}
+
+.account-trusted-device-tile.current {
+  border-color: rgba(255, 255, 255, 0.14);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.04));
+}
+
+.account-trusted-device-mark {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  color: rgba(255, 255, 255, 0.78);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.account-trusted-device-tile.current .account-trusted-device-mark {
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.account-trusted-device-platform-icon {
+  width: 32px;
+  height: 32px;
+  display: block;
+  object-fit: contain;
+}
+
+.account-trusted-device-platform-icon-apple {
+  filter: invert(1);
+}
+
+.account-trusted-device-mark span {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.account-trusted-device-body {
+  display: grid;
+  gap: 9px;
+  align-content: start;
+}
+
+.account-trusted-device-kicker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.account-trusted-device-current {
+  flex-shrink: 0;
+  padding: 5px 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.account-trusted-device-body h4 {
+  color: white;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.18;
+  text-transform: uppercase;
+}
+
+.account-trusted-device-body p {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.account-trusted-device-dates {
+  display: grid;
+  gap: 7px;
+  margin-top: 4px;
+}
+
+.account-trusted-device-dates span {
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.16);
+  color: rgba(255, 255, 255, 0.56);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.account-trusted-device-dates strong {
+  display: block;
+  margin-bottom: 2px;
+  color: rgba(255, 255, 255, 0.34);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.account-trusted-device-remove {
+  width: 100%;
+  min-height: 40px;
+  padding: 0 13px;
+  border: 1px solid rgba(255, 156, 156, 0.28);
+  border-radius: 12px;
+  background: rgba(255, 156, 156, 0.1);
+  color: rgba(255, 176, 176, 0.96);
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.account-trusted-device-remove:hover {
+  background: rgba(255, 156, 156, 0.16);
+  border-color: rgba(255, 156, 156, 0.44);
+}
+
+.account-trusted-device-remove:active {
+  transform: translateY(1px);
+}
+
+.account-trusted-device-remove:disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
+}
+
+.account-two-factor-card {
+  min-height: 118px;
+  padding: 20px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.105);
+  background: rgba(255, 255, 255, 0.045);
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: center;
+  content-visibility: auto;
+  contain-intrinsic-size: 118px;
+}
+
+.account-two-factor-icon {
+  width: 30px;
+  height: 30px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.account-two-factor-icon img {
+  width: 28px;
+  height: 28px;
+  display: block;
+  object-fit: contain;
+}
+
+.account-two-factor-text {
+  display: grid;
+  gap: 8px;
+}
+
+.account-two-factor-text h4 {
+  color: white;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.account-two-factor-text p {
+  max-width: 620px;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.account-two-factor-status {
+  margin-left: 8px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: rgba(255, 156, 156, 0.13);
+  color: rgba(255, 176, 176, 0.96);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.account-two-factor-status.enabled {
+  background: rgba(185, 255, 202, 0.12);
+  color: rgba(185, 255, 202, 0.92);
+}
+
+.account-two-factor-button {
+  width: fit-content;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.11);
+  color: white;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.account-two-factor-button:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.account-two-factor-button.danger {
+  border-color: rgba(255, 145, 152, 0.42);
+  background: rgba(92, 55, 60, 0.58);
+  color: #ffc4c9;
+}
+
+.account-two-factor-button.danger:hover {
+  background: rgba(110, 63, 69, 0.72);
+  border-color: rgba(255, 165, 172, 0.58);
+}
+
+.account-two-factor-button:disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
+}
+
+.account-change-password-details {
+  display: grid;
+  gap: 10px;
+  align-items: start;
+}
+
+.account-change-password-open-button {
+  width: fit-content;
+  min-width: 210px;
+}
+
+.account-password-last-changed-details {
+  display: grid;
+  gap: 4px;
+}
+
+.account-password-last-changed,
+.account-password-session-note {
+  max-width: 620px;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.account-password-last-changed {
+  font-weight: 700;
+}
+
+.account-password-session-note {
+  font-weight: 400;
+}
+
+.account-danger-button {
+  width: fit-content;
+  min-height: 52px;
+  padding: 0 24px;
+  border: 1px solid rgba(255, 156, 156, 0.28);
+  border-radius: 999px;
+  background: rgba(255, 156, 156, 0.12);
+  color: rgba(255, 176, 176, 0.96);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.account-danger-button:hover {
+  background: rgba(255, 156, 156, 0.18);
+  border-color: rgba(255, 156, 156, 0.42);
+}
+
+.account-danger-button:active {
+  transform: translateY(1px);
+}
+
+.account-danger-button:disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
+}
+
+/* ACCOUNT_CSS_CHUNK_13 */
   </style>
 </head>
 <body>
