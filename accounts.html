@@ -2393,7 +2393,357 @@ body.account-security-modal-open {
   cursor: not-allowed;
 }
 
-/* ACCOUNT_CSS_CHUNK_8 */
+.account-support-panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.account-support-panel-header > div {
+  max-width: 690px;
+}
+
+.account-support-new-button {
+  min-height: 42px;
+  padding: 0 18px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.09);
+  color: white;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.account-support-new-button:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.24);
+}
+
+.account-support-filters {
+  margin-top: 4px;
+  margin-bottom: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.account-support-filters[hidden] {
+  display: none;
+}
+
+.account-support-filter {
+  min-height: 34px;
+  padding: 0 13px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.account-support-filter.active,
+.account-support-filter:hover {
+  background: rgba(255, 255, 255, 0.085);
+  color: white;
+}
+
+.account-support-loading {
+  padding: 18px 0;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.account-support-loading[hidden] {
+  display: none;
+}
+
+.account-support-list {
+  display: grid;
+  gap: 14px;
+}
+
+.account-support-list:empty {
+  display: none;
+}
+
+.account-support-ticket-card {
+  padding: 20px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.105);
+  background: rgba(255, 255, 255, 0.045);
+  display: grid;
+  gap: 14px;
+  cursor: pointer;
+  content-visibility: auto;
+  contain-intrinsic-size: 156px;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.account-support-ticket-card:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.18);
+  transform: translateY(-1px);
+}
+
+.account-support-ticket-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: start;
+}
+
+.account-support-ticket-category {
+  margin-bottom: 8px;
+  color: rgba(255, 255, 255, 0.42);
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.account-support-ticket-card h3 {
+  color: white;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.account-support-ticket-card p {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.account-support-ticket-status {
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.09);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.account-support-ticket-status.open {
+  background: rgba(255, 214, 140, 0.12);
+  color: rgba(255, 218, 150, 0.96);
+}
+
+.account-support-ticket-status.pending {
+  background: rgba(145, 190, 255, 0.12);
+  color: rgba(170, 205, 255, 0.96);
+}
+
+.account-support-ticket-status.answered {
+  background: rgba(185, 255, 202, 0.12);
+  color: rgba(185, 255, 202, 0.92);
+}
+
+.account-support-ticket-status.resolved,
+.account-support-ticket-status.closed {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.account-support-ticket-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.account-support-ticket-button {
+  width: fit-content;
+  min-height: 38px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.account-support-ticket-button:hover {
+  background: rgba(255, 255, 255, 0.13);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.admin-dashboard-panel {
+  display: grid;
+  gap: 18px;
+}
+
+.admin-dashboard-panel[hidden] {
+  display: none;
+}
+
+#admin-dashboard-tabs {
+  margin-top: 0;
+  margin-bottom: 22px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.095);
+  gap: 10px;
+}
+
+#admin-order-filters,
+#admin-support-filters {
+  margin-top: 0;
+  gap: 10px;
+}
+
+.admin-dashboard-panel .account-support-list {
+  gap: 18px;
+}
+
+.admin-dashboard-panel .account-support-ticket-card {
+  padding: 24px 26px;
+  border-radius: 20px;
+  gap: 16px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.admin-dashboard-panel .account-support-ticket-top {
+  gap: 18px;
+  align-items: center;
+}
+
+.admin-dashboard-panel .account-support-ticket-category {
+  margin-bottom: 10px;
+  color: rgba(255, 255, 255, 0.48);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.admin-dashboard-panel .account-support-ticket-card h3 {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.admin-dashboard-panel .account-support-ticket-card p {
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.admin-dashboard-panel .account-support-ticket-meta {
+  gap: 8px 22px;
+  color: rgba(255, 255, 255, 0.48);
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.admin-dashboard-panel .account-support-ticket-button {
+  margin-top: 4px;
+}
+
+.account-support-ticket-status.submitted {
+  background: rgba(241, 200, 122, 0.16);
+  color: #F1C87A;
+  box-shadow: inset 0 0 0 1px rgba(241, 200, 122, 0.28);
+}
+
+.account-support-ticket-status.reviewing {
+  background: rgba(217, 179, 111, 0.16);
+  color: #D9B36F;
+  box-shadow: inset 0 0 0 1px rgba(217, 179, 111, 0.28);
+}
+
+.account-support-ticket-status.quoted {
+  background: rgba(159, 195, 255, 0.16);
+  color: #9FC3FF;
+  box-shadow: inset 0 0 0 1px rgba(159, 195, 255, 0.28);
+}
+
+.account-support-ticket-status.awaiting_payment {
+  background: rgba(255, 184, 107, 0.16);
+  color: #FFB86B;
+  box-shadow: inset 0 0 0 1px rgba(255, 184, 107, 0.28);
+}
+
+.account-support-ticket-status.preparing_order {
+  background: rgba(255, 255, 255, 0.12);
+  color: #CFCFCF;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+
+.account-support-ticket-status.ready_for_delivery_pickup {
+  background: rgba(126, 224, 161, 0.16);
+  color: #7EE0A1;
+  box-shadow: inset 0 0 0 1px rgba(126, 224, 161, 0.28);
+}
+
+.account-support-ticket-status.out_for_delivery {
+  background: rgba(111, 211, 255, 0.16);
+  color: #6FD3FF;
+  box-shadow: inset 0 0 0 1px rgba(111, 211, 255, 0.28);
+}
+
+.account-support-ticket-status.completed,
+.account-support-ticket-status.fulfilled {
+  background: rgba(139, 226, 139, 0.16);
+  color: #8BE28B;
+  box-shadow: inset 0 0 0 1px rgba(139, 226, 139, 0.28);
+}
+
+.account-support-ticket-status.canceled {
+  background: rgba(242, 154, 154, 0.16);
+  color: #F29A9A;
+  box-shadow: inset 0 0 0 1px rgba(242, 154, 154, 0.28);
+}
+
+@media (max-width: 760px) {
+  #admin-dashboard-tabs {
+    margin-bottom: 18px;
+    padding-bottom: 16px;
+  }
+
+  .admin-dashboard-panel .account-support-ticket-card {
+    padding: 20px;
+  }
+
+  .admin-dashboard-panel .account-support-ticket-top {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-dashboard-panel .account-support-ticket-status {
+    justify-self: start;
+  }
+}
+
+/* ACCOUNT_CSS_CHUNK_9 */
   </style>
 </head>
 <body>
