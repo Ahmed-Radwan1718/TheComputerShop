@@ -404,6 +404,19 @@
       "corsair-nautilus-360-rs-argb",
       "rog-ryujin-iii-360-argb-extreme"
     ]);
+    const storageProductKeys = new Set([
+      "aorus-gen5-14000-ssd",
+      "corsair-mp700-pro-se",
+      "crucial-t705-nvme-ssd",
+      "kingston-fury-renegade-g5-nvme-ssd",
+      "samsung-9100-pro-nvme-ssd",
+      "sandisk-fifa-world-cup-2026-portable-ssd",
+      "wd-black-gaming-hard-drive",
+      "wd-black-sn7100-nvme-ssd",
+      "wd-black-sn8100-nvme-ssd",
+      "wd-black-sn850x-nvme-ssd",
+      "wd-blue-sn5100-nvme-ssd"
+    ]);
 
     if (processorProductKeys.has(productKey)) {
       document.write('<script src="product-data/processors.js"><\/script>');
@@ -423,6 +436,10 @@
 
     if (cpuCoolerProductKeys.has(productKey)) {
       document.write('<script src="product-data/cpu-coolers.js"><\/script>');
+    }
+
+    if (storageProductKeys.has(productKey)) {
+      document.write('<script src="product-data/storage.js"><\/script>');
     }
   }());
 </script>
@@ -2472,116 +2489,7 @@ images: Array.from({ length: 8 }, (_, index) => {
       ]
     },
 
-    "wd-black-sn850x-nvme-ssd": {
-      id: "wd-black-sn850x-nvme-ssd",
-      name: "Western Digital Black SN850X NVMe",
-      category: "Storage",
-      specsLine: "WD_BLACK | PCIe 4.0 NVMe | 1TB–8TB",
-      priceText: "Insert price here",
-      priceNumber: null,
-      url: "product.html?product=wd-black-sn850x-nvme-ssd",
-      images: Array.from({ length: 2 }, (_, index) => {
-        const imageNumber = index + 1;
-        return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781349961/wd-black-sn850x-nvme-ssd-${imageNumber}.jpg`;
-      }),
-      defaultVariant: "1tb",
-      variants: [
-        {
-          id: "1tb",
-          capacity: "1TB",
-          modelNumber: "WDS100T2X0E-00BCA0",
-          priceText: "Insert price here",
-          priceNumber: null,
-          sequentialRead: "Up to 7,300MB/s",
-          sequentialWrite: "Up to 6,300MB/s",
-          randomRead: "Up to 800K IOPS",
-          randomWrite: "Up to 1,100K IOPS",
-          averageReadPower: "Not listed",
-          averageWritePower: "Not listed",
-          endurance: "600 TBW",
-          dimensions: "80 × 22 × 2.38mm",
-          weight: "7.5g"
-        },
-        {
-          id: "2tb",
-          capacity: "2TB",
-          modelNumber: "WDS200T2X0E",
-          priceText: "Insert price here",
-          priceNumber: null,
-          sequentialRead: "Up to 7,300MB/s",
-          sequentialWrite: "Up to 6,600MB/s",
-          randomRead: "Up to 1,200K IOPS",
-          randomWrite: "Up to 1,100K IOPS",
-          averageReadPower: "Not listed",
-          averageWritePower: "Not listed",
-          endurance: "1,200 TBW",
-          dimensions: "80 × 22 × 2.38mm",
-          weight: "7.5g"
-        },
-        {
-          id: "4tb",
-          capacity: "4TB",
-          modelNumber: "WDS400T2X0E",
-          priceText: "Insert price here",
-          priceNumber: null,
-          sequentialRead: "Up to 7,300MB/s",
-          sequentialWrite: "Up to 6,600MB/s",
-          randomRead: "Up to 1,200K IOPS",
-          randomWrite: "Up to 1,100K IOPS",
-          averageReadPower: "Not listed",
-          averageWritePower: "Not listed",
-          endurance: "2,400 TBW",
-          dimensions: "80 × 22 × 3.88mm",
-          weight: "8.6g"
-        },
-        {
-          id: "8tb",
-          capacity: "8TB",
-          modelNumber: "WDS800T2X0E",
-          priceText: "Insert price here",
-          priceNumber: null,
-          sequentialRead: "Up to 7,200MB/s",
-          sequentialWrite: "Up to 6,600MB/s",
-          randomRead: "Up to 1,200K IOPS",
-          randomWrite: "Up to 1,200K IOPS",
-          averageReadPower: "Not listed",
-          averageWritePower: "Not listed",
-          endurance: "4,800 TBW",
-          dimensions: "80 × 22 × 3.88mm",
-          weight: "8.6g"
-        }
-      ],
-      whoIsThisFor: "A high-performance PCIe Gen 4 NVMe SSD for gaming, workstation builds, fast game loading, large project files, DirectStorage-ready systems, and users who want selectable 1TB, 2TB, 4TB, or 8TB capacity options.",
-      specs: [
-        ["Product Name", "WD_BLACK SN850X NVMe SSD"],
-        ["Form Factor", "M.2 2280"],
-        ["Interface", "PCIe Gen 4.0 x4 NVMe"],
-        ["NAND", "SanDisk TLC 3D NAND"],
-        ["Compatibility", "Computer with M.2 M-key port, capable of taking M.2 2280 form factor"],
-        ["Security", "TCG Opal v2.01"],
-        ["Operating Temperature", "0°C to 85°C"],
-        ["Non-Operating Temperature", "-40°C to 85°C"],
-        ["Warranty", "5 years or max endurance limit, whichever comes first"]
-      ],
-      included: [
-        {
-          title: "Storage Drive",
-          text: "The WD_BLACK SN850X NVMe SSD is included as the main component in the selected capacity, inspected and prepared for the build or order."
-        },
-        {
-          title: "Original Packaging",
-          text: "The product comes with its original box and packaging where available. Customers should keep the packaging for warranty and support purposes."
-        },
-        {
-          title: "Included Accessories",
-          text: "Included accessories depend on the official storage package contents supplied by SanDisk / WD_BLACK."
-        },
-        {
-          title: "Store Support",
-          text: "Purchases include store support, basic guidance, and free lifetime troubleshooting and diagnosis for products bought from The Computer Shop."
-        }
-      ]
-    },
+    ...(window.tcsStorageProducts || {}),
 
     "wd-black-sn7100-nvme-ssd": {
       id: "wd-black-sn7100-nvme-ssd",
@@ -6908,163 +6816,6 @@ text: "The ASUS ProArt is included as a complete configured PC build using the l
         {
           title: "Included Accessories",
           text: "Included accessories depend on the official ASUS package contents and may include the WiFi Q-Antenna, ROG Q-DIMM.2 with heatsink, SATA cables, fan splitter cables, ARGB splitter cables, thermistor cables, Q-connector, ROG screwdriver, stickers, USB drive with drivers, and documentation supplied by ASUS."
-        },
-        {
-          title: "Store Support",
-          text: "Purchases include store support, basic guidance, and free lifetime troubleshooting and diagnosis for products bought from The Computer Shop."
-        }
-      ]
-    },
-
-    "wd-black-gaming-hard-drive": {
-      id: "wd-black-gaming-hard-drive",
-      name: "WD_BLACK 3.5-Inch Gaming Hard Drive",
-      category: "Storage",
-      specsLine: "WD_BLACK | SATA HDD | 500GB–10TB",
-      priceText: "Insert price here",
-      priceNumber: null,
-      url: "product.html?product=wd-black-gaming-hard-drive",
-      images: Array.from({ length: 2 }, (_, index) => {
-        const imageNumber = index + 1;
-        return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781349902/wd-black-500gb-gaming-hard-drive-${imageNumber}.jpg`;
-      }),
-      defaultVariant: "500gb",
-      variantSelectorLabel: "Choose Capacity",
-      variants: [
-        {
-          id: "500gb",
-          capacity: "500GB",
-          priceText: "Insert price here",
-          priceNumber: null,
-          images: Array.from({ length: 2 }, (_, index) => {
-            const imageNumber = index + 1;
-            return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781349902/wd-black-500gb-gaming-hard-drive-${imageNumber}.jpg`;
-          }),
-          specs: [
-            ["Selected Capacity", "500GB"],
-            ["Model Number", "WD5003AZEX"],
-            ["Transfer Rate", "Up to 150MB/s"],
-            ["Cache Size", "64MB"],
-            ["Weight", "0.95lbs"],
-            ["Operating Temperature", "5°C to 55°C"]
-          ]
-        },
-        {
-          id: "2tb",
-          capacity: "2TB",
-          priceText: "Insert price here",
-          priceNumber: null,
-          images: Array.from({ length: 2 }, (_, index) => {
-            const imageNumber = index + 1;
-            return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781349912/wd-black-2tb-gaming-hard-drive-${imageNumber}.jpg`;
-          }),
-          specs: [
-            ["Selected Capacity", "2TB"],
-            ["Model Number", "WD2003FZEX"],
-            ["Transfer Rate", "Up to 164MB/s"],
-            ["Cache Size", "64MB"],
-            ["Weight", "1.32lbs"],
-            ["Operating Temperature", "5°C to 55°C"]
-          ]
-        },
-        {
-          id: "4tb",
-          capacity: "4TB",
-          priceText: "Insert price here",
-          priceNumber: null,
-          images: Array.from({ length: 2 }, (_, index) => {
-            const imageNumber = index + 1;
-            return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781349914/wd-black-4tb-gaming-hard-drive-${imageNumber}.jpg`;
-          }),
-          specs: [
-            ["Selected Capacity", "4TB"],
-            ["Model Number", "WD4006FZBX"],
-            ["Transfer Rate", "Up to 267MB/s"],
-            ["Cache Size", "256MB"],
-            ["Weight", "1.58lbs"],
-            ["Operating Temperature", "5°C to 60°C"]
-          ]
-        },
-        {
-          id: "6tb",
-          capacity: "6TB",
-          priceText: "Insert price here",
-          priceNumber: null,
-          images: Array.from({ length: 2 }, (_, index) => {
-            const imageNumber = index + 1;
-            return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781349924/wd-black-6tb-gaming-hard-drive-${imageNumber}.jpg`;
-          }),
-          specs: [
-            ["Selected Capacity", "6TB"],
-            ["Model Number", "WD6004FZBX"],
-            ["Transfer Rate", "Up to 267MB/s"],
-            ["Cache Size", "256MB"],
-            ["Operating Temperature", "5°C to 55°C"]
-          ]
-        },
-        {
-          id: "8tb",
-          capacity: "8TB",
-          priceText: "Insert price here",
-          priceNumber: null,
-          images: Array.from({ length: 2 }, (_, index) => {
-            const imageNumber = index + 1;
-            return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781349912/wd-black-8tb-gaming-hard-drive-${imageNumber}.jpg`;
-          }),
-          specs: [
-            ["Selected Capacity", "8TB"],
-            ["Model Number", "WD8002FZBX"],
-            ["Transfer Rate", "Up to 267MB/s"],
-            ["Cache Size", "256MB"],
-            ["Operating Temperature", "5°C to 55°C"]
-          ]
-        },
-        {
-          id: "10tb",
-          capacity: "10TB",
-          priceText: "Insert price here",
-          priceNumber: null,
-          images: Array.from({ length: 2 }, (_, index) => {
-            const imageNumber = index + 1;
-            return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781349919/wd-black-10tb-gaming-hard-drive-${imageNumber}.jpg`;
-          }),
-          specs: [
-            ["Selected Capacity", "10TB"],
-            ["Model Number", "WD102FZBX"],
-            ["Transfer Rate", "Up to 267MB/s"],
-            ["Cache Size", "512MB"],
-            ["Operating Temperature", "5°C to 55°C"]
-          ]
-        }
-      ],
-      whoIsThisFor: "For gaming PCs, large game libraries, media storage, backups, and desktop builds that need high-capacity 3.5-inch SATA hard drive storage with selectable 500GB, 2TB, 4TB, 6TB, 8TB, or 10TB capacity options.",
-      specs: [
-        ["Product Name", "WD_BLACK 3.5-Inch Gaming Hard Drive"],
-        ["Component Type", "Storage"],
-        ["Storage Type", "HDD"],
-        ["Brand", "Western Digital"],
-        ["Series", "WD_BLACK"],
-        ["Form Factor", "3.5-Inch"],
-        ["Connector", "SATA"],
-        ["Interface", "SATA"],
-        ["Disk Speed", "7200 RPM"],
-        ["Recording Technology", "CMR"],
-        ["Dimensions", "5.79 × 4 × 1.03 inches"],
-        ["Compatibility", "PC, Mac requires reformatting"],
-        ["Warranty", "5-Year Limited Warranty"]
-      ],
-      included: [
-        {
-          title: "Storage Drive",
-          text: "The WD_BLACK 3.5-Inch Gaming Hard Drive is included as the main component in the selected capacity, inspected and prepared for the build or order."
-        },
-        {
-          title: "Original Packaging",
-          text: "The product comes with its original box and packaging where available. Customers should keep the packaging for warranty and support purposes."
-        },
-        {
-          title: "Included Accessories",
-          text: "Included accessories depend on the official Western Digital package contents and may include Acronis True Image WD Edition Software and a quick install guide."
         },
         {
           title: "Store Support",
