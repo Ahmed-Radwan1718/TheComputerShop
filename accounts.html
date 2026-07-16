@@ -1694,7 +1694,252 @@ body.account-security-modal-open {
   background: rgba(255, 255, 255, 0.105);
 }
 
-/* ACCOUNT_CSS_CHUNK_5 */
+.account-panel-subheader {
+  display: grid;
+  gap: 8px;
+}
+
+.account-order-modal-card .account-panel-subheader {
+  margin-bottom: 14px;
+}
+
+.account-panel-subheader h3 {
+  color: white;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.account-panel-subheader p {
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.7;
+}
+
+.account-addresses-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+.account-addresses-header > div {
+  min-width: 0;
+}
+
+.account-address-add-button {
+  min-height: 42px;
+  padding: 0 18px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.09);
+  color: white;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.account-addresses-list {
+  display: grid;
+  gap: 14px;
+}
+
+.account-addresses-list:empty {
+  display: none;
+}
+
+.account-addresses-empty {
+  padding: 24px;
+}
+
+.account-address-card {
+  padding: 18px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.105);
+  background: rgba(255, 255, 255, 0.045);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  content-visibility: auto;
+  contain-intrinsic-size: 92px;
+}
+
+.account-address-card.default {
+  border-color: rgba(255, 255, 255, 0.24);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.account-address-card-text {
+  min-width: 0;
+  display: grid;
+  gap: 7px;
+}
+
+.account-address-card-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.account-address-card-text span {
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.account-address-default-badge {
+  min-height: 22px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #191a19;
+  display: inline-flex;
+  align-items: center;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.account-address-card-text h3 {
+  color: white;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.account-address-card-text p {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.account-address-card-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.account-address-card-button {
+  min-height: 38px;
+  padding: 0 15px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.account-address-card-button.default {
+  border-color: rgba(255, 255, 255, 0.36);
+  background: rgba(255, 255, 255, 0.92);
+  color: #191a19;
+}
+
+.account-address-card-button.danger {
+  border-color: rgba(255, 156, 156, 0.28);
+  background: rgba(255, 156, 156, 0.12);
+  color: rgba(255, 176, 176, 0.96);
+}
+
+.account-address-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  width: 100vw;
+  min-height: 100dvh;
+  padding: 24px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.account-address-modal[hidden] {
+  display: none;
+}
+
+.account-address-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+}
+
+.account-address-modal-card {
+  position: relative;
+  z-index: 1;
+  width: min(920px, calc(100vw - 48px));
+  max-height: min(820px, calc(100dvh - 48px));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: 36px;
+  border-radius: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  background: #2a2b2a;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.48);
+  color-scheme: dark;
+  scrollbar-color: rgba(255, 255, 255, 0.55) #2a2b2a;
+  scrollbar-width: auto;
+  contain: layout paint;
+}
+
+.account-address-modal-card .account-form-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.account-address-modal-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.62);
+  font-family: inherit;
+  font-size: 34px;
+  font-weight: 300;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.account-address-modal-header {
+  margin-bottom: 24px;
+  padding-right: 34px;
+}
+
+.account-address-modal-header h2 {
+  margin-bottom: 12px;
+  color: white;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.12;
+  text-transform: uppercase;
+}
+
+.account-address-modal-header p {
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+/* ACCOUNT_CSS_CHUNK_6 */
   </style>
 </head>
 <body>
