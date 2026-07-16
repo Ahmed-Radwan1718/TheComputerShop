@@ -1446,7 +1446,255 @@ body.account-security-modal-open {
   overflow: hidden;
 }
 
-/* ACCOUNT_CSS_CHUNK_4 */
+.account-security-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 3100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.account-security-modal[hidden] {
+  display: none;
+}
+
+.account-security-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+}
+
+.account-security-modal-card {
+  position: relative;
+  z-index: 1;
+  width: min(620px, 100%);
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: 36px;
+  border-radius: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  background: #181918;
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.32);
+  contain: layout paint;
+}
+
+.account-security-gate-card {
+  width: min(590px, 100%);
+}
+
+.account-security-code-card {
+  width: min(660px, 100%);
+  padding: 42px;
+}
+
+.account-security-modal-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.62);
+  font-family: inherit;
+  font-size: 34px;
+  font-weight: 300;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.account-security-modal-close:hover {
+  color: white;
+}
+
+.account-security-modal-header {
+  margin-bottom: 28px;
+  padding-right: 34px;
+}
+
+.account-security-modal-eyebrow {
+  margin-bottom: 12px;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.account-security-modal-header h2 {
+  margin-bottom: 12px;
+  color: white;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.account-security-modal-header p {
+  max-width: 520px;
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.75;
+}
+
+.account-security-modal-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.account-security-modal-cancel,
+.account-security-modal-continue,
+.account-security-code-submit,
+.account-security-code-cancel {
+  min-height: 52px;
+  padding: 0 24px;
+  border: 0;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    opacity 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.account-security-modal-cancel,
+.account-security-code-cancel {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.11);
+  color: white;
+}
+
+.account-security-modal-continue,
+.account-security-code-submit {
+  background: white;
+  color: #181918;
+}
+
+.account-security-modal-danger {
+  background: rgba(255, 156, 156, 0.18);
+  color: #ffc4c9;
+  box-shadow: inset 0 0 0 1px rgba(255, 156, 156, 0.42);
+}
+
+.account-security-modal-cancel:hover,
+.account-security-code-cancel:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.account-security-modal-continue:hover,
+.account-security-code-submit:hover {
+  opacity: 0.84;
+}
+
+.account-security-modal-cancel:active,
+.account-security-modal-continue:active,
+.account-security-code-submit:active,
+.account-security-code-cancel:active {
+  transform: translateY(1px);
+}
+
+.account-security-modal-continue:disabled,
+.account-security-code-submit:disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
+}
+
+.account-security-code-form {
+  display: grid;
+  gap: 20px;
+}
+
+.account-security-code-inputs {
+  margin-bottom: 8px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.account-security-code-input {
+  width: 58px;
+  height: 66px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  outline: 0;
+  background: rgba(255, 255, 255, 0.065);
+  color: white;
+  font-family: inherit;
+  font-size: 24px;
+  font-weight: 700;
+  text-align: center;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.account-security-code-input:focus {
+  background: rgba(255, 255, 255, 0.095);
+  border-color: rgba(255, 255, 255, 0.32);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.055);
+}
+
+.account-security-code-submit,
+.account-security-code-cancel {
+  width: 100%;
+}
+
+@media (max-width: 700px) {
+  .account-email-modal-card,
+  .account-security-modal-card,
+  .account-security-code-card {
+    padding: 26px 20px;
+  }
+
+  .account-email-modal-actions,
+  .account-security-modal-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .account-security-modal-header h2 {
+    font-size: 27px;
+  }
+
+  .account-security-modal-header p {
+    font-size: 15px;
+  }
+
+  .account-security-code-inputs {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .account-security-code-input {
+    width: 100%;
+    min-width: 0;
+    height: 56px;
+    border-radius: 15px;
+    font-size: 22px;
+  }
+}
+
+.account-divider {
+  height: 1px;
+  margin: 12px 0;
+  background: rgba(255, 255, 255, 0.105);
+}
+
+/* ACCOUNT_CSS_CHUNK_5 */
   </style>
 </head>
 <body>
