@@ -5,6 +5,431 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Account - The Computer Shop</title>
     <link rel="stylesheet" href="style.css?v=orders-progress-completed-calm-green-20260701" />
+
+  <style>
+.account-address-province-select {
+  position: relative;
+  z-index: 30;
+}
+
+.account-address-province-select.open {
+  z-index: 90;
+}
+
+.account-address-province-select .custom-select-trigger {
+  min-height: 50px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.045);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.account-address-province-select .custom-select-menu {
+  max-height: 260px;
+  overflow-y: auto;
+  background: rgba(42, 43, 42, 0.99);
+  color-scheme: dark;
+  scrollbar-color: rgba(255, 255, 255, 0.55) #2a2b2a;
+  scrollbar-width: auto;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  transform: none;
+  transition: opacity 0.12s ease;
+  will-change: opacity;
+  contain: paint;
+}
+
+.account-address-province-select .custom-select-menu {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 10px);
+  display: block;
+  height: min(260px, 46dvh);
+  max-height: min(260px, 46dvh);
+  overflow-y: scroll;
+  overscroll-behavior: contain;
+}
+
+.account-address-province-select.open .custom-select-menu {
+  transform: none;
+}
+
+.account-address-province-select .custom-select-option {
+  font-family: inherit;
+  transition:
+    color 0.12s ease,
+    background 0.12s ease;
+}
+
+.account-address-province-select .custom-select-option:hover {
+  transform: none;
+}
+
+.account-page {
+  min-height: 100vh;
+  background: #2a2b2a;
+  padding-top: 104px;
+  overflow-x: clip;
+}
+
+body:has(:is(
+  .home-page,
+  .components-hub-page,
+  .signature-page,
+  .component-page,
+  .product-page,
+  .cart-page,
+  .consultation-page,
+  .about-us-page,
+  .faq-page,
+  .policies-page,
+  .auth-page,
+  .account-page
+)) .site-header {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  transform: translate3d(-50%, 0, 0);
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+@media (max-width: 900px) {
+  body:has(:is(
+    .home-page,
+    .components-hub-page,
+    .signature-page,
+    .component-page,
+    .product-page,
+    .cart-page,
+    .consultation-page,
+    .about-us-page,
+    .faq-page,
+    .policies-page,
+    .auth-page,
+    .account-page
+  )) .site-header {
+    transform: none;
+  }
+}
+
+body:has(:is(
+  .home-page,
+  .components-hub-page,
+  .signature-page,
+  .component-page,
+  .product-page,
+  .cart-page,
+  .consultation-page,
+  .about-us-page,
+  .faq-page,
+  .policies-page,
+  .auth-page,
+  .account-page
+)) .site-header .floating-account-menu {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.nav-menu-overlay,
+.filters-panel,
+.cart-summary,
+.product-carousel-main,
+.faq-accordion-item,
+.product-included-item,
+.product-spec-row {
+  contain: layout paint style;
+}
+
+.nav-menu-overlay {
+  transform: translateZ(0);
+  will-change: opacity;
+  backface-visibility: hidden;
+}
+
+.filters-panel {
+  transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.components-hub-card,
+.signature-build-card,
+.cart-item {
+  content-visibility: auto;
+}
+
+.components-hub-card {
+  contain-intrinsic-size: 300px;
+}
+
+.signature-build-card {
+  contain-intrinsic-size: 390px;
+}
+
+.cart-item {
+  contain-intrinsic-size: 190px;
+}
+
+.account-section {
+  min-height: calc(100vh - 104px);
+  padding: 76px 44px 96px;
+}
+
+.account-section-inner {
+  width: 100%;
+  max-width: 1220px;
+  margin: 0 auto;
+}
+
+.account-header {
+  max-width: 1220px;
+  margin: 0 auto 34px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  text-align: left;
+}
+
+.account-header h1 {
+  margin: 0;
+  color: white;
+  font-size: 46px;
+  font-weight: 700;
+  line-height: 1.08;
+  text-transform: uppercase;
+}
+
+.account-header p {
+  max-width: 380px;
+  margin: 0 0 8px;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.6;
+  text-align: right;
+}
+
+.account-layout {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+}
+
+.account-sidebar {
+  position: sticky;
+  top: 120px;
+  padding: 14px;
+  border-radius: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  background: rgba(24, 25, 24, 0.56);
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.18);
+  display: grid;
+  gap: 8px;
+  transform: translateZ(0);
+  will-change: transform;
+  contain: layout paint style;
+}
+
+.account-sidebar-link {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.62);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-align: left;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.account-sidebar-link img {
+  width: 19px;
+  height: 19px;
+  display: block;
+  object-fit: contain;
+  opacity: 0.62;
+  filter: brightness(0) invert(1);
+  transition: opacity 0.2s ease;
+}
+
+.account-sidebar-link:hover,
+.account-sidebar-link.active {
+  background: rgba(255, 255, 255, 0.095);
+  color: white;
+}
+
+.account-sidebar-link:hover img,
+.account-sidebar-link.active img {
+  opacity: 1;
+}
+
+.account-logout-link {
+  margin-top: 8px;
+  color: rgba(255, 156, 156, 0.95);
+}
+
+.account-logout-link img {
+  opacity: 0.95;
+  filter: brightness(0) saturate(100%) invert(82%) sepia(19%) saturate(933%) hue-rotate(306deg) brightness(102%) contrast(101%);
+}
+
+.account-content {
+  min-width: 0;
+}
+
+.account-loading {
+  padding: 28px;
+  border-radius: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  background: rgba(24, 25, 24, 0.56);
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.account-panel {
+  display: none;
+  padding: 30px;
+  border-radius: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  background: rgba(24, 25, 24, 0.56);
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.18);
+  transform-origin: top center;
+}
+
+.account-panel.active {
+  display: block;
+  animation: accountPanelEnter 0.34s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body.account-security-modal-open .account-panel.active {
+  animation: none;
+  transform: none;
+  filter: none;
+}
+
+@keyframes accountPanelEnter {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.985);
+    filter: blur(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .account-panel.active {
+    animation: none;
+  }
+}
+
+.account-loading:not([hidden]) + .account-panel {
+  display: none;
+}
+
+.account-loading[hidden] {
+  display: none;
+}
+
+.account-panel-header {
+  margin-bottom: 28px;
+}
+
+.account-panel-eyebrow {
+  margin-bottom: 12px;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.account-panel-header h2 {
+  margin-bottom: 12px;
+  color: white;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.12;
+  text-transform: uppercase;
+}
+
+.account-panel-header p {
+  max-width: 680px;
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.75;
+}
+
+.account-form {
+  display: grid;
+  gap: 20px;
+}
+
+.account-profile-photo-section {
+  padding: 18px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  background: rgba(255, 255, 255, 0.045);
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.account-profile-photo-preview-wrap {
+  width: 96px;
+  height: 96px;
+  flex: 0 0 96px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.09);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.account-profile-photo-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.account-profile-photo-preview[hidden],
+.account-profile-photo-initial[hidden] {
+  display: none;
+}
+
+.account-profile-photo-initial {
+  color: white;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+/* ACCOUNT_CSS_CHUNK_2 */
+  </style>
 </head>
 <body>
 
