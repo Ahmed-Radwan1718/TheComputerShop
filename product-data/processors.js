@@ -178,6 +178,112 @@
         { title: "Included Accessories", text: "Included accessories depend on the official processor package contents supplied by Intel." },
         { title: "Store Support", text: "Purchases include store support, basic guidance, and free lifetime troubleshooting and diagnosis for products bought from The Computer Shop." }
       ]
+    },
+
+    "intel-core-ultra-7-270k-plus": {
+      id: "intel-core-ultra-7-270k-plus",
+      name: "Intel Core Ultra 7 270K Plus",
+      category: "CPU",
+      specsLine: "Intel | Core Ultra 7 | 24 Cores",
+      priceText: "Insert price here",
+      priceNumber: null,
+      url: "product.html?product=intel-core-ultra-7-270k-plus",
+      images: [
+        "https://res.cloudinary.com/dhtamisqn/image/upload/v1781350169/intel-core-ultra-7-270k-plus-1.jpg"
+      ],
+      whoIsThisFor: "A high-performance Intel Core Ultra 7 processor for gaming, productivity, creator work, streaming, AI-assisted workloads, and premium LGA1851 builds that need strong 24-core hybrid performance without stepping into Core Ultra 9 pricing.",
+      specs: [
+        ["Product Name", "Intel Core Ultra 7 Processor 270K Plus"],
+        ["Processor Number", "270K PLUS"],
+        ["Product Collection", "Intel Core Ultra Processors Series 2"],
+        ["Code Name", "Arrow Lake"],
+        ["Vertical Segment", "Desktop"],
+        ["Total Cores", "24"],
+        ["Performance Cores", "8"],
+        ["Efficient Cores", "16"],
+        ["Total Threads", "24"],
+        ["Max Turbo Frequency", "5.50GHz"],
+        ["Intel Turbo Boost Max Technology 3.0 Frequency", "5.50GHz"],
+        ["Performance-core Max Turbo Frequency", "5.40GHz"],
+        ["Efficient-core Max Turbo Frequency", "4.70GHz"],
+        ["Performance-core Base Frequency", "3.70GHz"],
+        ["Efficient-core Base Frequency", "3.20GHz"],
+        ["Cache", "36MB Intel Smart Cache"],
+        ["Total L2 Cache", "40MB"],
+        ["Processor Base Power", "125W"],
+        ["Maximum Turbo Power", "250W"],
+        ["Memory Support", "DDR5 up to 7200MT/s"],
+        ["Max Memory Size", "256GB"],
+        ["Memory Channels", "2"],
+        ["Integrated Graphics", "Intel Graphics"],
+        ["Graphics Max Dynamic Frequency", "2.00GHz"],
+        ["NPU", "Intel AI Boost"],
+        ["Overall Peak TOPS", "36"],
+        ["PCI Express Revision", "PCIe 5.0 and PCIe 4.0"],
+        ["Max PCIe Lanes", "24"],
+        ["Socket", "FCLGA1851"],
+        ["Max Operating Temperature", "105°C"]
+      ],
+      included: [
+        { title: "Processor", text: "The Intel Core Ultra 7 270K Plus processor is included as the main component, inspected and prepared for the build or order." },
+        { title: "Original Packaging", text: "The product comes with its original box and packaging where available. Customers should keep the packaging for warranty and support purposes." },
+        { title: "Included Accessories", text: "Included accessories depend on the official processor package contents supplied by Intel." },
+        { title: "Store Support", text: "Purchases include store support, basic guidance, and free lifetime troubleshooting and diagnosis for products bought from The Computer Shop." }
+      ]
+    },
+
+    "intel-core-ultra-9-285k": {
+      id: "intel-core-ultra-9-285k",
+      name: "Intel Core Ultra 9 285K",
+      category: "CPU",
+      specsLine: "Intel | Core Ultra 9 | 24 Cores",
+      priceText: "Insert price here",
+      priceNumber: null,
+      url: "product.html?product=intel-core-ultra-9-285k",
+      images: [
+        "https://res.cloudinary.com/dhtamisqn/image/upload/v1781350192/intel-core-ultra-9-285k-1.jpg",
+        "https://res.cloudinary.com/dhtamisqn/image/upload/v1781350192/intel-core-ultra-9-285k-4.jpg"
+      ],
+      whoIsThisFor: "A flagship unlocked Intel Core Ultra processor for high-end gaming, demanding creator workloads, workstation systems, heavy multitasking, AI-assisted applications, and premium LGA1851 builds that need 24-core hybrid performance, strong boost clocks, DDR5 support, PCIe 5.0 readiness, and maximum desktop-class Core Ultra performance.",
+      specs: [
+        ["Product Name", "Intel Core Ultra 9 Processor 285K"],
+        ["Processor Number", "285K"],
+        ["Product Collection", "Intel Core Ultra Processors Series 2"],
+        ["Code Name", "Arrow Lake"],
+        ["Vertical Segment", "Desktop"],
+        ["Total Cores", "24"],
+        ["Performance Cores", "8"],
+        ["Efficient Cores", "16"],
+        ["Total Threads", "24"],
+        ["Max Turbo Frequency", "5.70GHz"],
+        ["Intel Thermal Velocity Boost Frequency", "5.70GHz"],
+        ["Intel Turbo Boost Max Technology 3.0 Frequency", "5.60GHz"],
+        ["Performance-core Max Turbo Frequency", "5.50GHz"],
+        ["Efficient-core Max Turbo Frequency", "4.60GHz"],
+        ["Performance-core Base Frequency", "3.70GHz"],
+        ["Efficient-core Base Frequency", "3.20GHz"],
+        ["Cache", "36MB Intel Smart Cache"],
+        ["Total L2 Cache", "40MB"],
+        ["Processor Base Power", "125W"],
+        ["Maximum Turbo Power", "250W"],
+        ["Memory Support", "DDR5 up to 6400MT/s"],
+        ["Max Memory Size", "256GB"],
+        ["Memory Channels", "2"],
+        ["Integrated Graphics", "Intel Graphics"],
+        ["Graphics Max Dynamic Frequency", "2.00GHz"],
+        ["NPU", "Intel AI Boost"],
+        ["Overall Peak TOPS", "36"],
+        ["PCI Express Revision", "PCIe 5.0 and PCIe 4.0"],
+        ["Max PCIe Lanes", "24"],
+        ["Socket", "FCLGA1851"],
+        ["Max Operating Temperature", "105°C"]
+      ],
+      included: [
+        { title: "Processor", text: "The Intel Core Ultra 9 285K processor is included as the main component, inspected and prepared for the build or order." },
+        { title: "Original Packaging", text: "The product comes with its original box and packaging where available. Customers should keep the packaging for warranty and support purposes." },
+        { title: "Included Accessories", text: "Included accessories depend on the official processor package contents supplied by Intel." },
+        { title: "Store Support", text: "Purchases include store support, basic guidance, and free lifetime troubleshooting and diagnosis for products bought from The Computer Shop." }
+      ]
     }
   };
 }());
