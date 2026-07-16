@@ -2743,7 +2743,377 @@ body.account-security-modal-open {
   }
 }
 
-/* ACCOUNT_CSS_CHUNK_9 */
+.account-support-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 3400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.account-support-modal[hidden] {
+  display: none;
+}
+
+.account-support-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+}
+
+.account-support-modal-card {
+  position: relative;
+  z-index: 1;
+  width: min(680px, 100%);
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: 34px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  background: #181918;
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.32);
+  color-scheme: dark;
+  scrollbar-color: rgba(255, 255, 255, 0.55) #2a2b2a;
+  scrollbar-width: auto;
+  contain: layout paint;
+}
+
+.account-support-detail-card {
+  width: min(820px, 100%);
+}
+
+#admin-ticket-modal .account-form-grid {
+  margin-bottom: 20px;
+}
+
+.admin-order-status-grid {
+  margin-bottom: 18px;
+  overflow: visible;
+}
+
+.admin-order-status-grid .account-field {
+  overflow: visible;
+}
+
+.admin-order-select {
+  position: relative;
+  z-index: 30;
+}
+
+.admin-order-select.open {
+  z-index: 80;
+}
+
+.admin-order-select .custom-select-trigger {
+  min-height: 50px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.045);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.admin-order-select .custom-select-menu {
+  z-index: 3600;
+  max-height: 260px;
+  overflow-y: auto;
+  background: rgba(42, 43, 42, 0.99);
+  color-scheme: dark;
+  scrollbar-color: rgba(255, 255, 255, 0.55) #2a2b2a;
+  scrollbar-width: auto;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  transform: none;
+  transition: opacity 0.12s ease;
+  will-change: opacity;
+  contain: paint;
+}
+
+.admin-order-select.open .custom-select-menu {
+  transform: none;
+}
+
+.admin-order-select .custom-select-option {
+  font-family: inherit;
+  transition:
+    color 0.12s ease,
+    background 0.12s ease;
+}
+
+.admin-order-select .custom-select-option:hover {
+  transform: none;
+}
+
+.admin-order-info-grid {
+  margin-bottom: 22px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.admin-order-info-card {
+  min-width: 0;
+  padding: 16px 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.095);
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.admin-order-info-card-full {
+  grid-column: 1 / -1;
+}
+
+.admin-order-info-card span,
+.admin-order-section h3 {
+  margin-bottom: 8px;
+  display: block;
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.admin-order-info-card strong {
+  color: white;
+  display: block;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.admin-order-info-card p {
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+
+.admin-order-map-link {
+  color: white;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.admin-order-section {
+  margin-bottom: 22px;
+}
+
+.admin-order-section .account-support-thread {
+  margin-bottom: 0;
+  gap: 10px;
+}
+
+.admin-order-item {
+  padding: 16px 18px;
+  border-radius: 18px;
+}
+
+.admin-order-item-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  align-items: center;
+}
+
+.admin-order-item-content.has-image {
+  grid-template-columns: 88px minmax(0, 1fr);
+}
+
+.admin-order-item-image {
+  display: block;
+  width: 88px;
+  aspect-ratio: 1;
+  border-radius: 16px;
+  object-fit: contain;
+}
+
+.admin-order-item-details {
+  display: grid;
+  min-width: 0;
+  gap: 12px;
+}
+
+.admin-order-item .account-support-message-head {
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.admin-order-item .account-support-message-head strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.admin-order-item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.admin-order-item-row strong {
+  color: white;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.admin-order-actions {
+  margin-top: 8px;
+  margin-bottom: 12px;
+  align-items: center;
+}
+
+@media (max-width: 760px) {
+  .account-support-modal-card {
+    padding: 28px 20px;
+  }
+
+  .admin-order-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-order-item-content.has-image {
+    grid-template-columns: 72px minmax(0, 1fr);
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .admin-order-item-image {
+    width: 72px;
+    border-radius: 14px;
+  }
+
+  .admin-order-item-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .admin-order-item-row strong {
+    white-space: normal;
+  }
+}
+
+.account-support-modal-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.62);
+  font-family: inherit;
+  font-size: 34px;
+  font-weight: 300;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.account-support-modal-header {
+  margin-bottom: 24px;
+  padding-right: 52px;
+  min-width: 0;
+}
+
+.account-support-modal-header h2 {
+  max-width: 100%;
+  margin-bottom: 12px;
+  color: white;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.12;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.account-support-modal-header p {
+  max-width: 100%;
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 15px;
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+}
+
+.account-support-thread {
+  margin-bottom: 24px;
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+
+.account-support-message {
+  min-width: 0;
+  padding: 18px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  display: grid;
+  gap: 10px;
+}
+
+.account-support-message.admin {
+  background: rgba(185, 255, 202, 0.07);
+  border-color: rgba(185, 255, 202, 0.12);
+}
+
+.account-support-message-head {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+  min-width: 0;
+}
+
+.account-support-message-head strong {
+  min-width: 0;
+  color: white;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.account-support-message-head span {
+  min-width: 0;
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 12px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.account-support-message p {
+  max-width: 100%;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 14px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.account-support-detail-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+#account-order-detail-actions {
+  margin-top: 18px;
+}
+
+/* ACCOUNT_CSS_CHUNK_10 */
   </style>
 </head>
 <body>
