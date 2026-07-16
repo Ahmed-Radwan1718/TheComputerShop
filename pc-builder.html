@@ -219,9 +219,15 @@
       color: #141414;
     }
 
-    .pc-builder-summary {
+    .pc-builder-side-column {
       position: sticky;
       top: 104px;
+      display: grid;
+      gap: 22px;
+      align-self: start;
+    }
+
+    .pc-builder-summary {
       overflow: hidden;
     }
 
@@ -442,6 +448,7 @@
         grid-template-columns: 1fr;
       }
 
+      .pc-builder-side-column,
       .pc-builder-summary {
         position: static;
       }
@@ -721,9 +728,6 @@
     }
 
     .pc-builder-fps-estimator {
-      margin-top: 18px;
-      padding-top: 18px;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
       display: grid;
       gap: 14px;
     }
@@ -1323,6 +1327,7 @@
         grid-template-columns: 1fr;
       }
 
+      .pc-builder-side-column,
       .pc-builder-summary {
         position: static;
       }
@@ -1448,75 +1453,81 @@
       </section>
     </div>
 
-    <aside class="pc-builder-summary">
-      <div class="pc-builder-summary-header">
-        <h2>Build Summary</h2>
-        <span class="pc-builder-status" id="pc-builder-status">Loading</span>
-      </div>
-
-      <div class="pc-builder-summary-body">
-        <div class="pc-builder-stat-grid">
-          <div class="pc-builder-stat"><span class="pc-builder-stat-label"><span class="pc-builder-stat-icon" aria-hidden="true"></span>Estimated wattage</span><strong id="pc-builder-wattage">0W</strong></div>
-          <div class="pc-builder-stat"><span>Total</span><strong id="pc-builder-total">Pending prices</strong></div>
+    <aside class="pc-builder-side-column">
+      <section class="pc-builder-summary">
+        <div class="pc-builder-summary-header">
+          <h2>Build Summary</h2>
+          <span class="pc-builder-status" id="pc-builder-status">Loading</span>
         </div>
 
-        <section class="pc-builder-fps-estimator" aria-labelledby="pc-builder-fps-title">
-          <div class="pc-builder-fps-header">
-            <h3 id="pc-builder-fps-title">Game FPS Estimator</h3>
-            <span>Approx.</span>
+        <div class="pc-builder-summary-body">
+          <div class="pc-builder-stat-grid">
+            <div class="pc-builder-stat"><span class="pc-builder-stat-label"><span class="pc-builder-stat-icon" aria-hidden="true"></span>Estimated wattage</span><strong id="pc-builder-wattage">0W</strong></div>
+            <div class="pc-builder-stat"><span>Total</span><strong id="pc-builder-total">Pending prices</strong></div>
           </div>
 
-          <div class="pc-builder-fps-controls">
-            <label class="pc-builder-fps-field" for="pc-builder-fps-game">
-              <span>Game</span>
-              <select id="pc-builder-fps-game">
-                <option value="fortnite">Fortnite</option>
-                <option value="valorant">Valorant</option>
-                <option value="warzone">Call of Duty: Warzone</option>
-                <option value="cyberpunk">Cyberpunk 2077</option>
-                <option value="gta">GTA V / Online</option>
-                <option value="minecraft">Minecraft Shaders</option>
-              </select>
-            </label>
-
-            <label class="pc-builder-fps-field" for="pc-builder-fps-resolution">
-              <span>Resolution</span>
-              <select id="pc-builder-fps-resolution">
-                <option value="1080p">1080p</option>
-                <option value="1440p" selected>1440p</option>
-                <option value="4k">4K</option>
-              </select>
-            </label>
-
-            <label class="pc-builder-fps-field" for="pc-builder-fps-graphics">
-              <span>Graphics Preset</span>
-              <select id="pc-builder-fps-graphics">
-                <option value="low">Low</option>
-                <option value="high" selected>High</option>
-                <option value="epic">Epic</option>
-                <option value="ultra">Ultra</option>
-              </select>
-            </label>
+          <div class="pc-builder-save-actions">
+            <button class="pc-builder-button" type="button" id="pc-builder-add-components-cart">Add Components to Cart</button>
+            <button class="pc-builder-button secondary" type="button" id="pc-builder-save-build">Save Build</button>
+            <p class="pc-builder-save-message" id="pc-builder-save-message" aria-live="polite"></p>
           </div>
+        </div>
+      </section>
 
-          <div class="pc-builder-fps-result" aria-live="polite">
-            <div class="pc-builder-fps-top">
-              <div>
-                <strong class="pc-builder-fps-number" id="pc-builder-fps-number">Pick CPU + GPU</strong>
-                <div class="pc-builder-fps-label" id="pc-builder-fps-label">Estimated average FPS</div>
-              </div>
-              <span class="pc-builder-fps-rating warn" id="pc-builder-fps-rating">Waiting</span>
+      <section class="pc-builder-summary pc-builder-fps-card" aria-labelledby="pc-builder-fps-title">
+        <div class="pc-builder-summary-header pc-builder-fps-header">
+          <h3 id="pc-builder-fps-title">Game FPS Estimator</h3>
+          <span>Approx.</span>
+        </div>
+
+        <div class="pc-builder-summary-body">
+          <div class="pc-builder-fps-estimator">
+            <div class="pc-builder-fps-controls">
+              <label class="pc-builder-fps-field" for="pc-builder-fps-game">
+                <span>Game</span>
+                <select id="pc-builder-fps-game">
+                  <option value="fortnite">Fortnite</option>
+                  <option value="valorant">Valorant</option>
+                  <option value="warzone">Call of Duty: Warzone</option>
+                  <option value="cyberpunk">Cyberpunk 2077</option>
+                  <option value="gta">GTA V / Online</option>
+                  <option value="minecraft">Minecraft Shaders</option>
+                </select>
+              </label>
+
+              <label class="pc-builder-fps-field" for="pc-builder-fps-resolution">
+                <span>Resolution</span>
+                <select id="pc-builder-fps-resolution">
+                  <option value="1080p">1080p</option>
+                  <option value="1440p" selected>1440p</option>
+                  <option value="4k">4K</option>
+                </select>
+              </label>
+
+              <label class="pc-builder-fps-field" for="pc-builder-fps-graphics">
+                <span>Graphics Preset</span>
+                <select id="pc-builder-fps-graphics">
+                  <option value="low">Low</option>
+                  <option value="high" selected>High</option>
+                  <option value="epic">Epic</option>
+                  <option value="ultra">Ultra</option>
+                </select>
+              </label>
             </div>
-            <p class="pc-builder-fps-note" id="pc-builder-fps-note">Choose a CPU and video card to estimate gaming performance.</p>
-          </div>
-        </section>
 
-        <div class="pc-builder-save-actions">
-          <button class="pc-builder-button" type="button" id="pc-builder-add-components-cart">Add Components to Cart</button>
-          <button class="pc-builder-button secondary" type="button" id="pc-builder-save-build">Save Build</button>
-          <p class="pc-builder-save-message" id="pc-builder-save-message" aria-live="polite"></p>
+            <div class="pc-builder-fps-result" aria-live="polite">
+              <div class="pc-builder-fps-top">
+                <div>
+                  <strong class="pc-builder-fps-number" id="pc-builder-fps-number">Pick CPU + GPU</strong>
+                  <div class="pc-builder-fps-label" id="pc-builder-fps-label">Estimated average FPS</div>
+                </div>
+                <span class="pc-builder-fps-rating warn" id="pc-builder-fps-rating">Waiting</span>
+              </div>
+              <p class="pc-builder-fps-note" id="pc-builder-fps-note">Choose a CPU and video card to estimate gaming performance.</p>
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
     </aside>
   </section>
 </main>
