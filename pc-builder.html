@@ -3061,109 +3061,536 @@
     return engine.partIsCompatible(getSelectedBuild(), categoryKey, part);
   }
 
-  const fpsGpuScores = {
-    "asus-rog-astral-rtx5090-oc-32gb": { raster: 2.2 },
-    "rog-astral-lc-rtx5090-o32g-gaming": { raster: 2.2 },
-    "rtx-5090-aorus-master": { raster: 2.15 },
-    "asus-proart-rtx5080-o16g": { raster: 1.68 },
-    "asus-tuf-rtx5080-o16g-gaming": { raster: 1.68 },
-    "msi-rtx5080-gaming-trio-oc-16gb": { raster: 1.66 },
-    "rtx-5080-aorus-master": { raster: 1.66 },
-    "rtx-5080-windforce-oc-sff-16g": { raster: 1.62 },
-    "zotac-gaming-rtx5080-amp-extreme-infinity": { raster: 1.62 },
-    "asus-tuf-rtx5070ti-o16g-gaming": { raster: 1.34 },
-    "msi-rtx5070-ti-gaming-trio-oc-16gb": { raster: 1.34 },
-    "rog-strix-rtx5070ti-o16g-gaming": { raster: 1.34 },
-    "rtx-5070-ti-eagle-oc-sff-16g": { raster: 1.3 },
-    "aorus-radeon-rx9070-xt-elite-16gb": { raster: 1.24 },
-    "rx-9070-xt-gaming-oc-16g": { raster: 1.22 },
-    "rtx-5070-aorus-master": { raster: 1 },
-    "rtx-5070-gaming-oc": { raster: 1 },
-    "rtx-5070-eagle-oc-sff": { raster: 0.96 },
-    "msi-rtx5060-ti-16g-gaming-trio-oc-white": { raster: 0.72 },
-    "rtx-5060-ti-aorus-elite": { raster: 0.7 },
-    "rtx-5060-ti-windforce-max-oc": { raster: 0.68 },
-    "rx-9060-xt-gaming-oc-16g": { raster: 0.66 },
-    "intel-arc-b580-12gb": { raster: 0.63 },
-    "asus-dual-rtx5060-o8g": { raster: 0.6 },
-    "rtx-5060-eagle-max-oc": { raster: 0.6 },
-    "rtx-5060-eagle-oc": { raster: 0.6 },
-    "rtx-5060-windforce-max-oc-8g": { raster: 0.58 },
-    "rx-9060-xt-gaming-oc-8g": { raster: 0.58 },
-    "rtx-5050-gaming-oc": { raster: 0.44 }
+  const fpsRenderingMode = "native";
+
+  const fpsBenchmarkAnchors = [
+    /*
+      Add verified measured benchmark rows only:
+      {
+        gameId: "game-id",
+        cpuId: "cpu-product-id",
+        gpuId: "gpu-product-id",
+        resolution: "1440p",
+        preset: "ultra",
+        renderingMode: "native",
+        averageFps: 0,
+        onePercentLow: 0,
+        source: "source name or URL",
+        benchmarkDate: "YYYY-MM-DD",
+        gameVersion: null,
+        driverVersion: null
+      }
+    */
+  ];
+
+  const fpsGpuProfiles = {
+    /*
+      Add normalized benchmark-derived GPU profiles only:
+      "gpu-product-id": {
+        score: 1,
+        games: { "game-id": 1 },
+        categories: { gpu_heavy: 1 },
+        source: "source name or URL"
+      }
+    */
   };
 
-  const fpsCpuScores = {
-    "amd-ryzen-7-9800x3d": { gaming: 1.18, cap: 1.24 },
-    "amd-ryzen-9-9950x3d": { gaming: 1.14, cap: 1.2 },
-    "amd-ryzen-9-9900x3d": { gaming: 1.12, cap: 1.18 },
-    "amd-ryzen-9-9950x3d2-dual-edition": { gaming: 1.1, cap: 1.16 },
-    "intel-core-ultra-9-285k": { gaming: 1.06, cap: 1.1 },
-    "amd-ryzen-9-9950x": { gaming: 1.05, cap: 1.08 },
-    "amd-ryzen-9-9900x": { gaming: 1.02, cap: 1.05 },
-    "intel-core-ultra-7-270k-plus": { gaming: 1.01, cap: 1.04 },
-    "intel-core-ultra-7-265k": { gaming: 1, cap: 1.03 },
-    "amd-ryzen-7-9700x": { gaming: 1, cap: 1 },
-    "amd-ryzen-5-9600x": { gaming: 0.94, cap: 0.95 },
-    "intel-core-ultra-5-245k": { gaming: 0.92, cap: 0.93 }
+  const fpsCpuProfiles = {
+    /*
+      Add normalized benchmark-derived CPU profiles only:
+      "cpu-product-id": {
+        score: 1,
+        games: { "game-id": 1 },
+        categories: { competitive: 1 },
+        source: "source name or URL"
+      }
+    */
+  };
+
+  const fpsResolutionOrder = {
+    "1080p": 1,
+    "1440p": 2,
+    "2160p": 3
+  };
+
+  const fpsPresetOrder = {
+    low: 1,
+    medium: 2,
+    high: 3,
+    ultra: 4
   };
 
   const fpsGameProfiles = {
-    "counter-strike-2": { label: "Counter-Strike 2", base: 285, gpu: 0.26, cpu: 0.74, cpuCap: 680, spread: 0.18, onePercent: 0.62 },
-    "fortnite": { label: "Fortnite", base: 96, gpu: 0.62, cpu: 0.38, spread: 0.24, onePercent: 0.58 },
-    "valorant": { label: "Valorant", base: 460, gpu: 0.18, cpu: 0.82, cpuCap: 780, spread: 0.2, onePercent: 0.64 },
-    "call-of-duty-warzone": { label: "Call of Duty: Warzone", base: 122, gpu: 0.58, cpu: 0.42, spread: 0.2, onePercent: 0.62 },
-    "apex-legends": { label: "Apex Legends", base: 175, gpu: 0.5, cpu: 0.5, spread: 0.18, onePercent: 0.66 },
-    "pubg-battlegrounds": { label: "PUBG: Battlegrounds", base: 150, gpu: 0.48, cpu: 0.52, spread: 0.2, onePercent: 0.62 },
-    "marvel-rivals": { label: "Marvel Rivals", base: 118, gpu: 0.62, cpu: 0.38, spread: 0.22, onePercent: 0.6 },
-    "overwatch-2": { label: "Overwatch 2", base: 230, gpu: 0.42, cpu: 0.58, cpuCap: 600, spread: 0.17, onePercent: 0.68 },
-    "rainbow-six-siege": { label: "Rainbow Six Siege", base: 295, gpu: 0.34, cpu: 0.66, cpuCap: 650, spread: 0.16, onePercent: 0.7 },
-    "battlefield-6": { label: "Battlefield 6", base: 115, gpu: 0.58, cpu: 0.42, spread: 0.22, onePercent: 0.6 },
-    "minecraft": { label: "Minecraft", base: 230, gpu: 0.22, cpu: 0.78, cpuCap: 520, spread: 0.28, onePercent: 0.55 },
-    "roblox": { label: "Roblox", base: 240, gpu: 0.2, cpu: 0.8, cpuCap: 420, spread: 0.26, onePercent: 0.58 },
-    "league-of-legends": { label: "League of Legends", base: 310, gpu: 0.18, cpu: 0.82, cpuCap: 620, spread: 0.18, onePercent: 0.66 },
-    "dota-2": { label: "Dota 2", base: 220, gpu: 0.28, cpu: 0.72, cpuCap: 500, spread: 0.18, onePercent: 0.64 },
-    "rocket-league": { label: "Rocket League", base: 300, gpu: 0.36, cpu: 0.64, cpuCap: 650, spread: 0.16, onePercent: 0.7 },
-    "grand-theft-auto-v-enhanced": { label: "Grand Theft Auto V Enhanced", base: 160, gpu: 0.45, cpu: 0.55, spread: 0.18, onePercent: 0.66 },
-    "cyberpunk-2077": { label: "Cyberpunk 2077", base: 82, gpu: 0.84, cpu: 0.16, spread: 0.18, onePercent: 0.68 },
-    "red-dead-redemption-2": { label: "Red Dead Redemption 2", base: 105, gpu: 0.76, cpu: 0.24, spread: 0.16, onePercent: 0.7 },
-    "forza-horizon-5": { label: "Forza Horizon 5", base: 140, gpu: 0.68, cpu: 0.32, spread: 0.16, onePercent: 0.72 },
-    "microsoft-flight-simulator-2024": { label: "Microsoft Flight Simulator 2024", base: 72, gpu: 0.38, cpu: 0.62, spread: 0.24, onePercent: 0.55 },
-    "alan-wake-2": { label: "Alan Wake 2", base: 62, gpu: 0.9, cpu: 0.1, spread: 0.18, onePercent: 0.68 },
-    "black-myth-wukong": { label: "Black Myth: Wukong", base: 72, gpu: 0.86, cpu: 0.14, spread: 0.2, onePercent: 0.64 },
-    "helldivers-2": { label: "Helldivers 2", base: 95, gpu: 0.58, cpu: 0.42, spread: 0.22, onePercent: 0.58 },
-    "palworld": { label: "Palworld", base: 110, gpu: 0.46, cpu: 0.54, spread: 0.26, onePercent: 0.55 },
-    "elden-ring": { label: "Elden Ring", base: 60, gpu: 0.3, cpu: 0.7, hardCap: 60, spread: 0.08, onePercent: 0.88 },
-    "hogwarts-legacy": { label: "Hogwarts Legacy", base: 76, gpu: 0.74, cpu: 0.26, spread: 0.2, onePercent: 0.6 },
-    "starfield": { label: "Starfield", base: 72, gpu: 0.62, cpu: 0.38, spread: 0.22, onePercent: 0.58 },
-    "diablo-iv": { label: "Diablo IV", base: 170, gpu: 0.5, cpu: 0.5, spread: 0.16, onePercent: 0.7 },
-    "path-of-exile-2": { label: "Path of Exile 2", base: 105, gpu: 0.56, cpu: 0.44, spread: 0.22, onePercent: 0.58 }
+    "counter-strike-2": { id: "counter-strike-2", label: "Counter-Strike 2", category: "competitive" },
+    "fortnite": { id: "fortnite", label: "Fortnite", category: "battle_royale" },
+    "valorant": { id: "valorant", label: "Valorant", category: "competitive" },
+    "call-of-duty-warzone": { id: "call-of-duty-warzone", label: "Call of Duty: Warzone", category: "battle_royale" },
+    "apex-legends": { id: "apex-legends", label: "Apex Legends", category: "battle_royale" },
+    "pubg-battlegrounds": { id: "pubg-battlegrounds", label: "PUBG: Battlegrounds", category: "battle_royale" },
+    "marvel-rivals": { id: "marvel-rivals", label: "Marvel Rivals", category: "modern_multiplayer" },
+    "overwatch-2": { id: "overwatch-2", label: "Overwatch 2", category: "competitive" },
+    "rainbow-six-siege": { id: "rainbow-six-siege", label: "Rainbow Six Siege", category: "competitive" },
+    "battlefield-6": { id: "battlefield-6", label: "Battlefield 6", category: "modern_multiplayer" },
+    "minecraft": { id: "minecraft", label: "Minecraft", category: "cpu_heavy" },
+    "roblox": { id: "roblox", label: "Roblox", category: "cpu_heavy" },
+    "league-of-legends": { id: "league-of-legends", label: "League of Legends", category: "competitive" },
+    "dota-2": { id: "dota-2", label: "Dota 2", category: "competitive" },
+    "rocket-league": { id: "rocket-league", label: "Rocket League", category: "competitive" },
+    "grand-theft-auto-v-enhanced": { id: "grand-theft-auto-v-enhanced", label: "Grand Theft Auto V Enhanced", category: "open_world" },
+    "cyberpunk-2077": { id: "cyberpunk-2077", label: "Cyberpunk 2077", category: "gpu_heavy" },
+    "red-dead-redemption-2": { id: "red-dead-redemption-2", label: "Red Dead Redemption 2", category: "gpu_heavy" },
+    "forza-horizon-5": { id: "forza-horizon-5", label: "Forza Horizon 5", category: "racing" },
+    "microsoft-flight-simulator-2024": { id: "microsoft-flight-simulator-2024", label: "Microsoft Flight Simulator 2024", category: "simulation" },
+    "alan-wake-2": { id: "alan-wake-2", label: "Alan Wake 2", category: "gpu_heavy" },
+    "black-myth-wukong": { id: "black-myth-wukong", label: "Black Myth: Wukong", category: "gpu_heavy" },
+    "helldivers-2": { id: "helldivers-2", label: "Helldivers 2", category: "modern_multiplayer" },
+    "palworld": { id: "palworld", label: "Palworld", category: "open_world" },
+    "elden-ring": { id: "elden-ring", label: "Elden Ring", category: "open_world", hardCap: 60 },
+    "hogwarts-legacy": { id: "hogwarts-legacy", label: "Hogwarts Legacy", category: "gpu_heavy" },
+    "starfield": { id: "starfield", label: "Starfield", category: "open_world" },
+    "diablo-iv": { id: "diablo-iv", label: "Diablo IV", category: "modern_multiplayer" },
+    "path-of-exile-2": { id: "path-of-exile-2", label: "Path of Exile 2", category: "modern_multiplayer" }
+  };
+
+  const fpsCategoryProfiles = {
+    competitive: {
+      resolutionGpuScale: { "1080p": 1.16, "1440p": 1, "2160p": 0.72 },
+      resolutionCpuScale: { "1080p": 1.08, "1440p": 1, "2160p": 0.95 },
+      presetGpuScale: { low: 1.24, medium: 1.13, high: 1.05, ultra: 1 },
+      presetCpuScale: { low: 1.08, medium: 1.04, high: 1.02, ultra: 1 },
+      cpuSensitivity: {
+        "1080p": { low: 0.78, medium: 0.7, high: 0.62, ultra: 0.55 },
+        "1440p": { low: 0.66, medium: 0.58, high: 0.5, ultra: 0.44 },
+        "2160p": { low: 0.45, medium: 0.38, high: 0.32, ultra: 0.28 }
+      }
+    },
+    battle_royale: {
+      resolutionGpuScale: { "1080p": 1.28, "1440p": 1, "2160p": 0.6 },
+      resolutionCpuScale: { "1080p": 1.06, "1440p": 1, "2160p": 0.93 },
+      presetGpuScale: { low: 1.42, medium: 1.2, high: 1.08, ultra: 1 },
+      presetCpuScale: { low: 1.07, medium: 1.04, high: 1.02, ultra: 1 },
+      cpuSensitivity: {
+        "1080p": { low: 0.58, medium: 0.5, high: 0.42, ultra: 0.36 },
+        "1440p": { low: 0.46, medium: 0.4, high: 0.34, ultra: 0.3 },
+        "2160p": { low: 0.31, medium: 0.27, high: 0.23, ultra: 0.2 }
+      }
+    },
+    modern_multiplayer: {
+      resolutionGpuScale: { "1080p": 1.3, "1440p": 1, "2160p": 0.58 },
+      resolutionCpuScale: { "1080p": 1.06, "1440p": 1, "2160p": 0.93 },
+      presetGpuScale: { low: 1.5, medium: 1.24, high: 1.1, ultra: 1 },
+      presetCpuScale: { low: 1.07, medium: 1.04, high: 1.02, ultra: 1 },
+      cpuSensitivity: {
+        "1080p": { low: 0.54, medium: 0.46, high: 0.39, ultra: 0.34 },
+        "1440p": { low: 0.43, medium: 0.37, high: 0.31, ultra: 0.27 },
+        "2160p": { low: 0.29, medium: 0.25, high: 0.21, ultra: 0.18 }
+      }
+    },
+    cpu_heavy: {
+      resolutionGpuScale: { "1080p": 1.18, "1440p": 1, "2160p": 0.72 },
+      resolutionCpuScale: { "1080p": 1.08, "1440p": 1, "2160p": 0.95 },
+      presetGpuScale: { low: 1.25, medium: 1.14, high: 1.06, ultra: 1 },
+      presetCpuScale: { low: 1.09, medium: 1.05, high: 1.02, ultra: 1 },
+      cpuSensitivity: {
+        "1080p": { low: 0.82, medium: 0.76, high: 0.68, ultra: 0.62 },
+        "1440p": { low: 0.72, medium: 0.64, high: 0.56, ultra: 0.5 },
+        "2160p": { low: 0.5, medium: 0.44, high: 0.38, ultra: 0.34 }
+      }
+    },
+    gpu_heavy: {
+      resolutionGpuScale: { "1080p": 1.46, "1440p": 1, "2160p": 0.5 },
+      resolutionCpuScale: { "1080p": 1.03, "1440p": 1, "2160p": 0.92 },
+      presetGpuScale: { low: 1.7, medium: 1.34, high: 1.12, ultra: 1 },
+      presetCpuScale: { low: 1.04, medium: 1.02, high: 1.01, ultra: 1 },
+      cpuSensitivity: {
+        "1080p": { low: 0.34, medium: 0.28, high: 0.22, ultra: 0.18 },
+        "1440p": { low: 0.25, medium: 0.21, high: 0.17, ultra: 0.14 },
+        "2160p": { low: 0.16, medium: 0.13, high: 0.1, ultra: 0.08 }
+      }
+    },
+    open_world: {
+      resolutionGpuScale: { "1080p": 1.36, "1440p": 1, "2160p": 0.55 },
+      resolutionCpuScale: { "1080p": 1.05, "1440p": 1, "2160p": 0.93 },
+      presetGpuScale: { low: 1.52, medium: 1.26, high: 1.1, ultra: 1 },
+      presetCpuScale: { low: 1.06, medium: 1.03, high: 1.01, ultra: 1 },
+      cpuSensitivity: {
+        "1080p": { low: 0.48, medium: 0.4, high: 0.34, ultra: 0.29 },
+        "1440p": { low: 0.38, medium: 0.32, high: 0.27, ultra: 0.23 },
+        "2160p": { low: 0.25, medium: 0.21, high: 0.18, ultra: 0.15 }
+      }
+    },
+    racing: {
+      resolutionGpuScale: { "1080p": 1.32, "1440p": 1, "2160p": 0.58 },
+      resolutionCpuScale: { "1080p": 1.04, "1440p": 1, "2160p": 0.94 },
+      presetGpuScale: { low: 1.42, medium: 1.2, high: 1.08, ultra: 1 },
+      presetCpuScale: { low: 1.05, medium: 1.03, high: 1.01, ultra: 1 },
+      cpuSensitivity: {
+        "1080p": { low: 0.42, medium: 0.35, high: 0.3, ultra: 0.25 },
+        "1440p": { low: 0.32, medium: 0.27, high: 0.23, ultra: 0.2 },
+        "2160p": { low: 0.22, medium: 0.18, high: 0.15, ultra: 0.12 }
+      }
+    },
+    simulation: {
+      resolutionGpuScale: { "1080p": 1.24, "1440p": 1, "2160p": 0.62 },
+      resolutionCpuScale: { "1080p": 1.07, "1440p": 1, "2160p": 0.94 },
+      presetGpuScale: { low: 1.45, medium: 1.22, high: 1.09, ultra: 1 },
+      presetCpuScale: { low: 1.08, medium: 1.04, high: 1.02, ultra: 1 },
+      cpuSensitivity: {
+        "1080p": { low: 0.7, medium: 0.62, high: 0.54, ultra: 0.48 },
+        "1440p": { low: 0.58, medium: 0.5, high: 0.43, ultra: 0.38 },
+        "2160p": { low: 0.4, medium: 0.34, high: 0.29, ultra: 0.25 }
+      }
+    }
   };
 
   const fpsResolutionMultipliers = {
-    "1080p": { label: "1080p", gpu: 1.34, cpu: 1.05 },
-    "1440p": { label: "1440p", gpu: 1, cpu: 1 },
-    "2160p": { label: "4K", gpu: 0.56, cpu: 0.9 }
+    "1080p": { label: "1080p" },
+    "1440p": { label: "1440p" },
+    "2160p": { label: "4K" }
   };
 
   const fpsPresetMultipliers = {
-    low: { label: "Low", gpu: 1.62, cpu: 1.08 },
-    medium: { label: "Medium", gpu: 1.32, cpu: 1.04 },
-    high: { label: "High", gpu: 1.12, cpu: 1.02 },
-    ultra: { label: "Ultra", gpu: 1, cpu: 1 }
+    low: { label: "Low" },
+    medium: { label: "Medium" },
+    high: { label: "High" },
+    ultra: { label: "Ultra" }
   };
 
   function getBenchmarkId(part) {
     return String((part && (part.productId || part.id)) || "").split("::")[0];
   }
 
-  function getFpsProfile(map, part) {
-    const id = getBenchmarkId(part);
+  function normalizePositiveNumber(value) {
+    const number = Number(value);
+    return Number.isFinite(number) && number > 0 ? number : null;
+  }
+
+  function softMinimum(a, b, sharpness = 6) {
+    if (!Number.isFinite(a) || !Number.isFinite(b) || a <= 0 || b <= 0) {
+      return null;
+    }
+
+    return Math.pow(
+      Math.pow(a, -sharpness) + Math.pow(b, -sharpness),
+      -1 / sharpness
+    );
+  }
+
+  function getFpsProfile(map, id) {
     return map[id] || null;
   }
 
-  function getWeightedScale(scale, game) {
-    return Math.pow(scale.gpu, game.gpu) * Math.pow(scale.cpu, game.cpu);
+  function getGameProfile(gameId) {
+    return fpsGameProfiles[gameId] || null;
+  }
+
+  function getCategoryProfile(game) {
+    return game ? fpsCategoryProfiles[game.category] || null : null;
+  }
+
+  function getProfileScore(profile, game) {
+    if (!profile || !game) {
+      return null;
+    }
+
+    if (profile.games && normalizePositiveNumber(profile.games[game.id])) {
+      return normalizePositiveNumber(profile.games[game.id]);
+    }
+
+    if (profile.categories && normalizePositiveNumber(profile.categories[game.category])) {
+      return normalizePositiveNumber(profile.categories[game.category]);
+    }
+
+    return normalizePositiveNumber(profile.score);
+  }
+
+  function getHardwareDistance(selectedId, anchorId, profiles, game) {
+    if (selectedId === anchorId) {
+      return 0;
+    }
+
+    const selectedScore = getProfileScore(getFpsProfile(profiles, selectedId), game);
+    const anchorScore = getProfileScore(getFpsProfile(profiles, anchorId), game);
+
+    if (!selectedScore || !anchorScore) {
+      return Infinity;
+    }
+
+    return Math.abs(Math.log(selectedScore / anchorScore));
+  }
+
+  function getScaleRatio(scaleMap, fromKey, toKey) {
+    const fromScale = normalizePositiveNumber(scaleMap && scaleMap[fromKey]);
+    const toScale = normalizePositiveNumber(scaleMap && scaleMap[toKey]);
+
+    if (!fromScale || !toScale) {
+      return null;
+    }
+
+    return toScale / fromScale;
+  }
+
+  function getSettingScale(game, fromResolution, toResolution, fromPreset, toPreset) {
+    const category = getCategoryProfile(game);
+
+    if (!category) {
+      return null;
+    }
+
+    const resolutionGpuScale = Object.assign({}, category.resolutionGpuScale, game.resolutionGpuScale || {});
+    const resolutionCpuScale = Object.assign({}, category.resolutionCpuScale, game.resolutionCpuScale || {});
+    const presetGpuScale = Object.assign({}, category.presetGpuScale, game.presetGpuScale || {});
+    const presetCpuScale = Object.assign({}, category.presetCpuScale, game.presetCpuScale || {});
+    const gpuScale = getScaleRatio(resolutionGpuScale, fromResolution, toResolution) * getScaleRatio(presetGpuScale, fromPreset, toPreset);
+    const cpuScale = getScaleRatio(resolutionCpuScale, fromResolution, toResolution) * getScaleRatio(presetCpuScale, fromPreset, toPreset);
+
+    if (!Number.isFinite(gpuScale) || !Number.isFinite(cpuScale) || gpuScale <= 0 || cpuScale <= 0) {
+      return null;
+    }
+
+    if (!game.allowNonMonotonicScaling) {
+      if (fpsResolutionOrder[toResolution] > fpsResolutionOrder[fromResolution] && gpuScale > 1) {
+        return null;
+      }
+
+      if (fpsPresetOrder[toPreset] > fpsPresetOrder[fromPreset] && gpuScale > 1) {
+        return null;
+      }
+    }
+
+    return {
+      gpu: gpuScale,
+      cpu: cpuScale
+    };
+  }
+
+  function getCpuSensitivity(game, resolution, preset) {
+    const category = getCategoryProfile(game);
+    const sensitivity = Object.assign({}, category ? category.cpuSensitivity : {}, game.cpuSensitivity || {});
+    const resolutionSensitivity = sensitivity[resolution] || sensitivity.default;
+
+    if (Number.isFinite(resolutionSensitivity)) {
+      return Math.min(0.95, Math.max(0.05, resolutionSensitivity));
+    }
+
+    if (resolutionSensitivity && Number.isFinite(resolutionSensitivity[preset])) {
+      return Math.min(0.95, Math.max(0.05, resolutionSensitivity[preset]));
+    }
+
+    return null;
+  }
+
+  function benchmarkAnchorIsUsable(anchor) {
+    return Boolean(
+      anchor &&
+      anchor.source &&
+      anchor.benchmarkDate &&
+      anchor.renderingMode === fpsRenderingMode &&
+      getGameProfile(anchor.gameId) &&
+      fpsResolutionMultipliers[anchor.resolution] &&
+      fpsPresetMultipliers[anchor.preset] &&
+      normalizePositiveNumber(anchor.averageFps)
+    );
+  }
+
+  function getUsableBenchmarkAnchors() {
+    return fpsBenchmarkAnchors.filter(benchmarkAnchorIsUsable);
+  }
+
+  function benchmarkMatches(anchor, gameId, cpuId, gpuId, resolution, preset) {
+    return anchor.gameId === gameId &&
+      anchor.cpuId === cpuId &&
+      anchor.gpuId === gpuId &&
+      anchor.resolution === resolution &&
+      anchor.preset === preset;
+  }
+
+  function pickNewestBenchmark(anchors) {
+    return anchors.slice().sort(function (a, b) {
+      return String(b.benchmarkDate).localeCompare(String(a.benchmarkDate));
+    })[0] || null;
+  }
+
+  function getMedian(values) {
+    const sorted = values.filter(Number.isFinite).sort(function (a, b) { return a - b; });
+    const middle = Math.floor(sorted.length / 2);
+
+    if (!sorted.length) {
+      return null;
+    }
+
+    return sorted.length % 2 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;
+  }
+
+  function getOnePercentLowRatio(anchors, gameId) {
+    return getMedian(anchors
+      .filter(function (anchor) {
+        return anchor.gameId === gameId && normalizePositiveNumber(anchor.onePercentLow) && normalizePositiveNumber(anchor.averageFps);
+      })
+      .map(function (anchor) {
+        return anchor.onePercentLow / anchor.averageFps;
+      }));
+  }
+
+  function getValidationError(game, resolution, preset) {
+    const category = getCategoryProfile(game);
+    const gameError = game.validationError && (game.validationError[resolution] || game.validationError[preset] || game.validationError.default);
+    const categoryError = category && category.validationError && (category.validationError[resolution] || category.validationError[preset] || category.validationError.default);
+
+    return normalizePositiveNumber(gameError) || normalizePositiveNumber(categoryError);
+  }
+
+  function lowerConfidence(confidence) {
+    if (confidence === "high") {
+      return "medium";
+    }
+
+    if (confidence === "medium") {
+      return "low";
+    }
+
+    return confidence === "measured" ? "high" : "low";
+  }
+
+  function classifyModeledConfidence(mode, distance, validationError) {
+    if (!Number.isFinite(distance)) {
+      return "unavailable";
+    }
+
+    let confidence = "low";
+
+    if (mode === "same-gpu-nearby-cpu" || mode === "same-cpu-nearby-gpu") {
+      confidence = distance <= 0.08 ? "high" : distance <= 0.22 ? "medium" : "low";
+    } else if (mode === "nearby-cpu-gpu") {
+      confidence = distance <= 0.16 ? "medium" : "low";
+    }
+
+    if (!validationError) {
+      confidence = lowerConfidence(confidence);
+    }
+
+    return confidence;
+  }
+
+  function roundFps(value, confidence) {
+    const number = normalizePositiveNumber(value);
+
+    if (!number) {
+      return null;
+    }
+
+    if (confidence === "measured") {
+      return Math.round(number);
+    }
+
+    const step = number >= 180 ? 10 : number >= 60 ? 5 : 1;
+    return Math.max(1, Math.round(number / step) * step);
+  }
+
+  function buildUncertaintyRange(average, validationError, confidence) {
+    if (confidence === "measured" || !validationError) {
+      return null;
+    }
+
+    const low = roundFps(average * (1 - validationError), confidence);
+    const high = roundFps(average * (1 + validationError), confidence);
+
+    if (!low || !high || low >= high) {
+      return null;
+    }
+
+    return {
+      low: low,
+      high: high
+    };
+  }
+
+  function predictFromAnchor(anchor, cpuId, gpuId, game, resolution, preset, mode) {
+    const settingScale = getSettingScale(game, anchor.resolution, resolution, anchor.preset, preset);
+    const gpuDistance = getHardwareDistance(gpuId, anchor.gpuId, fpsGpuProfiles, game);
+    const cpuDistance = getHardwareDistance(cpuId, anchor.cpuId, fpsCpuProfiles, game);
+    const selectedGpuScore = gpuId === anchor.gpuId ? 1 : getProfileScore(getFpsProfile(fpsGpuProfiles, gpuId), game);
+    const anchorGpuScore = gpuId === anchor.gpuId ? 1 : getProfileScore(getFpsProfile(fpsGpuProfiles, anchor.gpuId), game);
+    const selectedCpuScore = cpuId === anchor.cpuId ? 1 : getProfileScore(getFpsProfile(fpsCpuProfiles, cpuId), game);
+    const anchorCpuScore = cpuId === anchor.cpuId ? 1 : getProfileScore(getFpsProfile(fpsCpuProfiles, anchor.cpuId), game);
+    const cpuSensitivity = getCpuSensitivity(game, resolution, preset);
+    const anchorAverage = normalizePositiveNumber(anchor.averageFps);
+
+    if (!settingScale || !anchorAverage || !cpuSensitivity || !selectedGpuScore || !anchorGpuScore || !selectedCpuScore || !anchorCpuScore) {
+      return null;
+    }
+
+    const sharpness = 6;
+    const calibratedAnchorCeiling = anchorAverage * Math.pow(2, 1 / sharpness);
+    const gpuRatio = selectedGpuScore / anchorGpuScore;
+    const cpuRatio = selectedCpuScore / anchorCpuScore;
+    const gpuDemand = Math.max(0.05, 1 - cpuSensitivity);
+    const gpuLimited = calibratedAnchorCeiling * Math.pow(gpuRatio, gpuDemand) * settingScale.gpu;
+    const cpuLimited = calibratedAnchorCeiling * Math.pow(cpuRatio, cpuSensitivity) * settingScale.cpu;
+    let average = softMinimum(gpuLimited, cpuLimited, sharpness);
+
+    if (!average) {
+      return null;
+    }
+
+    if (game.hardCap) {
+      average = Math.min(average, game.hardCap);
+    }
+
+    const validationError = getValidationError(game, resolution, preset);
+    const distance = gpuDistance + cpuDistance + (anchor.resolution === resolution ? 0 : 0.18) + (anchor.preset === preset ? 0 : 0.12);
+    const confidence = classifyModeledConfidence(mode, distance, validationError);
+
+    if (confidence === "unavailable") {
+      return null;
+    }
+
+    const roundedAverage = roundFps(average, confidence);
+    const onePercentRatio = getOnePercentLowRatio(getUsableBenchmarkAnchors(), game.id);
+    const onePercentLow = onePercentRatio ? roundFps(average * onePercentRatio, confidence) : null;
+
+    return {
+      game: game,
+      resolution: fpsResolutionMultipliers[resolution],
+      preset: fpsPresetMultipliers[preset],
+      average: roundedAverage,
+      range: buildUncertaintyRange(average, validationError, confidence),
+      onePercentLow: onePercentLow,
+      confidence: confidence,
+      measured: false,
+      methodology: "Estimated from nearby benchmark data.",
+      cpuLimit: cpuLimited <= gpuLimited
+    };
+  }
+
+  function findModeledEstimate(anchors, cpuId, gpuId, game, resolution, preset, mode, filter) {
+    const candidates = anchors
+      .filter(filter)
+      .map(function (anchor) {
+        return {
+          anchor: anchor,
+          distance: getHardwareDistance(gpuId, anchor.gpuId, fpsGpuProfiles, game) +
+            getHardwareDistance(cpuId, anchor.cpuId, fpsCpuProfiles, game) +
+            (anchor.resolution === resolution ? 0 : 0.18) +
+            (anchor.preset === preset ? 0 : 0.12)
+        };
+      })
+      .filter(function (candidate) {
+        return Number.isFinite(candidate.distance);
+      })
+      .sort(function (a, b) {
+        return a.distance - b.distance;
+      });
+
+    for (const candidate of candidates) {
+      const estimate = predictFromAnchor(candidate.anchor, cpuId, gpuId, game, resolution, preset, mode);
+
+      if (estimate) {
+        return estimate;
+      }
+    }
+
+    return null;
   }
 
   function estimateBuildFps(build) {
@@ -3171,52 +3598,57 @@
       return null;
     }
 
-    const game = fpsGameProfiles[fpsGameSelect ? fpsGameSelect.value : "valorant"] || fpsGameProfiles.valorant;
-    const resolution = fpsResolutionMultipliers[fpsResolutionSelect ? fpsResolutionSelect.value : "1440p"] || fpsResolutionMultipliers["1440p"];
-    const preset = fpsPresetMultipliers[fpsPresetSelect ? fpsPresetSelect.value : "ultra"] || fpsPresetMultipliers.ultra;
-    const gpuProfile = getFpsProfile(fpsGpuScores, build.gpu);
-    const cpuProfile = getFpsProfile(fpsCpuScores, build.cpu);
+    const gameId = fpsGameSelect ? fpsGameSelect.value : "valorant";
+    const resolutionId = fpsResolutionSelect ? fpsResolutionSelect.value : "1440p";
+    const presetId = fpsPresetSelect ? fpsPresetSelect.value : "ultra";
+    const game = getGameProfile(gameId);
+    const cpuId = getBenchmarkId(build.cpu);
+    const gpuId = getBenchmarkId(build.gpu);
+    const anchors = getUsableBenchmarkAnchors();
 
-    if (!gpuProfile || !cpuProfile) {
+    if (!game || !fpsResolutionMultipliers[resolutionId] || !fpsPresetMultipliers[presetId]) {
+      return { unavailable: true };
+    }
+
+    const exactBenchmark = pickNewestBenchmark(anchors.filter(function (anchor) {
+      return benchmarkMatches(anchor, gameId, cpuId, gpuId, resolutionId, presetId);
+    }));
+
+    if (exactBenchmark) {
       return {
-        missingData: true,
-        game: game
+        game: game,
+        resolution: fpsResolutionMultipliers[resolutionId],
+        preset: fpsPresetMultipliers[presetId],
+        average: roundFps(exactBenchmark.averageFps, "measured"),
+        range: null,
+        onePercentLow: roundFps(exactBenchmark.onePercentLow, "measured"),
+        confidence: "measured",
+        measured: true,
+        methodology: "Measured benchmark data.",
+        cpuLimit: false
       };
     }
 
-    const gpuScale = Math.pow(gpuProfile.raster, game.gpu);
-    const cpuScale = Math.pow(cpuProfile.gaming, game.cpu);
-    const resolutionScale = getWeightedScale(resolution, game);
-    const presetScale = getWeightedScale(preset, game);
-    let average = game.base * gpuScale * cpuScale * resolutionScale * presetScale;
-
-    if (game.cpuCap) {
-      average = Math.min(average, game.cpuCap * cpuProfile.cap * preset.cpu);
-    }
-
-    if (game.hardCap) {
-      average = Math.min(average, game.hardCap);
-    }
-
-    average = Math.max(25, Math.round(average));
-
-    const spread = game.spread || 0.18;
-    const highLimit = game.hardCap || Infinity;
-    const low = Math.max(20, Math.round(average * (1 - spread)));
-    const high = Math.min(highLimit, Math.max(low, Math.round(average * (1 + spread))));
-    const onePercentLow = Math.max(18, Math.round(average * (game.onePercent || 0.64)));
-    const cpuLimit = Boolean(game.cpuCap && average >= Math.round(game.cpuCap * cpuProfile.cap * 0.9));
-
-    return {
-      game: game,
-      resolution: resolution,
-      preset: preset,
-      average: average,
-      low: low,
-      high: high,
-      onePercentLow: onePercentLow,
-      cpuLimit: cpuLimit
+    return findModeledEstimate(anchors, cpuId, gpuId, game, resolutionId, presetId, "same-gpu-nearby-cpu", function (anchor) {
+      return anchor.gameId === gameId && anchor.gpuId === gpuId && anchor.resolution === resolutionId && anchor.preset === presetId;
+    }) ||
+    findModeledEstimate(anchors, cpuId, gpuId, game, resolutionId, presetId, "same-cpu-nearby-gpu", function (anchor) {
+      return anchor.gameId === gameId && anchor.cpuId === cpuId && anchor.resolution === resolutionId && anchor.preset === presetId;
+    }) ||
+    findModeledEstimate(anchors, cpuId, gpuId, game, resolutionId, presetId, "nearby-cpu-gpu", function (anchor) {
+      return anchor.gameId === gameId && anchor.resolution === resolutionId && anchor.preset === presetId;
+    }) ||
+    findModeledEstimate(anchors, cpuId, gpuId, game, resolutionId, presetId, "game-specific-calibrated", function (anchor) {
+      return anchor.gameId === gameId;
+    }) || {
+      unavailable: true,
+      game: game
     };
+  }
+
+  function getConfidenceLabel(confidence) {
+    return String(confidence || "unavailable")
+      .replace(/\b\w/g, function (character) { return character.toUpperCase(); });
   }
 
   function renderFpsEstimator(build) {
@@ -3231,15 +3663,21 @@
       return;
     }
 
-    if (estimate.missingData) {
-      fpsResultElement.innerHTML = '<p class="pc-builder-fps-note">FPS data is missing for this CPU or video card. Add benchmark data for the selected parts to enable estimates.</p>';
+    if (estimate.unavailable) {
+      fpsResultElement.innerHTML = '<p class="pc-builder-fps-note">Not enough benchmark data for a reliable estimate.</p>';
       return;
     }
 
+    const headline = estimate.range ? estimate.range.low + '-' + estimate.range.high + ' FPS' : (estimate.measured ? estimate.average + ' FPS' : '~' + estimate.average + ' FPS');
+    const averageText = estimate.measured ? estimate.average + ' FPS' : 'approximately ' + estimate.average + ' FPS';
+    const onePercentText = estimate.onePercentLow ? ' Estimated 1% low: ' + (estimate.measured ? estimate.onePercentLow : 'approximately ' + estimate.onePercentLow) + ' FPS.' : '';
+    const meterValue = Math.min(100, Math.round((estimate.average || 0) / 3.6));
+    const metaText = estimate.methodology + ' Confidence: ' + getConfidenceLabel(estimate.confidence) + '. Native rendering, no frame generation.';
+
     fpsResultElement.innerHTML =
-      '<div class="pc-builder-fps-main"><strong>' + estimate.low + '-' + estimate.high + ' FPS</strong><small>' + escapeHtml(estimate.game.label) + ' at ' + escapeHtml(estimate.resolution.label) + ' ' + escapeHtml(estimate.preset.label) + '. Expected average: ' + estimate.average + ' FPS. 1% low: ' + estimate.onePercentLow + ' FPS.</small></div>' +
-      '<div class="pc-builder-fps-meter" aria-hidden="true"><span style="width: ' + Math.min(100, Math.round(estimate.average / 3.6)) + '%"></span></div>' +
-      '<p class="pc-builder-fps-meta">' + (estimate.cpuLimit ? 'CPU limit possible in this game.' : 'Expected balance looks reasonable for this setting.') + ' Real FPS can change with maps, patches, drivers, cooling, and background apps.</p>';
+      '<div class="pc-builder-fps-main"><strong>' + headline + '</strong><small>' + escapeHtml(estimate.game.label) + ' at ' + escapeHtml(estimate.resolution.label) + ' ' + escapeHtml(estimate.preset.label) + '. Expected average: ' + averageText + '.' + onePercentText + '</small></div>' +
+      '<div class="pc-builder-fps-meter" aria-hidden="true"><span style="width: ' + meterValue + '%"></span></div>' +
+      '<p class="pc-builder-fps-meta">' + escapeHtml(metaText) + '</p>';
   }
 
   function renderCompatibilitySummary(issues, selectedCount, missingRequired) {
