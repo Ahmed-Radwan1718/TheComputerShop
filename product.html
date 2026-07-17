@@ -417,6 +417,15 @@
       "wd-black-sn850x-nvme-ssd",
       "wd-blue-sn5100-nvme-ssd"
     ]);
+    const powerSupplyProductKeys = new Set([
+      "ud1600pm-pg5-ai-top",
+      "corsair-rm1200x-shift-1200w",
+      "aorus-elite-p850w-platinum-pg5",
+      "aorus-elite-p1000w-platinum-pg5",
+      "rog-thor-iii",
+      "rog-strix-1200w-platinum",
+      "rog-strix-1000g-aura-gaming"
+    ]);
     const signatureBuildProductKeys = new Set([
       "the-asus-proart",
       "the-rog-astral",
@@ -500,6 +509,10 @@
 
     if (storageProductKeys.has(productKey)) {
       document.write('<script src="product-data/storage.js"><\/script>');
+    }
+
+    if (powerSupplyProductKeys.has(productKey)) {
+      document.write('<script src="product-data/power-supplies.js"><\/script>');
     }
 
     if (signatureBuildProductKeys.has(productKey)) {
@@ -2560,6 +2573,8 @@ images: Array.from({ length: 8 }, (_, index) => {
         }
       ]
     },
+
+    ...(window.tcsPowerSupplyProducts || {}),
 
     ...(window.tcsStorageProducts || {}),
 
