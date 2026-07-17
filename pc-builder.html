@@ -1590,6 +1590,10 @@
   const saveBuildMessage = document.getElementById("pc-builder-save-message");
   const statusElement = document.getElementById("pc-builder-status");
   const issuesElement = document.getElementById("pc-builder-issues");
+  const fpsGameSelect = document.getElementById("pc-builder-fps-game");
+  const fpsResolutionSelect = document.getElementById("pc-builder-fps-resolution");
+  const fpsPresetSelect = document.getElementById("pc-builder-fps-preset");
+  const fpsResultElement = document.getElementById("pc-builder-fps-result");
 
   function escapeHtml(value) {
     return String(value || "").replace(/[&<>"']/g, function (character) {
@@ -3001,6 +3005,168 @@
     return engine.partIsCompatible(getSelectedBuild(), categoryKey, part);
   }
 
+  const fpsGpuScores = {
+    "asus-rog-astral-rtx5090-oc-32gb": 100,
+    "rog-astral-lc-rtx5090-o32g-gaming": 100,
+    "rtx-5090-aorus-master": 98,
+    "asus-proart-rtx5080-o16g": 78,
+    "asus-tuf-rtx5080-o16g-gaming": 78,
+    "msi-rtx5080-gaming-trio-oc-16gb": 77,
+    "rtx-5080-aorus-master": 77,
+    "rtx-5080-windforce-oc-sff-16g": 76,
+    "zotac-gaming-rtx5080-amp-extreme-infinity": 76,
+    "asus-tuf-rtx5070ti-o16g-gaming": 62,
+    "msi-rtx5070-ti-gaming-trio-oc-16gb": 62,
+    "rog-strix-rtx5070ti-o16g-gaming": 62,
+    "rtx-5070-ti-eagle-oc-sff-16g": 60,
+    "rtx-5070-aorus-master": 51,
+    "rtx-5070-gaming-oc": 51,
+    "rtx-5070-eagle-oc-sff": 49,
+    "aorus-radeon-rx9070-xt-elite-16gb": 56,
+    "rx-9070-xt-gaming-oc-16g": 55,
+    "msi-rtx5060-ti-16g-gaming-trio-oc-white": 38,
+    "rtx-5060-ti-aorus-elite": 37,
+    "rtx-5060-ti-windforce-max-oc": 36,
+    "asus-dual-rtx5060-o8g": 31,
+    "rtx-5060-eagle-max-oc": 31,
+    "rtx-5060-eagle-oc": 31,
+    "rtx-5060-windforce-max-oc-8g": 30,
+    "rx-9060-xt-gaming-oc-16g": 34,
+    "rx-9060-xt-gaming-oc-8g": 30,
+    "intel-arc-b580-12gb": 32,
+    "rtx-5050-gaming-oc": 24
+  };
+
+  const fpsCpuScores = {
+    "amd-ryzen-7-9800x3d": 100,
+    "amd-ryzen-9-9950x3d": 98,
+    "amd-ryzen-9-9900x3d": 96,
+    "amd-ryzen-9-9950x3d2-dual-edition": 96,
+    "amd-ryzen-9-9950x": 93,
+    "amd-ryzen-9-9900x": 90,
+    "intel-core-ultra-9-285k": 89,
+    "intel-core-ultra-7-270k-plus": 86,
+    "intel-core-ultra-7-265k": 84,
+    "amd-ryzen-7-9700x": 84,
+    "amd-ryzen-5-9600x": 78,
+    "intel-core-ultra-5-245k": 76
+  };
+
+  const fpsGameProfiles = {
+    "counter-strike-2": { label: "Counter-Strike 2", base: 355, gpu: 0.36, cpu: 0.64 },
+    "fortnite": { label: "Fortnite", base: 238, gpu: 0.54, cpu: 0.46 },
+    "valorant": { label: "Valorant", base: 430, gpu: 0.28, cpu: 0.72 },
+    "call-of-duty-warzone": { label: "Call of Duty: Warzone", base: 190, gpu: 0.62, cpu: 0.38 },
+    "apex-legends": { label: "Apex Legends", base: 230, gpu: 0.56, cpu: 0.44 },
+    "pubg-battlegrounds": { label: "PUBG: Battlegrounds", base: 210, gpu: 0.54, cpu: 0.46 },
+    "marvel-rivals": { label: "Marvel Rivals", base: 185, gpu: 0.62, cpu: 0.38 },
+    "overwatch-2": { label: "Overwatch 2", base: 265, gpu: 0.5, cpu: 0.5 },
+    "rainbow-six-siege": { label: "Rainbow Six Siege", base: 330, gpu: 0.44, cpu: 0.56 },
+    "battlefield-6": { label: "Battlefield 6", base: 170, gpu: 0.6, cpu: 0.4 },
+    "minecraft": { label: "Minecraft", base: 300, gpu: 0.36, cpu: 0.64 },
+    "roblox": { label: "Roblox", base: 300, gpu: 0.32, cpu: 0.68 },
+    "league-of-legends": { label: "League of Legends", base: 360, gpu: 0.28, cpu: 0.72 },
+    "dota-2": { label: "Dota 2", base: 270, gpu: 0.35, cpu: 0.65 },
+    "rocket-league": { label: "Rocket League", base: 320, gpu: 0.42, cpu: 0.58 },
+    "grand-theft-auto-v-enhanced": { label: "Grand Theft Auto V Enhanced", base: 185, gpu: 0.5, cpu: 0.5 },
+    "cyberpunk-2077": { label: "Cyberpunk 2077", base: 132, gpu: 0.78, cpu: 0.22 },
+    "red-dead-redemption-2": { label: "Red Dead Redemption 2", base: 150, gpu: 0.72, cpu: 0.28 },
+    "forza-horizon-5": { label: "Forza Horizon 5", base: 190, gpu: 0.68, cpu: 0.32 },
+    "microsoft-flight-simulator-2024": { label: "Microsoft Flight Simulator 2024", base: 108, gpu: 0.42, cpu: 0.58 },
+    "alan-wake-2": { label: "Alan Wake 2", base: 104, gpu: 0.84, cpu: 0.16 },
+    "black-myth-wukong": { label: "Black Myth: Wukong", base: 118, gpu: 0.8, cpu: 0.2 },
+    "helldivers-2": { label: "Helldivers 2", base: 150, gpu: 0.62, cpu: 0.38 },
+    "palworld": { label: "Palworld", base: 165, gpu: 0.54, cpu: 0.46 },
+    "elden-ring": { label: "Elden Ring", base: 60, gpu: 0.5, cpu: 0.5 },
+    "hogwarts-legacy": { label: "Hogwarts Legacy", base: 128, gpu: 0.7, cpu: 0.3 },
+    "starfield": { label: "Starfield", base: 116, gpu: 0.66, cpu: 0.34 },
+    "diablo-iv": { label: "Diablo IV", base: 210, gpu: 0.58, cpu: 0.42 },
+    "path-of-exile-2": { label: "Path of Exile 2", base: 155, gpu: 0.58, cpu: 0.42 }
+  };
+
+  const fpsResolutionMultipliers = {
+    "1080p": 1.34,
+    "1440p": 1,
+    "3440p": 0.74,
+    "2160p": 0.56
+  };
+
+  const fpsPresetMultipliers = {
+    low: 1.42,
+    medium: 1.2,
+    high: 1.06,
+    ultra: 1
+  };
+
+  function getBenchmarkId(part) {
+    return String((part && (part.productId || part.id)) || "").split("::")[0];
+  }
+
+  function getFpsScore(map, part) {
+    const id = getBenchmarkId(part);
+    return map[id] || 0;
+  }
+
+  function estimateBuildFps(build) {
+    if (!build.cpu || !build.gpu) {
+      return null;
+    }
+
+    const game = fpsGameProfiles[fpsGameSelect ? fpsGameSelect.value : "valorant"] || fpsGameProfiles.valorant;
+    const resolutionMultiplier = fpsResolutionMultipliers[fpsResolutionSelect ? fpsResolutionSelect.value : "1440p"] || 1;
+    const presetMultiplier = fpsPresetMultipliers[fpsPresetSelect ? fpsPresetSelect.value : "ultra"] || 1;
+    const gpuScore = getFpsScore(fpsGpuScores, build.gpu);
+    const cpuScore = getFpsScore(fpsCpuScores, build.cpu);
+
+    if (!gpuScore || !cpuScore) {
+      return {
+        missingData: true,
+        game: game
+      };
+    }
+
+    const gpuFactor = Math.pow(gpuScore / 50, game.gpu);
+    const cpuFactor = Math.pow(cpuScore / 84, game.cpu);
+    const rawAverage = game.base * gpuFactor * cpuFactor * resolutionMultiplier * presetMultiplier;
+    const average = Math.max(25, Math.round(rawAverage));
+    const low = Math.max(20, Math.round(average * 0.82));
+    const high = Math.round(average * 1.16);
+    const onePercentLow = Math.max(18, Math.round(average * 0.62));
+    const cpuLimit = cpuScore < gpuScore * 0.78;
+
+    return {
+      game: game,
+      average: average,
+      low: low,
+      high: high,
+      onePercentLow: onePercentLow,
+      cpuLimit: cpuLimit
+    };
+  }
+
+  function renderFpsEstimator(build) {
+    if (!fpsResultElement) {
+      return;
+    }
+
+    const estimate = estimateBuildFps(build);
+
+    if (!estimate) {
+      fpsResultElement.innerHTML = '<p class="pc-builder-fps-note">Choose a CPU and video card to estimate FPS.</p>';
+      return;
+    }
+
+    if (estimate.missingData) {
+      fpsResultElement.innerHTML = '<p class="pc-builder-fps-note">FPS data is missing for this CPU or video card. Add benchmark scores for the selected parts to enable estimates.</p>';
+      return;
+    }
+
+    fpsResultElement.innerHTML =
+      '<div class="pc-builder-fps-main"><strong>' + estimate.low + '-' + estimate.high + ' FPS</strong><small>' + escapeHtml(estimate.game.label) + ' estimated average: ' + estimate.average + ' FPS. 1% low: ' + estimate.onePercentLow + ' FPS.</small></div>' +
+      '<div class="pc-builder-fps-meter" aria-hidden="true"><span style="width: ' + Math.min(100, Math.round(estimate.average / 3.6)) + '%"></span></div>' +
+      '<p class="pc-builder-fps-meta">' + (estimate.cpuLimit ? 'CPU limit possible at this setting.' : 'GPU and CPU balance looks good for this setting.') + '</p>';
+  }
+
   function renderCompatibilitySummary(issues, selectedCount, missingRequired) {
     if (!statusElement || !issuesElement) {
       return;
@@ -3126,6 +3292,7 @@
     });
 
     renderCompatibilitySummary(compatibilityIssues, selectedCount, missingRequired);
+    renderFpsEstimator(build);
 
     const wattage = compatibilityEngine && typeof compatibilityEngine.estimateWattage === "function"
       ? compatibilityEngine.estimateWattage(build)
@@ -3672,6 +3839,16 @@
       this.textContent = "Copy Failed";
       window.setTimeout(() => { this.textContent = "Copy Link"; }, 1200);
     }
+  });
+
+  [fpsGameSelect, fpsResolutionSelect, fpsPresetSelect].forEach(function (select) {
+    if (!select) {
+      return;
+    }
+
+    select.addEventListener("change", function () {
+      renderFpsEstimator(getSelectedBuild());
+    });
   });
 
   loadCatalog();
