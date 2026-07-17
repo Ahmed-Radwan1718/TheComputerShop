@@ -1870,10 +1870,67 @@
     });
   }
 
-  function parseProductVariantData(source) {
-    const products = evaluateObjectLiteral(extractObjectLiteral(source, "products"));
+  const productDataFiles = [
+    "product-data/graphics-cards.js",
+    "product-data/cpu-coolers.js",
+    "product-data/peripherals.js",
+    "product-data/memory.js",
+    "product-data/processors.js",
+    "product-data/cases.js",
+    "product-data/power-supplies.js",
+    "product-data/charging-and-power.js",
+    "product-data/storage.js",
+    "product-data/monitors.js",
+    "product-data/signature-builds.js",
+    "product-data/motherboards.js"
+  ];
+
+  function mergeProductData(target, source) {
+    Object.entries(source || {}).forEach(function (entry) {
+      target[entry[0]] = entry[1];
+    });
+
+    return target;
+  }
+
+  function evaluateProductDataScript(source) {
+    const sandboxWindow = {};
+
+    try {
+      Function("window", '"use strict"; ' + source + '; return window;')(sandboxWindow);
+    } catch (error) {
+      return {};
+    }
+
+    return sandboxWindow;
+  }
+
+  async function loadProductDataFiles() {
+    const products = {};
+
+    await Promise.all(productDataFiles.map(async function (file) {
+      try {
+        const response = await fetch(file, { cache: "no-store" });
+        const source = await response.text();
+        const sandboxWindow = evaluateProductDataScript(source);
+
+        Object.keys(sandboxWindow).forEach(function (key) {
+          if (/^tcs.*Products$/.test(key)) {
+            mergeProductData(products, sandboxWindow[key]);
+          }
+        });
+      } catch (error) {}
+    }));
+
+    return products;
+  }
+
+  async function parseProductVariantData(source) {
+    const products = await loadProductDataFiles();
+    const inlineProducts = evaluateObjectLiteral(extractObjectLiteral(source, "products"));
     const productPriceOverrides = evaluateObjectLiteral(extractObjectLiteral(source, "productPriceOverrides"));
 
+    mergeProductData(products, inlineProducts);
     applyProductPriceOverrides(products, productPriceOverrides);
 
     return products;
@@ -3744,7 +3801,7 @@
     try {
       const productResponse = await fetch("product.html", { cache: "no-store" });
       const productSource = await productResponse.text();
-      productVariantData = parseProductVariantData(productSource);
+      productVariantData = await parseProductVariantData(productSource);
     } catch (error) {
       productVariantData = {};
     }
