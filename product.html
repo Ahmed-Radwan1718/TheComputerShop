@@ -442,6 +442,41 @@
       "rog-strix-oled-xg27ucdmg",
       "rog-strix-oled-xg27acdng"
     ]);
+    const motherboardProductKeys = new Set([
+      "z890-aorus-elite-wifi7",
+      "z890-aorus-master",
+      "z890-aorus-master-ai-top",
+      "x870-aorus-elite-wifi7",
+      "x870-aorus-stealth",
+      "x870-aorus-stealth-ice",
+      "z890-aorus-elite-duo-x",
+      "b850-aorus-stealth-ice",
+      "b850-aorus-elite-wifi7-ice",
+      "x870e-aorus-xtreme-x3d-ai-top",
+      "x870e-aorus-elite-x3d",
+      "b850-aorus-elite-wifi7",
+      "b860m-aorus-elite-wifi6e",
+      "rog-maximus-z890-hero",
+      "rog-strix-z890-e-gaming-wifi",
+      "asus-tuf-gaming-z890-plus-wifi",
+      "rog-strix-b860-f-gaming-wifi",
+      "rog-strix-x870e-e-gaming-wifi",
+      "rog-strix-b850-f-gaming-wifi",
+      "msi-mag-z890-tomahawk-wifi",
+      "rog-strix-b850-a-gaming-wifi",
+      "proart-x870e-creator-wifi",
+      "proart-z890-creator-wifi",
+      "rog-crosshair-x870e-hero",
+      "asus-tuf-gaming-x870-plus-wifi",
+      "rog-strix-z890-a-gaming-wifi",
+      "x870e-aorus-master",
+      "x870e-aorus-pro-ice",
+      "msi-meg-z890-godlike",
+      "msi-mpg-z890-carbon-wifi",
+      "msi-mpg-x870e-carbon-wifi",
+      "msi-mpg-z890-edge-ti-wifi",
+      "rog-maximus-z890-extreme-motherboard"
+    ]);
 
     if (processorProductKeys.has(productKey)) {
       document.write('<script src="product-data/processors.js"><\/script>');
@@ -473,6 +508,10 @@
 
     if (monitorProductKeys.has(productKey)) {
       document.write('<script src="product-data/monitors.js"><\/script>');
+    }
+
+    if (motherboardProductKeys.has(productKey)) {
+      document.write('<script src="product-data/motherboards.js"><\/script>');
     }
   }());
 </script>
@@ -3692,6 +3731,8 @@ images: Array.from({ length: 8 }, (_, index) => {
     ...(window.tcsMonitorProducts || {}),
 
     ...(window.tcsSignatureBuildProducts || {}),
+
+    ...(window.tcsMotherboardProducts || {}),
 
     "rog-maximus-z890-hero": {
       id: "rog-maximus-z890-hero",
