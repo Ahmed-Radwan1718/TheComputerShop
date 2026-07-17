@@ -883,3 +883,422 @@
       ]
     },
 
+        "rog-strix-x870e-e-gaming-wifi": {
+      id: "rog-strix-x870e-e-gaming-wifi",
+      name: "ROG Strix X870E-E Gaming WiFi",
+      category: "Motherboard",
+      specsLine: "ASUS ROG | X870E | AM5",
+      priceText: "Insert price here",
+      priceNumber: null,
+      url: "product.html?product=rog-strix-x870e-e-gaming-wifi",
+      images: Array.from({ length: 8 }, (_, index) => {
+        const imageNumber = index + 1;
+        return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781372915/rog-strix-x870e-e-gaming-wifi-${imageNumber}.jpg`;
+      }),
+      whoIsThisFor: "A premium ASUS ROG X870E motherboard for high-end AMD Ryzen AM5 gaming and creator builds that need strong power delivery, DDR5 support, PCIe 5.0 connectivity, multiple M.2 slots, WiFi 7, USB4, and a clean black ROG design.",
+      specs: [
+        ["Product Name", "ROG Strix X870E-E Gaming WiFi"],
+        ["Brand", "ASUS ROG"],
+        ["CPU Socket", "AM5"],
+        ["CPU Support", "AMD Ryzen 9000 / 8000 / 7000 Series Desktop Processors"],
+        ["Chipset", "AMD X870E"],
+        ["Form Factor", "ATX"],
+        ["Power Stages", "18"],
+        ["Memory Support", "DDR5"],
+        ["Expansion Slots", "PCIe 5.0 x16 SafeSlot"],
+        ["Storage", "5× M.2 slots and 4× SATA 6Gb/s ports"],
+        ["Networking", "5Gb Ethernet, 2.5Gb Ethernet"],
+        ["Wireless", "WiFi 7"],
+        ["Rear USB-C / USB4", "USB4 support"],
+        ["AI Features", "ASUS AI Advisor, AI Networking II"],
+        ["Lighting", "Aura Sync RGB"],
+        ["Color", "Black"]
+      ],
+      included: [
+        {
+          title: "Motherboard",
+          text: "The ROG Strix X870E-E Gaming WiFi motherboard is included as the main component, inspected and prepared for the build or order."
+        },
+        {
+          title: "Original Packaging",
+          text: "The product comes with its original box and packaging where available. Customers should keep the packaging for warranty and support purposes."
+        },
+        {
+          title: "Included Accessories",
+          text: "Included accessories depend on the official ASUS ROG package contents and may include WiFi antenna, M.2 accessories, SATA cables, Q-Connector, documentation, and setup accessories supplied by ASUS."
+        },
+        {
+          title: "Store Support",
+          text: "Purchases include store support, basic guidance, and free lifetime troubleshooting and diagnosis for products bought from The Computer Shop."
+        }
+      ]
+    },
+
+    "rog-strix-b850-f-gaming-wifi": {
+      id: "rog-strix-b850-f-gaming-wifi",
+      name: "ROG Strix B850-F Gaming WiFi",
+      category: "Motherboard",
+      specsLine: "ASUS ROG | B850 | AM5",
+      priceText: "Insert price here",
+      priceNumber: null,
+      url: "product.html?product=rog-strix-b850-f-gaming-wifi",
+      images: Array.from({ length: 8 }, (_, index) => {
+        const imageNumber = index + 1;
+        return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781372898/rog-strix-b850-f-gaming-wifi-${imageNumber}.jpg`;
+      }),
+      whoIsThisFor: "A strong ASUS ROG B850 motherboard for AMD Ryzen AM5 gaming builds that need DDR5 support, PCIe 5.0 graphics, multiple M.2 slots, WiFi 7, USB-C connectivity, and a black ROG design without stepping up to X870E.",
+      specs: [
+        ["Product Name", "ROG Strix B850-F Gaming WiFi"],
+        ["Brand", "ASUS ROG"],
+        ["CPU Socket", "AM5"],
+        ["CPU Support", "AMD Ryzen 9000 / 8000 / 7000 Series Desktop Processors"],
+        ["Chipset", "AMD B850"],
+        ["Form Factor", "ATX"],
+        ["Power Stages", "16+2+2"],
+        ["Memory Support", "DDR5"],
+        ["Expansion Slots", "PCIe 5.0 x16 SafeSlot"],
+        ["Storage", "4× M.2 slots and 2× SATA 6Gb/s ports"],
+        ["Wireless", "WiFi 7"],
+        ["Rear USB-C", "USB 20Gbps Type-C"],
+        ["AI Features", "ASUS AI Advisor, AI Networking II"],
+        ["Lighting", "Aura Sync RGB"],
+        ["Color", "Black"]
+      ],
+      included: [
+        {
+          title: "Motherboard",
+          text: "The ROG Strix B850-F Gaming WiFi motherboard is included as the main component, inspected and prepared for the build or order."
+        },
+        {
+          title: "Original Packaging",
+          text: "The product comes with its original box and packaging where available. Customers should keep the packaging for warranty and support purposes."
+        },
+        {
+          title: "Included Accessories",
+          text: "Included accessories depend on the official ASUS ROG package contents and may include WiFi antenna, M.2 accessories, SATA cables, Q-Connector, documentation, and setup accessories supplied by ASUS."
+        },
+        {
+          title: "Store Support",
+          text: "Purchases include store support, basic guidance, and free lifetime troubleshooting and diagnosis for products bought from The Computer Shop."
+        }
+      ]
+    },
+
+    "msi-mag-z890-tomahawk-wifi": {
+      id: "msi-mag-z890-tomahawk-wifi",
+      name: "MSI MAG Z890 Tomahawk WiFi",
+      category: "Motherboard",
+      specsLine: "MSI MAG | Z890 | LGA1851",
+      priceText: "Insert price here",
+      priceNumber: null,
+      url: "product.html?product=msi-mag-z890-tomahawk-wifi",
+      images: Array.from({ length: 4 }, (_, index) => {
+        const imageNumber = index + 1;
+        return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781372880/msi-mag-z890-tomahawk-wifi-${imageNumber}.jpg`;
+      }),
+      whoIsThisFor: "A strong MSI MAG Z890 motherboard for Intel Core Ultra LGA1851 gaming builds that need DDR5 support, PCIe 5.0 graphics, WiFi 7, Thunderbolt 4, fast storage options, and a clean black ATX layout.",
+      specs: [
+        ["Product Name", "MSI MAG Z890 Tomahawk WiFi"],
+        ["Brand", "MSI MAG"],
+        ["CPU Socket", "LGA1851"],
+        ["CPU Support", "Intel Core Ultra Processors Series 2"],
+        ["Chipset", "Intel Z890"],
+        ["Form Factor", "ATX"],
+        ["Memory Support", "4× DDR5 UDIMM, up to 256GB"],
+        ["Memory Speed", "DDR5 up to 9200+ MT/s OC"],
+        ["Memory Features", "Intel XMP 3.0"],
+        ["Main PCIe Slot", "PCIe 5.0 x16"],
+        ["Storage", "4× M.2 slots and 4× SATA 6Gb/s ports"],
+        ["Thunderbolt", "Thunderbolt 4 support"],
+        ["Networking", "5Gb Ethernet"],
+        ["Wireless", "WiFi 7"],
+        ["Audio", "Realtek audio"],
+        ["Color", "Black"]
+      ],
+      included: [
+        {
+          title: "Motherboard",
+          text: "The MSI MAG Z890 Tomahawk WiFi motherboard is included as the main component, inspected and prepared for the build or order."
+        },
+        {
+          title: "Original Packaging",
+          text: "The product comes with its original box and packaging where available. Customers should keep the packaging for warranty and support purposes."
+        },
+        {
+          title: "Included Accessories",
+          text: "Included accessories depend on the official MSI package contents and may include WiFi antenna, M.2 accessories, SATA cables, documentation, and setup accessories supplied by MSI."
+        },
+        {
+          title: "Store Support",
+          text: "Purchases include store support, basic guidance, and free lifetime troubleshooting and diagnosis for products bought from The Computer Shop."
+        }
+      ]
+    },
+
+    "rog-strix-b850-a-gaming-wifi": {
+      id: "rog-strix-b850-a-gaming-wifi",
+      name: "ROG Strix B850-A Gaming WiFi",
+      category: "Motherboard",
+      specsLine: "ASUS ROG | B850 | AM5",
+      priceText: "Insert price here",
+      priceNumber: null,
+      url: "product.html?product=rog-strix-b850-a-gaming-wifi",
+      images: Array.from({ length: 8 }, (_, index) => {
+        const imageNumber = index + 1;
+        return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781372894/rog-strix-b850-a-gaming-wifi-${imageNumber}.jpg`;
+      }),
+      whoIsThisFor: "A white and silver ASUS ROG B850 motherboard for AMD Ryzen AM5 gaming builds that need DDR5 support, PCIe 5.0 graphics, WiFi 7, multiple M.2 slots, USB-C connectivity, and a bright ROG aesthetic.",
+      specs: [
+        ["Product Name", "ROG Strix B850-A Gaming WiFi"],
+        ["Brand", "ASUS ROG"],
+        ["CPU Socket", "AM5"],
+        ["CPU Support", "AMD Ryzen 9000 / 8000 / 7000 Series Desktop Processors"],
+        ["Chipset", "AMD B850"],
+        ["Form Factor", "ATX"],
+        ["Power Stages", "14+2+2"],
+        ["Memory Support", "4× DDR5 DIMM, up to 256GB"],
+        ["Memory Speed", "DDR5 up to 8000+ MT/s OC"],
+        ["Memory Features", "AMD EXPO, ASUS Enhanced Memory Profile"],
+        ["Expansion Slots", "PCIe 5.0 x16 SafeSlot"],
+        ["Storage", "4× M.2 slots"],
+        ["Wireless", "WiFi 7"],
+        ["Rear USB-C", "USB 20Gbps Type-C"],
+        ["AI Features", "ASUS AI Advisor, AI Networking II"],
+        ["Lighting", "Aura Sync RGB"],
+        ["Color", "White / Silver"]
+      ],
+      included: [
+        {
+          title: "Motherboard",
+          text: "The ROG Strix B850-A Gaming WiFi motherboard is included as the main component, inspected and prepared for the build or order."
+        },
+        {
+          title: "Original Packaging",
+          text: "The product comes with its original box and packaging where available. Customers should keep the packaging for warranty and support purposes."
+        },
+        {
+          title: "Included Accessories",
+          text: "Included accessories depend on the official ASUS ROG package contents and may include WiFi antenna, M.2 accessories, SATA cables, Q-Connector, documentation, and setup accessories supplied by ASUS."
+        },
+        {
+          title: "Store Support",
+          text: "Purchases include store support, basic guidance, and free lifetime troubleshooting and diagnosis for products bought from The Computer Shop."
+        }
+      ]
+    },
+
+    "proart-x870e-creator-wifi": {
+      id: "proart-x870e-creator-wifi",
+      name: "ProArt X870E Creator WiFi",
+      category: "Motherboard",
+      specsLine: "ASUS ProArt | X870E | AM5",
+      priceText: "Insert price here",
+      priceNumber: null,
+      url: "product.html?product=proart-x870e-creator-wifi",
+      images: Array.from({ length: 5 }, (_, index) => {
+        const imageNumber = index + 1;
+        return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781391877/proart-x870e-creator-wifi-${imageNumber}.jpg`;
+      }),
+      whoIsThisFor: "A premium ASUS ProArt X870E motherboard for AMD Ryzen AM5 creator and workstation builds that need DDR5 support, PCIe 5.0 graphics and storage, dual USB4, 10Gb and 2.5Gb Ethernet, WiFi 7, and a clean professional design.",
+      specs: [
+        ["Product Name", "ProArt X870E Creator WiFi"],
+        ["Brand", "ASUS ProArt"],
+        ["CPU Socket", "AM5"],
+        ["CPU Support", "AMD Ryzen 9000 / 8000 / 7000 Series Desktop Processors"],
+        ["Chipset", "AMD X870E"],
+        ["Form Factor", "ATX"],
+        ["Memory Support", "4× DDR5 DIMM, up to 256GB"],
+        ["Memory Speed", "DDR5 up to 8000+ MT/s OC"],
+        ["Memory Features", "AMD EXPO, ASUS Enhanced Memory Profile"],
+        ["Expansion Slots", "PCIe 5.0 x16 slots"],
+        ["Storage", "4× M.2 slots and 4× SATA 6Gb/s ports"],
+        ["Networking", "10Gb Ethernet, 2.5Gb Ethernet"],
+        ["Wireless", "WiFi 7"],
+        ["Rear USB-C / USB4", "2× USB4 40Gbps Type-C"],
+        ["Display Outputs", "HDMI, USB4 DisplayPort output support"],
+        ["AI Features", "ASUS AI Advisor, AI Overclocking, AI Cooling II, AI Networking II"],
+        ["Special Features", "PCIe Slot Q-Release Slim, M.2 Q-Release, M.2 Q-Slide, M.2 Q-Latch"],
+        ["Color", "Black"]
+      ],
+      included: [
+        {
+          title: "Motherboard",
+          text: "The ProArt X870E Creator WiFi motherboard is included as the main component, inspected and prepared for the build or order."
+        },
+        {
+          title: "Original Packaging",
+          text: "The product comes with its original box and packaging where available. Customers should keep the packaging for warranty and support purposes."
+        },
+        {
+          title: "Included Accessories",
+          text: "Included accessories depend on the official ASUS ProArt package contents and may include WiFi antenna, M.2 accessories, SATA cables, Q-Connector, documentation, and setup accessories supplied by ASUS."
+        },
+        {
+          title: "Store Support",
+          text: "Purchases include store support, basic guidance, and free lifetime troubleshooting and diagnosis for products bought from The Computer Shop."
+        }
+      ]
+    },
+
+    "proart-z890-creator-wifi": {
+      id: "proart-z890-creator-wifi",
+      name: "ProArt Z890 Creator WiFi",
+      category: "Motherboard",
+      specsLine: "ASUS ProArt | Z890 | LGA1851",
+      priceText: "Insert price here",
+      priceNumber: null,
+      url: "product.html?product=proart-z890-creator-wifi",
+      images: Array.from({ length: 5 }, (_, index) => {
+        const imageNumber = index + 1;
+        return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781391869/proart-z890-creator-wifi-${imageNumber}.jpg`;
+      }),
+      whoIsThisFor: "A premium ASUS ProArt Z890 motherboard for Intel Core Ultra LGA1851 creator and workstation builds that need DDR5 support, PCIe 5.0 graphics and storage, Thunderbolt 5, USB4 / Thunderbolt connectivity, 10Gb and 2.5Gb Ethernet, WiFi 7, and a professional creator-focused layout.",
+      specs: [
+        ["Product Name", "ProArt Z890 Creator WiFi"],
+        ["Brand", "ASUS ProArt"],
+        ["CPU Socket", "LGA1851"],
+        ["CPU Support", "Intel Core Ultra Processors Series 2"],
+        ["Chipset", "Intel Z890"],
+        ["Form Factor", "ATX"],
+        ["Power Stages", "16+1+2+2"],
+        ["Memory Support", "DDR5"],
+        ["Expansion Slots", "PCIe 5.0 x16"],
+        ["Storage", "5× M.2 slots and 4× SATA 6Gb/s ports"],
+        ["Networking", "10Gb Ethernet, 2.5Gb Ethernet"],
+        ["Wireless", "WiFi 7"],
+        ["Thunderbolt", "Dual Thunderbolt 5 ports"],
+        ["USB-C / USB4", "USB4 / Thunderbolt Type-C support"],
+        ["AI Features", "ASUS AI Advisor, AI Overclocking, AI Cooling II, AI Networking II"],
+        ["Creator Features", "ProArt Creator Hub"],
+        ["Color", "Black"]
+      ],
+      included: [
+        {
+          title: "Motherboard",
+          text: "The ProArt Z890 Creator WiFi motherboard is included as the main component, inspected and prepared for the build or order."
+        },
+        {
+          title: "Original Packaging",
+          text: "The product comes with its original box and packaging where available. Customers should keep the packaging for warranty and support purposes."
+        },
+        {
+          title: "Included Accessories",
+          text: "Included accessories depend on the official ASUS ProArt package contents and may include WiFi antenna, M.2 accessories, SATA cables, Q-Connector, documentation, and setup accessories supplied by ASUS."
+        },
+        {
+          title: "Store Support",
+          text: "Purchases include store support, basic guidance, and free lifetime troubleshooting and diagnosis for products bought from The Computer Shop."
+        }
+      ]
+    },
+
+    "rog-crosshair-x870e-hero": {
+      id: "rog-crosshair-x870e-hero",
+      name: "ROG Crosshair X870E Hero",
+      category: "Motherboard",
+      specsLine: "ASUS ROG | X870E | AM5",
+      priceText: "Insert price here",
+      priceNumber: null,
+      url: "product.html?product=rog-crosshair-x870e-hero",
+      images: Array.from({ length: 8 }, (_, index) => {
+        const imageNumber = index + 1;
+        return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781311439/rog-crosshair-x870e-hero-${imageNumber}.jpg`;
+      }),
+      whoIsThisFor: "A premium ASUS ROG X870E motherboard for high-end AMD Ryzen 9000, 8000, and 7000 AM5 builds, gaming PCs, creator systems, overclocking-focused setups, fast DDR5 memory, PCIe 5.0 graphics, multiple Gen 5 SSDs, WiFi 7, USB4, and clean enthusiast ATX builds.",
+      specs: [
+        ["Product Name", "ROG Crosshair X870E Hero"],
+        ["Brand", "ASUS ROG"],
+        ["CPU Socket", "AM5"],
+        ["CPU Support", "AMD Ryzen 9000 / 8000 / 7000 Series Desktop Processors"],
+        ["Chipset", "AMD X870E"],
+        ["Form Factor", "ATX"],
+        ["Memory Support", "4× DDR5 DIMM, up to 256GB"],
+        ["Memory Speed", "DDR5 up to 8200+ MT/s OC with Ryzen 9000 Series"],
+        ["Memory Features", "AMD EXPO, NitroPath DRAM Technology, ASUS Enhanced Memory Profile"],
+        ["Expansion Slots", "2× PCIe 5.0 x16 slots with Q-Release Slim"],
+        ["Storage", "5× M.2 slots, 1× SlimSAS, 4× SATA 6Gb/s"],
+        ["Networking", "Intel 2.5Gb Ethernet, Realtek 5Gb Ethernet"],
+        ["Wireless", "WiFi 7, Bluetooth 5.4"],
+        ["Rear USB-C / USB4", "2× USB4 40Gbps Type-C"],
+        ["Rear USB", "8× USB 10Gbps ports"],
+        ["Front USB-C", "USB 20Gbps Type-C with up to 60W PD / QC4+"],
+        ["Display Outputs", "HDMI, USB4 DisplayPort output support"],
+        ["Audio", "ROG SupremeFX ALC4082 with ESS ES9219 QUAD DAC"],
+        ["Special Features", "Q-Release Slim, Q-Code, BIOS FlashBack, Clear CMOS, Aura Sync"],
+        ["Color", "Black"]
+      ],
+      included: [
+        {
+          title: "Motherboard",
+          text: "The ROG Crosshair X870E Hero motherboard is included as the main component, inspected and prepared for the build or order."
+        },
+        {
+          title: "Original Packaging",
+          text: "The product comes with its original box and packaging where available. Customers should keep the packaging for warranty and support purposes."
+        },
+        {
+          title: "Included Accessories",
+          text: "Included accessories depend on the official ASUS ROG package contents and may include WiFi Q-Antenna, SATA cables, M.2 accessories, Q-connector, ROG stickers, documentation, USB drive, and setup accessories supplied by ASUS."
+        },
+        {
+          title: "Store Support",
+          text: "Purchases include store support, basic guidance, and free lifetime troubleshooting and diagnosis for products bought from The Computer Shop."
+        }
+      ]
+    },
+
+    "asus-tuf-gaming-x870-plus-wifi": {
+      id: "asus-tuf-gaming-x870-plus-wifi",
+      name: "ASUS TUF Gaming X870-Plus WiFi",
+      category: "Motherboard",
+      specsLine: "ASUS TUF | X870 | AM5",
+      priceText: "Insert price here",
+      priceNumber: null,
+      url: "product.html?product=asus-tuf-gaming-x870-plus-wifi",
+      images: Array.from({ length: 5 }, (_, index) => {
+        const imageNumber = index + 1;
+        return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781311412/asus-tuf-gaming-x870-plus-wifi-${imageNumber}.jpg`;
+      }),
+      whoIsThisFor: "A durable ASUS TUF X870 motherboard for AMD Ryzen AM5 gaming builds, productivity systems, Ryzen 9000 / 8000 / 7000 processors, DDR5 memory, PCIe 5.0 graphics, multiple M.2 SSDs, WiFi 7, USB4, fast Ethernet, and clean black ATX builds.",
+      specs: [
+        ["Product Name", "ASUS TUF Gaming X870-Plus WiFi"],
+        ["Brand", "ASUS TUF Gaming"],
+        ["CPU Socket", "AM5"],
+        ["CPU Support", "AMD Ryzen 9000 / 8000 / 7000 Series Desktop Processors"],
+        ["Chipset", "AMD X870"],
+        ["Form Factor", "ATX"],
+        ["Power Stages", "16+2+1 80A SPS"],
+        ["Memory Support", "DDR5"],
+        ["Memory Features", "NitroPath DRAM Technology, ASUS Enhanced Memory Profile"],
+        ["Expansion Slots", "PCIe 5.0 ready"],
+        ["Main PCIe Slot", "1× PCIe 5.0 x16 with Ryzen 9000 / 7000 Series processors"],
+        ["Storage", "4× M.2 slots, 2× SATA 6Gb/s"],
+        ["Networking", "Realtek 5Gb Ethernet"],
+        ["Wireless", "WiFi 7, Bluetooth 5.4"],
+        ["Rear USB-C / USB4", "USB4 40Gbps Type-C ports"],
+        ["Front USB-C", "USB 20Gbps Type-C with PD fast-charge support"],
+        ["Display Output", "HDMI, USB4 Type-C display output support"],
+        ["Special Features", "BIOS FlashBack, AI Overclocking, Asynchronous Clock, Aura Sync"],
+        ["Color", "Black"]
+      ],
+      included: [
+        {
+          title: "Motherboard",
+          text: "The ASUS TUF Gaming X870-Plus WiFi motherboard is included as the main component, inspected and prepared for the build or order."
+        },
+        {
+          title: "Original Packaging",
+          text: "The product comes with its original box and packaging where available. Customers should keep the packaging for warranty and support purposes."
+        },
+        {
+          title: "Included Accessories",
+          text: "Included accessories depend on the official ASUS package contents and may include WiFi antenna, SATA cables, M.2 accessories, TUF Gaming sticker, documentation, and setup accessories supplied by ASUS."
+        },
+        {
+          title: "Store Support",
+          text: "Purchases include store support, basic guidance, and free lifetime troubleshooting and diagnosis for products bought from The Computer Shop."
+        }
+      ]
+    },
+
+
