@@ -322,6 +322,37 @@
   (function () {
     const productParams = new URLSearchParams(window.location.search);
     const productKey = productParams.get("product") || "rtx-5090-aorus-master";
+    const graphicsCardProductKeys = new Set([
+      "intel-arc-b580-12gb",
+      "rtx-5090-aorus-master",
+      "rtx-5080-aorus-master",
+      "rtx-5070-aorus-master",
+      "msi-rtx5080-gaming-trio-oc-16gb",
+      "asus-proart-rtx5080-o16g",
+      "msi-rtx5070-ti-gaming-trio-oc-16gb",
+      "asus-tuf-rtx5070ti-o16g-gaming",
+      "msi-rtx5060-ti-16g-gaming-trio-oc-white",
+      "asus-rog-astral-rtx5090-oc-32gb",
+      "asus-dual-rtx5060-o8g",
+      "rtx-5060-ti-aorus-elite",
+      "rtx-5070-gaming-oc",
+      "rtx-5060-eagle-oc",
+      "rtx-5050-gaming-oc",
+      "rtx-5060-windforce-max-oc-8g",
+      "rtx-5060-ti-windforce-max-oc",
+      "rtx-5070-ti-eagle-oc-sff-16g",
+      "rtx-5070-eagle-oc-sff",
+      "rtx-5060-eagle-max-oc",
+      "rog-strix-rtx5070ti-o16g-gaming",
+      "rog-astral-lc-rtx5090-o32g-gaming",
+      "zotac-gaming-rtx5080-amp-extreme-infinity",
+      "asus-tuf-rtx5080-o16g-gaming",
+      "rtx-5080-windforce-oc-sff-16g",
+      "rx-9070-xt-gaming-oc-16g",
+      "aorus-radeon-rx9070-xt-elite-16gb",
+      "rx-9060-xt-gaming-oc-16g",
+      "rx-9060-xt-gaming-oc-8g"
+    ]);
     const processorProductKeys = new Set([
       "intel-core-ultra-5-245k",
       "intel-core-ultra-7-265k",
@@ -518,6 +549,10 @@
       "msi-mpg-z890-edge-ti-wifi",
       "rog-maximus-z890-extreme-motherboard"
     ]);
+
+    if (graphicsCardProductKeys.has(productKey)) {
+      document.write('<script src="product-data/graphics-cards.js"><\/script>');
+    }
 
     if (processorProductKeys.has(productKey)) {
       document.write('<script src="product-data/processors.js"><\/script>');
