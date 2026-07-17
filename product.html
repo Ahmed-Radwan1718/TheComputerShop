@@ -426,6 +426,38 @@
       "rog-strix-1200w-platinum",
       "rog-strix-1000g-aura-gaming"
     ]);
+    const chargingAndPowerProductKeys = new Set([
+      "anker-prime-20k-220w-power-bank-black-myth-wukong-edition",
+      "anker-charger-140w-4-port-pd-3-1",
+      "anker-laptop-power-bank-25k-165w-built-in-and-retractable-cables",
+      "anker-prime-charger-250w-6-ports-ganprime",
+      "anker-prime-docking-station-14-in-1-triple-display-displaylink-dl7400-black-myth-wukong-edition",
+      "anker-nano-charger-45w-smart-display-180-foldable",
+      "anker-prime-tb5-docking-station-14-in-1-8k-thunderbolt-5",
+      "anker-nano-charger-30w",
+      "anker-735-charger-nano-ii-65w",
+      "anker-prime-charging-docking-station-14-in-1-dual-display-160w",
+      "anker-prime-thunderbolt-5-cable-80gbps-240w",
+      "anker-maggo-10000mah-power-bank",
+      "ugreen-nexode-65w-3-port-gan-fast-charger",
+      "ugreen-uno-charger-65w-black",
+      "ugreen-nexode-100w-4-port-gan-fast-charger",
+      "ugreen-zapix-200w-8-port-gan-desktop-fast-charger",
+      "ugreen-nexode-100w-4-port-charger",
+      "ugreen-nexode-200w-6-port-charger",
+      "ugreen-nexode-500w-6-port-desktop-charger",
+      "ugreen-nexode-pro-100w-3-port-gan-fast-charger",
+      "ugreen-uno-charger-100w",
+      "ugreen-nexode-300w-5-port-desktop-charger",
+      "ugreen-nexode-200w-4-port-gan-fast-charger",
+      "ugreen-zapix-65w-5-port-gan-fast-charger",
+      "ugreen-nexode-pro-65w-3-port-gan-fast-charger",
+      "ugreen-zapix-100w-6-port-gan-desktop-fast-charger",
+      "ugreen-cable-usb-c-100w",
+      "ugreen-usb-c-gen4-240w-80gbps-usb-4",
+      "ugreen-uno-usb-c-to-usb-c-cable-100w",
+      "ugreen-usb-c-to-usb-c-right-angle-2m-100w"
+    ]);
     const signatureBuildProductKeys = new Set([
       "the-asus-proart",
       "the-rog-astral",
@@ -513,6 +545,10 @@
 
     if (powerSupplyProductKeys.has(productKey)) {
       document.write('<script src="product-data/power-supplies.js"><\/script>');
+    }
+
+    if (chargingAndPowerProductKeys.has(productKey)) {
+      document.write('<script src="product-data/charging-and-power.js"><\/script>');
     }
 
     if (signatureBuildProductKeys.has(productKey)) {
