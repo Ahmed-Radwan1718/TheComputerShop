@@ -607,3 +607,120 @@
         { title: "Store Support", text: "Purchases include store support, basic guidance, and free lifetime troubleshooting and diagnosis for products bought from The Computer Shop." }
       ]
     },
+
+        "ugreen-nexode-65w-3-port-gan-fast-charger": createUgreenChargingProduct({
+      id: "ugreen-nexode-65w-3-port-gan-fast-charger",
+      name: "UGREEN Nexode Charger GaN Fast 3-Port 65W",
+      series: "Nexode",
+      type: "Wall Charger",
+      specsLine: "UGREEN Nexode | 3-Port | 65W",
+      totalOutput: "65W Max",
+      ports: "2 x USB-C, 1 x USB-A",
+      image: "https://res.cloudinary.com/dhtamisqn/image/upload/v1782397625/UGREEN_Nexode_Charger_GaN_Fast_3-Port_65W.jpg",
+      whoIsThisFor: "A compact GaN wall charger for users who want one 65W charger for phones, tablets, USB-C laptops, handheld devices, and everyday accessories.",
+      extraSpecs: [["Single-Port Output", "Up to 65W"], ["Power Distribution", "Automatically adjusts output across connected devices"], ["Safety", "Built-in protection for overcurrent, overvoltage, overheating, and short circuit"]]
+    }),
+
+    "ugreen-uno-charger-65w-black": createUgreenChargingProduct({
+      id: "ugreen-uno-charger-65w-black",
+      name: "UGREEN Uno Charger 65W Black",
+      series: "Uno",
+      type: "Wall Charger",
+      specsLine: "UGREEN Uno | 3-Port | 65W",
+      totalOutput: "65W Max",
+      ports: "2 x USB-C, 1 x USB-A",
+      image: "https://res.cloudinary.com/dhtamisqn/image/upload/v1782397624/UGREEN_Uno_Charger_65W_Black.jpg",
+      whoIsThisFor: "A playful compact charger for users who want 65W laptop and phone charging with a charging-status LED face.",
+      extraSpecs: [["Display", "LED face reacts to charging status"], ["Color", "Black"], ["Safety", "GaN charging with built-in protection features"]]
+    }),
+
+    "ugreen-nexode-100w-4-port-gan-fast-charger": createUgreenChargingProduct({
+      id: "ugreen-nexode-100w-4-port-gan-fast-charger",
+      name: "UGREEN Nexode Charger GaN Fast 4-Port 100W",
+      series: "Nexode",
+      type: "Wall Charger",
+      specsLine: "UGREEN Nexode | 4-Port | 100W",
+      totalOutput: "100W Max",
+      ports: "3 x USB-C, 1 x USB-A",
+      image: "https://res.cloudinary.com/dhtamisqn/image/upload/v1782397624/UGREEN_Nexode_Charger_GaN_Fast_4-Port_100W.jpg",
+      whoIsThisFor: "A 100W multi-port charger for charging a USB-C laptop, phone, tablet, earbuds, and accessories from one wall charger.",
+      extraSpecs: [["Single-Port Output", "Up to 100W"], ["Input", "100-240V~ 50/60Hz"], ["Protection", "Overcurrent, overvoltage, overheating, and short-circuit protection"]]
+    }),
+
+    "ugreen-zapix-200w-8-port-gan-desktop-fast-charger": createUgreenChargingProduct({
+      id: "ugreen-zapix-200w-8-port-gan-desktop-fast-charger",
+      name: "UGREEN Zapix Charger GaN Desktop Fast 8-Port 200W",
+      series: "Zapix",
+      type: "Desktop Charger",
+      specsLine: "UGREEN Zapix | 8-Port | 200W",
+      totalOutput: "200W Max",
+      ports: "8 total charging ports",
+      image: "https://res.cloudinary.com/dhtamisqn/image/upload/v1782397623/UGREEN_Zapix_Charger_GaN_Desktop_Fast_8-port_200W.jpg",
+      whoIsThisFor: "A desktop charging hub for desks, family setups, and workstations that need many devices connected at the same time.",
+      extraSpecs: [["Use Case", "Multi-device desktop charging"], ["Power Input", "AC power cord"], ["Safety", "GaN charging with built-in protection features"]]
+    }),
+
+    "ugreen-nexode-100w-4-port-charger": createUgreenChargingProduct({
+      id: "ugreen-nexode-100w-4-port-charger",
+      name: "UGREEN Nexode Charger 4-Port 100W",
+      series: "Nexode",
+      type: "Wall Charger",
+      specsLine: "UGREEN Nexode | 4-Port | 100W",
+      totalOutput: "100W Max",
+      ports: "3 x USB-C, 1 x USB-A",
+      image: "https://res.cloudinary.com/dhtamisqn/image/upload/v1782397621/UGREEN_Nexode_Charger_4-Port_100W.jpg",
+      whoIsThisFor: "A four-port 100W charger for users who want one compact charger for a laptop and several mobile devices.",
+      extraSpecs: [["Single-Port Output", "Up to 100W"], ["Input", "100-240V~ 50/60Hz"], ["Color", "Black"]]
+    }),
+
+    "ugreen-nexode-200w-6-port-charger": createUgreenChargingProduct({
+      id: "ugreen-nexode-200w-6-port-charger",
+      name: "UGREEN Nexode Charger 6-Port 200W",
+      series: "Nexode",
+      type: "Desktop Charger",
+      specsLine: "UGREEN Nexode | 6-Port | 200W",
+      totalOutput: "200W Max",
+      ports: "6 total charging ports",
+      image: "https://res.cloudinary.com/dhtamisqn/image/upload/v1782397612/UGREEN_Nexode_Charger_6-Port_200W.jpg",
+      whoIsThisFor: "A multi-port desktop charger for users who want to charge multiple laptops, phones, tablets, and accessories from one station.",
+      extraSpecs: [["Use Case", "Desktop multi-device charging"], ["Power Input", "AC power cord"], ["Safety", "GaN charging with built-in protection features"]]
+    }),
+
+    "ugreen-nexode-500w-6-port-desktop-charger": createUgreenChargingProduct({
+      id: "ugreen-nexode-500w-6-port-desktop-charger",
+      name: "UGREEN Nexode Charger Desktop 6-Port 500W",
+      series: "Nexode",
+      type: "Desktop Charger",
+      specsLine: "UGREEN Nexode | 6-Port | 500W",
+      totalOutput: "500W Max",
+      ports: "5 x USB-C, 1 x USB-A",
+      image: "https://res.cloudinary.com/dhtamisqn/image/upload/v1782397617/UGREEN_Nexode_Charger_Desktop_6-Port_500W.jpg",
+      whoIsThisFor: "A high-output desktop charger for demanding workstations, shared desks, gaming laptops, USB-C laptops, and many mobile devices.",
+      extraSpecs: [["USB-C1 Output", "Up to 240W"], ["USB-C2/C3/C4/C5 Output", "Up to 100W each"], ["USB-A Output", "Up to 20W"], ["Dimensions", "146 x 114.6 x 60.6 mm"], ["Weight", "2207 g"]]
+    }),
+
+    "ugreen-nexode-pro-100w-3-port-gan-fast-charger": createUgreenChargingProduct({
+      id: "ugreen-nexode-pro-100w-3-port-gan-fast-charger",
+      name: "UGREEN Nexode Pro Charger GaN Fast 3-Port 100W",
+      series: "Nexode Pro",
+      type: "Wall Charger",
+      specsLine: "UGREEN Nexode Pro | 3-Port | 100W",
+      totalOutput: "100W Max",
+      ports: "2 x USB-C, 1 x USB-A",
+      image: "https://res.cloudinary.com/dhtamisqn/image/upload/v1782397615/UGREEN_Nexode_Pro_Charger_GaN_Fast_3-Port_100W.jpg",
+      whoIsThisFor: "A compact 100W charger for users who want fast charging for a USB-C laptop plus two smaller devices.",
+      extraSpecs: [["Single-Port Output", "Up to 100W"], ["Compatibility", "USB-C laptops, tablets, phones, handheld devices, and accessories"], ["Safety", "Built-in multi-level charging protection"]]
+    }),
+
+    "ugreen-uno-charger-100w": createUgreenChargingProduct({
+      id: "ugreen-uno-charger-100w",
+      name: "UGREEN Uno Charger 100W",
+      series: "Uno",
+      type: "Wall Charger",
+      specsLine: "UGREEN Uno | 4-Port | 100W",
+      totalOutput: "100W Max",
+      ports: "3 x USB-C, 1 x USB-A",
+      image: "https://res.cloudinary.com/dhtamisqn/image/upload/v1782397616/UGREEN_Uno_Charger_100W.jpg",
+      whoIsThisFor: "A playful high-output charger for users who want 100W laptop charging, four ports, and a charging-status face display.",
+      extraSpecs: [["Display", "Animated face display for charging status"], ["Single-Port Output", "Up to 100W"], ["Dimensions", "About 52.1 x 49 x 82 mm"]]
+    }),
