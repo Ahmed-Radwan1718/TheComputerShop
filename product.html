@@ -566,53 +566,6 @@
 </script>
 
 <script>
-  function createUgreenNasProduct(product) {
-    return {
-      id: product.id,
-      name: product.name,
-      category: "NAS Storage",
-      specsLine: product.specsLine,
-      priceText: "Insert price here",
-      priceNumber: null,
-      url: `product.html?product=${product.id}`,
-      images: [product.image],
-      whoIsThisFor: product.whoIsThisFor,
-      specs: [
-        ["Product Name", product.name],
-        ["Accessory Type", "NAS Storage"],
-        ["Brand", "UGREEN"],
-        ["Series", "NASync"],
-        ["Model", product.model],
-        ["Drive Bays", product.driveBays],
-        ["Maximum Storage", product.maximumStorage],
-        ["Processor", product.processor],
-        ["Memory", product.memory],
-        ["Networking", product.networking],
-        ["Ports", product.ports],
-        ["Operating System", "UGOS Pro"],
-        ...(product.extraSpecs || [])
-      ],
-      included: [
-        {
-          title: "NAS Unit",
-          text: `The ${product.name} diskless NAS enclosure is included as the main accessory. Storage drives are sold separately unless your stock package says otherwise.`
-        },
-        {
-          title: "Power Adapter",
-          text: "A compatible power adapter is included when supplied with the official package."
-        },
-        {
-          title: "Ethernet Cable and Accessories",
-          text: "Ethernet cable, drive screws, tray keys, or setup accessories are included when supplied with the official package."
-        },
-        {
-          title: "Store Support",
-          text: "Purchases include store support, setup guidance, and free lifetime troubleshooting and diagnosis for products bought from The Computer Shop."
-        }
-      ]
-    };
-  }
-
   const products = {
     ...(window.tcsChargingAndPowerProducts || {}),
 
