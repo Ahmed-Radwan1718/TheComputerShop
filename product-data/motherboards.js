@@ -1301,4 +1301,451 @@
       ]
     },
 
+        "rog-strix-z890-a-gaming-wifi": {
+      id: "rog-strix-z890-a-gaming-wifi",
+      name: "ROG Strix Z890-A Gaming WiFi",
+      category: "Motherboard",
+      specsLine: "ASUS ROG | Z890 | LGA1851",
+      priceText: "Insert price here",
+      priceNumber: null,
+      url: "product.html?product=rog-strix-z890-a-gaming-wifi",
+      images: Array.from({ length: 8 }, (_, index) => {
+        const imageNumber = index + 1;
+        return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781311373/rog-strix-z890-a-gaming-wifi-${imageNumber}.jpg`;
+      }),
+      whoIsThisFor: "A white and silver ASUS ROG Z890 motherboard for premium Intel Core Ultra LGA1851 builds, clean white gaming PCs, fast DDR5 memory, PCIe 5.0 graphics, multiple M.2 SSDs, WiFi 7, Thunderbolt 4, and polished ATX showcase systems.",
+      specs: [
+        ["Product Name", "ROG Strix Z890-A Gaming WiFi"],
+        ["Brand", "ASUS ROG"],
+        ["CPU Socket", "LGA1851"],
+        ["CPU Support", "Intel Core Ultra Processors Series 2"],
+        ["Chipset", "Intel Z890"],
+        ["Form Factor", "ATX"],
+        ["Memory Support", "4× DDR5 DIMM, up to 256GB"],
+        ["Memory Speed", "DDR5 up to 9066+ MT/s OC"],
+        ["Memory Features", "Intel XMP, DIMM Flex, DIMM FIT, AEMP III"],
+        ["Expansion Slots", "1× PCIe 5.0 x16, 1× PCIe 4.0 x16"],
+        ["Storage", "5× M.2 slots, 4× SATA 6Gb/s"],
+        ["Networking", "Intel 2.5Gb Ethernet"],
+        ["Wireless", "WiFi 7, Bluetooth 5.4"],
+        ["Rear USB-C / Thunderbolt", "2× Thunderbolt 4 USB Type-C"],
+        ["Display Outputs", "DisplayPort, HDMI, Thunderbolt 4 DisplayPort output"],
+        ["Audio", "ROG SupremeFX ALC4080"],
+        ["Color", "White / Silver"]
+      ],
+      included: [
+        {
+          title: "Motherboard",
+          text: "The ROG Strix Z890-A Gaming WiFi motherboard is included as the main component, inspected and prepared for the build or order."
+        },
+        {
+          title: "Original Packaging",
+          text: "The product comes with its original box and packaging where available. Customers should keep the packaging for warranty and support purposes."
+        },
+        {
+          title: "Included Accessories",
+          text: "Included accessories depend on the official ASUS ROG package contents and may include WiFi antenna, SATA cables, M.2 accessories, ROG stickers, documentation, and setup accessories supplied by ASUS."
+        },
+        {
+          title: "Store Support",
+          text: "Purchases include store support, basic guidance, and free lifetime troubleshooting and diagnosis for products bought from The Computer Shop."
+        }
+      ]
+    },
+
+    "x870e-aorus-master": {
+      id: "x870e-aorus-master",
+      name: "Aorus X870E Master",
+      category: "Motherboard",
+      specsLine: "Gigabyte | AMD X870E | AM5",
+      priceText: "Insert price here",
+      priceNumber: null,
+      url: "product.html?product=x870e-aorus-master",
+      images: [
+        ...Array.from({ length: 5 }, (_, index) => {
+          const imageNumber = index + 1;
+          return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781311352/x870e-aorus-master-${imageNumber}.jpg`;
+        }),
+        "https://res.cloudinary.com/dhtamisqn/image/upload/v1781311810/gigabyte-z890-aorus-master-6.jpg",
+        "https://res.cloudinary.com/dhtamisqn/image/upload/v1781311810/gigabyte-z890-aorus-master-7.jpg"
+      ],
+      whoIsThisFor: "A premium Gigabyte AORUS X870E motherboard for high-end AMD Ryzen AM5 gaming and creator builds, DDR5 overclocking, PCIe 5.0 graphics, multiple Gen 5 SSDs, USB4, WiFi 7, and clean black ATX systems.",
+      specs: [
+        ["Product Name", "X870E AORUS MASTER"],
+        ["Brand", "Gigabyte AORUS"],
+        ["CPU Socket", "AMD Socket AM5"],
+        ["CPU Support", "AMD Ryzen 9000 / 8000 / 7000 Series Processors"],
+        ["Chipset", "AMD X870E"],
+        ["Form Factor", "ATX, 30.5cm × 24.4cm"],
+        ["Memory Support", "4× DDR5 DIMM, up to 256GB"],
+        ["Memory Speed", "DDR5 up to 8600 MT/s OC"],
+        ["Memory Features", "AMD EXPO, XMP, ECC and non-ECC unbuffered DIMM support"],
+        ["Main PCIe Slot", "1× PCIe 5.0 x16"],
+        ["Storage", "4× M.2, 4× SATA 6Gb/s"],
+        ["USB-C / USB4", "2× USB4 USB Type-C"],
+        ["Networking", "2.5GbE LAN"],
+        ["Wireless", "WiFi 7, Bluetooth 5.4"],
+        ["Display Outputs", "HDMI, USB4 DisplayPort output"],
+        ["Audio", "Realtek ALC1220"],
+        ["Color", "Black"]
+      ],
+      included: [
+        {
+          title: "Motherboard",
+          text: "The X870E AORUS MASTER motherboard is included as the main component, inspected and prepared for the build or order."
+        },
+        {
+          title: "Original Packaging",
+          text: "The product comes with its original box and packaging where available. Customers should keep the packaging for warranty and support purposes."
+        },
+        {
+          title: "Included Accessories",
+          text: "Included accessories depend on the official Gigabyte package contents and may include WiFi antenna, SATA cables, M.2 accessories, documentation, and setup accessories supplied by Gigabyte."
+        },
+        {
+          title: "Store Support",
+          text: "Purchases include store support, basic guidance, and free lifetime troubleshooting and diagnosis for products bought from The Computer Shop."
+        }
+      ]
+    },
+
+    "x870e-aorus-pro-ice": {
+      id: "x870e-aorus-pro-ice",
+      name: "Aorus X870E Pro Ice",
+      category: "Motherboard",
+      specsLine: "Gigabyte | AMD X870E | AM5",
+      priceText: "Insert price here",
+      priceNumber: null,
+      url: "product.html?product=x870e-aorus-pro-ice",
+      images: [
+        ...Array.from({ length: 5 }, (_, index) => {
+          const imageNumber = index + 1;
+          return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781311334/x870e-aorus-pro-ice-${imageNumber}.jpg`;
+        }),
+        "https://res.cloudinary.com/dhtamisqn/image/upload/v1781311553/b850-aorus-stealth-ice-7.jpg"
+      ],
+      whoIsThisFor: "A white Gigabyte AORUS X870E motherboard for clean AM5 Ryzen builds, white showcase PCs, DDR5 memory, PCIe 5.0 graphics, multiple M.2 SSDs, USB4, WiFi 7, and modern ATX gaming systems.",
+      specs: [
+        ["Product Name", "X870E AORUS PRO ICE"],
+        ["Brand", "Gigabyte AORUS"],
+        ["CPU Socket", "AMD Socket AM5"],
+        ["CPU Support", "AMD Ryzen 9000 / 8000 / 7000 Series Processors"],
+        ["Chipset", "AMD X870E"],
+        ["Form Factor", "ATX, 30.5cm × 24.4cm"],
+        ["Memory Support", "4× DDR5 DIMM, up to 256GB"],
+        ["Memory Speed", "DDR5 up to 8200 MT/s OC"],
+        ["Memory Features", "AMD EXPO and XMP memory profile support"],
+        ["Main PCIe Slot", "1× PCIe 5.0 x16"],
+        ["Storage", "4× M.2, 4× SATA 6Gb/s"],
+        ["USB-C / USB4", "2× USB4 USB Type-C"],
+        ["Networking", "Realtek 2.5GbE LAN"],
+        ["Wireless", "WiFi 7, Bluetooth 5.4"],
+        ["Display Outputs", "HDMI, USB4 DisplayPort output"],
+        ["Audio", "Realtek ALC1220"],
+        ["Color", "White / Ice"]
+      ],
+      included: [
+        {
+          title: "Motherboard",
+          text: "The X870E AORUS PRO ICE motherboard is included as the main component, inspected and prepared for the build or order."
+        },
+        {
+          title: "Original Packaging",
+          text: "The product comes with its original box and packaging where available. Customers should keep the packaging for warranty and support purposes."
+        },
+        {
+          title: "Included Accessories",
+          text: "Included accessories depend on the official Gigabyte package contents and may include WiFi antenna, SATA cables, M.2 accessories, documentation, and setup accessories supplied by Gigabyte."
+        },
+        {
+          title: "Store Support",
+          text: "Purchases include store support, basic guidance, and free lifetime troubleshooting and diagnosis for products bought from The Computer Shop."
+        }
+      ]
+    },
+
+    "msi-meg-z890-godlike": {
+      id: "msi-meg-z890-godlike",
+      name: "MSI MEG Z890 GODLIKE",
+      category: "Motherboard",
+      specsLine: "MSI MEG | Z890 | LGA1851",
+      priceText: "Insert price here",
+      priceNumber: null,
+      url: "product.html?product=msi-meg-z890-godlike",
+      images: Array.from({ length: 4 }, (_, index) => {
+        const imageNumber = index + 1;
+        return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781311315/msi-meg-z890-godlike-${imageNumber}.jpg`;
+      }),
+      whoIsThisFor: "A flagship MSI MEG Z890 motherboard for extreme Intel Core Ultra LGA1851 builds, premium gaming PCs, creator systems, heavy storage setups, high-speed DDR5 memory, PCIe 5.0 graphics, WiFi 7, Thunderbolt 4, 10G networking, and large E-ATX showcase builds.",
+      specs: [
+        ["Product Name", "MSI MEG Z890 GODLIKE"],
+        ["Brand", "MSI MEG"],
+        ["CPU Socket", "LGA1851"],
+        ["CPU Support", "Intel Core Ultra Processors Series 2"],
+        ["Chipset", "Intel Z890"],
+        ["Form Factor", "E-ATX"],
+        ["PCB Size", "277mm × 304.8mm"],
+        ["Memory Support", "4× DDR5 UDIMM, up to 256GB"],
+        ["Memory Speed", "DDR5 up to 9200+ MT/s OC"],
+        ["Memory Features", "Intel XMP 3.0, CUDIMM, dual-channel, non-ECC unbuffered memory"],
+        ["Expansion Slots", "2× PCIe x16 slots, 1× PCIe x4 slot"],
+        ["Main PCIe Slot", "PCIe 5.0 x16"],
+        ["Storage", "8× M.2 total, 4× SATA 6Gb/s"],
+        ["M.2 Support", "6× onboard M.2 slots plus 2× M.2 slots through M.2 XPANDER-Z SLIDER GEN5 card"],
+        ["Thunderbolt", "1× rear Thunderbolt 4, 1× front Thunderbolt 4"],
+        ["Networking", "Marvell 10Gb Ethernet, Intel Killer 5G LAN"],
+        ["Wireless", "Intel Killer WiFi 7, Bluetooth 5.4"],
+        ["Audio", "Realtek ALC4082 Codec with ESS9219Q Combo DAC/HPA"],
+        ["LED Features", "Dynamic Dashboard III, EZ Digi-Debug LED"],
+        ["Color", "Black"]
+      ],
+      included: [
+        {
+          title: "Motherboard",
+          text: "The MSI MEG Z890 GODLIKE motherboard is included as the main component, inspected and prepared for the build or order."
+        },
+        {
+          title: "Original Packaging",
+          text: "The product comes with its original box and packaging where available. Customers should keep the packaging for warranty and support purposes."
+        },
+        {
+          title: "Included Accessories",
+          text: "Included accessories depend on the official MSI package contents and may include WiFi antenna, M.2 accessories, SATA cables, documentation, expansion accessories, and setup accessories supplied by MSI."
+        },
+        {
+          title: "Store Support",
+          text: "Purchases include store support, basic guidance, and free lifetime troubleshooting and diagnosis for products bought from The Computer Shop."
+        }
+      ]
+    },
+
+    "msi-mpg-z890-carbon-wifi": {
+      id: "msi-mpg-z890-carbon-wifi",
+      name: "MSI MPG Z890 Carbon WiFi",
+      category: "Motherboard",
+      specsLine: "MSI MPG | Z890 | LGA1851",
+      priceText: "Insert price here",
+      priceNumber: null,
+      url: "product.html?product=msi-mpg-z890-carbon-wifi",
+      images: Array.from({ length: 4 }, (_, index) => {
+        const imageNumber = index + 1;
+        return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781311318/msi-mpg-z890-carbon-wifi-${imageNumber}.jpg`;
+      }),
+      whoIsThisFor: "A premium MSI MPG Z890 motherboard for high-end Intel Core Ultra LGA1851 gaming builds, fast DDR5 memory, PCIe 5.0 graphics, multiple M.2 SSDs, WiFi 7, Thunderbolt 4, dual Ethernet, and clean black ATX systems.",
+      specs: [
+        ["Product Name", "MSI MPG Z890 Carbon WiFi"],
+        ["Brand", "MSI MPG"],
+        ["CPU Socket", "LGA1851"],
+        ["CPU Support", "Intel Core Ultra Processors Series 2"],
+        ["Chipset", "Intel Z890"],
+        ["Form Factor", "ATX"],
+        ["PCB Size", "243.84mm × 304.8mm"],
+        ["Memory Support", "4× DDR5 UDIMM, up to 256GB"],
+        ["Memory Speed", "DDR5 up to 9200+ MT/s OC"],
+        ["Memory Features", "Intel XMP 3.0, CUDIMM, dual-channel, non-ECC unbuffered memory"],
+        ["Expansion Slots", "3× PCIe x16 slots"],
+        ["Main PCIe Slot", "PCIe 5.0 x16"],
+        ["Storage", "5× M.2 slots, 4× SATA 6Gb/s"],
+        ["Thunderbolt", "2× rear Thunderbolt 4"],
+        ["Networking", "Intel Killer 5G LAN, Intel 2.5G LAN"],
+        ["Wireless", "Intel Killer WiFi 7, Bluetooth 5.4"],
+        ["Display Outputs", "HDMI, Thunderbolt 4 DisplayPort output"],
+        ["Audio", "Realtek ALC1220P Codec"],
+        ["LED Features", "EZ Debug LED, EZ Digit Debug LED"],
+        ["Color", "Black"]
+      ],
+      included: [
+        {
+          title: "Motherboard",
+          text: "The MSI MPG Z890 Carbon WiFi motherboard is included as the main component, inspected and prepared for the build or order."
+        },
+        {
+          title: "Original Packaging",
+          text: "The product comes with its original box and packaging where available. Customers should keep the packaging for warranty and support purposes."
+        },
+        {
+          title: "Included Accessories",
+          text: "Included accessories depend on the official MSI package contents and may include WiFi antenna, M.2 accessories, SATA cables, documentation, and setup accessories supplied by MSI."
+        },
+        {
+          title: "Store Support",
+          text: "Purchases include store support, basic guidance, and free lifetime troubleshooting and diagnosis for products bought from The Computer Shop."
+        }
+      ]
+    },
+
+    "msi-mpg-x870e-carbon-wifi": {
+      id: "msi-mpg-x870e-carbon-wifi",
+      name: "MSI MPG X870E Carbon WiFi",
+      category: "Motherboard",
+      specsLine: "MSI MPG | X870E | AM5",
+      priceText: "Insert price here",
+      priceNumber: null,
+      url: "product.html?product=msi-mpg-x870e-carbon-wifi",
+      images: Array.from({ length: 4 }, (_, index) => {
+        const imageNumber = index + 1;
+        return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781311277/msi-mpg-x870e-carbon-wifi-${imageNumber}.jpg`;
+      }),
+      whoIsThisFor: "A premium MSI MPG X870E motherboard for high-end AMD Ryzen AM5 gaming and creator builds, fast DDR5 memory, PCIe 5.0 graphics, Gen 5 storage, WiFi 7, USB4 / USB 40Gbps connectivity, dual Ethernet, and clean black ATX systems.",
+      specs: [
+        ["Product Name", "MSI MPG X870E Carbon WiFi"],
+        ["Brand", "MSI MPG"],
+        ["CPU Socket", "AM5"],
+        ["CPU Support", "AMD Ryzen 9000 / 8000 / 7000 Series Desktop Processors"],
+        ["Chipset", "AMD X870E"],
+        ["Form Factor", "ATX"],
+        ["PCB Size", "243.84mm × 304.8mm"],
+        ["Memory Support", "4× DDR5 UDIMM, up to 256GB"],
+        ["Memory Speed", "DDR5 up to 8400+ MT/s OC with Ryzen 9000 Series"],
+        ["Memory Features", "AMD EXPO, memory overclocking, dual-channel, non-ECC unbuffered memory"],
+        ["Expansion Slots", "3× PCIe x16 slots"],
+        ["Main PCIe Slot", "PCIe 5.0 x16"],
+        ["Storage", "4× M.2 slots, 4× SATA 6Gb/s"],
+        ["M.2 Support", "2× PCIe 5.0 x4 M.2 slots, 2× PCIe 4.0 x4 M.2 slots"],
+        ["USB-C / USB4", "2× rear USB 40Gbps Type-C, 1× front USB 20Gbps Type-C"],
+        ["Networking", "Realtek 5Gb Ethernet, Realtek 2.5Gb Ethernet"],
+        ["Wireless", "WiFi 7, Bluetooth 5.4"],
+        ["Display Outputs", "HDMI, USB4 Type-C DisplayPort output support"],
+        ["Audio", "Realtek ALC4080 Codec"],
+        ["LED Features", "EZ Debug LED, EZ Digit Debug LED"],
+        ["Color", "Black"]
+      ],
+      included: [
+        {
+          title: "Motherboard",
+          text: "The MSI MPG X870E Carbon WiFi motherboard is included as the main component, inspected and prepared for the build or order."
+        },
+        {
+          title: "Original Packaging",
+          text: "The product comes with its original box and packaging where available. Customers should keep the packaging for warranty and support purposes."
+        },
+        {
+          title: "Included Accessories",
+          text: "Included accessories depend on the official MSI package contents and may include WiFi antenna, M.2 accessories, SATA cables, documentation, and setup accessories supplied by MSI."
+        },
+        {
+          title: "Store Support",
+          text: "Purchases include store support, basic guidance, and free lifetime troubleshooting and diagnosis for products bought from The Computer Shop."
+        }
+      ]
+    },
+
+    "msi-mpg-z890-edge-ti-wifi": {
+      id: "msi-mpg-z890-edge-ti-wifi",
+      name: "MSI MPG Z890 Edge TI WiFi",
+      category: "Motherboard",
+      specsLine: "MSI MPG | Z890 | LGA1851",
+      priceText: "Insert price here",
+      priceNumber: null,
+      url: "product.html?product=msi-mpg-z890-edge-ti-wifi",
+      images: Array.from({ length: 4 }, (_, index) => {
+        const imageNumber = index + 1;
+        return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781311323/msi-mpg-z890-edge-ti-wifi-${imageNumber}.jpg`;
+      }),
+      whoIsThisFor: "A white and silver MSI MPG Z890 motherboard for premium Intel Core Ultra LGA1851 builds, clean white gaming PCs, fast DDR5 memory, PCIe 5.0 graphics, multiple M.2 SSDs, WiFi 7, Thunderbolt 4, 5G networking, and stylish ATX showcase systems.",
+      specs: [
+        ["Product Name", "MSI MPG Z890 Edge TI WiFi"],
+        ["Brand", "MSI MPG"],
+        ["CPU Socket", "LGA1851"],
+        ["CPU Support", "Intel Core Ultra Processors Series 2"],
+        ["Chipset", "Intel Z890"],
+        ["Form Factor", "ATX"],
+        ["PCB Size", "243.84mm × 304.8mm"],
+        ["Memory Support", "4× DDR5 UDIMM, up to 256GB"],
+        ["Memory Speed", "DDR5 up to 9200+ MT/s OC"],
+        ["Memory Features", "Intel XMP 3.0, memory overclocking, dual-controller dual-channel, non-ECC unbuffered memory, CUDIMM support"],
+        ["Expansion Slots", "2× PCIe x16 slots, 1× PCIe x1 slot"],
+        ["Main PCIe Slot", "PCIe 5.0 x16"],
+        ["Storage", "5× M.2 slots, 4× SATA 6Gb/s"],
+        ["M.2 Support", "1× PCIe 5.0 x4 M.2 slot, 3× PCIe 4.0 x4 M.2 slots, 1× PCIe 4.0 x4 / SATA M.2 slot"],
+        ["Thunderbolt", "2× rear Thunderbolt 4 ports"],
+        ["Front USB-C", "1× front USB 20Gbps Type-C with 27W USB PD fast charging"],
+        ["Networking", "Intel Killer 5Gb Ethernet"],
+        ["Wireless", "Intel Killer WiFi 7, Bluetooth 5.4"],
+        ["Display Outputs", "HDMI, Thunderbolt 4 Type-C DisplayPort output support"],
+        ["Audio", "Realtek ALC1220P Codec"],
+        ["LED Features", "EZ Debug LED, EZ Digit Debug LED"],
+        ["Color", "White / Silver"]
+      ],
+      included: [
+        {
+          title: "Motherboard",
+          text: "The MSI MPG Z890 Edge TI WiFi motherboard is included as the main component, inspected and prepared for the build or order."
+        },
+        {
+          title: "Original Packaging",
+          text: "The product comes with its original box and packaging where available. Customers should keep the packaging for warranty and support purposes."
+        },
+        {
+          title: "Included Accessories",
+          text: "Included accessories depend on the official MSI package contents and may include WiFi antenna, M.2 accessories, SATA cables, documentation, and setup accessories supplied by MSI."
+        },
+        {
+          title: "Store Support",
+          text: "Purchases include store support, basic guidance, and free lifetime troubleshooting and diagnosis for products bought from The Computer Shop."
+        }
+      ]
+    },
+
+    "rog-maximus-z890-extreme-motherboard": {
+      id: "rog-maximus-z890-extreme-motherboard",
+      name: "ROG Maximus Z890 Extreme Motherboard",
+      category: "Motherboard",
+      specsLine: "ASUS ROG | Z890 | LGA1851",
+      priceText: "Insert price here",
+      priceNumber: null,
+      url: "product.html?product=rog-maximus-z890-extreme-motherboard",
+      images: Array.from({ length: 9 }, (_, index) => {
+        const imageNumber = index + 1;
+        return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781311678/rog-maximus-z890-extreme-motherboard-${imageNumber}.jpg`;
+      }),
+      whoIsThisFor: "For flagship Intel Core Ultra gaming, workstation, overclocking, and showcase builds that need a premium Z890 E-ATX motherboard with WiFi 7, Thunderbolt 5, 10Gb Ethernet, high-end storage support, and extreme ROG features.",
+      specs: [
+        ["Product Name", "ROG Maximus Z890 Extreme"],
+        ["Component Type", "Motherboard"],
+        ["Brand", "ASUS ROG"],
+        ["CPU Socket", "LGA1851"],
+        ["CPU Support", "Intel Core Ultra Processors Series 2"],
+        ["Chipset", "Intel Z890"],
+        ["Form Factor", "E-ATX"],
+        ["Dimensions", "12 × 10.9 inches / 30.5 × 27.7cm"],
+        ["Memory Slots", "4× DIMM"],
+        ["Max Memory", "256GB DDR5"],
+        ["Memory Support", "DDR5 up to 9200+MT/s OC"],
+        ["Memory Features", "Dual Channel, Intel XMP, ASUS AEMP III, DIMM Flex, DIMM Fit, NitroPath DRAM Technology"],
+        ["Expansion Slots", "2× PCIe 5.0 x16 slots, 1× PCIe 4.0 x4 slot"],
+        ["Storage", "Up to 6× M.2 slots and 4× SATA 6Gb/s ports"],
+        ["Primary M.2 Support", "PCIe 5.0 x4"],
+        ["Ethernet", "Intel 2.5Gb Ethernet and Marvell AQtion 10Gb Ethernet"],
+        ["Wireless", "Intel WiFi 7 2×2"],
+        ["Bluetooth", "Bluetooth 5.4"],
+        ["Rear USB", "2× Thunderbolt 5 USB-C, 1× USB 20Gbps USB-C, 7× USB 10Gbps"],
+        ["Front USB", "USB 20Gbps Type-C with up to 60W PD/QC4+, USB 10Gbps Type-C, USB 5Gbps headers, USB 2.0 headers"],
+        ["Display Output", "HDMI and Thunderbolt display output support"],
+        ["Audio", "ROG SupremeFX 7.1 Surround Sound ALC4082 with ESS ES9219 QUAD DAC"],
+        ["Special Features", "Full Color 5-inch LCD Display, Dual BIOS, ROG M.2 PowerBoost, Q-DIMM.2, Q-Release Slim, Q-Code, Aura Sync"],
+        ["Operating System", "Windows 11 22H2 and later"]
+      ],
+      included: [
+        {
+          title: "Motherboard",
+          text: "The ROG Maximus Z890 Extreme motherboard is included as the main component, inspected and prepared for the build or order."
+        },
+        {
+          title: "Original Packaging",
+          text: "The product comes with its original box and packaging where available. Customers should keep the packaging for warranty and support purposes."
+        },
+        {
+          title: "Included Accessories",
+          text: "Included accessories depend on the official ASUS package contents and may include the WiFi Q-Antenna, ROG Q-DIMM.2 with heatsink, SATA cables, fan splitter cables, ARGB splitter cables, thermistor cables, Q-connector, ROG screwdriver, stickers, USB drive with drivers, and documentation supplied by ASUS."
+        },
+        {
+          title: "Store Support",
+          text: "Purchases include store support, basic guidance, and free lifetime troubleshooting and diagnosis for products bought from The Computer Shop."
+        }
+      ]
+    },
+  };
+}());
+
 
