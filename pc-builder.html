@@ -727,12 +727,7 @@
       background: rgba(255, 255, 255, 0.055);
     }
 
-    .pc-builder-fps-card {
-      margin-bottom: 16px;
-      padding: 16px;
-      border: 1px solid rgba(192, 154, 92, 0.22);
-      border-radius: 18px;
-      background: rgba(192, 154, 92, 0.075);
+    .pc-builder-fps-panel .pc-builder-summary-body {
       display: grid;
       gap: 14px;
     }
@@ -1436,53 +1431,59 @@
             <div class="pc-builder-stat"><span>Total</span><strong id="pc-builder-total">Pending prices</strong></div>
           </div>
 
-          <div class="pc-builder-fps-card" id="pc-builder-fps-estimator">
-            <div class="pc-builder-fps-head">
-              <strong>FPS Estimator</strong>
-              <span>Benchmark-calibrated gaming estimate</span>
-            </div>
-
-            <div class="pc-builder-fps-controls">
-              <div class="pc-builder-fps-field">
-                <label for="pc-builder-fps-game">Game Type</label>
-                <select id="pc-builder-fps-game">
-                  <option value="balanced">Popular AAA Games</option>
-                  <option value="esports">Competitive Esports</option>
-                  <option value="openworld">CPU-Heavy Open World</option>
-                  <option value="raytracing">Ray Tracing AAA</option>
-                </select>
-              </div>
-
-              <div class="pc-builder-fps-field">
-                <label for="pc-builder-fps-resolution">Resolution</label>
-                <select id="pc-builder-fps-resolution">
-                  <option value="1080p">1080p</option>
-                  <option value="1440p" selected>1440p</option>
-                  <option value="3440p">3440x1440</option>
-                  <option value="2160p">4K</option>
-                </select>
-              </div>
-
-              <div class="pc-builder-fps-field">
-                <label for="pc-builder-fps-preset">Preset</label>
-                <select id="pc-builder-fps-preset">
-                  <option value="competitive">Competitive</option>
-                  <option value="high">High</option>
-                  <option value="ultra" selected>Ultra</option>
-                  <option value="rt">RT Ultra</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="pc-builder-fps-result" id="pc-builder-fps-result">
-              <p class="pc-builder-fps-note">Choose a CPU and video card to estimate FPS.</p>
-            </div>
-          </div>
-
           <div class="pc-builder-save-actions">
             <button class="pc-builder-button" type="button" id="pc-builder-add-components-cart">Add Components to Cart</button>
             <button class="pc-builder-button secondary" type="button" id="pc-builder-save-build">Save Build</button>
             <p class="pc-builder-save-message" id="pc-builder-save-message" aria-live="polite"></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="pc-builder-summary pc-builder-fps-panel" id="pc-builder-fps-estimator">
+        <div class="pc-builder-summary-header">
+          <h2>FPS Estimator</h2>
+        </div>
+
+        <div class="pc-builder-summary-body">
+          <div class="pc-builder-fps-head">
+            <strong>Gaming Performance</strong>
+            <span>Benchmark-calibrated estimate</span>
+          </div>
+
+          <div class="pc-builder-fps-controls">
+            <div class="pc-builder-fps-field">
+              <label for="pc-builder-fps-game">Game Type</label>
+              <select id="pc-builder-fps-game">
+                <option value="balanced">Popular AAA Games</option>
+                <option value="esports">Competitive Esports</option>
+                <option value="openworld">CPU-Heavy Open World</option>
+                <option value="raytracing">Ray Tracing AAA</option>
+              </select>
+            </div>
+
+            <div class="pc-builder-fps-field">
+              <label for="pc-builder-fps-resolution">Resolution</label>
+              <select id="pc-builder-fps-resolution">
+                <option value="1080p">1080p</option>
+                <option value="1440p" selected>1440p</option>
+                <option value="3440p">3440x1440</option>
+                <option value="2160p">4K</option>
+              </select>
+            </div>
+
+            <div class="pc-builder-fps-field">
+              <label for="pc-builder-fps-preset">Preset</label>
+              <select id="pc-builder-fps-preset">
+                <option value="competitive">Competitive</option>
+                <option value="high">High</option>
+                <option value="ultra" selected>Ultra</option>
+                <option value="rt">RT Ultra</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="pc-builder-fps-result" id="pc-builder-fps-result">
+            <p class="pc-builder-fps-note">Choose a CPU and video card to estimate FPS.</p>
           </div>
         </div>
       </section>
