@@ -566,50 +566,6 @@
 </script>
 
 <script>
-  function createUgreenChargingProduct(product) {
-    const mainItemTitle = product.type === "Desktop Charger" ? "Desktop Charger" : "Wall Charger";
-
-    return {
-      id: product.id,
-      name: product.name,
-      category: "Charging and Power",
-      specsLine: product.specsLine,
-      priceText: "Insert price here",
-      priceNumber: null,
-      url: `product.html?product=${product.id}`,
-      images: [product.image],
-      whoIsThisFor: product.whoIsThisFor,
-      specs: [
-        ["Product Name", product.name],
-        ["Brand", "UGREEN"],
-        ["Series", product.series],
-        ["Type", product.type],
-        ["Total Output", product.totalOutput],
-        ["Ports", product.ports],
-        ["Technology", product.technology || "GaN fast charging"],
-        ...(product.extraSpecs || [])
-      ],
-      included: [
-        {
-          title: mainItemTitle,
-          text: `The ${product.name} is included as the main product.`
-        },
-        {
-          title: "Original Packaging",
-          text: "The product comes with its original box and packaging where available. Customers should keep the packaging for warranty and support purposes."
-        },
-        {
-          title: "Documentation",
-          text: "Quick-start, safety, or warranty documentation is included when supplied in the official package."
-        },
-        {
-          title: "Store Support",
-          text: "Purchases include store support, basic guidance, and free lifetime troubleshooting and diagnosis for products bought from The Computer Shop."
-        }
-      ]
-    };
-  }
-
   function createUgreenNasProduct(product) {
     return {
       id: product.id,
