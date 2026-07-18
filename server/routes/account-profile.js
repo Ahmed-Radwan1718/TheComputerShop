@@ -340,34 +340,42 @@ async function ensureAccountSession(req, res, uid) {
     return;
   }
 
-  const currentSession = await getCurrentAccountSession(req, uid).catch(function () {
-    return null;
-  });
+  try {
+    const currentSession = await getCurrentAccountSession(req, uid).catch(function () {
+      return null;
+    });
 
-  if (currentSession) {
-    return;
-  }
+    if (currentSession) {
+      return;
+    }
 
-  await createAccountSession(uid, res, req);
+    await createAccountSession(uid, res, req).catch(function () {});
+  } catch (error) {}
 }
 
 async function getProfile(uid, req) {
-  const userDocRef = admin.firestore().collection("users").doc(uid);
+  const userDocPromise = admin.firestore().collection("users").doc(uid).get().catch(function () {
+    return null;
+  });
   const sessionsPromise = typeof listAccountSessions === "function"
-    ? listAccountSessions(req, uid)
+    ? listAccountSessions(req, uid).catch(function () {
+        return [];
+      })
     : Promise.resolve([]);
   const trustedDevicesPromise = typeof listTrustedDevices === "function"
-    ? listTrustedDevices(req, uid)
+    ? listTrustedDevices(req, uid).catch(function () {
+        return [];
+      })
     : Promise.resolve([]);
 
   const [userRecord, userDoc, sessions, trustedDevices] = await Promise.all([
     admin.auth().getUser(uid),
-    userDocRef.get(),
+    userDocPromise,
     sessionsPromise,
     trustedDevicesPromise
   ]);
 
-  const data = userDoc.exists ? userDoc.data() || {} : {};
+  const data = userDoc && userDoc.exists ? userDoc.data() || {} : {};
 
   return {
     uid,
