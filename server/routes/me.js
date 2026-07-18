@@ -39,6 +39,8 @@ module.exports = async function handler(req, res) {
       return res.status(405).json({ error: "Method not allowed" });
     }
 
+    res.setHeader("Cache-Control", "no-store, private");
+
     const decodedUser = await getSessionUser(req);
 
     if (!decodedUser || !decodedUser.uid) {
@@ -50,13 +52,21 @@ return res.status(200).json({
 });
     }
 
-    const userRecord = await admin.auth().getUser(decodedUser.uid);
-    const userDoc = await admin.firestore().collection("users").doc(decodedUser.uid).get();
-    const userData = userDoc.exists ? userDoc.data() || {} : {};
+    let userRecord = null;
+    let userData = {};
 
-    const fullName = userData.fullName || userRecord.displayName || "";
-    const email = userRecord.email || userData.email || decodedUser.email || "";
-    const photoURL = userData.photoURL || userRecord.photoURL || "";
+    try {
+      userRecord = await admin.auth().getUser(decodedUser.uid);
+    } catch (error) {}
+
+    try {
+      const userDoc = await admin.firestore().collection("users").doc(decodedUser.uid).get();
+      userData = userDoc.exists ? userDoc.data() || {} : {};
+    } catch (error) {}
+
+    const fullName = userData.fullName || (userRecord && userRecord.displayName) || decodedUser.name || "";
+    const email = (userRecord && userRecord.email) || userData.email || decodedUser.email || "";
+    const photoURL = userData.photoURL || (userRecord && userRecord.photoURL) || decodedUser.picture || "";
     const firstName = getFirstName(fullName, email);
 
 return res.status(200).json({
@@ -66,7 +76,7 @@ return res.status(200).json({
   user: {
         uid: decodedUser.uid,
         email,
-        emailVerified: Boolean(userRecord.emailVerified),
+        emailVerified: Boolean(userRecord ? userRecord.emailVerified : decodedUser.email_verified),
         displayName: fullName,
         fullName,
         photoURL,
