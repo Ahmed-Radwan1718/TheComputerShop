@@ -150,7 +150,7 @@ function setCookie(res, name, value, maxAgeSeconds) {
       encodeURIComponent(value) +
       "; Max-Age=" +
       maxAgeSeconds +
-      "; Path=/; HttpOnly; SameSite=Strict" +
+      "; Path=/; HttpOnly; SameSite=Lax" +
       secureFlag
   );
 }
@@ -161,7 +161,7 @@ function clearCookie(res, name) {
   appendSetCookie(
     res,
     name +
-      "=; Max-Age=0; Path=/; HttpOnly; SameSite=Strict" +
+      "=; Max-Age=0; Path=/; HttpOnly; SameSite=Lax" +
       secureFlag
   );
 }
