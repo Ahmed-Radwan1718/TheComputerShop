@@ -727,91 +727,6 @@
       background: rgba(255, 255, 255, 0.055);
     }
 
-    .pc-builder-fps-panel .pc-builder-summary-body {
-      display: grid;
-      gap: 14px;
-    }
-
-    .pc-builder-fps-head strong {
-      display: block;
-      color: #ffffff;
-      font-size: 15px;
-      line-height: 1.25;
-      text-transform: uppercase;
-    }
-
-    .pc-builder-fps-head span,
-    .pc-builder-fps-note,
-    .pc-builder-fps-meta {
-      color: rgba(255, 255, 255, 0.58);
-      font-size: 12px;
-      line-height: 1.5;
-    }
-
-    .pc-builder-fps-controls {
-      display: grid;
-      gap: 10px;
-    }
-
-    .pc-builder-fps-field {
-      display: grid;
-      gap: 7px;
-    }
-
-    .pc-builder-fps-field label {
-      color: rgba(192, 154, 92, 0.84);
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-    }
-
-    .pc-builder-fps-field select {
-      width: 100%;
-      min-height: 42px;
-      padding: 0 12px;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 14px;
-      background: rgba(24, 25, 24, 0.86);
-      color: #ffffff;
-      font-family: inherit;
-      font-size: 13px;
-      outline: none;
-    }
-
-    .pc-builder-fps-result {
-      display: grid;
-      gap: 10px;
-    }
-
-    .pc-builder-fps-main strong {
-      display: block;
-      color: #ffffff;
-      font-size: 28px;
-      line-height: 1;
-    }
-
-    .pc-builder-fps-main small {
-      display: block;
-      margin-top: 6px;
-      color: rgba(255, 255, 255, 0.62);
-      font-size: 12px;
-      line-height: 1.45;
-    }
-
-    .pc-builder-fps-meter {
-      height: 8px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.1);
-      overflow: hidden;
-    }
-
-    .pc-builder-fps-meter span {
-      display: block;
-      height: 100%;
-      border-radius: inherit;
-      background: linear-gradient(90deg, #c09a5c, #8ff0c2);
-    }
-
     .pc-builder-status {
       min-height: 34px;
       padding: 0 13px;
@@ -1438,79 +1353,6 @@
           </div>
         </div>
       </section>
-
-      <section class="pc-builder-summary pc-builder-fps-panel" id="pc-builder-fps-estimator">
-        <div class="pc-builder-summary-header">
-          <h2>FPS Estimator</h2>
-        </div>
-
-        <div class="pc-builder-summary-body">
-          <div class="pc-builder-fps-head">
-            <strong>Gaming Performance</strong>
-            <span>Benchmark-calibrated estimate</span>
-          </div>
-
-          <div class="pc-builder-fps-controls">
-            <div class="pc-builder-fps-field">
-              <label for="pc-builder-fps-game">Video Game</label>
-              <select id="pc-builder-fps-game">
-                <option value="counter-strike-2">Counter-Strike 2</option>
-                <option value="fortnite">Fortnite</option>
-                <option value="valorant">Valorant</option>
-                <option value="call-of-duty-warzone">Call of Duty: Warzone</option>
-                <option value="apex-legends">Apex Legends</option>
-                <option value="pubg-battlegrounds">PUBG: Battlegrounds</option>
-                <option value="marvel-rivals">Marvel Rivals</option>
-                <option value="overwatch-2">Overwatch 2</option>
-                <option value="rainbow-six-siege">Rainbow Six Siege</option>
-                <option value="battlefield-6">Battlefield 6</option>
-                <option value="minecraft">Minecraft</option>
-                <option value="roblox">Roblox</option>
-                <option value="league-of-legends">League of Legends</option>
-                <option value="dota-2">Dota 2</option>
-                <option value="rocket-league">Rocket League</option>
-                <option value="grand-theft-auto-v-enhanced">Grand Theft Auto V Enhanced</option>
-                <option value="cyberpunk-2077">Cyberpunk 2077</option>
-                <option value="red-dead-redemption-2">Red Dead Redemption 2</option>
-                <option value="forza-horizon-5">Forza Horizon 5</option>
-                <option value="microsoft-flight-simulator-2024">Microsoft Flight Simulator 2024</option>
-                <option value="alan-wake-2">Alan Wake 2</option>
-                <option value="black-myth-wukong">Black Myth: Wukong</option>
-                <option value="helldivers-2">Helldivers 2</option>
-                <option value="palworld">Palworld</option>
-                <option value="elden-ring">Elden Ring</option>
-                <option value="hogwarts-legacy">Hogwarts Legacy</option>
-                <option value="starfield">Starfield</option>
-                <option value="diablo-iv">Diablo IV</option>
-                <option value="path-of-exile-2">Path of Exile 2</option>
-              </select>
-            </div>
-
-            <div class="pc-builder-fps-field">
-              <label for="pc-builder-fps-resolution">Resolution</label>
-              <select id="pc-builder-fps-resolution">
-                <option value="1080p">1080p</option>
-                <option value="1440p" selected>1440p</option>
-                <option value="2160p">4K</option>
-              </select>
-            </div>
-
-            <div class="pc-builder-fps-field">
-              <label for="pc-builder-fps-preset">Preset</label>
-              <select id="pc-builder-fps-preset">
-                <option value="low">Low</option>
-                <option value="medium">Medium</option>
-                <option value="high">High</option>
-                <option value="ultra" selected>Ultra</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="pc-builder-fps-result" id="pc-builder-fps-result">
-            <p class="pc-builder-fps-note">Choose a CPU and video card to estimate FPS.</p>
-          </div>
-        </div>
-      </section>
     </aside>
   </section>
 </main>
@@ -1589,10 +1431,6 @@
   const saveBuildMessage = document.getElementById("pc-builder-save-message");
   const statusElement = document.getElementById("pc-builder-status");
   const issuesElement = document.getElementById("pc-builder-issues");
-  const fpsGameSelect = document.getElementById("pc-builder-fps-game");
-  const fpsResolutionSelect = document.getElementById("pc-builder-fps-resolution");
-  const fpsPresetSelect = document.getElementById("pc-builder-fps-preset");
-  const fpsResultElement = document.getElementById("pc-builder-fps-result");
 
   function escapeHtml(value) {
     return String(value || "").replace(/[&<>"']/g, function (character) {
@@ -3813,7 +3651,6 @@
     });
 
     renderCompatibilitySummary(compatibilityIssues, selectedCount, missingRequired);
-    renderFpsEstimator(build);
 
     const wattage = compatibilityEngine && typeof compatibilityEngine.estimateWattage === "function"
       ? compatibilityEngine.estimateWattage(build)
@@ -4358,18 +4195,9 @@
       window.setTimeout(() => { this.textContent = "Copy Link"; }, 1200);
     } catch (error) {
       this.textContent = "Copy Failed";
+      this.textContent = "Copy Failed";
       window.setTimeout(() => { this.textContent = "Copy Link"; }, 1200);
     }
-  });
-
-  [fpsGameSelect, fpsResolutionSelect, fpsPresetSelect].forEach(function (select) {
-    if (!select) {
-      return;
-    }
-
-    select.addEventListener("change", function () {
-      renderFpsEstimator(getSelectedBuild());
-    });
   });
 
   loadCatalog();
