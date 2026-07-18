@@ -441,7 +441,7 @@
         return {};
       });
 
-      if (!response.ok) {
+      if (!response.ok || !data.success) {
         throw new Error(data.error || "Incorrect email or password.");
       }
 
@@ -467,6 +467,7 @@
         throw new Error("No two-factor method is available.");
       }
 
+      clearTwoFactorPending();
       showMessage("Logged in successfully.", "success");
 
       setTimeout(function () {
