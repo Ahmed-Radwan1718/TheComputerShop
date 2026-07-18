@@ -58,7 +58,8 @@ return res.status(200).json({
 
     const fullName = userData.fullName || userRecord.displayName || "";
     const email = userRecord.email || userData.email || decodedUser.email || "";
-    const photoURL = userData.photoURL || userRecord.photoURL || "";
+    const uploadedPhotoURL = String(userData.photoURL || "").trim();
+    const photoURL = uploadedPhotoURL && (userData.profilePhotoUpdatedAt || uploadedPhotoURL.includes("res.cloudinary.com/")) ? uploadedPhotoURL : "";
     const firstName = getFirstName(fullName, email);
 
 return res.status(200).json({
