@@ -3064,47 +3064,55 @@
   const fpsRenderingMode = "native";
 
   const fpsBenchmarkAnchors = [
-    /*
-      Add verified measured benchmark rows only:
-      {
-        gameId: "game-id",
-        cpuId: "cpu-product-id",
-        gpuId: "gpu-product-id",
-        resolution: "1440p",
-        preset: "ultra",
-        renderingMode: "native",
-        averageFps: 0,
-        onePercentLow: 0,
-        source: "source name or URL",
-        benchmarkDate: "YYYY-MM-DD",
-        gameVersion: null,
-        driverVersion: null
-      }
-    */
+    { gameId: "valorant", cpuId: "amd-ryzen-7-9800x3d", gpuId: "rtx-5080-aorus-master", resolution: "1440p", preset: "low", renderingMode: "native", averageFps: 924, onePercentLow: 665, source: "Game Tested Tech RTX 5080 Review, May 10 2026: https://gametestedtech.com/articles/nvidia-rtx-5080-review", benchmarkDate: "2026-05-10", gameVersion: null, driverVersion: null },
+    { gameId: "cyberpunk-2077", cpuId: "amd-ryzen-7-9800x3d", gpuId: "rtx-5080-aorus-master", resolution: "2160p", preset: "ultra", renderingMode: "native", averageFps: 55, onePercentLow: 38, source: "Game Tested Tech RTX 5080 Review, May 10 2026: https://gametestedtech.com/articles/nvidia-rtx-5080-review", benchmarkDate: "2026-05-10", gameVersion: null, driverVersion: null },
+    { gameId: "red-dead-redemption-2", cpuId: "amd-ryzen-7-9800x3d", gpuId: "rtx-5080-aorus-master", resolution: "2160p", preset: "ultra", renderingMode: "native", averageFps: 75, onePercentLow: 58, source: "Game Tested Tech RTX 5080 Review, May 10 2026: https://gametestedtech.com/articles/nvidia-rtx-5080-review", benchmarkDate: "2026-05-10", gameVersion: null, driverVersion: null },
+    { gameId: "forza-horizon-5", cpuId: "amd-ryzen-7-9800x3d", gpuId: "rtx-5080-aorus-master", resolution: "2160p", preset: "ultra", renderingMode: "native", averageFps: 123, onePercentLow: 108, source: "Game Tested Tech RTX 5080 Review, May 10 2026: https://gametestedtech.com/articles/nvidia-rtx-5080-review", benchmarkDate: "2026-05-10", gameVersion: null, driverVersion: null }
   ];
 
   const fpsGpuProfiles = {
-    /*
-      Add normalized benchmark-derived GPU profiles only:
-      "gpu-product-id": {
-        score: 1,
-        games: { "game-id": 1 },
-        categories: { gpu_heavy: 1 },
-        source: "source name or URL"
-      }
-    */
+    "asus-rog-astral-rtx5090-oc-32gb": { score: 1.304, source: "Tom's Hardware GPU Benchmarks Hierarchy 2026, 1440p raster score: https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html" },
+    "rog-astral-lc-rtx5090-o32g-gaming": { score: 1.304, source: "Tom's Hardware GPU Benchmarks Hierarchy 2026, 1440p raster score: https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html" },
+    "rtx-5090-aorus-master": { score: 1.304, source: "Tom's Hardware GPU Benchmarks Hierarchy 2026, 1440p raster score: https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html" },
+    "asus-proart-rtx5080-o16g": { score: 1, source: "Tom's Hardware GPU Benchmarks Hierarchy 2026, 1440p raster score: https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html" },
+    "asus-tuf-rtx5080-o16g-gaming": { score: 1, source: "Tom's Hardware GPU Benchmarks Hierarchy 2026, 1440p raster score: https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html" },
+    "msi-rtx5080-gaming-trio-oc-16gb": { score: 1, source: "Tom's Hardware GPU Benchmarks Hierarchy 2026, 1440p raster score: https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html" },
+    "rtx-5080-aorus-master": { score: 1, source: "Tom's Hardware GPU Benchmarks Hierarchy 2026, 1440p raster score: https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html" },
+    "rtx-5080-windforce-oc-sff-16g": { score: 1, source: "Tom's Hardware GPU Benchmarks Hierarchy 2026, 1440p raster score: https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html" },
+    "zotac-gaming-rtx5080-amp-extreme-infinity": { score: 1, source: "Tom's Hardware GPU Benchmarks Hierarchy 2026, 1440p raster score: https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html" },
+    "asus-tuf-rtx5070ti-o16g-gaming": { score: 0.91, source: "Tom's Hardware GPU Benchmarks Hierarchy 2026, 1440p raster score: https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html" },
+    "msi-rtx5070-ti-gaming-trio-oc-16gb": { score: 0.91, source: "Tom's Hardware GPU Benchmarks Hierarchy 2026, 1440p raster score: https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html" },
+    "rog-strix-rtx5070ti-o16g-gaming": { score: 0.91, source: "Tom's Hardware GPU Benchmarks Hierarchy 2026, 1440p raster score: https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html" },
+    "rtx-5070-ti-eagle-oc-sff-16g": { score: 0.91, source: "Tom's Hardware GPU Benchmarks Hierarchy 2026, 1440p raster score: https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html" },
+    "rtx-5070-aorus-master": { score: 0.751, source: "Tom's Hardware GPU Benchmarks Hierarchy 2026, 1440p raster score: https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html" },
+    "rtx-5070-gaming-oc": { score: 0.751, source: "Tom's Hardware GPU Benchmarks Hierarchy 2026, 1440p raster score: https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html" },
+    "rtx-5070-eagle-oc-sff": { score: 0.751, source: "Tom's Hardware GPU Benchmarks Hierarchy 2026, 1440p raster score: https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html" },
+    "msi-rtx5060-ti-16g-gaming-trio-oc-white": { score: 0.572, source: "Tom's Hardware GPU Benchmarks Hierarchy 2026, 1440p raster score: https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html" },
+    "rtx-5060-ti-aorus-elite": { score: 0.572, source: "Tom's Hardware GPU Benchmarks Hierarchy 2026, 1440p raster score: https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html" },
+    "rtx-5060-ti-windforce-max-oc": { score: 0.572, source: "Tom's Hardware GPU Benchmarks Hierarchy 2026, 1440p raster score: https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html" },
+    "asus-dual-rtx5060-o8g": { score: 0.466, source: "Tom's Hardware GPU Benchmarks Hierarchy 2026, 1440p raster score: https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html" },
+    "rtx-5060-eagle-max-oc": { score: 0.466, source: "Tom's Hardware GPU Benchmarks Hierarchy 2026, 1440p raster score: https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html" },
+    "rtx-5060-eagle-oc": { score: 0.466, source: "Tom's Hardware GPU Benchmarks Hierarchy 2026, 1440p raster score: https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html" },
+    "rtx-5060-windforce-max-oc-8g": { score: 0.466, source: "Tom's Hardware GPU Benchmarks Hierarchy 2026, 1440p raster score: https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html" },
+    "rtx-5050-gaming-oc": { score: 0.352, source: "Tom's Hardware GPU Benchmarks Hierarchy 2026, 1440p raster score: https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html" },
+    "aorus-radeon-rx9070-xt-elite-16gb": { score: 0.908, source: "Tom's Hardware GPU Benchmarks Hierarchy 2026, 1440p raster score: https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html" },
+    "rx-9070-xt-gaming-oc-16g": { score: 0.908, source: "Tom's Hardware GPU Benchmarks Hierarchy 2026, 1440p raster score: https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html" },
+    "rx-9060-xt-gaming-oc-16g": { score: 0.525, source: "Tom's Hardware GPU Benchmarks Hierarchy 2026, 1440p raster score: https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html" },
+    "rx-9060-xt-gaming-oc-8g": { score: 0.487, source: "Tom's Hardware GPU Benchmarks Hierarchy 2026, 1440p raster score: https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html" },
+    "intel-arc-b580-12gb": { score: 0.395, source: "Tom's Hardware GPU Benchmarks Hierarchy 2026, 1440p raster score: https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html" }
   };
 
   const fpsCpuProfiles = {
-    /*
-      Add normalized benchmark-derived CPU profiles only:
-      "cpu-product-id": {
-        score: 1,
-        games: { "game-id": 1 },
-        categories: { competitive: 1 },
-        source: "source name or URL"
-      }
-    */
+    "amd-ryzen-7-9800x3d": { score: 1, source: "Tom's Hardware CPU Benchmarks Hierarchy 2026, gaming score normalized to Ryzen 7 9800X3D: https://www.tomshardware.com/reviews/cpu-hierarchy,4312.html" },
+    "amd-ryzen-9-9950x3d": { score: 0.987, source: "Tom's Hardware CPU Benchmarks Hierarchy 2026, gaming score normalized to Ryzen 7 9800X3D: https://www.tomshardware.com/reviews/cpu-hierarchy,4312.html" },
+    "amd-ryzen-9-9900x3d": { score: 0.896, source: "Tom's Hardware CPU Benchmarks Hierarchy 2026, gaming score normalized to Ryzen 7 9800X3D: https://www.tomshardware.com/reviews/cpu-hierarchy,4312.html" },
+    "intel-core-ultra-7-270k-plus": { score: 0.799, source: "Tom's Hardware CPU Benchmarks Hierarchy 2026, gaming score normalized to Ryzen 7 9800X3D: https://www.tomshardware.com/reviews/cpu-hierarchy,4312.html" },
+    "amd-ryzen-9-9950x": { score: 0.793, source: "Tom's Hardware CPU Benchmarks Hierarchy 2026, gaming score normalized to Ryzen 7 9800X3D: https://www.tomshardware.com/reviews/cpu-hierarchy,4312.html" },
+    "amd-ryzen-9-9900x": { score: 0.762, source: "Tom's Hardware CPU Benchmarks Hierarchy 2026, gaming score normalized to Ryzen 7 9800X3D: https://www.tomshardware.com/reviews/cpu-hierarchy,4312.html" },
+    "amd-ryzen-5-9600x": { score: 0.748, source: "Tom's Hardware CPU Benchmarks Hierarchy 2026, gaming score normalized to Ryzen 7 9800X3D: https://www.tomshardware.com/reviews/cpu-hierarchy,4312.html" },
+    "intel-core-ultra-9-285k": { score: 0.74, source: "Tom's Hardware CPU Benchmarks Hierarchy 2026, gaming score normalized to Ryzen 7 9800X3D: https://www.tomshardware.com/reviews/cpu-hierarchy,4312.html" },
+    "intel-core-ultra-7-265k": { score: 0.725, source: "Tom's Hardware CPU Benchmarks Hierarchy 2026, gaming score normalized to Ryzen 7 9800X3D: https://www.tomshardware.com/reviews/cpu-hierarchy,4312.html" },
+    "intel-core-ultra-5-245k": { score: 0.692, source: "Tom's Hardware CPU Benchmarks Hierarchy 2026, gaming score normalized to Ryzen 7 9800X3D: https://www.tomshardware.com/reviews/cpu-hierarchy,4312.html" }
   };
 
   const fpsResolutionOrder = {
