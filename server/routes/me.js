@@ -66,7 +66,7 @@ return res.status(200).json({
 
     const fullName = userData.fullName || (userRecord && userRecord.displayName) || decodedUser.name || "";
     const email = (userRecord && userRecord.email) || userData.email || decodedUser.email || "";
-    const photoURL = userData.photoURL || (userRecord && userRecord.photoURL) || decodedUser.picture || "";
+    const photoURL = userData.photoURL || "";
     const firstName = getFirstName(fullName, email);
 
 return res.status(200).json({
