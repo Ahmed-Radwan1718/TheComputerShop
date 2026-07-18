@@ -737,7 +737,7 @@ if (floatingAccountWidget) {
       const headerIsOnAccountPage = currentPageName === "accounts.html";
 
       if (!headerIsOnAccountPage) {
-        window.setInterval(loadServerAccountState, 2000);
+        window.setInterval(loadServerAccountState, 60000);
       }
 
       window.tcsReloadAccountHeader = loadServerAccountState;
@@ -979,14 +979,14 @@ productStockScript.textContent = `
       }
     }
 
-    function startProductStockLiveUpdates() {
-      applyStockState();
+  function startProductStockLiveUpdates() {
+    applyStockState();
 
-      window.setInterval(function () {
-        if (document.visibilityState !== "hidden") {
-          applyStockState();
-        }
-      }, 2000);
+    window.setInterval(function () {
+      if (document.visibilityState !== "hidden") {
+        applyStockState();
+      }
+    }, 60000);
 
       window.addEventListener("focus", applyStockState);
 
