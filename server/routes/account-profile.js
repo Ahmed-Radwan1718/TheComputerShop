@@ -353,32 +353,28 @@ async function ensureAccountSession(req, res, uid) {
 
 async function getProfile(uid, req) {
   const userDocRef = admin.firestore().collection("users").doc(uid);
+  const sessionsPromise = typeof listAccountSessions === "function"
+    ? listAccountSessions(req, uid)
+    : Promise.resolve([]);
+  const trustedDevicesPromise = typeof listTrustedDevices === "function"
+    ? listTrustedDevices(req, uid)
+    : Promise.resolve([]);
 
   const [userRecord, userDoc, sessions, trustedDevices] = await Promise.all([
     admin.auth().getUser(uid),
-    userDocRef.get().catch(function () {
-      return null;
-    }),
-    typeof listAccountSessions === "function"
-      ? listAccountSessions(req, uid).catch(function () {
-          return [];
-        })
-      : Promise.resolve([]),
-    typeof listTrustedDevices === "function"
-      ? listTrustedDevices(req, uid).catch(function () {
-          return [];
-        })
-      : Promise.resolve([])
+    userDocRef.get(),
+    sessionsPromise,
+    trustedDevicesPromise
   ]);
 
-  const data = userDoc && userDoc.exists ? userDoc.data() || {} : {};
+  const data = userDoc.exists ? userDoc.data() || {} : {};
 
   return {
     uid,
     email: userRecord.email || data.email || "",
     emailVerified: Boolean(userRecord.emailVerified),
     fullName: data.fullName || userRecord.displayName || "",
-    photoURL: data.photoURL || "",
+    photoURL: data.photoURL || userRecord.photoURL || "",
     phone: data.phone || "",
     twoFactor: getSafeTwoFactor(data.twoFactor),
     connectedProviders: getConnectedProviders(userRecord, data),
