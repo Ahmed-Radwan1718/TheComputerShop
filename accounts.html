@@ -6350,7 +6350,7 @@ function startCurrentSessionStatusListener() {
     clearInterval(sessionStatusCheckTimer);
   }
 
-  sessionStatusCheckTimer = setInterval(checkCurrentSessionStatus, 2000);
+  sessionStatusCheckTimer = setInterval(checkCurrentSessionStatus, 60000);
   checkCurrentSessionStatus();
 }
 
