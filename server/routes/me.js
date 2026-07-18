@@ -51,15 +51,12 @@ return res.status(200).json({
     }
 
     const userRecord = await admin.auth().getUser(decodedUser.uid);
-    const userDoc = await admin.firestore().collection("users").doc(decodedUser.uid).get().catch(function () {
-      return null;
-    });
-    const userData = userDoc && userDoc.exists ? userDoc.data() || {} : {};
+    const userDoc = await admin.firestore().collection("users").doc(decodedUser.uid).get();
+    const userData = userDoc.exists ? userDoc.data() || {} : {};
 
     const fullName = userData.fullName || userRecord.displayName || "";
     const email = userRecord.email || userData.email || decodedUser.email || "";
-    const uploadedPhotoURL = String(userData.photoURL || "").trim();
-    const photoURL = uploadedPhotoURL && (userData.profilePhotoUpdatedAt || uploadedPhotoURL.includes("res.cloudinary.com/")) ? uploadedPhotoURL : "";
+    const photoURL = userData.photoURL || userRecord.photoURL || "";
     const firstName = getFirstName(fullName, email);
 
 return res.status(200).json({
