@@ -376,13 +376,15 @@ async function getProfile(uid, req) {
   ]);
 
   const data = userDoc && userDoc.exists ? userDoc.data() || {} : {};
+  const uploadedPhotoURL = String(data.photoURL || "").trim();
+  const photoURL = uploadedPhotoURL && (data.profilePhotoUpdatedAt || uploadedPhotoURL.includes("res.cloudinary.com/")) ? uploadedPhotoURL : "";
 
   return {
     uid,
     email: userRecord.email || data.email || "",
     emailVerified: Boolean(userRecord.emailVerified),
     fullName: data.fullName || userRecord.displayName || "",
-    photoURL: data.photoURL || userRecord.photoURL || "",
+    photoURL,
     phone: data.phone || "",
     twoFactor: getSafeTwoFactor(data.twoFactor),
     connectedProviders: getConnectedProviders(userRecord, data),
