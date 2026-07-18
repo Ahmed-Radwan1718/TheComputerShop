@@ -904,8 +904,10 @@ async function getSiteSessionUser(req, options) {
     ? await admin.auth().verifyIdToken(cookieToken, false)
     : await admin.auth().verifySessionCookie(cookieToken, false);
 
+  let currentAccountSession = null;
+
   try {
-    await Promise.race([
+    currentAccountSession = await Promise.race([
       touchCurrentAccountSession(req, decodedUser.uid),
       new Promise(function (resolve) {
         setTimeout(function () {
@@ -920,10 +922,18 @@ async function getSiteSessionUser(req, options) {
   }
 
   if (settings.checkRevoked !== false) {
-    if (usesFallbackIdToken) {
-      await admin.auth().verifyIdToken(cookieToken, true);
-    } else {
-      await admin.auth().verifySessionCookie(cookieToken, true);
+    try {
+      if (usesFallbackIdToken) {
+        await admin.auth().verifyIdToken(cookieToken, true);
+      } else {
+        await admin.auth().verifySessionCookie(cookieToken, true);
+      }
+    } catch (error) {
+      if (currentAccountSession) {
+        return decodedUser;
+      }
+
+      throw error;
     }
   }
 
