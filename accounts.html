@@ -4131,6 +4131,10 @@ function showAddressFields() {
     }
 
     switchPanel(panelName);
+
+    if (currentUser && currentUser.uid) {
+      loadAccountPanelData(currentUser.uid, panelName);
+    }
   }
 
 function getDateFromFirestoreValue(value) {
@@ -4408,6 +4412,10 @@ accountPanelButtons.forEach(function (button) {
     }
 
     switchPanel(panelName);
+
+    if (currentUser && currentUser.uid) {
+      loadAccountPanelData(currentUser.uid, panelName);
+    }
 
     if (panelName !== "security" && window.location.hash !== "#" + panelName) {
       history.replaceState(null, "", "#" + panelName);
@@ -6359,16 +6367,54 @@ function startCurrentSessionStatusListener() {
   checkCurrentSessionStatus();
 }
 
+const loadedAccountDataPanels = new Set();
+
+function getAccountDataPanelKey(panelName) {
+  return panelName === "details" ? "addresses" : panelName;
+}
+
+function loadAccountPanelData(uid, panelName) {
+  if (!currentUser || currentUser.uid !== uid) {
+    return;
+  }
+
+  const panelKey = getAccountDataPanelKey(panelName);
+
+  if (loadedAccountDataPanels.has(panelKey)) {
+    return;
+  }
+
+  loadedAccountDataPanels.add(panelKey);
+
+  if (panelKey === "addresses") {
+    startAddressesSync(uid);
+    return;
+  }
+
+  if (panelKey === "saved") {
+    startSavedItemsSync(uid);
+    return;
+  }
+
+  if (panelKey === "support") {
+    startSupportTicketsSync(uid);
+    return;
+  }
+
+  if (panelKey === "orders") {
+    startOrderHistorySync(uid);
+  }
+}
+
 function startAccountBackgroundDataSync(uid) {
+  loadedAccountDataPanels.clear();
+
   const runSync = function () {
     if (!currentUser || currentUser.uid !== uid) {
       return;
     }
 
-    startSavedItemsSync(uid);
-    startAddressesSync(uid);
-    startSupportTicketsSync(uid);
-    startOrderHistorySync(uid);
+    loadAccountPanelData(uid, getAccountPanelFromHash());
   };
 
   if (typeof window.requestAnimationFrame === "function") {
