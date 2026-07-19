@@ -340,51 +340,41 @@ async function ensureAccountSession(req, res, uid) {
     return;
   }
 
-  try {
-    const currentSession = await getCurrentAccountSession(req, uid).catch(function () {
-      return null;
-    });
+  const currentSession = await getCurrentAccountSession(req, uid).catch(function () {
+    return null;
+  });
 
-    if (currentSession) {
-      return;
-    }
+  if (currentSession) {
+    return;
+  }
 
-    await createAccountSession(uid, res, req).catch(function () {});
-  } catch (error) {}
+  await createAccountSession(uid, res, req);
 }
 
 async function getProfile(uid, req) {
-  const userDocPromise = admin.firestore().collection("users").doc(uid).get().catch(function () {
-    return null;
-  });
+  const userDocRef = admin.firestore().collection("users").doc(uid);
   const sessionsPromise = typeof listAccountSessions === "function"
-    ? listAccountSessions(req, uid).catch(function () {
-        return [];
-      })
+    ? listAccountSessions(req, uid)
     : Promise.resolve([]);
   const trustedDevicesPromise = typeof listTrustedDevices === "function"
-    ? listTrustedDevices(req, uid).catch(function () {
-        return [];
-      })
+    ? listTrustedDevices(req, uid)
     : Promise.resolve([]);
 
   const [userRecord, userDoc, sessions, trustedDevices] = await Promise.all([
     admin.auth().getUser(uid),
-    userDocPromise,
+    userDocRef.get(),
     sessionsPromise,
     trustedDevicesPromise
   ]);
 
-  const data = userDoc && userDoc.exists ? userDoc.data() || {} : {};
-  const uploadedPhotoURL = String(data.photoURL || "").trim();
-  const photoURL = uploadedPhotoURL && (data.profilePhotoUpdatedAt || uploadedPhotoURL.includes("res.cloudinary.com/")) ? uploadedPhotoURL : "";
+  const data = userDoc.exists ? userDoc.data() || {} : {};
 
   return {
     uid,
     email: userRecord.email || data.email || "",
     emailVerified: Boolean(userRecord.emailVerified),
     fullName: data.fullName || userRecord.displayName || "",
-    photoURL,
+    photoURL: data.photoURL || userRecord.photoURL || "",
     phone: data.phone || "",
     twoFactor: getSafeTwoFactor(data.twoFactor),
     connectedProviders: getConnectedProviders(userRecord, data),
