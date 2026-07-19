@@ -737,7 +737,7 @@ if (floatingAccountWidget) {
       const headerIsOnAccountPage = currentPageName === "accounts.html";
 
       if (!headerIsOnAccountPage) {
-        window.setInterval(loadServerAccountState, 60000);
+        window.setInterval(loadServerAccountState, 5 * 60 * 1000);
       }
 
       window.tcsReloadAccountHeader = loadServerAccountState;
@@ -796,6 +796,8 @@ const productStockScript = document.createElement("script");
 productStockScript.textContent = `
   (function () {
     const stockEndpoint = "/api/admin-support-tickets?type=stock-public";
+    const stockCacheKey = "tcs-product-stock-cache-v1";
+    const stockCacheMaxAgeMs = 15 * 60 * 1000;
     let stockRefreshInFlight = false;
 
     function getProductIdFromHref(href) {
@@ -809,6 +811,40 @@ productStockScript.textContent = `
     function getProductStatus(stockMap, productId) {
       const stockItem = stockMap && productId ? stockMap[productId] : null;
       return stockItem && stockItem.status === "unavailable" ? "unavailable" : "in_stock";
+    }
+
+    function hasProductStockTargets() {
+      return Boolean(
+        document.querySelector(".product-card-link, .signature-build-card, .tcs-home-component-card, .tcs-home-build-card") ||
+        getProductIdFromHref(window.location.href)
+      );
+    }
+
+    function readCachedProductStock() {
+      try {
+        const cached = JSON.parse(sessionStorage.getItem(stockCacheKey) || "{}");
+
+        if (!cached || typeof cached !== "object" || !cached.stock || !cached.savedAt) {
+          return null;
+        }
+
+        if (Date.now() - Number(cached.savedAt || 0) > stockCacheMaxAgeMs) {
+          return null;
+        }
+
+        return cached.stock;
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function saveCachedProductStock(stock) {
+      try {
+        sessionStorage.setItem(stockCacheKey, JSON.stringify({
+          stock: stock || {},
+          savedAt: Date.now()
+        }));
+      } catch (error) {}
     }
 
     function ensureStockStyles() {
@@ -935,15 +971,20 @@ productStockScript.textContent = `
       });
     }
 
-    async function loadProductStock() {
+    async function loadProductStock(options) {
+      const settings = options || {};
+      const cachedStock = settings.force ? null : readCachedProductStock();
+
+      if (cachedStock) {
+        return cachedStock;
+      }
+
       try {
-        const response = await fetch(stockEndpoint + "&_=" + Date.now(), {
+        const response = await fetch(stockEndpoint, {
           method: "GET",
           credentials: "same-origin",
-          cache: "no-store",
           headers: {
-            "Accept": "application/json",
-            "Cache-Control": "no-cache"
+            "Accept": "application/json"
           }
         });
 
@@ -955,9 +996,10 @@ productStockScript.textContent = `
           return {};
         }
 
+        saveCachedProductStock(data.stock);
         return data.stock;
       } catch (error) {
-        return {};
+        return readCachedProductStock() || {};
       }
     }
 
@@ -980,13 +1022,17 @@ productStockScript.textContent = `
     }
 
   function startProductStockLiveUpdates() {
+    if (!hasProductStockTargets()) {
+      return;
+    }
+
     applyStockState();
 
     window.setInterval(function () {
       if (document.visibilityState !== "hidden") {
-        applyStockState();
+        applyStockState({ force: true });
       }
-    }, 60000);
+    }, stockCacheMaxAgeMs);
 
       window.addEventListener("focus", applyStockState);
 
