@@ -2263,6 +2263,16 @@
 
   async function loadServerAccountStateForCart() {
     try {
+      if (window.tcsAccountStatePromise && typeof window.tcsAccountStatePromise.then === "function") {
+        currentCartUser = await window.tcsAccountStatePromise;
+        return currentCartUser || null;
+      }
+
+      if (window.tcsAccountStateLoaded) {
+        currentCartUser = window.tcsCurrentAccountUser || null;
+        return currentCartUser;
+      }
+
       const response = await fetch("/api/me", {
         method: "GET",
         credentials: "same-origin",
@@ -2362,11 +2372,7 @@
     return data;
   };
 
-  loadServerAccountStateForCart().then(function (user) {
-    if (user) {
-      loadServerCartForProduct();
-    }
-  });
+  loadServerAccountStateForCart();
 </script>
 
 <script>
@@ -2427,6 +2433,16 @@
 
   async function loadServerAccountStateForSavedItems() {
     try {
+      if (window.tcsAccountStatePromise && typeof window.tcsAccountStatePromise.then === "function") {
+        savedCurrentUser = await window.tcsAccountStatePromise;
+        return savedCurrentUser || null;
+      }
+
+      if (window.tcsAccountStateLoaded) {
+        savedCurrentUser = window.tcsCurrentAccountUser || null;
+        return savedCurrentUser;
+      }
+
       const response = await fetch("/api/me", {
         method: "GET",
         credentials: "same-origin",
