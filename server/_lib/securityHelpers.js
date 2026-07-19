@@ -4,11 +4,25 @@ const admin = require("./firebaseAdmin");
 const IS_PRODUCTION =
   process.env.NODE_ENV === "production" || process.env.VERCEL_ENV === "production";
 
-const SITE_SESSION_COOKIE_NAME = "tcs_session";
-const LOGIN_CHALLENGE_COOKIE_NAME = "tcs_login_challenge";
-const LOGIN_2FA_COOKIE_NAME = "tcs_login_2fa";
-const ACCOUNT_SESSION_COOKIE_NAME = "tcs_account_session";
-const TRUSTED_DEVICE_COOKIE_NAME = "tcs_trusted_device";
+const SITE_SESSION_COOKIE_NAME = IS_PRODUCTION
+  ? "__Host-tcs_session"
+  : "tcs_session";
+
+const LOGIN_CHALLENGE_COOKIE_NAME = IS_PRODUCTION
+  ? "__Host-tcs_login_challenge"
+  : "tcs_login_challenge";
+
+const LOGIN_2FA_COOKIE_NAME = IS_PRODUCTION
+  ? "__Host-tcs_login_2fa"
+  : "tcs_login_2fa";
+
+const ACCOUNT_SESSION_COOKIE_NAME = IS_PRODUCTION
+  ? "__Host-tcs_account_session"
+  : "tcs_account_session";
+
+const TRUSTED_DEVICE_COOKIE_NAME = IS_PRODUCTION
+  ? "__Host-tcs_trusted_device"
+  : "tcs_trusted_device";
 
 const SITE_SESSION_EXPIRES_MS = 5 * 24 * 60 * 60 * 1000;
 const ACCOUNT_SESSION_EXPIRES_MS = SITE_SESSION_EXPIRES_MS;
@@ -904,10 +918,8 @@ async function getSiteSessionUser(req, options) {
     ? await admin.auth().verifyIdToken(cookieToken, false)
     : await admin.auth().verifySessionCookie(cookieToken, false);
 
-  let currentAccountSession = null;
-
   try {
-    currentAccountSession = await Promise.race([
+    await Promise.race([
       touchCurrentAccountSession(req, decodedUser.uid),
       new Promise(function (resolve) {
         setTimeout(function () {
@@ -922,18 +934,10 @@ async function getSiteSessionUser(req, options) {
   }
 
   if (settings.checkRevoked !== false) {
-    try {
-      if (usesFallbackIdToken) {
-        await admin.auth().verifyIdToken(cookieToken, true);
-      } else {
-        await admin.auth().verifySessionCookie(cookieToken, true);
-      }
-    } catch (error) {
-      if (currentAccountSession) {
-        return decodedUser;
-      }
-
-      throw error;
+    if (usesFallbackIdToken) {
+      await admin.auth().verifyIdToken(cookieToken, true);
+    } else {
+      await admin.auth().verifySessionCookie(cookieToken, true);
     }
   }
 
