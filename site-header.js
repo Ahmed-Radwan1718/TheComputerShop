@@ -638,12 +638,14 @@ if (floatingAccountWidget) {
         const twoFactorIsPending = sessionStorage.getItem("tcs-login-2fa-pending") === "1";
 
         if (twoFactorIsPending) {
+          window.tcsCurrentAccountUser = null;
+          window.tcsAccountStateLoaded = true;
           showLoggedOutAccountState();
-          return;
+          return null;
         }
 
-        if (accountStateRequestInFlight) {
-          return;
+        if (accountStateRequestInFlight && window.tcsAccountStatePromise) {
+          return window.tcsAccountStatePromise;
         }
 
         accountStateRequestInFlight = true;
@@ -664,17 +666,25 @@ if (floatingAccountWidget) {
 
           if (response.ok && data.sessionRevoked) {
             await redirectRevokedSession();
-            return;
+            return null;
           }
 
           if (!response.ok || !data.signedIn || !data.user) {
+            window.tcsCurrentAccountUser = null;
+            window.tcsAccountStateLoaded = true;
             showLoggedOutAccountState();
-            return;
+            return null;
           }
 
+          window.tcsCurrentAccountUser = data.user;
+          window.tcsAccountStateLoaded = true;
           showLoggedInAccountState(data.user);
+          return data.user;
         } catch (error) {
+          window.tcsCurrentAccountUser = null;
+          window.tcsAccountStateLoaded = true;
           showLoggedOutAccountState();
+          return null;
         } finally {
           accountStateRequestInFlight = false;
         }
@@ -731,16 +741,23 @@ if (floatingAccountWidget) {
         window.location.href = "index.html";
       });
 
-      loadServerAccountState();
+      window.tcsCurrentAccountUser = null;
+      window.tcsAccountStateLoaded = false;
+      window.tcsAccountStatePromise = loadServerAccountState();
 
       const currentPageName = window.location.pathname.split("/").pop().toLowerCase();
       const headerIsOnAccountPage = currentPageName === "accounts.html";
 
       if (!headerIsOnAccountPage) {
-        window.setInterval(loadServerAccountState, 15 * 60 * 1000);
+        window.setInterval(function () {
+          window.tcsAccountStatePromise = loadServerAccountState();
+        }, 15 * 60 * 1000);
       }
 
-      window.tcsReloadAccountHeader = loadServerAccountState;
+      window.tcsReloadAccountHeader = function () {
+        window.tcsAccountStatePromise = loadServerAccountState();
+        return window.tcsAccountStatePromise;
+      };
     }
   `;
 
@@ -758,7 +775,41 @@ cartCountScript.textContent = `
       });
     }
 
-    async function loadHeaderCartCount() {
+    const headerCartCountCacheKey = "tcs-header-cart-count-v1";
+    const headerCartCountCacheMaxAgeMs = 15 * 60 * 1000;
+
+    function readCachedHeaderCartCount() {
+      try {
+        const cached = JSON.parse(sessionStorage.getItem(headerCartCountCacheKey) || "{}");
+
+        if (!cached || Date.now() - Number(cached.savedAt || 0) > headerCartCountCacheMaxAgeMs) {
+          return null;
+        }
+
+        return Number(cached.itemCount || 0);
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function saveCachedHeaderCartCount(itemCount) {
+      try {
+        sessionStorage.setItem(headerCartCountCacheKey, JSON.stringify({
+          itemCount: Number(itemCount || 0),
+          savedAt: Date.now()
+        }));
+      } catch (error) {}
+    }
+
+    async function loadHeaderCartCount(options) {
+      const settings = options || {};
+      const cachedCount = settings.force ? null : readCachedHeaderCartCount();
+
+      if (cachedCount !== null) {
+        updateHeaderCartCount(cachedCount);
+        return;
+      }
+
       try {
         const response = await fetch("/api/cart", {
           method: "GET",
@@ -777,13 +828,16 @@ cartCountScript.textContent = `
           return;
         }
 
+        saveCachedHeaderCartCount(data.itemCount);
         updateHeaderCartCount(Number(data.itemCount || 0));
       } catch (error) {
-        updateHeaderCartCount(0);
+        updateHeaderCartCount(readCachedHeaderCartCount() || 0);
       }
     }
 
-    window.tcsRefreshCartCount = loadHeaderCartCount;
+    window.tcsRefreshCartCount = function () {
+      return loadHeaderCartCount({ force: true });
+    };
 
     loadHeaderCartCount();
   })();
