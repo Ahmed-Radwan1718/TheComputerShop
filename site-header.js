@@ -798,12 +798,8 @@ productStockScript.textContent = `
     const stockEndpoint = "/api/admin-support-tickets?type=stock-public";
     const stockCacheKey = "tcs-product-stock-cache-v1";
     const stockCacheMaxAgeMs = 15 * 60 * 1000;
-    const fallbackRealtimeDatabaseUrl = "https://the-computer-shop-aad6b-default-rtdb.europe-west1.firebasedatabase.app";
     let stockRefreshInFlight = false;
     let currentStockMap = {};
-    let realtimeDatabaseUrl = fallbackRealtimeDatabaseUrl;
-    let realtimeStockStarted = false;
-    let realtimeStockSource = null;
 
     function normalizePublicStock(stock) {
       const normalizedStock = {};
@@ -822,44 +818,6 @@ productStockScript.textContent = `
       return normalizedStock;
     }
 
-    function decodeRealtimeProductId(key) {
-      try {
-        return decodeURIComponent(String(key || "").replace(/%2E/gi, "."));
-      } catch (error) {
-        return String(key || "");
-      }
-    }
-
-    function getRealtimeStockUrl() {
-      if (!realtimeDatabaseUrl) {
-        return "";
-      }
-
-      return realtimeDatabaseUrl.replace(/\/+$/, "") + "/publicStock/unavailable.json";
-    }
-
-    function getRealtimeStockItem(value) {
-      if (!value) {
-        return null;
-      }
-
-      if (value === true) {
-        return {
-          status: "unavailable",
-          updatedAt: ""
-        };
-      }
-
-      if (typeof value === "object" && value.status === "unavailable") {
-        return {
-          status: "unavailable",
-          updatedAt: value.updatedAt || ""
-        };
-      }
-
-      return null;
-    }
-
     function setCurrentStockMap(stockMap, options) {
       const settings = options || {};
       currentStockMap = normalizePublicStock(stockMap);
@@ -871,81 +829,6 @@ productStockScript.textContent = `
 
       applyProductCardStock(currentStockMap);
       applyProductDetailStock(currentStockMap);
-    }
-
-    function applyRealtimeStockChild(key, value) {
-      const productId = decodeRealtimeProductId(key);
-
-      if (!productId) {
-        return;
-      }
-
-      const stockItem = getRealtimeStockItem(value);
-
-      if (stockItem) {
-        currentStockMap[productId] = stockItem;
-        return;
-      }
-
-      delete currentStockMap[productId];
-    }
-
-    function replaceRealtimeStockSnapshot(data) {
-      const nextStock = {};
-
-      if (data && typeof data === "object") {
-        Object.keys(data).forEach(function (key) {
-          const productId = decodeRealtimeProductId(key);
-          const stockItem = getRealtimeStockItem(data[key]);
-
-          if (productId && stockItem) {
-            nextStock[productId] = stockItem;
-          }
-        });
-      }
-
-      setCurrentStockMap(nextStock);
-    }
-
-    function handleRealtimeStockEvent(event) {
-      try {
-        const payload = JSON.parse(event.data || "{}");
-        const path = String(payload.path || "/");
-
-        if (path === "/" && event.type === "put") {
-          replaceRealtimeStockSnapshot(payload.data);
-          return;
-        }
-
-        if (path === "/" && payload.data && typeof payload.data === "object") {
-          Object.keys(payload.data).forEach(function (key) {
-            applyRealtimeStockChild(key, payload.data[key]);
-          });
-          setCurrentStockMap(currentStockMap);
-          return;
-        }
-
-        applyRealtimeStockChild(path.replace(/^\/+/, "").split("/")[0], payload.data);
-        setCurrentStockMap(currentStockMap);
-      } catch (error) {}
-    }
-
-    function startRealtimeStockListener() {
-      const realtimeStockUrl = getRealtimeStockUrl();
-
-      if (realtimeStockStarted || !realtimeStockUrl || typeof EventSource !== "function") {
-        return;
-      }
-
-      try {
-        realtimeStockStarted = true;
-        realtimeStockSource = new EventSource(realtimeStockUrl);
-        realtimeStockSource.addEventListener("put", handleRealtimeStockEvent);
-        realtimeStockSource.addEventListener("patch", handleRealtimeStockEvent);
-      } catch (error) {
-        realtimeStockStarted = false;
-        realtimeStockSource = null;
-      }
     }
 
     function getProductIdFromHref(href) {
@@ -1123,47 +1006,14 @@ productStockScript.textContent = `
       const settings = options || {};
       const cachedStock = settings.force ? null : readCachedProductStock();
 
-      if (cachedStock && realtimeDatabaseUrl) {
+      if (cachedStock) {
         return cachedStock;
       }
 
       try {
-        const realtimeStockUrl = getRealtimeStockUrl();
-
-        if (realtimeStockUrl) {
-          const realtimeResponse = await fetch(realtimeStockUrl, {
-            method: "GET",
-            cache: "no-store",
-            headers: {
-              "Accept": "application/json"
-            }
-          });
-
-          const realtimeData = await realtimeResponse.json().catch(function () {
-            return {};
-          });
-
-          if (realtimeResponse.ok) {
-            const realtimeStock = {};
-
-            Object.keys(realtimeData || {}).forEach(function (key) {
-              const productId = decodeRealtimeProductId(key);
-              const stockItem = getRealtimeStockItem(realtimeData[key]);
-
-              if (productId && stockItem) {
-                realtimeStock[productId] = stockItem;
-              }
-            });
-
-            saveCachedProductStock(realtimeStock);
-            return realtimeStock;
-          }
-        }
-
         const response = await fetch(stockEndpoint, {
           method: "GET",
           credentials: "same-origin",
-          cache: "no-store",
           headers: {
             "Accept": "application/json"
           }
@@ -1173,19 +1023,15 @@ productStockScript.textContent = `
           return {};
         });
 
-        if (data.realtimeDatabaseUrl && typeof data.realtimeDatabaseUrl === "string") {
-          realtimeDatabaseUrl = data.realtimeDatabaseUrl;
-        }
-
         if (!response.ok || !data.success || !data.stock) {
-          return cachedStock || {};
+          return {};
         }
 
         const stock = normalizePublicStock(data.stock);
         saveCachedProductStock(stock);
         return stock;
       } catch (error) {
-        return cachedStock || readCachedProductStock() || {};
+        return readCachedProductStock() || {};
       }
     }
 
@@ -1200,7 +1046,6 @@ productStockScript.textContent = `
         const stockMap = await loadProductStock(options);
 
         setCurrentStockMap(stockMap);
-        startRealtimeStockListener();
       } finally {
         stockRefreshInFlight = false;
       }
@@ -1211,21 +1056,13 @@ productStockScript.textContent = `
         return;
       }
 
-      applyStockState({ force: true });
+      applyStockState();
 
       window.addEventListener("focus", applyStockState);
 
       document.addEventListener("visibilitychange", function () {
         if (document.visibilityState !== "hidden") {
           applyStockState();
-        }
-      });
-
-      window.addEventListener("pagehide", function () {
-        if (realtimeStockSource) {
-          realtimeStockSource.close();
-          realtimeStockSource = null;
-          realtimeStockStarted = false;
         }
       });
     }
