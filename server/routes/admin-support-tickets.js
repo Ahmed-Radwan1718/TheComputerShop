@@ -266,6 +266,78 @@ function encodeRealtimeKey(value) {
   return encodeURIComponent(String(value || "")).replace(/\./g, "%2E");
 }
 
+function decodeRealtimeKey(value) {
+  try {
+    return decodeURIComponent(String(value || "").replace(/%2E/gi, "."));
+  } catch (error) {
+    return String(value || "");
+  }
+}
+
+function normalizeRealtimeStock(stockData) {
+  const stock = {};
+
+  Object.keys(stockData || {}).forEach(function (key) {
+    const item = stockData[key];
+
+    if (item && item.status === "unavailable") {
+      stock[decodeRealtimeKey(key)] = {
+        status: "unavailable",
+        updatedAt: item.updatedAt || ""
+      };
+    }
+  });
+
+  return stock;
+}
+
+async function writePublicStockMirror(stock) {
+  if (!getRealtimeDatabaseUrl()) {
+    return;
+  }
+
+  const mirroredStock = {};
+
+  Object.keys(stock || {}).forEach(function (productId) {
+    const item = stock[productId];
+
+    if (item && item.status === "unavailable") {
+      mirroredStock[encodeRealtimeKey(productId)] = {
+        status: "unavailable",
+        updatedAt: item.updatedAt || new Date().toISOString()
+      };
+    }
+  });
+
+  const publicStockRef = admin.database().ref("publicStock");
+
+  await publicStockRef.child("unavailable").set(mirroredStock);
+  await publicStockRef.child("meta").set({
+    updatedAt: new Date().toISOString()
+  });
+}
+
+async function readPublicStockMirror() {
+  if (!getRealtimeDatabaseUrl()) {
+    return null;
+  }
+
+  try {
+    const publicStockRef = admin.database().ref("publicStock");
+    const stockSnapshot = await publicStockRef.child("unavailable").once("value");
+    const metaSnapshot = await publicStockRef.child("meta").once("value");
+    const stock = normalizeRealtimeStock(stockSnapshot.val() || {});
+
+    if (metaSnapshot.exists() || Object.keys(stock).length) {
+      return stock;
+    }
+  } catch (error) {
+    console.error("Could not read realtime public stock mirror.", error);
+  }
+
+  return null;
+}
+
 async function updatePublicStockMirror(productId, status) {
   const realtimeDatabaseUrl = getRealtimeDatabaseUrl();
 
@@ -274,27 +346,27 @@ async function updatePublicStockMirror(productId, status) {
   }
 
   try {
-    const stockRef = admin.database().ref("publicStock/unavailable").child(encodeRealtimeKey(productId));
+    const publicStockRef = admin.database().ref("publicStock");
+    const stockRef = publicStockRef.child("unavailable").child(encodeRealtimeKey(productId));
 
     if (status === "unavailable") {
       await stockRef.set({
         status: "unavailable",
         updatedAt: new Date().toISOString()
       });
-      return;
+    } else {
+      await stockRef.remove();
     }
 
-    await stockRef.remove();
+    await publicStockRef.child("meta").set({
+      updatedAt: new Date().toISOString()
+    });
   } catch (error) {
     console.error("Could not update realtime public stock mirror.", error);
   }
 }
 
-async function handleGetPublicStock(res) {
-  res.setHeader("Cache-Control", "public, max-age=0, s-maxage=900, stale-while-revalidate=3600");
-  res.setHeader("CDN-Cache-Control", "public, max-age=900, stale-while-revalidate=3600");
-  res.setHeader("Vercel-CDN-Cache-Control", "public, max-age=900, stale-while-revalidate=3600");
-
+async function getFirestorePublicStock() {
   const snapshot = await admin.firestore()
     .collection("productStock")
     .where("status", "==", "unavailable")
@@ -308,6 +380,21 @@ async function handleGetPublicStock(res) {
       updatedAt: item.updatedAt
     };
   });
+
+  return stock;
+}
+
+async function handleGetPublicStock(res) {
+  res.setHeader("Cache-Control", "no-store, max-age=0");
+  res.setHeader("CDN-Cache-Control", "no-store");
+  res.setHeader("Vercel-CDN-Cache-Control", "no-store");
+
+  const realtimeStock = await readPublicStockMirror();
+  const stock = realtimeStock || await getFirestorePublicStock();
+
+  if (!realtimeStock) {
+    await writePublicStockMirror(stock);
+  }
 
   return res.status(200).json({
     success: true,
