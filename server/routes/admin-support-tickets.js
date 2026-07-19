@@ -258,6 +258,38 @@ async function handleGetProductStock(res) {
   });
 }
 
+function getRealtimeDatabaseUrl() {
+  return String(process.env.FIREBASE_DATABASE_URL || "").trim().replace(/\/+$/, "");
+}
+
+function encodeRealtimeKey(value) {
+  return encodeURIComponent(String(value || "")).replace(/\./g, "%2E");
+}
+
+async function updatePublicStockMirror(productId, status) {
+  const realtimeDatabaseUrl = getRealtimeDatabaseUrl();
+
+  if (!realtimeDatabaseUrl || !productId) {
+    return;
+  }
+
+  try {
+    const stockRef = admin.database().ref("publicStock/unavailable").child(encodeRealtimeKey(productId));
+
+    if (status === "unavailable") {
+      await stockRef.set({
+        status: "unavailable",
+        updatedAt: new Date().toISOString()
+      });
+      return;
+    }
+
+    await stockRef.remove();
+  } catch (error) {
+    console.error("Could not update realtime public stock mirror.", error);
+  }
+}
+
 async function handleGetPublicStock(res) {
   res.setHeader("Cache-Control", "public, max-age=0, s-maxage=900, stale-while-revalidate=3600");
   res.setHeader("CDN-Cache-Control", "public, max-age=900, stale-while-revalidate=3600");
@@ -279,7 +311,8 @@ async function handleGetPublicStock(res) {
 
   return res.status(200).json({
     success: true,
-    stock
+    stock,
+    realtimeDatabaseUrl: getRealtimeDatabaseUrl()
   });
 }
 
@@ -412,6 +445,8 @@ async function handleProductStockUpdate(req, res, adminUser) {
     createdAt: existingData.createdAt || admin.firestore.FieldValue.serverTimestamp(),
     updatedAt: admin.firestore.FieldValue.serverTimestamp()
   }, { merge: true });
+
+  await updatePublicStockMirror(productId, status);
 
   const updatedProduct = await productRef.get();
 
