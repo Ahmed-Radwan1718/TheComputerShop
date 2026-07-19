@@ -26,6 +26,7 @@ const TRUSTED_DEVICE_COOKIE_NAME = IS_PRODUCTION
 
 const SITE_SESSION_EXPIRES_MS = 5 * 24 * 60 * 60 * 1000;
 const ACCOUNT_SESSION_EXPIRES_MS = SITE_SESSION_EXPIRES_MS;
+const ACCOUNT_SESSION_TOUCH_COOLDOWN_MS = 15 * 60 * 1000;
 const TRUSTED_DEVICE_EXPIRES_MS = 30 * 24 * 60 * 60 * 1000;
 const LOGIN_CHALLENGE_EXPIRES_MS = 10 * 60 * 1000;
 const LOGIN_2FA_SESSION_MINUTES = 30;
@@ -385,6 +386,19 @@ async function touchCurrentAccountSession(req, uid) {
 
   if (!session) {
     return null;
+  }
+
+  const lastSeenAt = session.data.lastSeenAt;
+  let lastSeenAtMs = 0;
+
+  if (lastSeenAt && typeof lastSeenAt.toMillis === "function") {
+    lastSeenAtMs = lastSeenAt.toMillis();
+  } else if (lastSeenAt) {
+    lastSeenAtMs = new Date(lastSeenAt).getTime() || 0;
+  }
+
+  if (lastSeenAtMs && Date.now() - lastSeenAtMs < ACCOUNT_SESSION_TOUCH_COOLDOWN_MS) {
+    return session;
   }
 
   await session.ref.set({
