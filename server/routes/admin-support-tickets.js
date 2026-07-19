@@ -259,14 +259,18 @@ async function handleGetProductStock(res) {
 }
 
 async function handleGetPublicStock(res) {
-  res.setHeader("Cache-Control", "no-store, max-age=0");
-  res.setHeader("CDN-Cache-Control", "no-store");
-  res.setHeader("Vercel-CDN-Cache-Control", "no-store");
+  res.setHeader("Cache-Control", "public, max-age=0, s-maxage=900, stale-while-revalidate=3600");
+  res.setHeader("CDN-Cache-Control", "public, max-age=900, stale-while-revalidate=3600");
+  res.setHeader("Vercel-CDN-Cache-Control", "public, max-age=900, stale-while-revalidate=3600");
 
-  const productStock = await getProductStockRecords();
+  const snapshot = await admin.firestore()
+    .collection("productStock")
+    .where("status", "==", "unavailable")
+    .limit(1000)
+    .get();
   const stock = {};
 
-  productStock.forEach(function (item) {
+  snapshot.docs.map(serializeProductStock).forEach(function (item) {
     stock[item.productId] = {
       status: item.status,
       updatedAt: item.updatedAt
