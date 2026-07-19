@@ -20,6 +20,8 @@
           <li><a href="mailto:thecomputershopegypt@gmail.com">thecomputershopegypt@gmail.com</a></li>
           <li><a href="https://wa.me/201130816735" target="_blank" rel="noopener noreferrer">WhatsApp</a></li>
           <li><a href="https://www.facebook.com/share/1AkQdshwCi/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer">Facebook</a></li>
+          <li><a href="https://www.instagram.com/thecomputershopegypt?igsh=MWtneHF1aWk3ejVtbA%3D%3D&amp;utm_source=qr" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+          <li><a href="https://www.tiktok.com/@thecomputershop?_r=1&amp;_t=ZS-98AtfYNECYe" target="_blank" rel="noopener noreferrer">TikTok</a></li>
         </ul>
       </div>
 
