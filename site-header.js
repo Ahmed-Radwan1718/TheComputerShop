@@ -619,8 +619,39 @@ if (floatingAccountWidget) {
       }
 
       const loginSessionSignedOutMessage = "This session was signed out from another device.";
+      const accountStateCacheKey = "tcs-account-state-cache-v1";
+      const accountStateCacheMaxAgeMs = 15 * 60 * 1000;
       let sessionStatusRedirecting = false;
       let accountStateRequestInFlight = false;
+
+      function readCachedAccountState() {
+        try {
+          const cached = JSON.parse(sessionStorage.getItem(accountStateCacheKey) || "{}");
+
+          if (!cached || !cached.user || Date.now() - Number(cached.savedAt || 0) > accountStateCacheMaxAgeMs) {
+            return null;
+          }
+
+          return cached.user;
+        } catch (error) {
+          return null;
+        }
+      }
+
+      function saveCachedAccountState(user) {
+        try {
+          sessionStorage.setItem(accountStateCacheKey, JSON.stringify({
+            user: user || null,
+            savedAt: Date.now()
+          }));
+        } catch (error) {}
+      }
+
+      function clearCachedAccountState() {
+        try {
+          sessionStorage.removeItem(accountStateCacheKey);
+        } catch (error) {}
+      }
 
       async function redirectRevokedSession() {
         if (sessionStatusRedirecting) {
@@ -628,20 +659,34 @@ if (floatingAccountWidget) {
         }
 
         sessionStatusRedirecting = true;
+        clearCachedAccountState();
         sessionStorage.removeItem("tcs-login-2fa-pending");
         sessionStorage.setItem("tcs-login-message", loginSessionSignedOutMessage);
         await logoutServerSession();
         window.location.href = "login.html";
       }
 
-      async function loadServerAccountState() {
+      async function loadServerAccountState(options) {
+        const settings = options || {};
         const twoFactorIsPending = sessionStorage.getItem("tcs-login-2fa-pending") === "1";
 
         if (twoFactorIsPending) {
+          clearCachedAccountState();
           window.tcsCurrentAccountUser = null;
           window.tcsAccountStateLoaded = true;
           showLoggedOutAccountState();
           return null;
+        }
+
+        if (!settings.force) {
+          const cachedUser = readCachedAccountState();
+
+          if (cachedUser) {
+            window.tcsCurrentAccountUser = cachedUser;
+            window.tcsAccountStateLoaded = true;
+            showLoggedInAccountState(cachedUser);
+            return cachedUser;
+          }
         }
 
         if (accountStateRequestInFlight && window.tcsAccountStatePromise) {
@@ -670,12 +715,14 @@ if (floatingAccountWidget) {
           }
 
           if (!response.ok || !data.signedIn || !data.user) {
+            clearCachedAccountState();
             window.tcsCurrentAccountUser = null;
             window.tcsAccountStateLoaded = true;
             showLoggedOutAccountState();
             return null;
           }
 
+          saveCachedAccountState(data.user);
           window.tcsCurrentAccountUser = data.user;
           window.tcsAccountStateLoaded = true;
           showLoggedInAccountState(data.user);
@@ -734,6 +781,7 @@ if (floatingAccountWidget) {
 
         // Firebase client session removed; server logout is the source of truth.
 
+        clearCachedAccountState();
         sessionStorage.removeItem("tcs-login-2fa-pending");
         closeAccountMenu();
         showLoggedOutAccountState();
@@ -750,12 +798,13 @@ if (floatingAccountWidget) {
 
       if (!headerIsOnAccountPage) {
         window.setInterval(function () {
-          window.tcsAccountStatePromise = loadServerAccountState();
+          window.tcsAccountStatePromise = loadServerAccountState({ force: true });
         }, 15 * 60 * 1000);
       }
 
       window.tcsReloadAccountHeader = function () {
-        window.tcsAccountStatePromise = loadServerAccountState();
+        clearCachedAccountState();
+        window.tcsAccountStatePromise = loadServerAccountState({ force: true });
         return window.tcsAccountStatePromise;
       };
     }
