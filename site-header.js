@@ -737,7 +737,7 @@ if (floatingAccountWidget) {
       const headerIsOnAccountPage = currentPageName === "accounts.html";
 
       if (!headerIsOnAccountPage) {
-        window.setInterval(loadServerAccountState, 5 * 60 * 1000);
+        window.setInterval(loadServerAccountState, 15 * 60 * 1000);
       }
 
       window.tcsReloadAccountHeader = loadServerAccountState;
