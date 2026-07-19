@@ -3368,27 +3368,32 @@ async function startOrderHistorySync(uid) {
   await refreshOrderHistory(true);
 
   const orderHistoryPanel = document.getElementById("account-panel-orders");
+  const orderHistoryRefreshCooldownMs = 5 * 60 * 1000;
+  let lastOrderHistoryRefreshAt = Date.now();
+
   const orderHistoryPanelIsActive = function () {
     return Boolean(orderHistoryPanel && orderHistoryPanel.classList.contains("active"));
   };
 
-  const orderHistoryRefreshInterval = window.setInterval(function () {
-    if (!document.hidden && (orderHistoryPanelIsActive() || activeOrderId)) {
-      refreshOrderHistory(false);
+  const refreshOrderHistoryIfAllowed = function () {
+    if (document.hidden || (!orderHistoryPanelIsActive() && !activeOrderId)) {
+      return;
     }
-  }, 700);
 
-  const handleOrderHistoryVisibilityChange = function () {
-    if (!document.hidden && (orderHistoryPanelIsActive() || activeOrderId)) {
-      refreshOrderHistory(false);
+    if (Date.now() - lastOrderHistoryRefreshAt < orderHistoryRefreshCooldownMs) {
+      return;
     }
+
+    lastOrderHistoryRefreshAt = Date.now();
+    refreshOrderHistory(false);
   };
 
-  document.addEventListener("visibilitychange", handleOrderHistoryVisibilityChange);
+  document.addEventListener("visibilitychange", refreshOrderHistoryIfAllowed);
+  window.addEventListener("focus", refreshOrderHistoryIfAllowed);
 
   orderHistoryUnsubscribe = function () {
-    window.clearInterval(orderHistoryRefreshInterval);
-    document.removeEventListener("visibilitychange", handleOrderHistoryVisibilityChange);
+    document.removeEventListener("visibilitychange", refreshOrderHistoryIfAllowed);
+    window.removeEventListener("focus", refreshOrderHistoryIfAllowed);
   };
 }
 
@@ -6350,7 +6355,7 @@ function startCurrentSessionStatusListener() {
     clearInterval(sessionStatusCheckTimer);
   }
 
-  sessionStatusCheckTimer = setInterval(checkCurrentSessionStatus, 60000);
+  sessionStatusCheckTimer = setInterval(checkCurrentSessionStatus, 15 * 60 * 1000);
   checkCurrentSessionStatus();
 }
 
