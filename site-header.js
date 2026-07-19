@@ -799,6 +799,153 @@ productStockScript.textContent = `
     const stockCacheKey = "tcs-product-stock-cache-v1";
     const stockCacheMaxAgeMs = 15 * 60 * 1000;
     let stockRefreshInFlight = false;
+    let currentStockMap = {};
+    let realtimeDatabaseUrl = "";
+    let realtimeStockStarted = false;
+    let realtimeStockSource = null;
+
+    function normalizePublicStock(stock) {
+      const normalizedStock = {};
+
+      Object.keys(stock || {}).forEach(function (productId) {
+        const item = stock[productId];
+
+        if (item && item.status === "unavailable") {
+          normalizedStock[productId] = {
+            status: "unavailable",
+            updatedAt: item.updatedAt || ""
+          };
+        }
+      });
+
+      return normalizedStock;
+    }
+
+    function decodeRealtimeProductId(key) {
+      try {
+        return decodeURIComponent(String(key || "").replace(/%2E/gi, "."));
+      } catch (error) {
+        return String(key || "");
+      }
+    }
+
+    function getRealtimeStockUrl() {
+      if (!realtimeDatabaseUrl) {
+        return "";
+      }
+
+      return realtimeDatabaseUrl.replace(/\/+$/, "") + "/publicStock/unavailable.json";
+    }
+
+    function getRealtimeStockItem(value) {
+      if (!value) {
+        return null;
+      }
+
+      if (value === true) {
+        return {
+          status: "unavailable",
+          updatedAt: ""
+        };
+      }
+
+      if (typeof value === "object" && value.status === "unavailable") {
+        return {
+          status: "unavailable",
+          updatedAt: value.updatedAt || ""
+        };
+      }
+
+      return null;
+    }
+
+    function setCurrentStockMap(stockMap, options) {
+      const settings = options || {};
+      currentStockMap = normalizePublicStock(stockMap);
+      ensureStockStyles();
+
+      if (!settings.skipCache) {
+        saveCachedProductStock(currentStockMap);
+      }
+
+      applyProductCardStock(currentStockMap);
+      applyProductDetailStock(currentStockMap);
+    }
+
+    function applyRealtimeStockChild(key, value) {
+      const productId = decodeRealtimeProductId(key);
+
+      if (!productId) {
+        return;
+      }
+
+      const stockItem = getRealtimeStockItem(value);
+
+      if (stockItem) {
+        currentStockMap[productId] = stockItem;
+        return;
+      }
+
+      delete currentStockMap[productId];
+    }
+
+    function replaceRealtimeStockSnapshot(data) {
+      const nextStock = {};
+
+      if (data && typeof data === "object") {
+        Object.keys(data).forEach(function (key) {
+          const productId = decodeRealtimeProductId(key);
+          const stockItem = getRealtimeStockItem(data[key]);
+
+          if (productId && stockItem) {
+            nextStock[productId] = stockItem;
+          }
+        });
+      }
+
+      setCurrentStockMap(nextStock);
+    }
+
+    function handleRealtimeStockEvent(event) {
+      try {
+        const payload = JSON.parse(event.data || "{}");
+        const path = String(payload.path || "/");
+
+        if (path === "/" && event.type === "put") {
+          replaceRealtimeStockSnapshot(payload.data);
+          return;
+        }
+
+        if (path === "/" && payload.data && typeof payload.data === "object") {
+          Object.keys(payload.data).forEach(function (key) {
+            applyRealtimeStockChild(key, payload.data[key]);
+          });
+          setCurrentStockMap(currentStockMap);
+          return;
+        }
+
+        applyRealtimeStockChild(path.replace(/^\/+/, "").split("/")[0], payload.data);
+        setCurrentStockMap(currentStockMap);
+      } catch (error) {}
+    }
+
+    function startRealtimeStockListener() {
+      const realtimeStockUrl = getRealtimeStockUrl();
+
+      if (realtimeStockStarted || !realtimeStockUrl || typeof EventSource !== "function") {
+        return;
+      }
+
+      try {
+        realtimeStockStarted = true;
+        realtimeStockSource = new EventSource(realtimeStockUrl);
+        realtimeStockSource.addEventListener("put", handleRealtimeStockEvent);
+        realtimeStockSource.addEventListener("patch", handleRealtimeStockEvent);
+      } catch (error) {
+        realtimeStockStarted = false;
+        realtimeStockSource = null;
+      }
+    }
 
     function getProductIdFromHref(href) {
       try {
@@ -975,7 +1122,7 @@ productStockScript.textContent = `
       const settings = options || {};
       const cachedStock = settings.force ? null : readCachedProductStock();
 
-      if (cachedStock) {
+      if (cachedStock && realtimeDatabaseUrl) {
         return cachedStock;
       }
 
@@ -992,53 +1139,59 @@ productStockScript.textContent = `
           return {};
         });
 
-        if (!response.ok || !data.success || !data.stock) {
-          return {};
+        if (data.realtimeDatabaseUrl && typeof data.realtimeDatabaseUrl === "string") {
+          realtimeDatabaseUrl = data.realtimeDatabaseUrl;
         }
 
-        saveCachedProductStock(data.stock);
-        return data.stock;
+        if (!response.ok || !data.success || !data.stock) {
+          return cachedStock || {};
+        }
+
+        const stock = normalizePublicStock(data.stock);
+        saveCachedProductStock(stock);
+        return stock;
       } catch (error) {
-        return readCachedProductStock() || {};
+        return cachedStock || readCachedProductStock() || {};
       }
     }
 
-    async function applyStockState() {
+    async function applyStockState(options) {
       if (stockRefreshInFlight) {
         return;
       }
 
       stockRefreshInFlight = true;
-      ensureStockStyles();
 
       try {
-        const stockMap = await loadProductStock();
+        const stockMap = await loadProductStock(options);
 
-        applyProductCardStock(stockMap);
-        applyProductDetailStock(stockMap);
+        setCurrentStockMap(stockMap);
+        startRealtimeStockListener();
       } finally {
         stockRefreshInFlight = false;
       }
     }
 
-  function startProductStockLiveUpdates() {
-    if (!hasProductStockTargets()) {
-      return;
-    }
-
-    applyStockState();
-
-    window.setInterval(function () {
-      if (document.visibilityState !== "hidden") {
-        applyStockState({ force: true });
+    function startProductStockLiveUpdates() {
+      if (!hasProductStockTargets()) {
+        return;
       }
-    }, stockCacheMaxAgeMs);
+
+      applyStockState({ force: true });
 
       window.addEventListener("focus", applyStockState);
 
       document.addEventListener("visibilitychange", function () {
         if (document.visibilityState !== "hidden") {
           applyStockState();
+        }
+      });
+
+      window.addEventListener("pagehide", function () {
+        if (realtimeStockSource) {
+          realtimeStockSource.close();
+          realtimeStockSource = null;
+          realtimeStockStarted = false;
         }
       });
     }
