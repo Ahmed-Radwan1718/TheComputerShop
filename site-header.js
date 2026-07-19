@@ -798,9 +798,10 @@ productStockScript.textContent = `
     const stockEndpoint = "/api/admin-support-tickets?type=stock-public";
     const stockCacheKey = "tcs-product-stock-cache-v1";
     const stockCacheMaxAgeMs = 15 * 60 * 1000;
+    const fallbackRealtimeDatabaseUrl = "https://the-computer-shop-aad6b-default-rtdb.europe-west1.firebasedatabase.app";
     let stockRefreshInFlight = false;
     let currentStockMap = {};
-    let realtimeDatabaseUrl = "";
+    let realtimeDatabaseUrl = fallbackRealtimeDatabaseUrl;
     let realtimeStockStarted = false;
     let realtimeStockSource = null;
 
@@ -1127,9 +1128,42 @@ productStockScript.textContent = `
       }
 
       try {
+        const realtimeStockUrl = getRealtimeStockUrl();
+
+        if (realtimeStockUrl) {
+          const realtimeResponse = await fetch(realtimeStockUrl, {
+            method: "GET",
+            cache: "no-store",
+            headers: {
+              "Accept": "application/json"
+            }
+          });
+
+          const realtimeData = await realtimeResponse.json().catch(function () {
+            return {};
+          });
+
+          if (realtimeResponse.ok) {
+            const realtimeStock = {};
+
+            Object.keys(realtimeData || {}).forEach(function (key) {
+              const productId = decodeRealtimeProductId(key);
+              const stockItem = getRealtimeStockItem(realtimeData[key]);
+
+              if (productId && stockItem) {
+                realtimeStock[productId] = stockItem;
+              }
+            });
+
+            saveCachedProductStock(realtimeStock);
+            return realtimeStock;
+          }
+        }
+
         const response = await fetch(stockEndpoint, {
           method: "GET",
           credentials: "same-origin",
+          cache: "no-store",
           headers: {
             "Accept": "application/json"
           }
