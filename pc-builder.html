@@ -827,7 +827,7 @@
     .pc-builder-products-column {
       min-height: 0;
       display: grid;
-      grid-template-rows: auto minmax(0, 1fr);
+      grid-template-rows: auto auto minmax(0, 1fr);
       overflow: hidden;
       background: rgba(0, 0, 0, 0.08);
     }
@@ -985,12 +985,17 @@
     }
 
     .pc-builder-selected-filters {
+      position: relative;
+      z-index: 2;
       display: flex;
       align-items: center;
       flex-wrap: wrap;
       gap: 10px;
+      min-height: 54px;
       margin: 0;
-      padding: 10px 16px 4px;
+      padding: 12px 16px 16px;
+      background: rgba(24, 25, 24, 0.96);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     }
 
     .pc-builder-selected-filters[hidden] {
@@ -998,8 +1003,8 @@
     }
 
     .pc-builder-selected-label {
-      color: rgba(192, 154, 92, 0.84);
-      font-size: 11px;
+      color: rgba(192, 154, 92, 0.92);
+      font-size: 13px;
       font-weight: 700;
       letter-spacing: 0.12em;
       text-transform: uppercase;
@@ -1007,12 +1012,12 @@
 
     .pc-builder-selected-chip,
     .pc-builder-selected-clear {
-      min-height: 34px;
-      padding: 0 13px;
-      border: 1px solid rgba(255, 255, 255, 0.16);
+      min-height: 38px;
+      padding: 0 15px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.07);
-      color: rgba(255, 255, 255, 0.86);
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
       font-family: inherit;
       font-size: 13px;
       font-weight: 700;
@@ -1025,18 +1030,18 @@
 
     .pc-builder-selected-clear {
       background: transparent;
-      color: rgba(255, 255, 255, 0.58);
+      color: rgba(255, 255, 255, 0.72);
     }
 
     .pc-builder-selected-chip:hover,
     .pc-builder-selected-clear:hover {
-      background: rgba(255, 255, 255, 0.12);
-      border-color: rgba(255, 255, 255, 0.28);
+      background: rgba(255, 255, 255, 0.16);
+      border-color: rgba(255, 255, 255, 0.34);
       color: white;
     }
 
     .pc-builder-selected-chip span:last-child {
-      color: rgba(255, 255, 255, 0.55);
+      color: rgba(255, 255, 255, 0.72);
       font-size: 16px;
       line-height: 1;
     }
