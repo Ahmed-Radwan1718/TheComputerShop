@@ -299,6 +299,19 @@
       color: #ffaaaa;
     }
 
+    .pc-builder-compatibility-note {
+      margin: 0 0 12px;
+      padding: 0 2px;
+      color: rgba(255, 255, 255, 0.58);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .pc-builder-compatibility-note strong {
+      color: rgba(192, 154, 92, 0.92);
+      font-weight: 700;
+    }
+
     .pc-builder-issues {
       display: grid;
       gap: 10px;
@@ -1431,6 +1444,7 @@
         </div>
 
         <div class="pc-builder-summary-body">
+          <p class="pc-builder-compatibility-note"><strong>Note:</strong> This compatibility checker is a guide and may not be fully accurate. Please confirm your build's compatibility on the manufacturer's website before purchasing.</p>
           <div class="pc-builder-issues" id="pc-builder-issues"></div>
         </div>
       </section>
