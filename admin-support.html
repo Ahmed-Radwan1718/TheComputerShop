@@ -976,6 +976,38 @@
     return data.ticket;
   }
 
+  function findAdminDashboardCard(listElement, attributeName, value) {
+    if (!listElement || value === undefined || value === null) {
+      return null;
+    }
+
+    return Array.from(listElement.querySelectorAll("[" + attributeName + "]")).find(function (card) {
+      return card.getAttribute(attributeName) === String(value);
+    }) || null;
+  }
+
+  function flashAdminDashboardCard(card) {
+    if (!card) {
+      return;
+    }
+
+    card.classList.remove("admin-card-saved");
+    void card.offsetWidth;
+    card.classList.add("admin-card-saved");
+
+    window.setTimeout(function () {
+      card.classList.remove("admin-card-saved");
+    }, 1200);
+  }
+
+  function flashAdminOrderCard(orderId) {
+    flashAdminDashboardCard(findAdminDashboardCard(adminOrderList, "data-admin-order-id", orderId));
+  }
+
+  function flashAdminTicketCard(ticketId) {
+    flashAdminDashboardCard(findAdminDashboardCard(adminSupportList, "data-admin-ticket-id", ticketId));
+  }
+
   function replaceOrder(updatedOrder) {
     orders = orders.map(function (order) {
       return order.id === updatedOrder.id ? updatedOrder : order;
@@ -985,6 +1017,7 @@
 
     renderOrders();
     renderOrderModal(updatedOrder);
+    flashAdminOrderCard(updatedOrder.id);
   }
 
   function removeOrder(orderId) {
@@ -1004,6 +1037,7 @@
 
     renderTickets();
     renderTicketModal(updatedTicket);
+    flashAdminTicketCard(updatedTicket.id);
   }
 
   function removeTicket(ticketId) {
@@ -1599,6 +1633,11 @@
 
       productStockRecords.push(updatedRecord);
       renderProductStock();
+      flashAdminDashboardCard(findAdminDashboardCard(
+        document.getElementById("admin-product-stock-list"),
+        "data-admin-product-stock-id",
+        updatedRecord.productId
+      ));
     }
 
     function renderProductStock() {
