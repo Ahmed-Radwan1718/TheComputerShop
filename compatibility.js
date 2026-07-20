@@ -175,12 +175,17 @@ window.TCS_COMPATIBILITY = (function () {
     const gpuSpecs = gpuParts.map(getSpec).filter(Boolean);
     const storageSpecs = [build.storage].concat(build.extraParts && build.extraParts.storage || []).map(getSpec).filter(Boolean);
     const memorySpecs = [build.memory].concat(build.extraParts && build.extraParts.memory || []).map(getSpec).filter(Boolean);
+    const hasMemorySelection = Boolean(build.memory) || Boolean(build.extraParts && build.extraParts.memory && build.extraParts.memory.length);
 
     selectedParts(build).forEach(function (part) {
       if (!getSpec(part)) {
         issues.push(issue("warn", "Missing compatibility data: " + part.name + " is not in compatibility.js yet."));
       }
     });
+
+    if (build.cooler && hasMemorySelection) {
+      issues.push(issue("warn", "Physical clearance not checked: Some physical constraints are not checked, such as RAM clearance with CPU Coolers."));
+    }
 
     if (cpu && motherboard && cpu.socket !== motherboard.socket) {
       issues.push(issue("bad", "CPU socket mismatch: CPU uses " + cpu.socket + " but motherboard uses " + motherboard.socket + "."));
