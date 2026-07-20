@@ -8867,12 +8867,28 @@ body.product-image-lightbox-open {
   padding: 8px;
   border-radius: 18px;
   border: 1px solid rgba(255, 255, 255, 0.11);
-  background: rgba(24, 25, 24, 0.92);
+  background: rgba(24, 25, 24, 0.96);
   box-shadow: 0 22px 55px rgba(0, 0, 0, 0.28);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
   display: grid;
   gap: 4px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px) scale(0.98);
+  transform-origin: top right;
+  pointer-events: none;
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease,
+    visibility 0.18s ease;
+}
+
+.floating-account-menu.is-open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
 }
 
 .floating-account-menu[hidden],
@@ -8907,6 +8923,16 @@ body.product-image-lightbox-open {
 }
 
 .floating-account-menu-link:hover {
+  background: rgba(255, 255, 255, 0.095);
+  color: white;
+}
+
+.floating-account-menu-link:disabled {
+  opacity: 0.58;
+  cursor: not-allowed;
+}
+
+.floating-account-menu-link.is-loading {
   background: rgba(255, 255, 255, 0.095);
   color: white;
 }
