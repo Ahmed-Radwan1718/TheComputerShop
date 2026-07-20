@@ -988,9 +988,9 @@
       display: flex;
       align-items: center;
       flex-wrap: wrap;
-      gap: 8px;
-      margin: 0 0 14px;
-      padding: 0 4px;
+      gap: 10px;
+      margin: 0;
+      padding: 10px 16px 4px;
     }
 
     .pc-builder-selected-filters[hidden] {
@@ -1462,7 +1462,6 @@
     <div class="pc-builder-modal-body">
       <aside class="pc-builder-filter-panel" aria-label="Part filters">
         <div class="pc-builder-filter-heading">Filters</div>
-        <div class="pc-builder-selected-filters" id="pc-builder-selected-filters" hidden></div>
         <div class="pc-builder-filter-groups" id="pc-builder-filter-groups"></div>
         <button class="pc-builder-filter-clear" type="button" id="pc-builder-clear-filters">Clear Filters</button>
       </aside>
@@ -1476,6 +1475,8 @@
             Compatibility filter
           </label>
         </div>
+
+        <div class="pc-builder-selected-filters" id="pc-builder-selected-filters" hidden></div>
 
         <div class="pc-builder-parts-list" id="pc-builder-parts-list"></div>
       </div>
