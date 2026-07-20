@@ -12079,7 +12079,32 @@ body.account-security-modal-open {
   transition:
     background 0.2s ease,
     border-color 0.2s ease,
+    box-shadow 0.2s ease,
     transform 0.2s ease;
+}
+
+.account-support-ticket-card.admin-card-saved {
+  animation: adminCardSavedPulse 1.2s ease both;
+}
+
+@keyframes adminCardSavedPulse {
+  0% {
+    background: rgba(139, 211, 166, 0.16);
+    border-color: rgba(139, 211, 166, 0.64);
+    box-shadow: 0 0 0 0 rgba(139, 211, 166, 0.28);
+  }
+
+  55% {
+    background: rgba(139, 211, 166, 0.09);
+    border-color: rgba(139, 211, 166, 0.38);
+    box-shadow: 0 0 0 8px rgba(139, 211, 166, 0);
+  }
+
+  100% {
+    background: rgba(255, 255, 255, 0.045);
+    border-color: rgba(255, 255, 255, 0.105);
+    box-shadow: none;
+  }
 }
 
 .account-support-ticket-card:hover {
