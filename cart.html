@@ -368,11 +368,12 @@
     }
 
     cloudCartItems = Array.isArray(data.items) ? data.items : [];
-    renderCart(cloudCartItems);
 
     if (typeof window.tcsRefreshCartCount === "function") {
       window.tcsRefreshCartCount();
     }
+
+    return cloudCartItems;
   }
 
   cartItems.addEventListener("click", async function (event) {
@@ -382,14 +383,30 @@
       return;
     }
 
+    const cartItem = removeButton.closest(".cart-item");
+
     removeButton.disabled = true;
     removeButton.textContent = "Removing...";
+    showCartOrderMessage("", "");
 
     try {
       await removeCartItem(removeButton.dataset.id);
+
+      if (cartItem) {
+        cartItem.classList.add("cart-item-is-removing");
+
+        window.setTimeout(function () {
+          renderCart(cloudCartItems);
+          showCartOrderMessage("Item removed from cart.", "success");
+        }, 220);
+      } else {
+        renderCart(cloudCartItems);
+        showCartOrderMessage("Item removed from cart.", "success");
+      }
     } catch (error) {
       removeButton.disabled = false;
       removeButton.textContent = "Remove";
+      showCartOrderMessage(error.message || "Could not remove this item. Please try again.", "error");
     }
   });
 
