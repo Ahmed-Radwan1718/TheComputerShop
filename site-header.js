@@ -557,14 +557,39 @@ if (floatingAccountWidget) {
     const logoutButton = document.getElementById("floating-logout-button");
 
     if (accountWidget && accountGreeting && accountButton && accountPhoto && accountMenu && loginLink && accountLink && savedLink && ordersLink && logoutButton) {
+      let accountMenuCloseTimer = null;
+
       function closeAccountMenu() {
-        accountMenu.hidden = true;
         accountButton.setAttribute("aria-expanded", "false");
+        accountMenu.classList.remove("is-open");
+
+        if (accountMenuCloseTimer) {
+          window.clearTimeout(accountMenuCloseTimer);
+          accountMenuCloseTimer = null;
+        }
+
+        if (accountMenu.hidden) {
+          return;
+        }
+
+        accountMenuCloseTimer = window.setTimeout(function () {
+          accountMenu.hidden = true;
+          accountMenuCloseTimer = null;
+        }, 180);
       }
 
       function openAccountMenu() {
+        if (accountMenuCloseTimer) {
+          window.clearTimeout(accountMenuCloseTimer);
+          accountMenuCloseTimer = null;
+        }
+
         accountMenu.hidden = false;
         accountButton.setAttribute("aria-expanded", "true");
+
+        window.requestAnimationFrame(function () {
+          accountMenu.classList.add("is-open");
+        });
       }
 
       function getFirstName(fullName, email) {
@@ -751,7 +776,7 @@ if (floatingAccountWidget) {
       accountButton.addEventListener("click", function (event) {
         event.stopPropagation();
 
-        if (accountMenu.hidden) {
+        if (accountMenu.hidden || !accountMenu.classList.contains("is-open")) {
           openAccountMenu();
         } else {
           closeAccountMenu();
@@ -776,6 +801,8 @@ if (floatingAccountWidget) {
 
       logoutButton.addEventListener("click", async function () {
         logoutButton.disabled = true;
+        logoutButton.textContent = "Signing out...";
+        logoutButton.classList.add("is-loading");
 
         await logoutServerSession();
 
