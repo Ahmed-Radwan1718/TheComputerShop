@@ -19,7 +19,13 @@
         <p>Enter your delivery details so we can review availability, confirm final pricing, and contact you about your order.</p>
       </div>
 
-      <div class="checkout-layout">
+      <div id="checkout-loading" class="checkout-page-loading" role="status" aria-live="polite">
+        <span class="checkout-page-loading-spinner" aria-hidden="true"></span>
+        <strong>Loading checkout</strong>
+        <p>Checking your cart, profile, and saved addresses...</p>
+      </div>
+
+      <div class="checkout-layout" id="checkout-layout" hidden>
         <section class="checkout-panel">
           <div class="checkout-panel-header">
           </div>
@@ -336,6 +342,8 @@
 </div>
 
 <script>
+  const checkoutLoading = document.getElementById("checkout-loading");
+  const checkoutLayout = document.getElementById("checkout-layout");
   const checkoutForm = document.getElementById("checkout-form");
   const checkoutName = document.getElementById("checkout-name");
   const checkoutEmail = document.getElementById("checkout-email");
@@ -721,6 +729,14 @@
   }
 
   async function loadCheckoutData() {
+    if (checkoutLoading) {
+      checkoutLoading.hidden = false;
+    }
+
+    if (checkoutLayout) {
+      checkoutLayout.hidden = true;
+    }
+
     const response = await fetch("/api/checkout", {
       method: "GET",
       credentials: "same-origin",
@@ -748,6 +764,14 @@
 
     if (typeof window.tcsRefreshCartCount === "function") {
       window.tcsRefreshCartCount();
+    }
+
+    if (checkoutLoading) {
+      checkoutLoading.hidden = true;
+    }
+
+    if (checkoutLayout) {
+      checkoutLayout.hidden = false;
     }
   }
 
@@ -997,6 +1021,15 @@
 
   loadCheckoutData().catch(function (error) {
     localStorage.setItem("tcs-login-redirect", "checkout.html");
+
+    if (checkoutLoading) {
+      checkoutLoading.hidden = true;
+    }
+
+    if (checkoutLayout) {
+      checkoutLayout.hidden = false;
+    }
+
     showCheckoutMessage(error.message || "Please log in to checkout.", "error");
 
     setTimeout(function () {
