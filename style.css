@@ -7045,6 +7045,60 @@ body.product-image-lightbox-open {
   line-height: 1.75;
 }
 
+.checkout-page-loading {
+  min-height: 320px;
+  padding: 48px 32px;
+  border-radius: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.105);
+  background: rgba(24, 25, 24, 0.56);
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.18);
+  color: white;
+  text-align: center;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 10px;
+}
+
+.checkout-page-loading[hidden],
+.checkout-layout[hidden] {
+  display: none;
+}
+
+.checkout-page-loading-spinner {
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  border: 3px solid rgba(255, 255, 255, 0.18);
+  border-top-color: white;
+  animation: checkout-page-loading-spin 0.8s linear infinite;
+}
+
+.checkout-page-loading strong {
+  font-size: 18px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.checkout-page-loading p {
+  max-width: 360px;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+@keyframes checkout-page-loading-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .checkout-page-loading-spinner {
+    animation: none;
+  }
+}
+
 .checkout-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 380px;
