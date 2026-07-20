@@ -9813,9 +9813,116 @@ body.account-security-modal-open .account-panel.active {
   }
 }
 
+.account-email-modal,
+.account-security-modal,
+.account-address-modal,
+.account-password-modal,
+.account-photo-crop-modal,
+.account-support-modal {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s ease;
+}
+
+.account-email-modal[hidden],
+.account-security-modal[hidden],
+.account-password-modal[hidden],
+.account-photo-crop-modal[hidden],
+.account-support-modal[hidden] {
+  display: flex;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.account-address-modal[hidden] {
+  display: grid;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.account-email-modal-backdrop,
+.account-security-modal-backdrop,
+.account-address-modal-backdrop,
+.account-password-modal-backdrop,
+.account-photo-crop-backdrop,
+.account-support-modal-backdrop {
+  transition: opacity 0.2s ease;
+}
+
+.account-email-modal[hidden] .account-email-modal-backdrop,
+.account-security-modal[hidden] .account-security-modal-backdrop,
+.account-address-modal[hidden] .account-address-modal-backdrop,
+.account-password-modal[hidden] .account-password-modal-backdrop,
+.account-photo-crop-modal[hidden] .account-photo-crop-backdrop,
+.account-support-modal[hidden] .account-support-modal-backdrop {
+  opacity: 0;
+}
+
+.account-email-modal-card,
+.account-security-modal-card,
+.account-address-modal-card,
+.account-password-modal-card,
+.account-photo-crop-card,
+.account-support-modal-card {
+  transition:
+    opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.24s ease;
+}
+
+.account-email-modal[hidden] .account-email-modal-card,
+.account-security-modal[hidden] .account-security-modal-card,
+.account-address-modal[hidden] .account-address-modal-card,
+.account-password-modal[hidden] .account-password-modal-card,
+.account-photo-crop-modal[hidden] .account-photo-crop-card,
+.account-support-modal[hidden] .account-support-modal-card {
+  opacity: 0;
+  transform: translateY(16px) scale(0.985);
+  filter: blur(4px);
+}
+
+@starting-style {
+  .account-email-modal:not([hidden]) .account-email-modal-card,
+  .account-security-modal:not([hidden]) .account-security-modal-card,
+  .account-address-modal:not([hidden]) .account-address-modal-card,
+  .account-password-modal:not([hidden]) .account-password-modal-card,
+  .account-photo-crop-modal:not([hidden]) .account-photo-crop-card,
+  .account-support-modal:not([hidden]) .account-support-modal-card {
+    opacity: 0;
+    transform: translateY(16px) scale(0.985);
+    filter: blur(4px);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .account-panel.active {
     animation: none;
+  }
+
+  .account-email-modal,
+  .account-security-modal,
+  .account-address-modal,
+  .account-password-modal,
+  .account-photo-crop-modal,
+  .account-support-modal,
+  .account-email-modal-backdrop,
+  .account-security-modal-backdrop,
+  .account-address-modal-backdrop,
+  .account-password-modal-backdrop,
+  .account-photo-crop-backdrop,
+  .account-support-modal-backdrop,
+  .account-email-modal-card,
+  .account-security-modal-card,
+  .account-address-modal-card,
+  .account-password-modal-card,
+  .account-photo-crop-card,
+  .account-support-modal-card {
+    transition: none;
   }
 }
 
