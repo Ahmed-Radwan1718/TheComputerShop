@@ -3971,7 +3971,7 @@
     filterGroupsElement.innerHTML = groups.map(function (group) {
       const selectedValues = selectedGroups[group.name] || [];
 
-      return '<div class="pc-builder-filter-item open" data-filter-group="' + escapeHtml(group.name) + '"><button class="pc-builder-filter-toggle" type="button"><span>' + escapeHtml(group.name) + '</span><span class="chevron">⌄</span></button><div class="pc-builder-filter-content">' + group.options.map(function (option) {
+      return '<div class="pc-builder-filter-item" data-filter-group="' + escapeHtml(group.name) + '"><button class="pc-builder-filter-toggle" type="button"><span>' + escapeHtml(group.name) + '</span><span class="chevron">⌄</span></button><div class="pc-builder-filter-content">' + group.options.map(function (option) {
         const checked = selectedValues.includes(option.value) ? " checked" : "";
         return '<label><input type="checkbox" value="' + escapeHtml(option.value) + '"' + checked + '> <span>' + escapeHtml(option.label) + '</span></label>';
       }).join("") + '</div></div>';
