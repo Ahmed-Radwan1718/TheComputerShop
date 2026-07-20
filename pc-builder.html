@@ -984,6 +984,63 @@
       transform: scaleY(1);
     }
 
+    .pc-builder-selected-filters {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0 0 14px;
+      padding: 0 4px;
+    }
+
+    .pc-builder-selected-filters[hidden] {
+      display: none;
+    }
+
+    .pc-builder-selected-label {
+      color: rgba(192, 154, 92, 0.84);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .pc-builder-selected-chip,
+    .pc-builder-selected-clear {
+      min-height: 34px;
+      padding: 0 13px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.07);
+      color: rgba(255, 255, 255, 0.86);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .pc-builder-selected-clear {
+      background: transparent;
+      color: rgba(255, 255, 255, 0.58);
+    }
+
+    .pc-builder-selected-chip:hover,
+    .pc-builder-selected-clear:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.28);
+      color: white;
+    }
+
+    .pc-builder-selected-chip span:last-child {
+      color: rgba(255, 255, 255, 0.55);
+      font-size: 16px;
+      line-height: 1;
+    }
+
     .pc-builder-filter-groups {
       display: grid;
       gap: 8px;
@@ -1405,6 +1462,7 @@
     <div class="pc-builder-modal-body">
       <aside class="pc-builder-filter-panel" aria-label="Part filters">
         <div class="pc-builder-filter-heading">Filters</div>
+        <div class="pc-builder-selected-filters" id="pc-builder-selected-filters" hidden></div>
         <div class="pc-builder-filter-groups" id="pc-builder-filter-groups"></div>
         <button class="pc-builder-filter-clear" type="button" id="pc-builder-clear-filters">Clear Filters</button>
       </aside>
@@ -1464,6 +1522,7 @@
   const searchInput = document.getElementById("pc-builder-search");
   const compatibleOnlyInput = document.getElementById("pc-builder-compatible-only");
   const filterGroupsElement = document.getElementById("pc-builder-filter-groups");
+  const selectedFiltersElement = document.getElementById("pc-builder-selected-filters");
   const clearFiltersButton = document.getElementById("pc-builder-clear-filters");
   const addComponentsCartButton = document.getElementById("pc-builder-add-components-cart");
   const saveBuildButton = document.getElementById("pc-builder-save-build");
@@ -3957,14 +4016,70 @@
     });
   }
 
+  function renderSelectedChooserFilters(categoryKey) {
+    const groups = catalogFilters[categoryKey] || [];
+    const selectedGroups = chooserFilters[categoryKey] || {};
+    const selectedItems = [];
+
+    groups.forEach(function (group) {
+      (selectedGroups[group.name] || []).forEach(function (value) {
+        const option = group.options.find(function (item) { return item.value === value; });
+        selectedItems.push({
+          groupName: group.name,
+          value: value,
+          label: option ? option.label : value
+        });
+      });
+    });
+
+    clearFiltersButton.hidden = true;
+
+    if (!selectedItems.length) {
+      selectedFiltersElement.innerHTML = "";
+      selectedFiltersElement.hidden = true;
+      return;
+    }
+
+    selectedFiltersElement.hidden = false;
+    selectedFiltersElement.innerHTML = '<span class="pc-builder-selected-label">Selected:</span>' + selectedItems.map(function (item) {
+      return '<button class="pc-builder-selected-chip" type="button" data-filter-group="' + escapeHtml(item.groupName) + '" data-filter-value="' + escapeHtml(item.value) + '" aria-label="Remove ' + escapeHtml(item.label) + ' filter"><span>' + escapeHtml(item.label) + '</span><span aria-hidden="true">×</span></button>';
+    }).join("") + '<button class="pc-builder-selected-clear" type="button" data-clear-selected-filters>Clear all</button>';
+
+    selectedFiltersElement.querySelectorAll(".pc-builder-selected-chip").forEach(function (button) {
+      button.addEventListener("click", function () {
+        const selectedValues = selectedGroups[button.dataset.filterGroup] || [];
+        const nextValues = selectedValues.filter(function (value) {
+          return value !== button.dataset.filterValue;
+        });
+
+        if (nextValues.length) {
+          selectedGroups[button.dataset.filterGroup] = nextValues;
+        } else {
+          delete selectedGroups[button.dataset.filterGroup];
+        }
+
+        chooserFilters[categoryKey] = selectedGroups;
+        renderFilterGroups(categoryKey);
+        renderChooser();
+      });
+    });
+
+    selectedFiltersElement.querySelector("[data-clear-selected-filters]").addEventListener("click", function () {
+      chooserFilters[categoryKey] = {};
+      renderFilterGroups(categoryKey);
+      renderChooser();
+    });
+  }
+
   function renderFilterGroups(categoryKey) {
     const groups = catalogFilters[categoryKey] || [];
     const selectedGroups = chooserFilters[categoryKey] || {};
 
-    clearFiltersButton.hidden = !groups.length;
+    clearFiltersButton.hidden = true;
 
     if (!groups.length) {
       filterGroupsElement.innerHTML = '<div class="pc-builder-filter-empty">No filters available for this category.</div>';
+      renderSelectedChooserFilters(categoryKey);
       return;
     }
 
@@ -3998,9 +4113,12 @@
         }
 
         chooserFilters[categoryKey] = selectedGroups;
+        renderSelectedChooserFilters(categoryKey);
         renderChooser();
       });
     });
+
+    renderSelectedChooserFilters(categoryKey);
   }
 
   function openChooser(categoryKey, extraIndex) {
