@@ -123,6 +123,23 @@ window.TCS_COMPATIBILITY = (function () {
     "rog-strix-1000g-aura-gaming": { category: "psu", wattageW: 1000, formFactor: "ATX", lengthMm: 180, pcie16Pin: 1, pcie8Pin: 4 }
   };
 
+  const biosRequirementNotes = {
+    "amd-ryzen-9-9950x3d2-dual-edition": {
+      am5: "BIOS check required: Ryzen 9 9950X3D2 support was added or improved through later BIOS updates on several AM5 motherboards. Confirm the motherboard CPU support list and installed BIOS version on the manufacturer's website before purchasing."
+    },
+    "intel-core-ultra-7-270k-plus": {
+      gigabyteIntel: "BIOS check required: some GIGABYTE Z890/B860 BIOS pages list later BIOS updates as ready for upcoming Core Ultra 2-series processors. Confirm the motherboard CPU support list and installed BIOS version on the manufacturer's website before purchasing."
+    }
+  };
+
+  const gigabyteIntelMotherboards = [
+    "b860m-aorus-elite-wifi6e",
+    "z890-aorus-elite-duo-x",
+    "z890-aorus-elite-wifi7",
+    "z890-aorus-master",
+    "z890-aorus-master-ai-top"
+  ];
+
   function partId(part) {
     return String((part && (part.id || part.productId)) || "");
   }
@@ -133,6 +150,26 @@ window.TCS_COMPATIBILITY = (function () {
 
   function getSpec(part) {
     return products[partId(part)] || products[baseId(part)] || null;
+  }
+
+  function getBiosRequirementNote(build, cpu, motherboard) {
+    const cpuId = baseId(build.cpu);
+    const motherboardId = baseId(build.motherboard);
+    const notes = biosRequirementNotes[cpuId];
+
+    if (!notes || !cpu || !motherboard) {
+      return "";
+    }
+
+    if (notes.am5 && motherboard.socket === "AM5") {
+      return notes.am5;
+    }
+
+    if (notes.gigabyteIntel && gigabyteIntelMotherboards.includes(motherboardId)) {
+      return notes.gigabyteIntel;
+    }
+
+    return "";
   }
 
   function issue(level, text) {
@@ -183,7 +220,13 @@ window.TCS_COMPATIBILITY = (function () {
       }
     });
 
-    if (build.cooler && hasMemorySelection) {
+    const biosRequirementNote = getBiosRequirementNote(build, cpu, motherboard);
+
+    if (biosRequirementNote) {
+      issues.push(issue("warn", biosRequirementNote));
+    }
+
+    if (cpu && motherboard && cpu.socket !== motherboard.socket) {
       issues.push(issue("warn", "Physical clearance not checked: Some physical constraints are not checked, such as RAM clearance with CPU Coolers."));
     }
 
