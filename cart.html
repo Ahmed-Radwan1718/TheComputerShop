@@ -23,7 +23,13 @@
 
         <div id="cart-items" class="cart-items"></div>
 
-        <div id="cart-empty" class="cart-empty">
+        <div id="cart-loading" class="cart-page-loading" role="status" aria-live="polite">
+          <span class="cart-page-loading-spinner" aria-hidden="true"></span>
+          <strong>Loading your cart</strong>
+          <p>Checking your saved cart items...</p>
+        </div>
+
+        <div id="cart-empty" class="cart-empty" style="display: none;">
           <div class="cart-empty-panel">
             <div class="cart-empty-heading-row">
               <div class="cart-empty-icon">
@@ -45,8 +51,8 @@
         </div>
       </div>
 
-      <aside id="cart-summary" class="cart-summary">
-        <h2 class="cart-summary-title">Order summary</h2>
+        <aside id="cart-summary" class="cart-summary" style="display: none;">
+          <h2 class="cart-summary-title">Order summary</h2>
 
         <div class="cart-summary-total-row">
           <span>Total:</span>
@@ -68,6 +74,7 @@
 
 <script>
   const cartItems = document.getElementById("cart-items");
+  const cartLoading = document.getElementById("cart-loading");
   const cartEmpty = document.getElementById("cart-empty");
   const cartSummary = document.getElementById("cart-summary");
   const cartTotal = document.getElementById("cart-total");
@@ -107,10 +114,11 @@
   }
 
   function renderCart(cart) {
-    if (!cartItems || !cartEmpty || !cartSummary || !cartTotal) {
+    if (!cartItems || !cartLoading || !cartEmpty || !cartSummary || !cartTotal) {
       return;
     }
 
+    cartLoading.hidden = true;
     updateCartCount(cart);
     cartItems.innerHTML = "";
 
@@ -405,6 +413,22 @@
   }
 
   async function loadServerCartPage() {
+    if (cartLoading) {
+      cartLoading.hidden = false;
+    }
+
+    if (cartEmpty) {
+      cartEmpty.style.display = "none";
+    }
+
+    if (cartSummary) {
+      cartSummary.style.display = "none";
+    }
+
+    if (submitOrderRequestButton) {
+      submitOrderRequestButton.disabled = true;
+    }
+
     try {
       const accountResponse = await fetch("/api/me", {
         method: "GET",
@@ -450,6 +474,10 @@
       cloudCartItems = [];
       renderCart([]);
       showCartOrderMessage(error.message || "Could not load your cart. Please refresh and try again.", "error");
+    } finally {
+      if (submitOrderRequestButton) {
+        submitOrderRequestButton.disabled = false;
+      }
     }
   }
 
