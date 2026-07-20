@@ -655,8 +655,46 @@
       border-bottom-color: rgba(255, 255, 255, 0.08);
     }
 
+    .pc-builder-table tbody tr {
+      transition:
+        background 0.22s ease,
+        box-shadow 0.22s ease;
+    }
+
     .pc-builder-table tbody tr:hover {
       background: rgba(255, 255, 255, 0.035);
+    }
+
+    .pc-builder-table tbody tr.pc-builder-row-feedback-added {
+      animation: pcBuilderRowAdded 0.95s ease both;
+    }
+
+    .pc-builder-table tbody tr.pc-builder-row-feedback-removed {
+      animation: pcBuilderRowRemoved 0.95s ease both;
+    }
+
+    @keyframes pcBuilderRowAdded {
+      0% {
+        background: rgba(192, 154, 92, 0.18);
+        box-shadow: inset 4px 0 0 rgba(192, 154, 92, 0.82);
+      }
+
+      100% {
+        background: transparent;
+        box-shadow: inset 4px 0 0 rgba(192, 154, 92, 0);
+      }
+    }
+
+    @keyframes pcBuilderRowRemoved {
+      0% {
+        background: rgba(255, 118, 118, 0.13);
+        box-shadow: inset 4px 0 0 rgba(255, 118, 118, 0.72);
+      }
+
+      100% {
+        background: transparent;
+        box-shadow: inset 4px 0 0 rgba(255, 118, 118, 0);
+      }
     }
 
     .pc-builder-category {
@@ -1417,6 +1455,7 @@
   let activeCategory = "";
   let activeExtraIndex = null;
   let catalogLoaded = false;
+  let builderRowFeedbackTimer = 0;
 
   const rowsElement = document.getElementById("pc-builder-rows");
   const modal = document.getElementById("pc-builder-modal");
@@ -3565,6 +3604,32 @@
       : '<div class="pc-builder-issue">No compatibility issues found.</div>';
   }
 
+  function getBuilderFeedbackRowKey(categoryKey) {
+    return categoryKey === "gpu2" ? "gpu" : categoryKey;
+  }
+
+  function flashBuilderRow(categoryKey, feedbackClass) {
+    const rowKey = getBuilderFeedbackRowKey(categoryKey);
+
+    window.clearTimeout(builderRowFeedbackTimer);
+
+    const row = Array.from(rowsElement.querySelectorAll("[data-builder-row]")).find(function (candidate) {
+      return candidate.getAttribute("data-builder-row") === String(rowKey || "");
+    }) || null;
+
+    if (!row) {
+      return;
+    }
+
+    row.classList.remove("pc-builder-row-feedback-added", "pc-builder-row-feedback-removed");
+    void row.offsetWidth;
+    row.classList.add(feedbackClass);
+
+    builderRowFeedbackTimer = window.setTimeout(function () {
+      row.classList.remove(feedbackClass);
+    }, 950);
+  }
+
   function render() {
     if (!catalogLoaded) {
       return;
@@ -3584,7 +3649,7 @@
       const extraParts = build.extraParts[category.key] || [];
 
       if (!part) {
-        return '<tr><td class="pc-builder-category">' + escapeHtml(category.label) + '</td><td><span class="pc-builder-empty">No part selected</span></td><td class="pc-builder-price">-</td><td><div class="pc-builder-row-actions"><button class="pc-builder-link-button primary" type="button" data-choose="' + category.key + '">Choose</button></div></td></tr>';
+        return '<tr data-builder-row="' + escapeHtml(category.key) + '"><td class="pc-builder-category">' + escapeHtml(category.label) + '</td><td><span class="pc-builder-empty">No part selected</span></td><td class="pc-builder-price">-</td><td><div class="pc-builder-row-actions"><button class="pc-builder-link-button primary" type="button" data-choose="' + category.key + '">Choose</button></div></td></tr>';
       }
 
       let selectionHtml = '<div class="pc-builder-part"><img src="' + escapeHtml(part.image) + '" alt=""><div class="pc-builder-part-info"><strong>' + escapeHtml(part.name) + '</strong><span>' + escapeHtml(part.meta) + '</span></div><div class="pc-builder-part-actions"><a class="pc-builder-link-button" href="' + escapeHtml(part.url) + '">View</a><button class="pc-builder-link-button danger" type="button" data-remove="' + category.key + '">Remove</button></div></div>';
@@ -3616,7 +3681,7 @@
         selectionHtml += '</div>';
       }
 
-      return '<tr><td class="pc-builder-category">' + escapeHtml(category.label) + '</td><td>' + selectionHtml + '</td><td class="pc-builder-price">' + priceHtml + '</td><td><div class="pc-builder-row-actions">' + actionsHtml + '</div></td></tr>';
+      return '<tr data-builder-row="' + escapeHtml(category.key) + '"><td class="pc-builder-category">' + escapeHtml(category.label) + '</td><td>' + selectionHtml + '</td><td class="pc-builder-price">' + priceHtml + '</td><td><div class="pc-builder-row-actions">' + actionsHtml + '</div></td></tr>';
     }).join("");
 
     rowsElement.querySelectorAll("[data-choose]").forEach(function (button) {
@@ -3628,14 +3693,17 @@
 
     rowsElement.querySelectorAll("[data-remove]").forEach(function (button) {
       button.addEventListener("click", function () {
-        state[button.dataset.remove] = "";
+        const removedCategory = button.dataset.remove;
 
-        if (multiPartCategoryKeys.includes(button.dataset.remove)) {
-          state[getExtraStateKey(button.dataset.remove)] = [];
+        state[removedCategory] = "";
+
+        if (multiPartCategoryKeys.includes(removedCategory)) {
+          state[getExtraStateKey(removedCategory)] = [];
         }
 
         saveState();
         render();
+        flashBuilderRow(removedCategory, "pc-builder-row-feedback-removed");
       });
     });
 
@@ -3647,6 +3715,7 @@
         state[getExtraStateKey(categoryKey)] = extras;
         saveState();
         render();
+        flashBuilderRow(categoryKey, "pc-builder-row-feedback-removed");
       });
     });
 
@@ -4007,6 +4076,8 @@
 
     modalList.querySelectorAll("[data-pick]").forEach(function (button) {
       button.addEventListener("click", function () {
+        const feedbackCategory = activeCategory;
+
         if (activeExtraIndex !== null) {
           const extras = getExtraIds(activeCategory).slice();
 
@@ -4024,6 +4095,7 @@
         saveState();
         closeChooser();
         render();
+        flashBuilderRow(feedbackCategory, "pc-builder-row-feedback-added");
       });
     });
   }
