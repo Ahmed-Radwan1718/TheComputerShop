@@ -7183,7 +7183,15 @@ body.product-image-lightbox-open {
 }
 
 .checkout-saved-address-picker {
+  position: relative;
+  z-index: 120;
   padding: 0;
+  overflow: visible;
+}
+
+#checkout-new-address-fields {
+  position: relative;
+  z-index: 1;
 }
 
 .checkout-saved-address-picker[hidden],
