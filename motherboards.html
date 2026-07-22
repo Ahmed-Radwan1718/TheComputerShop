@@ -964,43 +964,9 @@
     componentSearchInput.addEventListener("input", runMotherboardSearchUpdate);
   }
 
-  const componentPriceOverrides = {
-    "z890-aorus-elite-wifi7": "15,899 EGP",
-    "z890-aorus-master": "33,999 EGP",
-    "x870-aorus-elite-wifi7": "16,799 EGP",
-    "b850-aorus-stealth-ice": "16,799 EGP",
-    "b850-aorus-elite-wifi7-ice": "12,899 EGP",
-    "x870e-aorus-elite-x3d": "22,499 EGP",
-    "b850-aorus-elite-wifi7": "15,099 EGP",
-    "b860m-aorus-elite-wifi6e": "10,999 EGP",
-    "rog-maximus-z890-hero": "30,999 EGP",
-    "rog-strix-z890-e-gaming-wifi": "30,499 EGP",
-    "asus-tuf-gaming-z890-plus-wifi": "17,299 EGP",
-    "rog-strix-b860-f-gaming-wifi": "15,699 EGP",
-    "rog-strix-x870e-e-gaming-wifi": "32,299 EGP",
-    "rog-strix-b850-f-gaming-wifi": "16,799 EGP",
-    "msi-mag-z890-tomahawk-wifi": "18,999 EGP",
-    "rog-strix-b850-a-gaming-wifi": "15,099 EGP",
-    "proart-x870e-creator-wifi": "30,999 EGP",
-    "proart-z890-creator-wifi": "34,999 EGP",
-    "rog-crosshair-x870e-hero": "33,999 EGP",
-    "asus-tuf-gaming-x870-plus-wifi": "20,499 EGP",
-    "rog-strix-z890-a-gaming-wifi": "23,199 EGP",
-    "x870e-aorus-master": "29,499 EGP",
-    "x870e-aorus-pro-ice": "26,499 EGP",
-    "msi-meg-z890-godlike": "63,599 EGP",
-    "msi-mpg-z890-carbon-wifi": "29,199 EGP",
-    "msi-mpg-x870e-carbon-wifi": "29,699 EGP",
-    "msi-mpg-z890-edge-ti-wifi": "25,399 EGP",
-    "rog-maximus-z890-extreme-motherboard": "60,499 EGP"
-  };
-
-  Object.entries(componentPriceOverrides).forEach(([productId, priceText]) => {
-    const priceElement = document.querySelector(`a[href="product.html?product=${productId}"] .signature-build-price`);
-
-    if (priceElement) {
-      priceElement.textContent = priceText;
-    }
+  document.querySelectorAll(".signature-build-price").forEach((priceElement) => {
+    priceElement.textContent = "";
+    priceElement.hidden = true;
   });
 
   updateComponentFilters();
