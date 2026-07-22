@@ -770,18 +770,9 @@
     setTimeout(animateMonitorSearchPlaceholder, 250);
   }
 
-  const componentPriceOverrides = {
-    "gigabyte-gs27fa-gaming-monitor": "8,999 EGP",
-    "gigabyte-gs27u-gaming-monitor": "18,999 EGP",
-    "rog-strix-oled-xg27aqdng": "41,999 EGP"
-  };
-
-  Object.entries(componentPriceOverrides).forEach(([productId, priceText]) => {
-    const priceElement = document.querySelector(`a[href="product.html?product=${productId}"] .signature-build-price`);
-
-    if (priceElement) {
-      priceElement.textContent = priceText;
-    }
+  document.querySelectorAll(".signature-build-price").forEach((priceElement) => {
+    priceElement.textContent = "";
+    priceElement.hidden = true;
   });
 
   animateMonitorSearchPlaceholder();
