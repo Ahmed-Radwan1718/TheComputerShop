@@ -547,19 +547,9 @@
     setTimeout(animateMemorySearchPlaceholder, 250);
   }
 
-  const componentPriceOverrides = {
-    "corsair-dominator-titanium-rgb-96gb-ddr5-7000-cl40": "69,499 EGP",
-    "corsair-vengeance-rgb-48gb-ddr5-6000-c36": "From 28,499 EGP",
-    "gskill-trident-z5-rgb-ddr5": "From 47,899 EGP",
-    "klevv-cras-v-rgb-ddr5": "From 27,599 EGP"
-  };
-
-  Object.entries(componentPriceOverrides).forEach(([productId, priceText]) => {
-    const priceElement = document.querySelector(`a[href="product.html?product=${productId}"] .signature-build-price`);
-
-    if (priceElement) {
-      priceElement.textContent = priceText;
-    }
+  document.querySelectorAll(".signature-build-price").forEach((priceElement) => {
+    priceElement.textContent = "";
+    priceElement.hidden = true;
   });
 
   animateMemorySearchPlaceholder();
