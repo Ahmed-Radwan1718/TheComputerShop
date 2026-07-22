@@ -12207,6 +12207,51 @@ body.account-security-modal-open {
   border-color: rgba(255, 255, 255, 0.22);
 }
 
+.admin-dashboard-page .account-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 380px);
+  gap: 12px 24px;
+  align-items: end;
+}
+
+.admin-dashboard-page .account-eyebrow {
+  width: fit-content;
+  margin: 0;
+  padding: 6px 11px;
+  border: 1px solid rgba(192, 154, 92, 0.36);
+  border-radius: 999px;
+  background: rgba(192, 154, 92, 0.1);
+  color: rgba(192, 154, 92, 0.86);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.admin-dashboard-page .account-header h1 {
+  color: #f4efe4;
+  text-shadow: 0 0 24px rgba(192, 154, 92, 0.16);
+}
+
+.admin-dashboard-page #admin-support-header-text {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: end;
+  justify-self: end;
+}
+
+.admin-dashboard-page .account-panel.active {
+  border-color: rgba(192, 154, 92, 0.24);
+  background:
+    linear-gradient(135deg, rgba(192, 154, 92, 0.08), rgba(255, 255, 255, 0.025) 34%, rgba(24, 25, 24, 0.58)),
+    rgba(24, 25, 24, 0.56);
+  box-shadow:
+    0 22px 55px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(192, 154, 92, 0.06);
+}
+
 .admin-dashboard-panel {
   display: grid;
   gap: 18px;
@@ -12220,7 +12265,7 @@ body.account-security-modal-open {
   margin-top: 0;
   margin-bottom: 22px;
   padding-bottom: 18px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.095);
+  border-bottom: 1px solid rgba(192, 154, 92, 0.24);
   gap: 10px;
 }
 
@@ -12230,6 +12275,19 @@ body.account-security-modal-open {
   gap: 10px;
 }
 
+#admin-dashboard-tabs .account-support-filter.active,
+#admin-dashboard-tabs .account-support-filter:hover,
+#admin-order-filters .account-support-filter.active,
+#admin-order-filters .account-support-filter:hover,
+#admin-support-filters .account-support-filter.active,
+#admin-support-filters .account-support-filter:hover,
+#admin-product-stock-filters .account-support-filter.active,
+#admin-product-stock-filters .account-support-filter:hover {
+  border-color: rgba(192, 154, 92, 0.4);
+  background: rgba(192, 154, 92, 0.12);
+  color: #d8bc86;
+}
+
 .admin-dashboard-panel .account-support-list {
   gap: 18px;
 }
@@ -12237,8 +12295,19 @@ body.account-security-modal-open {
 .admin-dashboard-panel .account-support-ticket-card {
   padding: 24px 26px;
   border-radius: 20px;
+  border-color: rgba(192, 154, 92, 0.16);
   gap: 16px;
-  background: rgba(255, 255, 255, 0.04);
+  background:
+    linear-gradient(135deg, rgba(192, 154, 92, 0.075), rgba(255, 255, 255, 0.035) 42%),
+    rgba(255, 255, 255, 0.04);
+}
+
+.admin-dashboard-panel .account-support-ticket-card:hover {
+  border-color: rgba(192, 154, 92, 0.32);
+  background:
+    linear-gradient(135deg, rgba(192, 154, 92, 0.11), rgba(255, 255, 255, 0.05) 42%),
+    rgba(255, 255, 255, 0.06);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.2);
 }
 
 .admin-dashboard-panel .account-support-ticket-top {
@@ -12248,7 +12317,7 @@ body.account-security-modal-open {
 
 .admin-dashboard-panel .account-support-ticket-category {
   margin-bottom: 10px;
-  color: rgba(255, 255, 255, 0.48);
+  color: rgba(192, 154, 92, 0.78);
   font-weight: 700;
   letter-spacing: 0.12em;
 }
@@ -12274,6 +12343,43 @@ body.account-security-modal-open {
 
 .admin-dashboard-panel .account-support-ticket-button {
   margin-top: 4px;
+  border-color: rgba(192, 154, 92, 0.28);
+  background: rgba(192, 154, 92, 0.1);
+  color: #d8bc86;
+}
+
+.admin-dashboard-panel .account-support-ticket-button:hover {
+  border-color: rgba(192, 154, 92, 0.42);
+  background: rgba(192, 154, 92, 0.16);
+}
+
+#admin-order-modal .account-support-modal-card,
+#admin-ticket-modal .account-support-modal-card {
+  border-color: rgba(192, 154, 92, 0.22);
+  background:
+    linear-gradient(135deg, rgba(192, 154, 92, 0.08), rgba(255, 255, 255, 0.025) 34%),
+    #181918;
+}
+
+#admin-order-modal .account-security-modal-eyebrow,
+#admin-ticket-modal .account-security-modal-eyebrow {
+  color: rgba(192, 154, 92, 0.82);
+}
+
+@media (max-width: 900px) {
+  .admin-dashboard-page .account-header {
+    display: block;
+  }
+
+  .admin-dashboard-page .account-eyebrow {
+    margin-bottom: 14px;
+  }
+
+  .admin-dashboard-page #admin-support-header-text {
+    max-width: none;
+    margin-top: 10px;
+    text-align: left;
+  }
 }
 
 .account-support-ticket-status.submitted {
