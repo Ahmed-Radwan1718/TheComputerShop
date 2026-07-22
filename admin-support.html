@@ -1427,12 +1427,18 @@
             flex-wrap: wrap;
           }
 
-          .admin-product-stock-actions button {
+          .admin-product-stock-actions .account-support-ticket-button,
+          .admin-product-stock-actions .account-danger-button {
             height: 38px;
             min-height: 38px;
+            max-height: 38px;
+            padding-top: 0;
+            padding-bottom: 0;
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            line-height: 1;
+            box-sizing: border-box;
           }
 
           .admin-product-stock-actions button[data-product-stock-status="unavailable"] {
