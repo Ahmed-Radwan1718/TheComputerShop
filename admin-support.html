@@ -1422,18 +1422,24 @@
           .admin-product-stock-actions {
             margin-top: 20px;
             display: flex;
+            align-items: center;
             gap: 10px;
             flex-wrap: wrap;
           }
 
-          .admin-product-stock-actions button[data-product-stock-status="unavailable"] {
-            width: 116px;
+          .admin-product-stock-actions button {
             height: 38px;
             min-height: 38px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+          }
+
+          .admin-product-stock-actions button[data-product-stock-status="unavailable"] {
+            width: 116px;
             min-width: 0;
             padding-left: 0;
             padding-right: 0;
-            justify-content: center;
             font-size: 10px;
             letter-spacing: 0.04em;
           }
