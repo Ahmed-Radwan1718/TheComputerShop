@@ -584,22 +584,9 @@
     setTimeout(animateCoolerSearchPlaceholder, 250);
   }
 
-  const componentPriceOverrides = {
-    "aorus-waterforce-ii-360": "7,499 EGP",
-    "corsair-nautilus-360-rs-argb": "7,499 EGP",
-    "asus-tuf-gaming-lc-iii-360-argb-lcd": "9,499 EGP",
-    "aorus-waterforce-ii-240": "6,499 EGP",
-    "arctic-liquid-freezer-iii-pro-360-a-rgb": "From 7,399 EGP",
-    "cooler-master-masterliquid-360-core-ii": "5,499 EGP",
-    "rog-ryujin-iii-360-argb-extreme": "22,499 EGP"
-  };
-
-  Object.entries(componentPriceOverrides).forEach(([productId, priceText]) => {
-    const priceElement = document.querySelector(`a[href="product.html?product=${productId}"] .signature-build-price`);
-
-    if (priceElement) {
-      priceElement.textContent = priceText;
-    }
+  document.querySelectorAll(".signature-build-price").forEach((priceElement) => {
+    priceElement.textContent = "";
+    priceElement.hidden = true;
   });
 
   animateCoolerSearchPlaceholder();
