@@ -545,21 +545,9 @@
     setTimeout(animateCaseSearchPlaceholder, 250);
   }
 
-  const componentPriceOverrides = {
-    "gigabyte-c500-panoramic-stealth": "4,599 EGP",
-    "aorus-c500-glass": "10,099 EGP",
-    "aorus-c400-glass": "6,399 EGP",
-    "fractal-design-north-xl-charcoal-black": "From 10,899 EGP",
-    "lian-li-o11-dynamic-evo-xl": "From 12,699 EGP",
-    "corsair-6500d-airflow-case": "11,499 EGP"
-  };
-
-  Object.entries(componentPriceOverrides).forEach(([productId, priceText]) => {
-    const priceElement = document.querySelector(`a[href="product.html?product=${productId}"] .signature-build-price`);
-
-    if (priceElement) {
-      priceElement.textContent = priceText;
-    }
+  document.querySelectorAll(".signature-build-price").forEach((priceElement) => {
+    priceElement.textContent = "";
+    priceElement.hidden = true;
   });
 
   animateCaseSearchPlaceholder();
