@@ -354,6 +354,8 @@
       "rx-9060-xt-gaming-oc-8g"
     ]);
     const processorProductKeys = new Set([
+      "intel-core-ultra-5-245kf",
+      "intel-core-ultra-5-250k-plus",
       "intel-core-ultra-5-245k",
       "intel-core-ultra-7-265k",
       "intel-core-ultra-7-270k-plus",
@@ -753,17 +755,25 @@
         "32gb-7200-cl34": { priceText: "", priceNumber: null }
       }
     },
+    "intel-core-ultra-5-245kf": {
+      priceText: "",
+      priceNumber: null,
+      hidePrice: true,
+      defaultVariant: "boxed",
+      variantPrices: {
+        "boxed": { priceText: "", priceNumber: null },
+        "tray": { priceText: "", priceNumber: null }
+      }
+    },
+    "intel-core-ultra-5-250k-plus": { priceText: "", priceNumber: null, hidePrice: true },
     "intel-core-ultra-5-245k": {
       priceText: "",
       priceNumber: null,
       hidePrice: true,
-      defaultVariant: "245kf",
+      defaultVariant: "boxed",
       variantPrices: {
-        "245kf": { priceText: "", priceNumber: null },
-        "250k-plus": { priceText: "", priceNumber: null },
-        "245k": { priceText: "", priceNumber: null },
-        "245k-tray": { priceText: "", priceNumber: null },
-        "245kf-tray": { priceText: "", priceNumber: null }
+        "boxed": { priceText: "", priceNumber: null },
+        "tray": { priceText: "", priceNumber: null }
       }
     },
     "intel-core-ultra-7-265k": {
