@@ -1334,6 +1334,21 @@
       { url: "signature-builds.html", label: "Signature Builds" }
     ];
 
+    const productStockDataSources = [
+      { url: "product-data/graphics-cards.js", productsKey: "tcsGraphicsCardProducts", label: "Graphics Cards" },
+      { url: "product-data/motherboards.js", productsKey: "tcsMotherboardProducts", label: "Motherboards" },
+      { url: "product-data/processors.js", productsKey: "tcsProcessorProducts", label: "CPUs" },
+      { url: "product-data/memory.js", productsKey: "tcsMemoryProducts", label: "Memory" },
+      { url: "product-data/storage.js", productsKey: "tcsStorageProducts", label: "Storage" },
+      { url: "product-data/power-supplies.js", productsKey: "tcsPowerSupplyProducts", label: "Power Supplies" },
+      { url: "product-data/cpu-coolers.js", productsKey: "tcsCpuCoolerProducts", label: "CPU Coolers" },
+      { url: "product-data/cases.js", productsKey: "tcsCaseProducts", label: "Cases" },
+      { url: "product-data/monitors.js", productsKey: "tcsMonitorProducts", label: "Monitors" },
+      { url: "product-data/peripherals.js", productsKey: "tcsPeripheralProducts", label: "Peripherals" },
+      { url: "product-data/charging-and-power.js", productsKey: "tcsChargingAndPowerProducts", label: "Charging and Power" },
+      { url: "product-data/signature-builds.js", productsKey: "tcsSignatureBuildProducts", label: "Signature Builds" }
+    ];
+
     let productStockCatalog = [];
     let productStockRecords = [];
     let activeProductStockFilter = "all";
@@ -1470,6 +1485,36 @@
       }
     }
 
+    function getProductVariantUrl(productUrl, variantId) {
+      if (!productUrl) {
+        return "";
+      }
+
+      try {
+        const url = new URL(productUrl, window.location.href);
+        url.searchParams.set("variant", variantId);
+        return url.pathname.split("/").pop() + url.search;
+      } catch (error) {
+        return productUrl;
+      }
+    }
+
+    function loadProductStockDataSource(source) {
+      return new Promise(function (resolve) {
+        if (window[source.productsKey]) {
+          resolve();
+          return;
+        }
+
+        const script = document.createElement("script");
+        script.src = source.url;
+        script.async = true;
+        script.onload = resolve;
+        script.onerror = resolve;
+        document.head.appendChild(script);
+      });
+    }
+
     function getProductStockStatusLabel(status) {
       return status === "unavailable" ? "Unavailable" : "In Stock";
     }
@@ -1501,7 +1546,8 @@
         product.id,
         product.name,
         product.specsLine,
-        product.sourcePage
+        product.sourcePage,
+        product.variantLabel
       ].join(" ").toLowerCase().includes(query);
     }
 
@@ -1529,6 +1575,63 @@
         url: href,
         sourcePage
       };
+    }
+
+    function getProductStockVariantLabel(variant) {
+      if (!variant) {
+        return "";
+      }
+
+      return String(
+        variant.capacity ||
+        [variant.capacityOption, variant.heatsinkOption, variant.coolingOption].filter(Boolean).join(" / ") ||
+        variant.name ||
+        variant.label ||
+        variant.id ||
+        ""
+      ).trim();
+    }
+
+    function getProductStockImage(product, variant, fallbackImage) {
+      const variantImages = variant && Array.isArray(variant.images) ? variant.images : [];
+      const productImages = product && Array.isArray(product.images) ? product.images : [];
+
+      return variantImages[0] || productImages[0] || fallbackImage || "";
+    }
+
+    function buildProductStockRow(product, source, cardProduct, variant) {
+      const variantLabel = getProductStockVariantLabel(variant);
+      const baseName = product.name || (cardProduct && cardProduct.name) || "Product";
+      const baseSpecsLine = product.specsLine || (cardProduct && cardProduct.specsLine) || "";
+      const productUrl = product.url || (cardProduct && cardProduct.url) || "";
+
+      return {
+        id: variant ? product.id + "-" + variant.id : product.id,
+        name: variantLabel ? baseName + " - " + variantLabel : baseName,
+        specsLine: [baseSpecsLine, variantLabel].filter(Boolean).join(" | "),
+        image: getProductStockImage(product, variant, cardProduct && cardProduct.image),
+        url: variant ? getProductVariantUrl(productUrl, variant.id) : productUrl,
+        sourcePage: (cardProduct && cardProduct.sourcePage) || product.category || source.label || "Product",
+        variantLabel
+      };
+    }
+
+    function expandProductStockProduct(product, source, cardProduct) {
+      if (!product || !product.id) {
+        return [];
+      }
+
+      const variants = Array.isArray(product.variants) ? product.variants.filter(function (variant) {
+        return variant && variant.id;
+      }) : [];
+
+      if (!variants.length) {
+        return [buildProductStockRow(product, source, cardProduct, null)];
+      }
+
+      return variants.map(function (variant) {
+        return buildProductStockRow(product, source, cardProduct, variant);
+      });
     }
 
     async function loadProductStockCatalog() {
@@ -1559,16 +1662,51 @@
         }
       }));
 
+      const cardProductsById = {};
       const productsById = {};
+      const expandedBaseProductIds = {};
 
       productGroups.flat().forEach(function (product) {
-        if (!productsById[product.id]) {
-          productsById[product.id] = product;
+        if (!cardProductsById[product.id]) {
+          cardProductsById[product.id] = product;
+        }
+      });
+
+      await Promise.all(productStockDataSources.map(loadProductStockDataSource));
+
+      productStockDataSources.forEach(function (source) {
+        const sourceProducts = window[source.productsKey] || {};
+
+        Object.keys(sourceProducts).forEach(function (productId) {
+          const product = sourceProducts[productId];
+          const cardProduct = cardProductsById[(product && product.id) || productId];
+
+          if (!cardProduct) {
+            return;
+          }
+
+          expandProductStockProduct(product, source, cardProduct).forEach(function (stockProduct) {
+            if (!productsById[stockProduct.id]) {
+              productsById[stockProduct.id] = stockProduct;
+            }
+          });
+
+          if (Array.isArray(product.variants) && product.variants.length) {
+            expandedBaseProductIds[product.id] = true;
+          }
+        });
+      });
+
+      Object.keys(cardProductsById).forEach(function (productId) {
+        const cardProduct = cardProductsById[productId];
+
+        if (!productsById[cardProduct.id] && !expandedBaseProductIds[cardProduct.id]) {
+          productsById[cardProduct.id] = cardProduct;
         }
       });
 
       productStockCatalog = Object.values(productsById).sort(function (a, b) {
-        return a.name.localeCompare(b.name);
+        return a.name.localeCompare(b.name) || a.id.localeCompare(b.id);
       });
     }
 
