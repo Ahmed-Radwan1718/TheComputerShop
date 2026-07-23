@@ -394,10 +394,41 @@
         "https://res.cloudinary.com/dhtamisqn/image/upload/v1781350192/intel-core-ultra-9-285k-1.jpg",
         "https://res.cloudinary.com/dhtamisqn/image/upload/v1781350192/intel-core-ultra-9-285k-4.jpg"
       ],
+      defaultVariant: "boxed",
+      variantSelectorLabel: "Choose Packaging",
+      variants: [
+        {
+          id: "boxed",
+          capacity: "Boxed",
+          priceText: "Insert price here",
+          priceNumber: null,
+          whoIsThisFor: "The Intel Core Ultra 9 285K Boxed processor is for premium LGA1851 gaming, creator, and workstation builds that need flagship 24-core performance with integrated Intel Graphics.",
+          specs: [
+            ["Selected Processor", "Intel Core Ultra 9 285K"],
+            ["Processor Number", "285K"],
+            ["Packaging", "Boxed"],
+            ["Integrated Graphics", "Intel Graphics"]
+          ]
+        },
+        {
+          id: "tray",
+          capacity: "Tray",
+          priceText: "Insert price here",
+          priceNumber: null,
+          whoIsThisFor: "The Intel Core Ultra 9 285K Tray processor is for custom premium LGA1851 builds that need flagship 24-core performance with integrated Intel Graphics, without retail boxed packaging.",
+          specs: [
+            ["Selected Processor", "Intel Core Ultra 9 285K Tray"],
+            ["Processor Number", "285K"],
+            ["Packaging", "Tray"],
+            ["Integrated Graphics", "Intel Graphics"]
+          ]
+        }
+      ],
       whoIsThisFor: "A flagship unlocked Intel Core Ultra processor for high-end gaming, demanding creator workloads, workstation systems, heavy multitasking, AI-assisted applications, and premium LGA1851 builds that need 24-core hybrid performance, strong boost clocks, DDR5 support, PCIe 5.0 readiness, and maximum desktop-class Core Ultra performance.",
       specs: [
         ["Product Name", "Intel Core Ultra 9 Processor 285K"],
         ["Processor Number", "285K"],
+        ["Available Variants", "Boxed, Tray"],
         ["Product Collection", "Intel Core Ultra Processors Series 2"],
         ["Code Name", "Arrow Lake"],
         ["Vertical Segment", "Desktop"],
@@ -429,7 +460,7 @@
         ["Max Operating Temperature", "105°C"]
       ],
       included: [
-        { title: "Processor", text: "The Intel Core Ultra 9 285K processor is included as the main component, inspected and prepared for the build or order." },
+        { title: "Processor", text: "The selected Intel Core Ultra 9 285K processor variant is included as the main component, inspected and prepared for the build or order." },
         { title: "Original Packaging", text: "The product comes with its original box and packaging where available. Customers should keep the packaging for warranty and support purposes." },
         { title: "Included Accessories", text: "Included accessories depend on the official processor package contents supplied by Intel." },
         { title: "Store Support", text: "Purchases include store support, basic guidance, and free lifetime troubleshooting and diagnosis for products bought from The Computer Shop." }
