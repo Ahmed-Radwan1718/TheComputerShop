@@ -5070,11 +5070,11 @@ body.product-image-lightbox-open {
   grid-column: 1 / -1;
 }
 
-#add-to-cart-button {
+#save-for-later-button {
   grid-column: auto;
 }
 
-#save-for-later-button,
+#add-to-cart-button,
 .product-save-message {
   grid-column: 1 / -1;
 }
@@ -5576,11 +5576,11 @@ body.product-image-lightbox-open {
   grid-column: 1 / -1;
 }
 
-#add-to-cart-button {
+#save-for-later-button {
   grid-column: auto;
 }
 
-#save-for-later-button,
+#add-to-cart-button,
 .product-save-message {
   grid-column: 1 / -1;
 }
@@ -8416,11 +8416,11 @@ body.product-image-lightbox-open {
     grid-column: 1 / -1;
   }
 
-  #add-to-cart-button {
+  #save-for-later-button {
     grid-column: auto;
   }
 
-  #save-for-later-button,
+  #add-to-cart-button,
   .product-save-message {
     grid-column: 1 / -1;
   }
