@@ -2,7 +2,7 @@
   window.tcsMemoryProducts = {
     "corsair-dominator-titanium-rgb-96gb-ddr5-7000-cl40": {
       id: "corsair-dominator-titanium-rgb-96gb-ddr5-7000-cl40",
-      name: "Corsair Dominator Titanium RGB DDR5",
+      name: "Corsair Dominator Titanium RGB DDR5 96GB 7,000MT/s CL40",
       category: "Memory",
       specsLine: "Corsair | 96GB 2×48GB | DDR5 7000MT/s CL40",
       priceText: "Insert price here",
