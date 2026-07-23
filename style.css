@@ -4506,41 +4506,59 @@ body.nav-menu-open {
 
 @media (min-width: 701px) {
   .product-carousel-arrow {
-    width: 54px;
-    height: min(42%, 280px);
-    min-height: 132px;
-    border-color: rgba(255, 255, 255, 0.14);
-    background: rgba(24, 25, 24, 0.58);
-    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.22);
+    top: 0;
+    width: 104px;
+    height: 100%;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    box-shadow: none;
+    transform: none;
   }
 
   .product-carousel-arrow::before {
-    width: 12px;
-    height: 12px;
+    width: 13px;
+    height: 13px;
+    opacity: 0;
+    transition: opacity 0.22s ease, border-color 0.22s ease, transform 0.22s ease;
   }
 
   .product-carousel-arrow-left {
     left: 0;
-    border-left: 0;
-    border-radius: 0 999px 999px 0;
-    background: linear-gradient(90deg, rgba(24, 25, 24, 0.76), rgba(24, 25, 24, 0.34));
   }
 
   .product-carousel-arrow-right {
     right: 0;
-    border-right: 0;
-    border-radius: 999px 0 0 999px;
-    background: linear-gradient(270deg, rgba(24, 25, 24, 0.76), rgba(24, 25, 24, 0.34));
   }
 
-  .product-carousel-arrow-left:hover {
-    background: linear-gradient(90deg, rgba(24, 25, 24, 0.88), rgba(255, 255, 255, 0.1));
-    transform: translateY(-50%) translateX(2px);
+  .product-carousel-arrow-left:hover,
+  .product-carousel-arrow-left:focus-visible {
+    background: linear-gradient(90deg, rgba(24, 25, 24, 0.62), rgba(24, 25, 24, 0));
+    transform: none;
   }
 
-  .product-carousel-arrow-right:hover {
-    background: linear-gradient(270deg, rgba(24, 25, 24, 0.88), rgba(255, 255, 255, 0.1));
-    transform: translateY(-50%) translateX(-2px);
+  .product-carousel-arrow-right:hover,
+  .product-carousel-arrow-right:focus-visible {
+    background: linear-gradient(270deg, rgba(24, 25, 24, 0.62), rgba(24, 25, 24, 0));
+    transform: none;
+  }
+
+  .product-carousel-arrow:hover::before,
+  .product-carousel-arrow:focus-visible::before {
+    opacity: 1;
+    border-color: rgba(192, 154, 92, 0.94);
+  }
+
+  .product-carousel-arrow-left:hover::before,
+  .product-carousel-arrow-left:focus-visible::before {
+    transform: translate(-34%, -50%) rotate(135deg);
+  }
+
+  .product-carousel-arrow-right:hover::before,
+  .product-carousel-arrow-right:focus-visible::before {
+    transform: translate(-66%, -50%) rotate(-45deg);
   }
 }
 
