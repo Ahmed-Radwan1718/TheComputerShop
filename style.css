@@ -4446,13 +4446,15 @@ body.nav-menu-open {
   position: absolute;
   top: 50%;
   z-index: 6;
-  width: 44px;
-  height: 44px;
+  width: 46px;
+  height: 46px;
   margin: 0;
   padding: 0;
-  border: 1px solid rgba(255, 255, 255, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 999px;
-  background: rgba(70, 70, 70, 0.94);
+  background: rgba(24, 25, 24, 0.72);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
   color: transparent;
   font-family: inherit;
   font-size: 0;
@@ -4463,8 +4465,8 @@ body.nav-menu-open {
   justify-content: center;
   cursor: pointer;
   transform: translateY(-50%);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
-  transition: opacity 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.24);
+  transition: opacity 0.22s ease, background 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease, transform 0.22s ease;
 }
 
 .product-carousel-arrow::before {
@@ -4472,16 +4474,18 @@ body.nav-menu-open {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 11px;
-  height: 11px;
-  border-right: 3px solid white;
-  border-bottom: 3px solid white;
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid rgba(255, 255, 255, 0.94);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.94);
   transform-origin: center;
 }
 
 .product-carousel-arrow:hover {
-  background: rgba(88, 88, 88, 0.98);
-  border-color: rgba(255, 255, 255, 0.62);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(192, 154, 92, 0.78);
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(192, 154, 92, 0.18);
+  transform: translateY(-50%) scale(1.04);
 }
 
 .product-carousel-arrow-left {
