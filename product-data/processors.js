@@ -218,9 +218,9 @@
 
     "intel-core-ultra-7-265k": {
       id: "intel-core-ultra-7-265k",
-      name: "Intel Core Ultra 7",
+      name: "Intel Core Ultra 7 265K",
       category: "CPU",
-      specsLine: "Intel | Core Ultra 7 | 20 Cores",
+      specsLine: "Intel | Core Ultra 7 265K | 20 Cores",
       priceText: "Insert price here",
       priceNumber: null,
       url: "product.html?product=intel-core-ultra-7-265k",
@@ -228,18 +228,16 @@
         "https://res.cloudinary.com/dhtamisqn/image/upload/v1781350179/intel-core-ultra-7-265k-1.jpg",
         "https://res.cloudinary.com/dhtamisqn/image/upload/v1781350179/intel-core-ultra-7-265k-4.jpg"
       ],
-      defaultVariant: "265kf-tray",
-      variantSelectorLabel: "Choose Processor",
+      defaultVariant: "265k",
+      variantSelectorLabel: "Choose Packaging",
       variants: [
-        { id: "265kf-tray", capacity: "265KF Tray", priceText: "Insert price here", priceNumber: null, whoIsThisFor: "The Intel Core Ultra 7 265KF Tray is for LGA1851 builds using a dedicated graphics card, without integrated graphics or retail boxed packaging.", specs: [["Selected Processor", "Intel Core Ultra 7 265KF Tray"], ["Processor Number", "265KF"], ["Packaging", "Tray"], ["Integrated Graphics", "No"]] },
-        { id: "265k", capacity: "265K", priceText: "Insert price here", priceNumber: null, whoIsThisFor: "The Intel Core Ultra 7 265K is for LGA1851 gaming, productivity, and creator PCs that need the boxed 20-core Core Ultra 7 with integrated Intel Graphics.", specs: [["Selected Processor", "Intel Core Ultra 7 265K"], ["Processor Number", "265K"], ["Packaging", "Boxed"], ["Integrated Graphics", "Intel Graphics"]] },
-        { id: "265kf", capacity: "265KF", priceText: "Insert price here", priceNumber: null, whoIsThisFor: "The Intel Core Ultra 7 265KF is for LGA1851 builds using a dedicated graphics card and the boxed 20-core Core Ultra 7 without integrated graphics.", specs: [["Selected Processor", "Intel Core Ultra 7 265KF"], ["Processor Number", "265KF"], ["Packaging", "Boxed"], ["Integrated Graphics", "No"]] },
-        { id: "265k-tray", capacity: "265K Tray", priceText: "Insert price here", priceNumber: null, whoIsThisFor: "The Intel Core Ultra 7 265K Tray is for LGA1851 builds that need the 20-core 265K processor with integrated Intel Graphics, without retail boxed packaging.", specs: [["Selected Processor", "Intel Core Ultra 7 265K Tray"], ["Processor Number", "265K"], ["Packaging", "Tray"], ["Integrated Graphics", "Intel Graphics"]] }
+        { id: "265k", capacity: "Box", priceText: "Insert price here", priceNumber: null, whoIsThisFor: "The Intel Core Ultra 7 265K Box is for LGA1851 gaming, productivity, and creator PCs that need the boxed 20-core Core Ultra 7 with integrated Intel Graphics.", specs: [["Selected Processor", "Intel Core Ultra 7 265K Box"], ["Processor Number", "265K"], ["Packaging", "Boxed"], ["Integrated Graphics", "Intel Graphics"]] },
+        { id: "265k-tray", capacity: "Tray", priceText: "Insert price here", priceNumber: null, whoIsThisFor: "The Intel Core Ultra 7 265K Tray is for LGA1851 builds that need the 20-core 265K processor with integrated Intel Graphics, without retail boxed packaging.", specs: [["Selected Processor", "Intel Core Ultra 7 265K Tray"], ["Processor Number", "265K"], ["Packaging", "Tray"], ["Integrated Graphics", "Intel Graphics"]] }
       ],
-      whoIsThisFor: "The Intel Core Ultra 7 265KF Tray is for LGA1851 builds using a dedicated graphics card, without integrated graphics or retail boxed packaging.",
+      whoIsThisFor: "The Intel Core Ultra 7 265K is for LGA1851 gaming, productivity, and creator PCs that need a 20-core Core Ultra 7 processor with integrated Intel Graphics.",
       specs: [
-        ["Product Name", "Intel Core Ultra 7"],
-        ["Available Variants", "265KF Tray, 265K, 265KF, 265K Tray"],
+        ["Product Name", "Intel Core Ultra 7 265K"],
+        ["Available Variants", "Box, Tray"],
         ["Product Collection", "Intel Core Ultra Processors Series 2"],
         ["Code Name", "Arrow Lake"],
         ["Vertical Segment", "Desktop"],
@@ -268,7 +266,64 @@
         ["Max Operating Temperature", "105°C"]
       ],
       included: [
-        { title: "Processor", text: "The selected Intel Core Ultra 7 processor variant is included as the main component, inspected and prepared for the build or order." },
+        { title: "Processor", text: "The selected Intel Core Ultra 7 265K processor variant is included as the main component, inspected and prepared for the build or order." },
+        { title: "Original Packaging", text: "The product comes with its original box and packaging where available. Customers should keep the packaging for warranty and support purposes." },
+        { title: "Included Accessories", text: "Included accessories depend on the official processor package contents supplied by Intel." },
+        { title: "Store Support", text: "Purchases include store support, basic guidance, and free lifetime troubleshooting and diagnosis for products bought from The Computer Shop." }
+      ]
+    },
+
+    "intel-core-ultra-7-265kf": {
+      id: "intel-core-ultra-7-265kf",
+      name: "Intel Core Ultra 7 265KF",
+      category: "CPU",
+      specsLine: "Intel | Core Ultra 7 265KF | 20 Cores",
+      priceText: "Insert price here",
+      priceNumber: null,
+      url: "product.html?product=intel-core-ultra-7-265kf",
+      images: [
+        "https://res.cloudinary.com/dhtamisqn/image/upload/v1781350179/intel-core-ultra-7-265k-1.jpg",
+        "https://res.cloudinary.com/dhtamisqn/image/upload/v1781350179/intel-core-ultra-7-265k-4.jpg"
+      ],
+      defaultVariant: "265kf",
+      variantSelectorLabel: "Choose Packaging",
+      variants: [
+        { id: "265kf", capacity: "Box", priceText: "Insert price here", priceNumber: null, whoIsThisFor: "The Intel Core Ultra 7 265KF Box is for LGA1851 builds using a dedicated graphics card and the boxed 20-core Core Ultra 7 without integrated graphics.", specs: [["Selected Processor", "Intel Core Ultra 7 265KF Box"], ["Processor Number", "265KF"], ["Packaging", "Boxed"], ["Integrated Graphics", "No"]] },
+        { id: "265kf-tray", capacity: "Tray", priceText: "Insert price here", priceNumber: null, whoIsThisFor: "The Intel Core Ultra 7 265KF Tray is for LGA1851 builds using a dedicated graphics card, without integrated graphics or retail boxed packaging.", specs: [["Selected Processor", "Intel Core Ultra 7 265KF Tray"], ["Processor Number", "265KF"], ["Packaging", "Tray"], ["Integrated Graphics", "No"]] }
+      ],
+      whoIsThisFor: "The Intel Core Ultra 7 265KF is for LGA1851 builds using a dedicated graphics card and a 20-core Core Ultra 7 processor without integrated graphics.",
+      specs: [
+        ["Product Name", "Intel Core Ultra 7 265KF"],
+        ["Available Variants", "Box, Tray"],
+        ["Product Collection", "Intel Core Ultra Processors Series 2"],
+        ["Code Name", "Arrow Lake"],
+        ["Vertical Segment", "Desktop"],
+        ["Total Cores", "20"],
+        ["Performance Cores", "8"],
+        ["Efficient Cores", "12"],
+        ["Total Threads", "20"],
+        ["Max Turbo Frequency", "5.50GHz"],
+        ["Performance-core Max Turbo Frequency", "5.40GHz"],
+        ["Efficient-core Max Turbo Frequency", "4.60GHz"],
+        ["Performance-core Base Frequency", "3.90GHz"],
+        ["Efficient-core Base Frequency", "3.30GHz"],
+        ["Cache", "30MB Intel Smart Cache"],
+        ["Total L2 Cache", "36MB"],
+        ["Processor Base Power", "125W"],
+        ["Maximum Turbo Power", "250W"],
+        ["Memory Support", "DDR5 up to 6400MT/s"],
+        ["Max Memory Size", "256GB"],
+        ["Memory Channels", "2"],
+        ["Integrated Graphics", "No"],
+        ["NPU", "Intel AI Boost"],
+        ["Overall Peak TOPS", "33"],
+        ["PCI Express Revision", "PCIe 5.0 and PCIe 4.0"],
+        ["Max PCIe Lanes", "24"],
+        ["Socket", "FCLGA1851"],
+        ["Max Operating Temperature", "105°C"]
+      ],
+      included: [
+        { title: "Processor", text: "The selected Intel Core Ultra 7 265KF processor variant is included as the main component, inspected and prepared for the build or order." },
         { title: "Original Packaging", text: "The product comes with its original box and packaging where available. Customers should keep the packaging for warranty and support purposes." },
         { title: "Included Accessories", text: "Included accessories depend on the official processor package contents supplied by Intel." },
         { title: "Store Support", text: "Purchases include store support, basic guidance, and free lifetime troubleshooting and diagnosis for products bought from The Computer Shop." }
