@@ -86,6 +86,51 @@
   padding: 0 44px 96px;
 }
 
+.consultation-choice-panel {
+  width: min(760px, 100%);
+  min-height: calc(100vh - 330px);
+  margin: 0 auto 30px;
+  display: grid;
+  gap: 14px;
+  align-content: center;
+}
+
+.consultation-choice-button {
+  min-height: 132px;
+  padding: 26px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(24, 25, 24, 0.58);
+  color: white;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.consultation-choice-button strong {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 24px;
+  line-height: 1.16;
+  text-transform: uppercase;
+}
+
+.consultation-choice-button span {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.consultation-choice-button:hover,
+.consultation-choice-button.active {
+  border-color: rgba(192, 154, 92, 0.46);
+  background: rgba(24, 25, 24, 0.74);
+}
+
+.consultation-page .consultation-form[hidden] {
+  display: none;
+}
+
 .consultation-page .consultation-form {
   padding: 30px;
   border-radius: 26px;
@@ -404,10 +449,9 @@
   <main class="consultation-page">
     <section class="consultation-hero">
       <div class="consultation-hero-inner">
-        <h1>Custom Build Consultation</h1>
+        <h1>Need a Custom PC?</h1>
         <p class="consultation-intro">
-          Tell us your budget, use case, preferred look, and performance goals.
-          We will help you put together a system that makes sense for you.
+          Choose the path that matches where you are. We can assemble parts you already picked, or help you plan the full build from scratch.
         </p>
       </div>
     </section>
@@ -418,11 +462,114 @@
           Thank you. A representative will be in touch within 12 hours.
         </div>
 
+        <div class="consultation-choice-panel" data-consultation-choice-panel>
+          <button class="consultation-choice-button" type="button" data-consultation-choice="assembly">
+            <strong>I know the components I want</strong>
+            <span>I already picked the parts and need The Computer Shop to assemble the PC cleanly and correctly.</span>
+          </button>
+
+          <button class="consultation-choice-button" type="button" data-consultation-choice="help">
+            <strong>I need more help</strong>
+            <span>I need help choosing the right parts for my budget, games, software, and upgrade path.</span>
+          </button>
+        </div>
+
         <form
           class="consultation-form"
           action="/api/consultation"
           method="POST"
           data-consultation-redirect="consultation.html"
+          data-consultation-form="assembly"
+          hidden
+        >
+          <input type="hidden" name="Form Type" value="New PC Assembly Request">
+          <input type="text" name="_honey" autocomplete="off" tabindex="-1" style="display:none">
+
+          <div class="consultation-grid">
+            <div class="consultation-form-group-title">
+              <h2>Contact Information</h2>
+            </div>
+
+            <div class="consultation-field">
+              <label for="assembly-full-name">Full Name</label>
+              <input type="text" id="assembly-full-name" name="Full Name" required>
+            </div>
+
+            <div class="consultation-field">
+              <label for="assembly-phone-number">Phone Number</label>
+              <input type="tel" id="assembly-phone-number" name="Phone Number" required>
+            </div>
+
+            <div class="consultation-field consultation-field-full">
+              <label for="assembly-email">Email Address</label>
+              <input type="email" id="assembly-email" name="email" required>
+            </div>
+
+            <div class="consultation-form-group-title">
+              <h2>Assembly Details</h2>
+            </div>
+
+            <div class="consultation-field consultation-field-full">
+              <label for="assembly-components">Components You Want Assembled</label>
+              <textarea id="assembly-components" name="Components You Want Assembled" rows="7" placeholder="List the CPU, motherboard, graphics card, RAM, storage, case, power supply, cooler, fans, and anything else you already chose." required></textarea>
+            </div>
+
+            <div class="consultation-field">
+              <label for="assembly-parts-status">Parts Status</label>
+              <div class="custom-select-dropdown" data-custom-select>
+                <input type="hidden" id="assembly-parts-status" name="Parts Status" data-required-select="true" value="">
+
+                <button class="custom-select-trigger" type="button" aria-expanded="false">
+                  <span class="custom-select-value">Select one</span>
+                  <span class="chevron"></span>
+                </button>
+
+                <div class="custom-select-menu">
+                  <button class="custom-select-option" type="button" data-value="I already bought the parts">I already bought the parts</button>
+                  <button class="custom-select-option" type="button" data-value="I want to buy the parts from The Computer Shop">I want to buy the parts from The Computer Shop</button>
+                  <button class="custom-select-option" type="button" data-value="Some parts are already bought">Some parts are already bought</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="consultation-field">
+              <label for="assembly-timeline">When do you want it assembled?</label>
+              <div class="custom-select-dropdown" data-custom-select>
+                <input type="hidden" id="assembly-timeline" name="Timeline" data-required-select="true" value="">
+
+                <button class="custom-select-trigger" type="button" aria-expanded="false">
+                  <span class="custom-select-value">Select one</span>
+                  <span class="chevron"></span>
+                </button>
+
+                <div class="custom-select-menu">
+                  <button class="custom-select-option" type="button" data-value="As soon as possible">As soon as possible</button>
+                  <button class="custom-select-option" type="button" data-value="Within 1 week">Within 1 week</button>
+                  <button class="custom-select-option" type="button" data-value="Within 1 month">Within 1 month</button>
+                  <button class="custom-select-option" type="button" data-value="Just asking for now">Just asking for now</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="consultation-field consultation-field-full">
+              <label for="assembly-notes">Extra Details</label>
+              <textarea id="assembly-notes" name="Extra Details" rows="5" placeholder="Tell us about cable management preferences, RGB setup, Windows installation, BIOS updates, testing, delivery, or anything else."></textarea>
+            </div>
+          </div>
+
+          <button class="consultation-submit-button" type="submit">
+            Submit Assembly Request
+          </button>
+          <p class="auth-message error" data-consultation-auth-message aria-live="polite"></p>
+        </form>
+
+        <form
+          class="consultation-form"
+          action="/api/consultation"
+          method="POST"
+          data-consultation-redirect="consultation.html"
+          data-consultation-form="help"
+          hidden
         >
           <input type="hidden" name="Form Type" value="New Custom PC Consultation Request">
           <input type="text" name="_honey" autocomplete="off" tabindex="-1" style="display:none">
@@ -658,8 +805,35 @@
       }
     });
 
-    const consultationForm = document.querySelector(".consultation-form");
+    const consultationForms = document.querySelectorAll(".consultation-form");
     const consultationSuccess = document.getElementById("consultation-success");
+    const consultationChoiceButtons = document.querySelectorAll("[data-consultation-choice]");
+
+    function showConsultationForm(choice) {
+      consultationForms.forEach((form) => {
+        form.hidden = form.dataset.consultationForm !== choice;
+      });
+
+      consultationChoiceButtons.forEach((button) => {
+        button.classList.toggle("active", button.dataset.consultationChoice === choice);
+      });
+
+      const selectedForm = document.querySelector("[data-consultation-form='" + choice + "']");
+
+      if (selectedForm) {
+        selectedForm.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+
+    consultationChoiceButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        if (consultationSuccess) {
+          consultationSuccess.hidden = true;
+        }
+
+        showConsultationForm(button.dataset.consultationChoice);
+      });
+    });
 
     async function submitConsultationFormForSignedInUser(form, event) {
       event.preventDefault();
@@ -762,11 +936,11 @@
       }
     }
 
-    if (consultationForm) {
-      consultationForm.addEventListener("submit", (event) => {
-        submitConsultationFormForSignedInUser(consultationForm, event);
+    consultationForms.forEach((form) => {
+      form.addEventListener("submit", (event) => {
+        submitConsultationFormForSignedInUser(form, event);
       });
-    }
+    });
   </script>
 
 <script>
