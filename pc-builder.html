@@ -3020,30 +3020,6 @@
     return engine.partIsCompatible(getSelectedBuild(), categoryKey, part);
   }
 
-    const estimate = estimateBuildFps(build);
-
-    if (!estimate) {
-      fpsResultElement.innerHTML = '<p class="pc-builder-fps-note">Choose a CPU and video card to estimate FPS.</p>';
-      return;
-    }
-
-    if (estimate.unavailable) {
-      fpsResultElement.innerHTML = '<p class="pc-builder-fps-note">Not enough benchmark data for a reliable estimate.</p>';
-      return;
-    }
-
-    const headline = estimate.range ? estimate.range.low + '-' + estimate.range.high + ' FPS' : (estimate.measured ? estimate.average + ' FPS' : '~' + estimate.average + ' FPS');
-    const averageText = estimate.measured ? estimate.average + ' FPS' : 'approximately ' + estimate.average + ' FPS';
-    const onePercentText = estimate.onePercentLow ? ' Estimated 1% low: ' + (estimate.measured ? estimate.onePercentLow : 'approximately ' + estimate.onePercentLow) + ' FPS.' : '';
-    const meterValue = Math.min(100, Math.round((estimate.average || 0) / 3.6));
-    const metaText = estimate.methodology + ' Confidence: ' + getConfidenceLabel(estimate.confidence) + '. Native rendering, no frame generation.';
-
-    fpsResultElement.innerHTML =
-      '<div class="pc-builder-fps-main"><strong>' + headline + '</strong><small>' + escapeHtml(estimate.game.label) + ' at ' + escapeHtml(estimate.resolution.label) + ' ' + escapeHtml(estimate.preset.label) + '. Expected average: ' + averageText + '.' + onePercentText + '</small></div>' +
-      '<div class="pc-builder-fps-meter" aria-hidden="true"><span style="width: ' + meterValue + '%"></span></div>' +
-      '<p class="pc-builder-fps-meta">' + escapeHtml(metaText) + '</p>';
-  }
-
   function renderCompatibilitySummary(issues, selectedCount, missingRequired) {
     if (!statusElement || !issuesElement) {
       return;
