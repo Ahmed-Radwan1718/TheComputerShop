@@ -1481,10 +1481,11 @@
             <div class="product-capacity-options">
               ${product.variants.map((variant) => {
                 const activeClass = variant.id === selectedVariant.id ? " active" : "";
+                const variantButtonLabel = String(variant.capacity || "").replace(/\s+CL\d+\b/gi, "");
 
                 return `
                   <button class="product-capacity-button${activeClass}" type="button" data-capacity="${variant.id}">
-                    ${variant.capacity}
+                    ${variantButtonLabel}
                   </button>
                 `;
               }).join("")}
