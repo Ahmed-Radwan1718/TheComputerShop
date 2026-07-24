@@ -647,9 +647,33 @@
     setTimeout(animateCpuSearchPlaceholder, 250);
   }
 
-  document.querySelectorAll(".signature-build-price").forEach((priceElement) => {
-    priceElement.textContent = "";
-    priceElement.hidden = true;
+  const cpuCardPrices = {
+    "intel-core-ultra-5-245kf": "From 11,799 EGP",
+    "intel-core-ultra-5-250k-plus": "14,599 EGP",
+    "intel-core-ultra-5-245k": "From 11,799 EGP",
+    "intel-core-ultra-7-265k": "From 16,999 EGP",
+    "intel-core-ultra-7-265kf": "From 16,249 EGP",
+    "intel-core-ultra-7-270k-plus": "18,899 EGP",
+    "intel-core-ultra-9-285k": "From 31,899 EGP",
+    "amd-ryzen-5-9600x": "From 12,099 EGP",
+    "amd-ryzen-7-9700x": "From 15,949 EGP",
+    "amd-ryzen-7-9800x3d": "From 25,099 EGP",
+    "amd-ryzen-9-9900x": "From 22,699 EGP",
+    "amd-ryzen-9-9950x": "From 28,649 EGP",
+    "amd-ryzen-9-9900x3d": "From 29,999 EGP",
+    "amd-ryzen-9-9950x3d": "From 36,399 EGP",
+    "amd-ryzen-9-9950x3d2-dual-edition": "57,249 EGP"
+  };
+
+  document.querySelectorAll(".signature-build-card").forEach((card) => {
+    const productId = new URL(card.getAttribute("href"), window.location.href).searchParams.get("product");
+    const priceElement = card.querySelector(".signature-build-price");
+    const priceText = cpuCardPrices[productId] || "";
+
+    if (priceElement) {
+      priceElement.textContent = priceText;
+      priceElement.hidden = !priceText;
+    }
   });
 
   animateCpuSearchPlaceholder();
