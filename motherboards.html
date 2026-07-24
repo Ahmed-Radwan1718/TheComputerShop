@@ -964,9 +964,45 @@
     componentSearchInput.addEventListener("input", runMotherboardSearchUpdate);
   }
 
-  document.querySelectorAll(".signature-build-price").forEach((priceElement) => {
-    priceElement.textContent = "";
-    priceElement.hidden = true;
+  const motherboardCardPrices = {
+    "z890-aorus-elite-wifi7": "16,749 EGP",
+    "z890-aorus-master": "31,799 EGP",
+    "x870-aorus-elite-wifi7": "16,449 EGP",
+    "x870-aorus-stealth-ice": "19,449 EGP",
+    "b850-aorus-stealth-ice": "16,699 EGP",
+    "x870e-aorus-elite-x3d": "21,499 EGP",
+    "b850-aorus-elite-wifi7": "13,799 EGP",
+    "b860m-aorus-elite-wifi6e": "11,549 EGP",
+    "rog-maximus-z890-hero": "33,399 EGP",
+    "rog-strix-z890-e-gaming-wifi": "29,199 EGP",
+    "asus-tuf-gaming-z890-plus-wifi": "17,299 EGP",
+    "rog-strix-b860-f-gaming-wifi": "15,349 EGP",
+    "rog-strix-x870e-e-gaming-wifi": "31,349 EGP",
+    "msi-mag-z890-tomahawk-wifi": "18,599 EGP",
+    "rog-strix-b850-a-gaming-wifi": "15,699 EGP",
+    "proart-x870e-creator-wifi": "28,299 EGP",
+    "proart-z890-creator-wifi": "29,199 EGP",
+    "rog-crosshair-x870e-hero": "33,949 EGP",
+    "asus-tuf-gaming-x870-plus-wifi": "17,299 EGP",
+    "rog-strix-z890-a-gaming-wifi": "22,599 EGP",
+    "x870e-aorus-master": "31,349 EGP",
+    "x870e-aorus-pro-ice": "21,499 EGP",
+    "msi-meg-z890-godlike": "63,649 EGP",
+    "msi-mpg-z890-carbon-wifi": "29,199 EGP",
+    "msi-mpg-x870e-carbon-wifi": "29,199 EGP",
+    "msi-mpg-z890-edge-ti-wifi": "24,349 EGP",
+    "rog-maximus-z890-extreme-motherboard": "61,499 EGP"
+  };
+
+  document.querySelectorAll(".signature-build-card").forEach((card) => {
+    const productId = new URL(card.getAttribute("href"), window.location.href).searchParams.get("product");
+    const priceElement = card.querySelector(".signature-build-price");
+    const priceText = motherboardCardPrices[productId] || "";
+
+    if (priceElement) {
+      priceElement.textContent = priceText;
+      priceElement.hidden = !priceText;
+    }
   });
 
   updateComponentFilters();
