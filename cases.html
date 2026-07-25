@@ -545,9 +545,25 @@
     setTimeout(animateCaseSearchPlaceholder, 250);
   }
 
-  document.querySelectorAll(".signature-build-price").forEach((priceElement) => {
-    priceElement.textContent = "";
-    priceElement.hidden = true;
+  const caseCardPrices = {
+    "gigabyte-c500-panoramic-stealth": "4,599 EGP",
+    "aorus-c500-glass": "10,099 EGP",
+    "aorus-c400-glass": "6,349 EGP",
+    "fractal-design-north-xl-charcoal-black": "10,899 EGP",
+    "rog-strix-helios-ii": "17,849 EGP",
+    "lian-li-o11-dynamic-evo-xl": "12,349 EGP",
+    "corsair-6500d-airflow-case": "11,549 EGP"
+  };
+
+  document.querySelectorAll(".signature-build-card").forEach((card) => {
+    const productId = new URL(card.getAttribute("href"), window.location.href).searchParams.get("product");
+    const priceElement = card.querySelector(".signature-build-price");
+    const priceText = caseCardPrices[productId] || "";
+
+    if (priceElement) {
+      priceElement.textContent = priceText;
+      priceElement.hidden = !priceText;
+    }
   });
 
   animateCaseSearchPlaceholder();
