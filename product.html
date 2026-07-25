@@ -1083,6 +1083,37 @@
     return product.variants.find((variant) => variant.id === selectedVariantKey) || product.variants[0];
   }
 
+  function getVariantSpecValue(variant, labels) {
+    const labelList = Array.isArray(labels) ? labels : [labels];
+    const specs = Array.isArray(variant && variant.specs) ? variant.specs : [];
+    const matchingSpec = specs.find((spec) => labelList.includes(spec[0]));
+
+    return matchingSpec ? matchingSpec[1] : "";
+  }
+
+  function formatVariantTitleCapacity(variant) {
+    let capacity = String((variant && variant.capacity) || "").replace(/\b(\d{4,5})(MT\/s)\b/gi, (match, speed, unit) => {
+      return Number(speed).toLocaleString("en-US") + unit;
+    });
+
+    if (!/\bCL\d+\b/i.test(capacity)) {
+      const latencyText = getVariantSpecValue(variant, ["Tested Latency", "CAS Latency"]) || getVariantSpecValue(variant, "Selected Configuration");
+      const latencyMatch = String(latencyText || "").match(/\bCL\d+\b/i);
+
+      if (latencyMatch) {
+        capacity = `${capacity} ${latencyMatch[0].toUpperCase()}`;
+      }
+    }
+
+    return capacity;
+  }
+
+  function getProductTitleText(product, selectedVariant) {
+    const showVariantInTitle = selectedVariant && product.variantSelectorLabel !== "Choose Color";
+
+    return showVariantInTitle ? `${product.name} ${formatVariantTitleCapacity(selectedVariant)}` : product.name;
+  }
+
   function getProductSpecs(product) {
     const selectedVariant = getSelectedVariant(product);
 
@@ -1390,8 +1421,7 @@
     const productImages = getProductImages(product);
 
     if (productTitle) {
-      const showVariantInTitle = selectedVariant && product.variantSelectorLabel !== "Choose Color";
-      productTitle.textContent = showVariantInTitle ? `${product.name} ${selectedVariant.capacity}` : product.name;
+      productTitle.textContent = getProductTitleText(product, selectedVariant);
     }
 
     if (productCategory) {
