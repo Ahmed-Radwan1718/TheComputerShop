@@ -971,7 +971,22 @@ productStockScript.textContent = `
 
     function getProductStatus(stockMap, productId) {
       const stockItem = stockMap && productId ? stockMap[productId] : null;
-      return stockItem && stockItem.status === "unavailable" ? "unavailable" : "in_stock";
+
+      if (stockItem && stockItem.status === "unavailable") {
+        return "unavailable";
+      }
+
+      if (!stockMap || !productId) {
+        return "in_stock";
+      }
+
+      const variantPrefix = productId + "-";
+      const hasUnavailableVariant = Object.keys(stockMap).some(function (stockProductId) {
+        const item = stockMap[stockProductId];
+        return stockProductId.indexOf(variantPrefix) === 0 && item && item.status === "unavailable";
+      });
+
+      return hasUnavailableVariant ? "unavailable" : "in_stock";
     }
 
     function hasProductStockTargets() {
@@ -1080,8 +1095,22 @@ productStockScript.textContent = `
       }
     }
 
+    function getCurrentDetailProductId() {
+      if (typeof window.getCurrentSavedProductData === "function") {
+        try {
+          const currentProduct = window.getCurrentSavedProductData();
+
+          if (currentProduct && currentProduct.id) {
+            return currentProduct.id;
+          }
+        } catch (error) {}
+      }
+
+      return getProductIdFromHref(window.location.href);
+    }
+
     function applyProductDetailStock(stockMap) {
-      const productId = getProductIdFromHref(window.location.href);
+      const productId = getCurrentDetailProductId();
 
       if (!productId) {
         return;
@@ -1193,6 +1222,16 @@ productStockScript.textContent = `
       document.addEventListener("visibilitychange", function () {
         if (document.visibilityState !== "hidden") {
           applyStockState();
+        }
+      });
+
+      document.addEventListener("click", function (event) {
+        const variantButton = event.target && event.target.closest ? event.target.closest(".product-capacity-button") : null;
+
+        if (variantButton) {
+          window.setTimeout(function () {
+            applyProductDetailStock(currentStockMap);
+          }, 0);
         }
       });
     }
