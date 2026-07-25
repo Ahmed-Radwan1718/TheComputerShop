@@ -182,6 +182,20 @@ images: [
     }
   ];
 
+  const buildMonitorProductImages = (product) => {
+    const imageNumbers = Array.isArray(product.imageNumbers)
+      ? product.imageNumbers
+      : Array.from({ length: product.imageCount || 1 }, (_, index) => index + 1);
+
+    if (!product.image || imageNumbers.length <= 1) {
+      return product.image ? [product.image] : [];
+    }
+
+    const imageBase = product.image.replace(/-\d+\.jpg$/, "-");
+
+    return imageNumbers.map((imageNumber) => `${imageBase}${imageNumber}.jpg`);
+  };
+
   const buildMonitorProduct = (product) => ({
     id: product.id,
     name: product.name,
@@ -190,7 +204,7 @@ images: [
     priceText: "Insert price here",
     priceNumber: null,
     url: `product.html?product=${product.id}`,
-    images: [product.image],
+    images: product.images || buildMonitorProductImages(product),
     whoIsThisFor: product.whoIsThisFor,
     specs: product.specs,
     included: buildMonitorIncluded(product.name)
@@ -202,6 +216,7 @@ images: [
       name: "Samsung Odyssey OLED G8 G80SD",
       specsLine: "Samsung | 2160p | 240Hz | OLED",
       image: "https://res.cloudinary.com/dhtamisqn/image/upload/v1783900426/samsung-odyssey-oled-g8-g80sd-32-inch-240hz-oled-uhd-1.jpg",
+      imageNumbers: [1, 2, 5],
       whoIsThisFor: "A premium 32-inch 4K OLED gaming monitor for players who want UHD sharpness, 240Hz speed, OLED contrast, HDR support, and a clean high-end desktop setup.",
       specs: [
         ["Product Name", "Samsung Odyssey OLED G8 G80SD"],
@@ -218,6 +233,7 @@ images: [
       name: "Samsung Odyssey OLED G8 G85SB",
       specsLine: "Samsung | Ultra WQHD | 175Hz | OLED",
       image: "https://res.cloudinary.com/dhtamisqn/image/upload/v1783901986/samsung-odyssey-oled-g8-g85sb-34-inch-175hz-curved-ultra-wqhd-1.jpg",
+      imageCount: 5,
       whoIsThisFor: "A curved ultrawide OLED gaming monitor for immersive single-player games, multitasking, and high-contrast desktop setups that benefit from a wider workspace.",
       specs: [
         ["Product Name", "Samsung Odyssey OLED G8 G85SB"],
@@ -235,6 +251,7 @@ images: [
       name: "Samsung Odyssey 3D G90XF",
       specsLine: "Samsung | 2160p | 165Hz | IPS",
       image: "https://res.cloudinary.com/dhtamisqn/image/upload/v1783902216/samsung-odyssey-3d-g90xf-27-inch-165hz-uhd-1.jpg",
+      imageCount: 6,
       whoIsThisFor: "A 27-inch UHD gaming monitor for players who want sharp 4K detail, 165Hz refresh rate, IPS color performance, HDR support, and adaptive sync compatibility.",
       specs: [
         ["Product Name", "Samsung Odyssey 3D G90XF"],
@@ -252,6 +269,7 @@ images: [
       name: "Samsung ViewFinity S9 S90PC",
       specsLine: "Samsung | 5K | 60Hz | IPS",
       image: "https://res.cloudinary.com/dhtamisqn/image/upload/v1783958537/samsung-viewfinity-s9-27-inch-5k-resolution-1.jpg",
+      imageCount: 5,
       whoIsThisFor: "A 27-inch 5K monitor for creators, productivity users, and detail-focused workflows that need high resolution, IPS color performance, Thunderbolt 4, and smart calibration support.",
       specs: [
         ["Product Name", "Samsung ViewFinity S9 S90PC"],
@@ -269,6 +287,7 @@ images: [
       name: "Samsung Odyssey Neo G9 G95NC",
       specsLine: "Samsung | Dual UHD | 240Hz | VA",
       image: "https://res.cloudinary.com/dhtamisqn/image/upload/v1783958806/samsung-odyssey-neo-g9-g95nc-57-inch-240hz-curved-dual-uhd-1.jpg",
+      imageCount: 5,
       whoIsThisFor: "A massive 57-inch curved Dual UHD monitor for immersive gaming, simulation setups, multitasking, and users who want a super ultrawide desktop with high refresh rate performance.",
       specs: [
         ["Product Name", "Samsung Odyssey Neo G9 G95NC"],
@@ -287,6 +306,7 @@ images: [
       name: "Samsung Odyssey G8 G80HS",
       specsLine: "Samsung | 6K / 3K | 165Hz / 330Hz | IPS",
       image: "https://res.cloudinary.com/dhtamisqn/image/upload/v1783970180/samsung-odyssey-g8-g80hs-32-inch-dual-mode-6k-165hz-3k-330hz-1.jpg",
+      imageCount: 6,
       whoIsThisFor: "A dual-mode 32-inch gaming monitor for users who want high-resolution 6K desktop clarity and the option to switch into a faster 3K mode for competitive gaming.",
       specs: [
         ["Product Name", "Samsung Odyssey G8 G80HS"],
@@ -305,6 +325,7 @@ images: [
       name: "ROG Strix OLED XG27AQDNG",
       specsLine: "ASUS | 1440p | 360Hz | OLED",
       image: "https://res.cloudinary.com/dhtamisqn/image/upload/v1781350153/rog-strix-oled-xg27aqdng-1.jpg",
+      imageCount: 7,
       whoIsThisFor: "A fast 27-inch class QD-OLED gaming monitor for competitive players who want QHD sharpness, 360Hz speed, OLED contrast, HDR support, and adaptive sync.",
       specs: [
         ["Product Name", "ROG Strix OLED XG27AQDNG"],
@@ -321,6 +342,7 @@ images: [
       name: "ROG Strix OLED XG27AQDMG Gen2",
       specsLine: "ASUS | 1440p | 240Hz | OLED",
       image: "https://res.cloudinary.com/dhtamisqn/image/upload/v1781350134/rog-strix-oled-xg27aqdmg-gen2-xg27aqdmgr-1.jpg",
+      imageCount: 6,
       whoIsThisFor: "A 27-inch class WOLED gaming monitor for users who want QHD OLED contrast, 240Hz motion, glossy TrueBlack visuals, and adaptive sync support.",
       specs: [
         ["Product Name", "ROG Strix OLED XG27AQDMG Gen2"],
