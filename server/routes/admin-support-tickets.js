@@ -259,9 +259,9 @@ async function handleGetProductStock(res) {
 }
 
 async function handleGetPublicStock(res) {
-  res.setHeader("Cache-Control", "public, max-age=900, s-maxage=3600, stale-while-revalidate=86400");
-  res.setHeader("CDN-Cache-Control", "public, max-age=3600, stale-while-revalidate=86400");
-  res.setHeader("Vercel-CDN-Cache-Control", "public, max-age=3600, stale-while-revalidate=86400");
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+  res.setHeader("CDN-Cache-Control", "no-store");
+  res.setHeader("Vercel-CDN-Cache-Control", "no-store");
 
   const snapshot = await admin.firestore()
     .collection("productStock")
