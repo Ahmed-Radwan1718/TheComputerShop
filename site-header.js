@@ -1080,8 +1080,22 @@ productStockScript.textContent = `
       }
     }
 
+    function getCurrentDetailProductId() {
+      if (typeof window.getCurrentSavedProductData === "function") {
+        try {
+          const currentProduct = window.getCurrentSavedProductData();
+
+          if (currentProduct && currentProduct.id) {
+            return currentProduct.id;
+          }
+        } catch (error) {}
+      }
+
+      return getProductIdFromHref(window.location.href);
+    }
+
     function applyProductDetailStock(stockMap) {
-      const productId = getProductIdFromHref(window.location.href);
+      const productId = getCurrentDetailProductId();
 
       if (!productId) {
         return;
