@@ -535,9 +535,25 @@
     setTimeout(animatePsuSearchPlaceholder, 250);
   }
 
-  document.querySelectorAll(".signature-build-price").forEach((priceElement) => {
-    priceElement.textContent = "";
-    priceElement.hidden = true;
+  const psuCardPrices = {
+    "ud1600pm-pg5-ai-top": "21,399 EGP",
+    "aorus-elite-p850w-platinum-pg5": "8,099 EGP",
+    "aorus-elite-p1000w-platinum-pg5": "9,499 EGP",
+    "rog-thor-iii": "From 25,499 EGP",
+    "corsair-rm1200x-shift-1200w": "13,599 EGP",
+    "rog-strix-1200w-platinum": "15,699 EGP",
+    "rog-strix-1000g-aura-gaming": "12,399 EGP"
+  };
+
+  document.querySelectorAll(".signature-build-card").forEach((card) => {
+    const productId = new URL(card.getAttribute("href"), window.location.href).searchParams.get("product");
+    const priceElement = card.querySelector(".signature-build-price");
+    const priceText = psuCardPrices[productId] || "";
+
+    if (priceElement) {
+      priceElement.textContent = priceText;
+      priceElement.hidden = !priceText;
+    }
   });
 
   animatePsuSearchPlaceholder();
