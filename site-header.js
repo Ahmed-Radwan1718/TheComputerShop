@@ -927,7 +927,7 @@ productStockScript.textContent = `
   (function () {
     const stockEndpoint = "/api/admin-support-tickets?type=stock-public";
     const stockCacheKey = "tcs-product-stock-cache-v1";
-    const stockCacheMaxAgeMs = 15 * 60 * 1000;
+    const stockCacheMaxAgeMs = 5 * 60 * 1000;
     let stockRefreshInFlight = false;
     let currentStockMap = {};
 
