@@ -971,22 +971,7 @@ productStockScript.textContent = `
 
     function getProductStatus(stockMap, productId) {
       const stockItem = stockMap && productId ? stockMap[productId] : null;
-
-      if (stockItem && stockItem.status === "unavailable") {
-        return "unavailable";
-      }
-
-      if (!stockMap || !productId) {
-        return "in_stock";
-      }
-
-      const variantPrefix = productId + "-";
-      const hasUnavailableVariant = Object.keys(stockMap).some(function (stockProductId) {
-        const item = stockMap[stockProductId];
-        return stockProductId.indexOf(variantPrefix) === 0 && item && item.status === "unavailable";
-      });
-
-      return hasUnavailableVariant ? "unavailable" : "in_stock";
+      return stockItem && stockItem.status === "unavailable" ? "unavailable" : "in_stock";
     }
 
     function hasProductStockTargets() {
