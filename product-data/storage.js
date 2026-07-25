@@ -265,7 +265,7 @@
           priceText: "Insert price here",
           priceNumber: null,
           images: [
-            "https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Storage/wd-blue-sn5100-nvme-ssd-1TB-1.jpeg",
+            "https://res.cloudinary.com/dhtamisqn/image/upload/v1781349925/wd-blue-sn5100-nvme-ssd-1TB-1.jpg",
             "https://res.cloudinary.com/dhtamisqn/image/upload/v1781349931/wd-blue-sn5100-nvme-ssd-2.jpg"
           ],
           sequentialRead: "Up to 7,100MB/s",
