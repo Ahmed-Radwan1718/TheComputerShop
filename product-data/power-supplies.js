@@ -185,7 +185,7 @@
       url: "product.html?product=aorus-elite-p1000w-platinum-pg5",
       images: Array.from({ length: 7 }, (_, index) => {
         const imageNumber = index + 1;
-        return `https://pqmnzktrvnqpfbbhrnoj.supabase.co/storage/v1/object/public/product-images/Power%20supplies/gigabyte-aorus-elite-p1000w-platinum-pg5-${imageNumber}.jpeg`;
+        return `https://res.cloudinary.com/dhtamisqn/image/upload/v1781348950/gigabyte-aorus-elite-p1000w-platinum-pg5-${imageNumber}.jpg`;
       }),
       whoIsThisFor: "A premium 1000W power supply for high-end gaming and workstation builds that need 80 Plus Platinum efficiency, ATX 3.0 support, PCIe Gen 5 readiness, fully modular flat black cables, strong protections, and clean power delivery.",
       specs: [
