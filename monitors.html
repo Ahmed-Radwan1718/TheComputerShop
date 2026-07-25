@@ -770,9 +770,34 @@
     setTimeout(animateMonitorSearchPlaceholder, 250);
   }
 
-  document.querySelectorAll(".signature-build-price").forEach((priceElement) => {
-    priceElement.textContent = "";
-    priceElement.hidden = true;
+  const monitorCardPrices = {
+    "gigabyte-gs27fa-gaming-monitor": "8,799 EGP",
+    "gigabyte-gs27u-gaming-monitor": "18,399 EGP",
+    "samsung-odyssey-oled-g6-g60sd-27-inch-360hz-oled-qhd": "34,199 EGP",
+    "samsung-odyssey-oled-g8-g80sd-32-inch-240hz-oled-uhd": "58,299 EGP",
+    "samsung-odyssey-oled-g8-g85sb-34-inch-175hz-curved-ultra-wqhd": "50,699 EGP",
+    "samsung-odyssey-3d-g90xf-27-inch-165hz-uhd": "72,499 EGP",
+    "samsung-viewfinity-s9-27-inch-5k-resolution": "47,799 EGP",
+    "samsung-odyssey-neo-g9-g95nc-57-inch-240hz-curved-dual-uhd": "131,699 EGP",
+    "rog-strix-oled-xg27aqdng": "41,399 EGP",
+    "rog-strix-oled-xg27aqwmg": "33,999 EGP",
+    "rog-strix-oled-xg27aqdpg": "49,499 EGP",
+    "rog-strix-oled-xg27acdms": "33,999 EGP",
+    "rog-strix-oled-xg32ucwg": "63,399 EGP",
+    "rog-strix-oled-xg32ucwmg": "63,599 EGP",
+    "rog-strix-oled-xg27ucdmg": "55,699 EGP",
+    "rog-strix-oled-xg27acdng": "39,299 EGP"
+  };
+
+  document.querySelectorAll(".signature-build-card").forEach((card) => {
+    const productId = new URL(card.getAttribute("href"), window.location.href).searchParams.get("product");
+    const priceElement = card.querySelector(".signature-build-price");
+    const priceText = monitorCardPrices[productId] || "";
+
+    if (priceElement) {
+      priceElement.textContent = priceText;
+      priceElement.hidden = !priceText;
+    }
   });
 
   animateMonitorSearchPlaceholder();
