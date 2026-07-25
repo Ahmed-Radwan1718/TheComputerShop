@@ -1675,8 +1675,7 @@
 
     setTimeout(() => {
       if (productTitle) {
-        const showVariantInTitle = currentProduct.variantSelectorLabel !== "Choose Color";
-        productTitle.textContent = showVariantInTitle ? `${currentProduct.name} ${selectedVariant.capacity}` : currentProduct.name;
+        productTitle.textContent = getProductTitleText(currentProduct, selectedVariant);
       }
 
       if (productPrice) {
