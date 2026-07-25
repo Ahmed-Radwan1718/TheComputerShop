@@ -583,9 +583,26 @@
     setTimeout(animateStorageSearchPlaceholder, 250);
   }
 
-  document.querySelectorAll(".signature-build-price").forEach((priceElement) => {
-    priceElement.textContent = "";
-    priceElement.hidden = true;
+  const storageCardPrices = {
+    "wd-black-sn850x-nvme-ssd": "From 10,649 EGP",
+    "wd-black-sn8100-nvme-ssd": "From 11,999 EGP",
+    "wd-black-sn7100-nvme-ssd": "From 5,749 EGP",
+    "wd-blue-sn5100-nvme-ssd": "From 8,249 EGP",
+    "sandisk-fifa-world-cup-2026-portable-ssd": "14,949 EGP",
+    "samsung-9100-pro-nvme-ssd": "From 15,049 EGP",
+    "kingston-fury-renegade-g5-nvme-ssd": "From 13,999 EGP",
+    "aorus-gen5-14000-ssd": "From 13,999 EGP"
+  };
+
+  document.querySelectorAll(".signature-build-card").forEach((card) => {
+    const productId = new URL(card.getAttribute("href"), window.location.href).searchParams.get("product");
+    const priceElement = card.querySelector(".signature-build-price");
+    const priceText = storageCardPrices[productId] || "";
+
+    if (priceElement) {
+      priceElement.textContent = priceText;
+      priceElement.hidden = !priceText;
+    }
   });
 
   animateStorageSearchPlaceholder();
