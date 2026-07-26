@@ -418,6 +418,12 @@
     <a href="consultation.html">Need a Custom PC?</a>
   </nav>
 
+  <form class="site-product-search" role="search" autocomplete="off">
+    <label class="site-product-search-label" for="site-product-search-input">Search products</label>
+    <input class="site-product-search-input" id="site-product-search-input" name="q" type="search" placeholder="Search products..." aria-label="Search products" aria-autocomplete="list" aria-controls="site-product-search-results" aria-expanded="false">
+    <div class="site-product-search-results" id="site-product-search-results" role="listbox" hidden></div>
+  </form>
+
   <div class="site-header-actions">
     <a href="cart.html" class="site-header-cart" aria-label="Cart" data-cart-animation-target>
       <img src="cart-icon.png" alt="Cart">
@@ -482,6 +488,479 @@
   </div>
 </div>
 `;
+
+  if (!document.getElementById("site-product-search-styles")) {
+    const productSearchStyles = document.createElement("style");
+    productSearchStyles.id = "site-product-search-styles";
+    productSearchStyles.textContent = `
+@media (min-width: 1101px) {
+  .site-header {
+    width: min(1280px, calc(100% - 48px));
+    gap: 18px;
+  }
+}
+
+.site-product-search {
+  position: relative;
+  flex: 0 1 310px;
+  min-width: 230px;
+  max-width: 330px;
+}
+
+.site-product-search-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+.site-product-search-input {
+  width: 100%;
+  height: 38px;
+  padding: 0 18px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  color: #fff;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.site-product-search-input::placeholder {
+  color: rgba(255, 255, 255, 0.48);
+}
+
+.site-product-search-input:focus {
+  outline: none;
+  border-color: rgba(194, 154, 91, 0.62);
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 0 3px rgba(194, 154, 91, 0.16);
+}
+
+.site-product-search-results {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 50%;
+  z-index: 1005;
+  width: min(430px, calc(100vw - 48px));
+  max-height: min(420px, calc(100vh - 120px));
+  overflow: auto;
+  padding: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 24px;
+  background: rgba(22, 23, 22, 0.98);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.42);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  transform: translateX(-50%);
+}
+
+.site-product-search-results[hidden] {
+  display: none;
+}
+
+.site-product-search-result {
+  display: grid;
+  grid-template-columns: 54px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid transparent;
+  border-radius: 18px;
+  color: #fff;
+  text-decoration: none;
+}
+
+.site-product-search-result:hover,
+.site-product-search-result.active {
+  border-color: rgba(194, 154, 91, 0.3);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.site-product-search-result img,
+.site-product-search-result-placeholder {
+  display: block;
+  width: 54px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  object-fit: cover;
+}
+
+.site-product-search-result-body {
+  min-width: 0;
+}
+
+.site-product-search-result-name,
+.site-product-search-result-meta,
+.site-product-search-result-specs,
+.site-product-search-status {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.site-product-search-result-name {
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.site-product-search-result-meta {
+  margin-top: 3px;
+  color: rgba(194, 154, 91, 0.9);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.site-product-search-result-specs,
+.site-product-search-status {
+  margin-top: 3px;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.site-product-search-status {
+  margin: 0;
+  padding: 13px 14px;
+  white-space: normal;
+}
+
+@media (max-width: 1100px) {
+  .site-product-search {
+    display: none;
+  }
+}
+`;
+    document.head.appendChild(productSearchStyles);
+  }
+
+  const productSearchForm = document.querySelector(".site-product-search");
+  const productSearchInput = document.getElementById("site-product-search-input");
+  const productSearchResults = document.getElementById("site-product-search-results");
+  const productSearchSources = [
+    { src: "product-data/charging-and-power.js", globalName: "tcsChargingAndPowerProducts", label: "Charging and Power" },
+    { src: "product-data/graphics-cards.js", globalName: "tcsGraphicsCardProducts", label: "Graphics Cards" },
+    { src: "product-data/cpu-coolers.js", globalName: "tcsCpuCoolerProducts", label: "CPU Coolers" },
+    { src: "product-data/peripherals.js", globalName: "tcsPeripheralProducts", label: "Peripherals" },
+    { src: "product-data/memory.js", globalName: "tcsMemoryProducts", label: "Memory" },
+    { src: "product-data/processors.js", globalName: "tcsProcessorProducts", label: "Processors" },
+    { src: "product-data/cases.js", globalName: "tcsCaseProducts", label: "Cases" },
+    { src: "product-data/power-supplies.js", globalName: "tcsPowerSupplyProducts", label: "Power Supplies" },
+    { src: "product-data/storage.js", globalName: "tcsStorageProducts", label: "Storage" },
+    { src: "product-data/monitors.js", globalName: "tcsMonitorProducts", label: "Monitors" },
+    { src: "product-data/signature-builds.js", globalName: "tcsSignatureBuildProducts", label: "Signature Builds" },
+    { src: "product-data/motherboards.js", globalName: "tcsMotherboardProducts", label: "Motherboards" }
+  ];
+  let productSearchProducts = [];
+  let productSearchLoadPromise = null;
+  let activeProductSearchIndex = -1;
+
+  function normalizeProductSearchText(value) {
+    return String(value || "")
+      .toLowerCase()
+      .replace(/&/g, " and ")
+      .replace(/[^a-z0-9]+/g, " ")
+      .trim();
+  }
+
+  function escapeProductSearchHtml(value) {
+    const replacements = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    };
+
+    return String(value || "").replace(/[&<>"']/g, function (character) {
+      return replacements[character];
+    });
+  }
+
+  function loadProductSearchSource(source) {
+    if (window[source.globalName]) {
+      return Promise.resolve();
+    }
+
+    const existingScript = Array.prototype.find.call(document.scripts, function (script) {
+      return script.getAttribute("src") === source.src;
+    });
+
+    if (existingScript) {
+      return new Promise(function (resolve) {
+        existingScript.addEventListener("load", resolve, { once: true });
+        existingScript.addEventListener("error", resolve, { once: true });
+        window.setTimeout(resolve, 800);
+      });
+    }
+
+    return new Promise(function (resolve) {
+      const script = document.createElement("script");
+      script.src = source.src;
+      script.async = false;
+      script.addEventListener("load", resolve, { once: true });
+      script.addEventListener("error", resolve, { once: true });
+      document.head.appendChild(script);
+    });
+  }
+
+  function getProductSearchImage(product) {
+    const defaultVariant = Array.isArray(product.variants)
+      ? product.variants.find(function (variant) {
+        return variant && (variant.default || variant.isDefault);
+      }) || product.variants[0]
+      : null;
+    const variantImages = defaultVariant && Array.isArray(defaultVariant.images) ? defaultVariant.images : [];
+    const productImages = Array.isArray(product.images) ? product.images : [];
+
+    return variantImages[0] || productImages[0] || product.image || "";
+  }
+
+  function buildProductSearchIndex() {
+    productSearchProducts = [];
+
+    productSearchSources.forEach(function (source) {
+      const productMap = window[source.globalName];
+
+      if (!productMap) {
+        return;
+      }
+
+      Object.keys(productMap).forEach(function (productKey) {
+        const product = productMap[productKey];
+
+        if (!product || !product.name) {
+          return;
+        }
+
+        const category = product.category || source.label;
+        const specs = product.specsLine || product.specs || "";
+        const image = getProductSearchImage(product);
+        const url = product.url || ("product.html?product=" + encodeURIComponent(productKey));
+
+        productSearchProducts.push({
+          key: productKey,
+          name: product.name,
+          category: category,
+          specs: specs,
+          image: image,
+          url: url,
+          searchText: normalizeProductSearchText([
+            product.name,
+            product.shortName,
+            category,
+            specs,
+            productKey
+          ].join(" "))
+        });
+      });
+    });
+
+    productSearchProducts.sort(function (a, b) {
+      return a.name.localeCompare(b.name);
+    });
+
+    return productSearchProducts;
+  }
+
+  function loadProductSearchProducts() {
+    if (!productSearchLoadPromise) {
+      productSearchLoadPromise = Promise.all(productSearchSources.map(loadProductSearchSource)).then(buildProductSearchIndex);
+    }
+
+    return productSearchLoadPromise;
+  }
+
+  function closeProductSearchResults() {
+    if (!productSearchResults || !productSearchInput) {
+      return;
+    }
+
+    productSearchResults.hidden = true;
+    productSearchInput.setAttribute("aria-expanded", "false");
+    productSearchInput.removeAttribute("aria-activedescendant");
+    activeProductSearchIndex = -1;
+  }
+
+  function showProductSearchStatus(message) {
+    productSearchResults.innerHTML = `<p class="site-product-search-status">${escapeProductSearchHtml(message)}</p>`;
+    productSearchResults.hidden = false;
+    productSearchInput.setAttribute("aria-expanded", "true");
+  }
+
+  function getProductSearchMatches(query) {
+    const normalizedQuery = normalizeProductSearchText(query);
+    const queryWords = normalizedQuery.split(" ").filter(Boolean);
+
+    if (!queryWords.length) {
+      return [];
+    }
+
+    return productSearchProducts.filter(function (product) {
+      return queryWords.every(function (word) {
+        return product.searchText.indexOf(word) !== -1;
+      });
+    }).sort(function (a, b) {
+      const aName = normalizeProductSearchText(a.name);
+      const bName = normalizeProductSearchText(b.name);
+      const aStarts = aName.indexOf(normalizedQuery) === 0;
+      const bStarts = bName.indexOf(normalizedQuery) === 0;
+      const aIncludes = aName.indexOf(normalizedQuery) !== -1;
+      const bIncludes = bName.indexOf(normalizedQuery) !== -1;
+
+      if (aStarts !== bStarts) {
+        return aStarts ? -1 : 1;
+      }
+
+      if (aIncludes !== bIncludes) {
+        return aIncludes ? -1 : 1;
+      }
+
+      return a.name.localeCompare(b.name);
+    });
+  }
+
+  function renderProductSearchMatches(matches) {
+    activeProductSearchIndex = -1;
+
+    if (!matches.length) {
+      showProductSearchStatus("No matching products found.");
+      return;
+    }
+
+    productSearchResults.innerHTML = matches.map(function (product, index) {
+      const imageMarkup = product.image
+        ? `<img src="${escapeProductSearchHtml(product.image)}" alt="">`
+        : `<span class="site-product-search-result-placeholder" aria-hidden="true"></span>`;
+
+      return `
+<a class="site-product-search-result" id="site-product-search-result-${index}" href="${escapeProductSearchHtml(product.url)}" role="option" aria-selected="false">
+  ${imageMarkup}
+  <span class="site-product-search-result-body">
+    <span class="site-product-search-result-name">${escapeProductSearchHtml(product.name)}</span>
+    <span class="site-product-search-result-meta">${escapeProductSearchHtml(product.category)}</span>
+    <span class="site-product-search-result-specs">${escapeProductSearchHtml(product.specs)}</span>
+  </span>
+</a>`;
+    }).join("");
+
+    productSearchResults.hidden = false;
+    productSearchInput.setAttribute("aria-expanded", "true");
+    productSearchInput.removeAttribute("aria-activedescendant");
+  }
+
+  function setActiveProductSearchResult(nextIndex) {
+    const resultLinks = productSearchResults.querySelectorAll(".site-product-search-result");
+
+    if (!resultLinks.length) {
+      return;
+    }
+
+    activeProductSearchIndex = (nextIndex + resultLinks.length) % resultLinks.length;
+
+    Array.prototype.forEach.call(resultLinks, function (link, index) {
+      const isActive = index === activeProductSearchIndex;
+      link.classList.toggle("active", isActive);
+      link.setAttribute("aria-selected", isActive ? "true" : "false");
+
+      if (isActive) {
+        productSearchInput.setAttribute("aria-activedescendant", link.id);
+        link.scrollIntoView({ block: "nearest" });
+      }
+    });
+  }
+
+  function updateProductSearchResults() {
+    const query = productSearchInput.value.trim();
+
+    if (!query) {
+      closeProductSearchResults();
+      return;
+    }
+
+    showProductSearchStatus("Loading products...");
+
+    loadProductSearchProducts().then(function () {
+      if (productSearchInput.value.trim() !== query) {
+        updateProductSearchResults();
+        return;
+      }
+
+      renderProductSearchMatches(getProductSearchMatches(query));
+    });
+  }
+
+  if (productSearchForm && productSearchInput && productSearchResults) {
+    productSearchForm.addEventListener("submit", function (event) {
+      const targetLink = productSearchResults.querySelector(".site-product-search-result.active") || productSearchResults.querySelector(".site-product-search-result");
+
+      event.preventDefault();
+
+      if (targetLink) {
+        window.location.href = targetLink.href;
+      }
+    });
+
+    productSearchInput.addEventListener("input", updateProductSearchResults);
+
+    productSearchInput.addEventListener("focus", function () {
+      if (productSearchInput.value.trim()) {
+        updateProductSearchResults();
+      }
+    });
+
+    productSearchInput.addEventListener("keydown", function (event) {
+      const resultLinks = productSearchResults.querySelectorAll(".site-product-search-result");
+
+      if (event.key === "Escape") {
+        closeProductSearchResults();
+        productSearchInput.blur();
+        return;
+      }
+
+      if (!resultLinks.length) {
+        return;
+      }
+
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+        setActiveProductSearchResult(activeProductSearchIndex + 1);
+      } else if (event.key === "ArrowUp") {
+        event.preventDefault();
+        setActiveProductSearchResult(activeProductSearchIndex - 1);
+      } else if (event.key === "Enter" && activeProductSearchIndex >= 0) {
+        event.preventDefault();
+        window.location.href = resultLinks[activeProductSearchIndex].href;
+      }
+    });
+
+    productSearchResults.addEventListener("mouseover", function (event) {
+      const resultLink = event.target.closest(".site-product-search-result");
+
+      if (!resultLink) {
+        return;
+      }
+
+      const resultLinks = Array.prototype.slice.call(productSearchResults.querySelectorAll(".site-product-search-result"));
+      const resultIndex = resultLinks.indexOf(resultLink);
+
+      if (resultIndex >= 0) {
+        setActiveProductSearchResult(resultIndex);
+      }
+    });
+
+    document.addEventListener("click", function (event) {
+      if (!productSearchForm.contains(event.target)) {
+        closeProductSearchResults();
+      }
+    });
+  }
 
   const menuButton = document.querySelector(".hamburger-toggle");
   const menuOverlay = document.querySelector(".nav-menu-overlay");
