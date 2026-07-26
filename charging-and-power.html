@@ -709,9 +709,36 @@
     setTimeout(animateChargingSearchPlaceholder, 250);
   }
 
-  document.querySelectorAll(".signature-build-price").forEach((priceElement) => {
-    priceElement.textContent = "";
-    priceElement.hidden = true;
+  const chargingCardPrices = {
+    "anker-prime-20k-220w-power-bank-black-myth-wukong-edition": "7,599 EGP",
+    "anker-charger-140w-4-port-pd-3-1": "2,999 EGP",
+    "anker-laptop-power-bank-25k-165w-built-in-and-retractable-cables": "4,199 EGP",
+    "anker-prime-charger-250w-6-ports-ganprime": "7,999 EGP",
+    "anker-nano-charger-45w-smart-display-180-foldable": "From 1,499 EGP",
+    "anker-nano-charger-30w": "799 EGP",
+    "anker-735-charger-nano-ii-65w": "1,899 EGP",
+    "anker-prime-charging-docking-station-14-in-1-dual-display-160w": "10,099 EGP",
+    "ugreen-uno-charger-65w-black": "2,499 EGP",
+    "ugreen-nexode-100w-4-port-gan-fast-charger": "5,199 EGP",
+    "ugreen-zapix-200w-8-port-gan-desktop-fast-charger": "8,099 EGP",
+    "ugreen-nexode-300w-5-port-desktop-charger": "9,799 EGP",
+    "ugreen-nexode-pro-100w-3-port-gan-fast-charger": "3,799 EGP",
+    "ugreen-uno-charger-100w": "3,599 EGP",
+    "ugreen-uno-usb-c-to-usb-c-cable-100w": "699 EGP",
+    "ugreen-usb-c-to-usb-c-right-angle-2m-100w": "1,899 EGP",
+    "anker-prime-thunderbolt-5-cable-80gbps-240w": "2,599 EGP",
+    "anker-maggo-10000mah-power-bank": "6,699 EGP"
+  };
+
+  document.querySelectorAll(".signature-build-card").forEach((card) => {
+    const productId = new URL(card.getAttribute("href"), window.location.href).searchParams.get("product");
+    const priceElement = card.querySelector(".signature-build-price");
+    const priceText = chargingCardPrices[productId] || "";
+
+    if (priceElement) {
+      priceElement.textContent = priceText;
+      priceElement.hidden = !priceText;
+    }
   });
 
   animateChargingSearchPlaceholder();
