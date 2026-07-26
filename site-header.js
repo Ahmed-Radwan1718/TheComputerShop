@@ -418,12 +418,6 @@
     <a href="consultation.html">Need a Custom PC?</a>
   </nav>
 
-  <form class="site-product-search" role="search" autocomplete="off">
-    <label class="site-product-search-label" for="site-product-search-input">Search products</label>
-    <input class="site-product-search-input" id="site-product-search-input" name="q" type="search" placeholder="Search products..." aria-label="Search products" aria-autocomplete="list" aria-controls="site-product-search-results" aria-expanded="false">
-    <div class="site-product-search-results" id="site-product-search-results" role="listbox" hidden></div>
-  </form>
-
   <div class="site-header-actions">
     <a href="cart.html" class="site-header-cart" aria-label="Cart" data-cart-animation-target>
       <img src="cart-icon.png" alt="Cart">
@@ -493,18 +487,15 @@
     const productSearchStyles = document.createElement("style");
     productSearchStyles.id = "site-product-search-styles";
     productSearchStyles.textContent = `
-@media (min-width: 1101px) {
-  .site-header {
-    width: min(1280px, calc(100% - 48px));
-    gap: 18px;
-  }
-}
-
 .site-product-search {
-  position: relative;
-  flex: 0 1 310px;
-  min-width: 230px;
-  max-width: 330px;
+  position: absolute;
+  top: 190px;
+  left: 50%;
+  z-index: 80;
+  width: min(560px, calc(100% - 48px));
+  min-width: 0;
+  max-width: none;
+  transform: translateX(-50%);
 }
 
 .site-product-search-label {
@@ -518,35 +509,38 @@
 
 .site-product-search-input {
   width: 100%;
-  height: 38px;
-  padding: 0 18px;
+  height: 52px;
+  padding: 0 24px;
   border: 1px solid rgba(255, 255, 255, 0.13);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.08);
   color: #fff;
   font: inherit;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 800;
   letter-spacing: 0;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
 }
 
 .site-product-search-input::placeholder {
-  color: rgba(255, 255, 255, 0.48);
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .site-product-search-input:focus {
   outline: none;
   border-color: rgba(194, 154, 91, 0.62);
   background: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 0 0 3px rgba(194, 154, 91, 0.16);
+  box-shadow: 0 0 0 3px rgba(194, 154, 91, 0.16), 0 24px 60px rgba(0, 0, 0, 0.28);
 }
 
 .site-product-search-results {
   position: absolute;
   top: calc(100% + 12px);
-  left: 50%;
+  left: 0;
   z-index: 1005;
-  width: min(430px, calc(100vw - 48px));
+  width: 100%;
   max-height: min(420px, calc(100vh - 120px));
   overflow: auto;
   padding: 8px;
@@ -556,7 +550,6 @@
   box-shadow: 0 24px 70px rgba(0, 0, 0, 0.42);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-  transform: translateX(-50%);
 }
 
 .site-product-search-results[hidden] {
@@ -631,9 +624,28 @@
   white-space: normal;
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 900px) {
   .site-product-search {
-    display: none;
+    top: 92px;
+    width: min(560px, calc(100% - 32px));
+  }
+
+  .site-product-search-input {
+    height: 46px;
+    padding: 0 18px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 620px) {
+  .site-product-search {
+    top: 76px;
+    width: calc(100% - 24px);
+  }
+
+  .site-product-search-results {
+    max-height: min(360px, calc(100vh - 140px));
+    border-radius: 20px;
   }
 }
 `;
