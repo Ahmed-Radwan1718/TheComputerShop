@@ -820,30 +820,30 @@
 
     "ugreen-uno-usb-c-to-usb-c-cable-100w": createUgreenChargingProduct({
       id: "ugreen-uno-usb-c-to-usb-c-cable-100w",
-      name: "UGREEN Uno Cable USB-C to USB-C 100W",
+      name: "UGREEN Uno Cable USB-C to USB-C 1M 100W",
       series: "Uno",
       type: "Charging Cable",
-      specsLine: "UGREEN Uno | Charging Cable | 100W",
+      specsLine: "UGREEN Uno | 1M Cable | 100W",
       totalOutput: "100W Max",
       ports: "USB-C to USB-C",
       technology: "USB-C Power Delivery charging",
       image: "https://res.cloudinary.com/dhtamisqn/image/upload/v1783116382/ugreen-uno-usb-c-to-usb-c-cable-100w-1.jpg",
-      whoIsThisFor: "A playful USB-C cable for charging phones, tablets, USB-C laptops, Steam Deck, and everyday devices with a durable Uno-style design.",
-      extraSpecs: [["Data Transfer", "Up to 480Mbps"], ["Chip", "E-marker chip"], ["Compatibility", "Phones, tablets, laptops, Steam Deck, CarPlay, and Android Auto"], ["Connector", "USB-C to USB-C"]]
+      whoIsThisFor: "A playful 1-meter USB-C cable for charging phones, tablets, USB-C laptops, Steam Deck, and everyday devices with a durable Uno-style design.",
+      extraSpecs: [["Cable Length", "1M"], ["Data Transfer", "Up to 480Mbps"], ["Chip", "E-marker chip"], ["Compatibility", "Phones, tablets, laptops, Steam Deck, CarPlay, and Android Auto"], ["Connector", "USB-C to USB-C"]]
     }),
 
     "ugreen-usb-c-to-usb-c-right-angle-2m-100w": createUgreenChargingProduct({
       id: "ugreen-usb-c-to-usb-c-right-angle-2m-100w",
-      name: "UGREEN USB-C to USB-C Right Angle 2M 100W Cable",
+      name: "UGREEN USB-C to USB-C Right Angle 1M 100W Cable",
       series: "Right Angle USB-C",
       type: "Charging Cable",
-      specsLine: "UGREEN | 2M Cable | 100W",
+      specsLine: "UGREEN | 1M Cable | 100W",
       totalOutput: "100W Max",
       ports: "USB-C to USB-C",
       technology: "USB-C Power Delivery charging",
       image: "https://res.cloudinary.com/dhtamisqn/image/upload/v1783116708/ugreen-usb-c-to-usb-c-right-angle-2m-100w-1.jpg",
-      whoIsThisFor: "A right-angle USB-C cable for desk setups, gaming handhelds, phones, tablets, and laptops where a 90-degree connector helps cable routing.",
-      extraSpecs: [["Cable Length", "2M"], ["Charging", "100W / 5A"], ["Connector", "USB-C to USB-C right angle"], ["Use Case", "Fast charging with cleaner cable routing"]]
+      whoIsThisFor: "A 1-meter right-angle USB-C cable for desk setups, gaming handhelds, phones, tablets, and laptops where a 90-degree connector helps cable routing.",
+      extraSpecs: [["Cable Length", "1M"], ["Charging", "100W / 5A"], ["Connector", "USB-C to USB-C right angle"], ["Use Case", "Fast charging with cleaner cable routing"]]
     }),
   };
 }());
