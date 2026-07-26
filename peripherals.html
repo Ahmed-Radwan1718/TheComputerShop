@@ -966,9 +966,44 @@
     setTimeout(animateAccessoriesSearchPlaceholder, 250);
   }
 
-  document.querySelectorAll(".signature-build-price").forEach((priceElement) => {
-    priceElement.textContent = "";
-    priceElement.hidden = true;
+  const peripheralCardPrices = {
+    "razer-huntsman-v3-pro-tkl-keyboard": "10,099 EGP",
+    "razer-huntsman-v3-pro-mini": "7,699 EGP",
+    "razer-wolverine-v3-pro": "14,299 EGP",
+    "razer-seiren-v3-chroma-usb-mic": "8,099 EGP",
+    "razer-basilisk-v3-pro-wireless": "8,899 EGP",
+    "razer-kraken-v4-pro-wireless": "22,599 EGP",
+    "rog-delta-ii-gaming-headset": "10,999 EGP",
+    "rog-harpe-ii-ace-gaming-mouse": "8,299 EGP",
+    "aorus-ez-chain-fan-120": "From 1,599 EGP",
+    "hyperx-quadcast-2-s-usb-microphone": "9,899 EGP",
+    "rog-rapture-gt-ax11000-pro": "24,399 EGP",
+    "razer-cobra-pro-lightweight-wireless-pc-gaming-mouse": "7,999 EGP",
+    "razer-blackshark-v3-pro": "20,799 EGP",
+    "razer-blackwidow-v4-75-keyboard-black": "12,399 EGP",
+    "razer-blackwidow-v4-pro-75": "22,699 EGP",
+    "hyperx-flipcast-microphone": "13,299 EGP",
+    "hyperx-solocast-2-microphone": "3,999 EGP",
+    "razer-viper-v3-pro": "11,199 EGP",
+    "razer-deathadder-v3-pro-mouse-black": "8,299 EGP",
+    "hyperx-alloy-origins-60-keyboard": "6,999 EGP",
+    "asus-rog-strix-gs-be18000-router": "26,499 EGP",
+    "steelseries-apex-pro-tkl-wireless-gen-3-black": "19,499 EGP",
+    "steelseries-arctis-nova-pro": "15,499 EGP",
+    "steelseries-aerox-9-wireless-mouse": "9,899 EGP",
+    "rog-raikiri-ii-xbox-wireless-controller": "11,099 EGP",
+    "rog-azoth-extreme-gaming-keyboard": "23,799 EGP"
+  };
+
+  document.querySelectorAll(".signature-build-card").forEach((card) => {
+    const productId = new URL(card.getAttribute("href"), window.location.href).searchParams.get("product");
+    const priceElement = card.querySelector(".signature-build-price");
+    const priceText = peripheralCardPrices[productId] || "";
+
+    if (priceElement) {
+      priceElement.textContent = priceText;
+      priceElement.hidden = !priceText;
+    }
   });
 
   animateAccessoriesSearchPlaceholder();
