@@ -186,6 +186,13 @@
 <body>
 
 <div id="site-header-root"></div>
+
+<form class="site-product-search" role="search" autocomplete="off">
+  <label class="site-product-search-label" for="site-product-search-input">Search products</label>
+  <input class="site-product-search-input" id="site-product-search-input" name="q" type="search" placeholder="Search products..." aria-label="Search products" aria-autocomplete="list" aria-controls="site-product-search-results" aria-expanded="false">
+  <div class="site-product-search-results" id="site-product-search-results" role="listbox" hidden></div>
+</form>
+
 <script src="site-header.js"></script>
 
 <main class="home-page">
