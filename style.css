@@ -4928,9 +4928,12 @@ body.product-image-lightbox-open {
   color: rgba(192, 154, 92, 0.84);
 }
 
-.product-purchase-eyebrow,
-.product-who-toggle {
+.product-purchase-eyebrow {
   color: rgba(255, 255, 255, 0.58);
+}
+
+.product-who-toggle {
+  color: rgba(192, 154, 92, 0.84);
 }
 
 .product-title-eyebrow.product-title-eyebrow-accent {
