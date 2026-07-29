@@ -1146,8 +1146,8 @@ body {
 }
 
 .site-header .floating-account-button img {
-  width: 26px;
-  height: 26px;
+  width: 30px;
+  height: 30px;
 }
 
 .site-header .floating-account-menu {
@@ -7984,10 +7984,14 @@ body.product-image-lightbox-open {
     height: 38px;
   }
 
-  .site-header-cart img,
-  .site-header .floating-account-button img {
+  .site-header-cart img {
     width: 23px;
     height: 23px;
+  }
+
+  .site-header .floating-account-button img {
+    width: 28px;
+    height: 28px;
   }
 
   .site-header .floating-account-widget {
